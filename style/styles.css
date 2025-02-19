@@ -1,7 +1,7 @@
 /* Reset de margens e padding padrão */
 * {
     margin: 0;
-    padding: 0;
+    padding: 20px;
     box-sizing: border-box;
 }
 
@@ -43,7 +43,7 @@ body {
 }/* Reset de margens e padding padrão */
 * {
     margin: 0;
-    padding: 0;
+    padding: 0px;
     box-sizing: border-box;
 }
 
@@ -297,7 +297,7 @@ button:disabled {
 
 /* Adicionando espaço extra devido à barra fixada */
 body {
-    padding-top: 80px;
+    padding-top: 100px;
 }
 
 /* Input de Pesquisa */
