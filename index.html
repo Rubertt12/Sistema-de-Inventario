@@ -13,14 +13,18 @@
     <header class="navbar">
       
         <h1>Inventário de Setores</h1>
+            <!-- Botão para alternar entre lista e grid -->
         <button onclick="toggleLayout()">Alternar Layout</button>
+        <!--filtro de pesquisa -->
         <input type="text" id="searchInput" onkeyup="filterMachines()" placeholder="Pesquisar máquinas..." aria-label="Pesquisar máquinas">
+            <!-- Botão para adicionar setor -->
         <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor</button>
+        <!-- botão que alterna o tema -->
         <button id="theme-toggle" class="theme-toggle">Alternar Tema</button>
 
     </header>
 
-    <!-- Botão para alternar entre lista e grid -->
+
 
     <!-- Container dos setores -->
     <main id="setoresContainer" class="list-view">
