@@ -63,6 +63,7 @@ body {
 
 
 /* Barra de Navegação */
+/* Barra de Navegação */
 .navbar {
     background: rgba(255, 255, 255, 0.2); /* Transparência no fundo */
     backdrop-filter: blur(12px); /* Efeito de vidro fosco */
@@ -80,9 +81,7 @@ body {
     transform: translateX(-50%);
     z-index: 100;
     transition: all 0.3s ease;
-    
 }
-
 
 .navbar h1 {
     font-size: 18px;
@@ -98,11 +97,47 @@ body {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
+/* Menu Hamburguer */
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+}
+
 /* Input de Pesquisa */
 input[type="text"] {
     padding: 12px;
     font-size: 16px;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     border-radius: 8px;
     border: 1px solid #ccc;
     transition: all 0.3s ease;
@@ -140,6 +175,7 @@ button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
 
 /* Container de Setores */
 .setores-container {
