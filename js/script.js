@@ -27,6 +27,25 @@ function addSetor() {
 }
 
 
+function login() {
+    const usuario = document.getElementById("usuario").value;
+    const senha = document.getElementById("senha").value;
+
+    // Simulação de usuário e senha (substituir por autenticação real)
+    if (usuario === "admin" && senha === "1234") {
+        localStorage.setItem("userLoggedIn", "true"); // Marca como logado
+        window.location.href = "pagina_restrita.html"; // Redireciona para a página
+    } else {
+        alert("Usuário ou senha incorretos!");
+    }
+}
+// Verifica se o usuário está logado
+if (localStorage.getItem("userLoggedIn") !== "true") {
+    window.location.href = "index.html"; // Redireciona para a tela de login
+}
+
+
+
 
 
 
