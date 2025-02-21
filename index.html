@@ -26,22 +26,25 @@
             <!-- Botão para adicionar setor -->
             <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor</button>
     
-            <!-- Botão que alterna o tema -->
-            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button>
+            <!-- Botão que alterna o tema
+            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button> -->
 
-            <!-- Aba do usuário -->
-    <div class="user-menu">
-        <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" onclick="toggleUserMenu()">
-        <div class="user-dropdown" id="userDropdown">
-            <p id="userName">Usuário</p>
-            <a href="#">Configurações</a>
-            <button onclick="logout()">Sair</button>
-        </div>
+            <!-- Menu de Usuário -->
+<div class="user-menu">
+    <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"> <p class="user-name"><span id="userName">Usuário</span></p>
+    <div class="user-dropdown" id="userDropdown">
+       
+        <button onclick="openConfigModal()">Configurações</button>
+
+        
+        <button onclick="logout()">Sair</button>
     </div>
+    
+</div>
         </nav>
     </header>
     
-
+        
 
 
     <!-- Container dos setores -->
@@ -87,6 +90,28 @@
             </div>
         </div>
     </div>
+
+    <div id="configModal" class="config-modal">
+        <div class="config-modal-content">
+            <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
+            <h2>Configurações</h2>
+                
+            <!-- Trocar foto do perfil -->
+            <div class="profile-picture-section">
+                <img src="/img/avatar.webp" alt="Foto de Perfil" id="profilePic">
+                <input type="file" id="profilePicInput" accept="image/*" onchange="changeProfilePicture(event)">
+                <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
+            </div>
+            <button onclick="importFromCSVButton()">Importar CSV</button>
+            <button onclick="exportToCSV()">Exportar para CSV</button>
+            <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)">
+            <!-- Alternar Dark Mode -->
+            </div>
+    
+            <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
+        </div>
+    </div>
+
 
     <!-- MODAL: Adicionar Máquina -->
     <div id="addMachineModal" class="modal">

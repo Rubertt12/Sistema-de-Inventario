@@ -26,6 +26,11 @@ function addSetor() {
     }
 }
 
+
+
+
+
+
 // Função para renderizar setores
 function renderSetores() {
     const container = document.getElementById('setoresContainer');
@@ -258,87 +263,87 @@ function loadSetoresAndMachines() {
 document.addEventListener('DOMContentLoaded', loadSetoresAndMachines);
 
 // Função para exportar os setores e máquinas para CSV
-function exportToCSV() {
-    let csvContent = "Setor;Nome da Máquina;Tipo;Em Manutenção;Tempo de Manutenção;Observações;Prioridade\n";
+// function exportToCSV() {
+//     let csvContent = "Setor;Nome da Máquina;Tipo;Em Manutenção;Tempo de Manutenção;Observações;Prioridade\n";
 
-    setores.forEach(setor => {
-        setor.maquinas.forEach(maquina => {
-            const observacoes = maquina.chamado.map(chamado => `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`).join(" | ") || "Nenhuma Observação";
-            const row = `"${setor.nome}";"${maquina.nome}";"${maquina.tipo}";${maquina.emManutencao};${maquina.tempoManutencao};"${observacoes}"\n`;
-            csvContent += row;
-        });
-    });
+//     setores.forEach(setor => {
+//         setor.maquinas.forEach(maquina => {
+//             const observacoes = maquina.chamado.map(chamado => `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`).join(" | ") || "Nenhuma Observação";
+//             const row = `"${setor.nome}";"${maquina.nome}";"${maquina.tipo}";${maquina.emManutencao};${maquina.tempoManutencao};"${observacoes}"\n`;
+//             csvContent += row;
+//         });
+//     });
 
-    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'setores_maquinas.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+//     const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
+//     const link = document.createElement('a');
+//     link.setAttribute('href', encodedUri);
+//     link.setAttribute('download', 'setores_maquinas.csv');
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+// }
 
-// Botão para exportar CSV
-const exportButton = document.createElement('button');
-exportButton.textContent = "Exportar para CSV";
-exportButton.onclick = exportToCSV;
-document.body.appendChild(exportButton);
+// // Botão para exportar CSV
+// const exportButton = document.createElement('button');
+// exportButton.textContent = "Exportar para CSV";
+// exportButton.onclick = exportToCSV;
+// document.body.appendChild(exportButton);
 
-// Função para importar o CSV e adicionar setores e máquinas
-function importFromCSV(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+// // Função para importar o CSV e adicionar setores e máquinas
+// function importFromCSV(event) {
+//     const file = event.target.files[0];
+//     const reader = new FileReader();
 
-    reader.onload = function(e) {
-        const content = e.target.result;
-        const rows = content.split("\n");
+//     reader.onload = function(e) {
+//         const content = e.target.result;
+//         const rows = content.split("\n");
 
-        setores = [];
-        setoresVisiveis = [];
+//         setores = [];
+//         setoresVisiveis = [];
 
-        rows.forEach((row, index) => {
-            if (index === 0 || !row.trim()) return;
+//         rows.forEach((row, index) => {
+//             if (index === 0 || !row.trim()) return;
 
-            const cols = row.split(";");
+//             const cols = row.split(";");
 
-            const setorNome = cols[0].replace(/"/g, '').trim();
-            const maquinaNome = cols[1].replace(/"/g, '').trim();
-            const maquinaTipo = cols[2].replace(/"/g, '').trim(); // Tipo da máquina
-            const emManutencao = cols[3].trim() === 'true';
-            const tempoManutencao = parseInt(cols[4].trim()) || 0;
-            const observacoes = cols[5].replace(/"/g, '').trim();
+//             const setorNome = cols[0].replace(/"/g, '').trim();
+//             const maquinaNome = cols[1].replace(/"/g, '').trim();
+//             const maquinaTipo = cols[2].replace(/"/g, '').trim(); // Tipo da máquina
+//             const emManutencao = cols[3].trim() === 'true';
+//             const tempoManutencao = parseInt(cols[4].trim()) || 0;
+//             const observacoes = cols[5].replace(/"/g, '').trim();
             
 
-            let setor = setores.find(s => s.nome === setorNome);
-            if (!setor) {
-                setor = { nome: setorNome, maquinas: [] };
-                setores.push(setor);
-                setoresVisiveis.push(false);
-            }
+//             let setor = setores.find(s => s.nome === setorNome);
+//             if (!setor) {
+//                 setor = { nome: setorNome, maquinas: [] };
+//                 setores.push(setor);
+//                 setoresVisiveis.push(false);
+//             }
 
-            const maquina = {
-                nome: maquinaNome,
-                tipo: maquinaTipo, // Tipo da máquina
-                emManutencao: emManutencao,
-                tempoManutencao: tempoManutencao,
-                chamado: observacoes ? [{ observacao: observacoes, prioridade: 'Média' }] : []
-            };
-            setor.maquinas.push(maquina);
-        });
+//             const maquina = {
+//                 nome: maquinaNome,
+//                 tipo: maquinaTipo, // Tipo da máquina
+//                 emManutencao: emManutencao,
+//                 tempoManutencao: tempoManutencao,
+//                 chamado: observacoes ? [{ observacao: observacoes, prioridade: 'Média' }] : []
+//             };
+//             setor.maquinas.push(maquina);
+//         });
 
-        saveSetoresAndMachines();
-        renderSetores();
-    };
+//         saveSetoresAndMachines();
+//         renderSetores();
+//     };
 
-    reader.readAsText(file);
-}
+//     reader.readAsText(file);
+// }
 
-// Criar um campo para importar o CSV
-const importButton = document.createElement('input');
-importButton.type = 'file';
-importButton.accept = '.csv';
-importButton.addEventListener('change', importFromCSV);
-document.body.appendChild(importButton);
+// // Criar um campo para importar o CSV
+// const importButton = document.createElement('input');
+// importButton.type = 'file';
+// importButton.accept = '.csv';
+// importButton.addEventListener('change', importFromCSV);
+// document.body.appendChild(importButton);
 
 // Carregar os dados após o carregamento da página
 document.addEventListener('DOMContentLoaded', loadSetoresAndMachines);
@@ -376,26 +381,12 @@ function createSetorElement(setor, index) {
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById("theme-toggle");
-    const body = document.body;
 
-    // Verifica se o usuário já tem uma preferência salva no localStorage
-    if (localStorage.getItem("theme") === "light") {
-        body.classList.add("light-mode");
-    }
 
-    toggleButton.addEventListener("click", function () {
-        body.classList.toggle("light-mode");
 
-        // Salva a preferência do usuário
-        if (body.classList.contains("light-mode")) {
-            localStorage.setItem("theme", "light");
-        } else {
-            localStorage.setItem("theme", "dark");
-        }
-    });
-});
+//
+
+
 function toggleMenu() {
     document.querySelector('.nav-links').classList.toggle('active');
 }
@@ -403,6 +394,11 @@ function toggleUserMenu() {
     let menu = document.getElementById("userDropdown");
     menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
+
+
+
+
+
 
 // Fechar menu ao clicar fora
 document.addEventListener("click", function(event) {
@@ -423,3 +419,164 @@ document.addEventListener("DOMContentLoaded", function() {
     let user = sessionStorage.getItem("loggedUser") || "Usuário";
     document.getElementById("userName").textContent = user;
 });
+
+// Alternar Menu de Usuário
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+// Fechar menu ao clicar fora
+document.addEventListener("click", function (event) {
+    const userMenu = document.querySelector(".user-menu");
+    const dropdown = document.getElementById("userDropdown");
+    if (!userMenu.contains(event.target)) {
+        dropdown.style.display = "none";
+    }
+});
+
+// Abrir Modal de Configurações
+function openConfigModal() {
+    document.getElementById("configModal").style.display = "block";
+}
+
+// Fechar Modal de Configurações
+function closeConfigModal() {
+    document.getElementById("configModal").style.display = "none";
+}
+
+// Alterar Foto de Perfil
+function changeProfilePicture(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("profilePic").src = e.target.result;
+            document.getElementById("userAvatar").src = e.target.result; // Atualiza no menu também
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+
+
+let darkMode = localStorage.getItem("darkMode") === "enabled";
+
+    // Função para alternar entre Dark Mode e Light Mode
+    function toggleDarkMode() {
+        darkMode = !darkMode;
+        document.body.classList.toggle("dark-mode", darkMode);
+        localStorage.setItem("darkMode", darkMode ? "enabled" : "disabled");
+    }
+
+    // Aplica o Dark Mode ao carregar a página se estiver ativado
+    document.addEventListener("DOMContentLoaded", () => {
+        if (darkMode) {
+            document.body.classList.add("dark-mode");
+            document.getElementById("darkModeToggle").checked = true;
+        }
+
+        // Adiciona evento ao botão de alternância dentro do modal
+        document.getElementById("darkModeToggle").addEventListener("change", toggleDarkMode);
+    });
+
+    // Função para fechar o modal
+    function closeConfigModal() {
+        document.getElementById("configModal").style.display = "none";
+    }
+
+
+    // Função para alternar a visibilidade do menu de configurações
+function toggleUserMenu() {
+    const userDropdown = document.getElementById('userDropdown');
+    userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+}
+
+// Função para abrir o modal de configurações
+function openConfigModal() {
+    const modal = document.getElementById('configModal');
+    modal.style.display = 'block';
+    toggleUserMenu(); // Fecha o menu dropdown após abrir o modal
+}
+
+// Função para fechar o modal de configurações
+function closeConfigModal() {
+    const modal = document.getElementById('configModal');
+    modal.style.display = 'none';
+}
+
+// Função para abrir o seletor de arquivos para importação
+function importFromCSVButton() {
+    document.getElementById('csvInput').click();
+}
+
+// Função para exportar setores e máquinas para CSV
+function exportToCSV() {
+    let csvContent = "Setor;Nome da Máquina;Tipo;Em Manutenção;Tempo de Manutenção;Observações;Prioridade\n";
+
+    setores.forEach(setor => {
+        setor.maquinas.forEach(maquina => {
+            const observacoes = maquina.chamado.map(chamado => `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`).join(" | ") || "Nenhuma Observação";
+            const row = `"${setor.nome}";"${maquina.nome}";"${maquina.tipo}";${maquina.emManutencao};${maquina.tempoManutencao};"${observacoes}"\n`;
+            csvContent += row;
+        });
+    });
+
+    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'setores_maquinas.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Função para importar o CSV e adicionar setores e máquinas
+function importFromCSV(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        const content = e.target.result;
+        const rows = content.split("\n");
+
+        setores = [];
+        setoresVisiveis = [];
+
+        rows.forEach((row, index) => {
+            if (index === 0 || !row.trim()) return;
+
+            const cols = row.split(";");
+
+            const setorNome = cols[0].replace(/"/g, '').trim();
+            const maquinaNome = cols[1].replace(/"/g, '').trim();
+            const maquinaTipo = cols[2].replace(/"/g, '').trim(); // Tipo da máquina
+            const emManutencao = cols[3].trim() === 'true';
+            const tempoManutencao = parseInt(cols[4].trim()) || 0;
+            const observacoes = cols[5].replace(/"/g, '').trim();
+            
+            let setor = setores.find(s => s.nome === setorNome);
+            if (!setor) {
+                setor = { nome: setorNome, maquinas: [] };
+                setores.push(setor);
+                setoresVisiveis.push(false);
+            }
+
+            const maquina = {
+                nome: maquinaNome,
+                tipo: maquinaTipo,
+                etiqueta: cols[1].trim(),
+                chamado: observacoes ? [{ observacao: observacoes, prioridade: 'Normal' }] : [],
+                emManutencao,
+                tempoManutencao,
+            };
+
+            setor.maquinas.push(maquina);
+        });
+
+        saveSetoresAndMachines();
+        renderSetores();
+    };
+
+    reader.readAsText(file);
+}
