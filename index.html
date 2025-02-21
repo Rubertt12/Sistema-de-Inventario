@@ -28,6 +28,16 @@
     
             <!-- Botão que alterna o tema -->
             <button id="theme-toggle" class="theme-toggle">Alternar Tema</button>
+
+            <!-- Aba do usuário -->
+    <div class="user-menu">
+        <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" onclick="toggleUserMenu()">
+        <div class="user-dropdown" id="userDropdown">
+            <p id="userName">Usuário</p>
+            <a href="#">Configurações</a>
+            <button onclick="logout()">Sair</button>
+        </div>
+    </div>
         </nav>
     </header>
     

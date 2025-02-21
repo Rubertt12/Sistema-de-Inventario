@@ -399,3 +399,27 @@ document.addEventListener("DOMContentLoaded", function () {
 function toggleMenu() {
     document.querySelector('.nav-links').classList.toggle('active');
 }
+function toggleUserMenu() {
+    let menu = document.getElementById("userDropdown");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+// Fechar menu ao clicar fora
+document.addEventListener("click", function(event) {
+    let menu = document.getElementById("userDropdown");
+    let avatar = document.querySelector(".user-avatar");
+    if (menu.style.display === "block" && !menu.contains(event.target) && !avatar.contains(event.target)) {
+        menu.style.display = "none";
+    }
+});
+
+function logout() {
+    sessionStorage.removeItem("loggedUser");
+    window.location.href = "login.html"; // Redireciona para a tela de login
+}
+
+// Exibir nome do usuário no menu
+document.addEventListener("DOMContentLoaded", function() {
+    let user = sessionStorage.getItem("loggedUser") || "Usuário";
+    document.getElementById("userName").textContent = user;
+});

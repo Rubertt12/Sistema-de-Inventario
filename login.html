@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #0b8686, #95fa6d);;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 360px;
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: scale(1.05);
+        }
+        h2 {
+            color: #0b8686;
+            font-weight: 600;
+        }
+        input {
+            width: 80%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 2px solid #0b8686;
+            border-radius: 25px;
+            background: #fff5f7;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+            outline: none;
+        }
+        input:focus {
+            border-color: #66db6c;
+            background: #97df7b;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0b8686, #95fa6d);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #0b8686, #95fa6d);
+        }
+        p {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        a {
+            color: #95fa6d;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #ff306b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="loginContainer">
+        <h2>Login</h2>
+        <input type="text" id="loginUser" placeholder="Usuário">
+        <input type="password" id="loginPass" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+        <p>Não tem uma conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></p>
+    </div>
+
+    <div class="container" id="registerContainer" style="display: none;">
+        <h2>Cadastro</h2>
+        <input type="text" id="registerUser" placeholder="Usuário">
+        <input type="password" id="registerPass" placeholder="Senha">
+        <button onclick="register()">Cadastrar</button>
+        <p>Já tem uma conta? <a href="#" onclick="toggleForms()">Faça login</a></p>
+    </div>
+
+    <script>
+        function toggleForms() {
+            document.getElementById('loginContainer').style.display = 
+                document.getElementById('loginContainer').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('registerContainer').style.display = 
+                document.getElementById('registerContainer').style.display === 'none' ? 'block' : 'none';
+        }
+
+        function register() {
+            let user = document.getElementById('registerUser').value;
+            let pass = document.getElementById('registerPass').value;
+            if (user && pass) {
+                localStorage.setItem(user, pass);
+                alert('Cadastro realizado!');
+                toggleForms();
+            } else {
+                alert('Preencha todos os campos!');
+            }
+        }
+
+        function login() {
+            let user = document.getElementById('loginUser').value;
+            let pass = document.getElementById('loginPass').value;
+            if (localStorage.getItem(user) === pass) {
+                alert('Login bem-sucedido!');
+                sessionStorage.setItem('loggedUser', user);
+                window.location.href = 'index.html';
+            } else {
+                alert('Usuário ou senha incorretos!');
+            }
+        }
+    </script>
+</body>
+</html>
