@@ -1,140 +1,131 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventário de Setores</title>
-    <link rel="stylesheet" href="/style/styles.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Login e Cadastro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #0b8686, #95fa6d);;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 360px;
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: scale(1.05);
+        }
+        h2 {
+            color: #0b8686;
+            font-weight: 600;
+        }
+        input {
+            width: 80%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 2px solid #0b8686;
+            border-radius: 25px;
+            background: #fff5f7;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+            outline: none;
+        }
+        input:focus {
+            border-color: #0b8686;
+            background: #97df7b;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0b8686, #95fa6d);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #0b8686, #95fa6d);
+        }
+        p {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        a {
+            color: #ff527b;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #ff306b;
+        }
+    </style>
 </head>
 <body>
-
-    <header class="navbar">
-        <h1>Inventário de Setores</h1>
-    
-        <!-- Botão do Menu Hamburguer -->
-        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-    
-        <!-- Navegação -->
-        <nav class="nav-links">
-            <!-- Botão para alternar entre lista e grid -->
-            <button onclick="toggleLayout()">Alternar Layout</button>
-    
-            <!-- Filtro de pesquisa -->
-            <input type="text" id="searchInput" onkeyup="filterMachines()" placeholder="Pesquisar máquinas..." aria-label="Pesquisar máquinas">
-    
-            <!-- Botão para adicionar setor -->
-            <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor</button>
-    
-            <!-- Botão que alterna o tema
-            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button> -->
-
-            <!-- Menu de Usuário -->
-<div class="user-menu">
-    <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"> <p class="user-name"><span id="userName">Usuário</span></p>
-    <div class="user-dropdown" id="userDropdown">
-       
-        <button onclick="openConfigModal()">Configurações</button>
-
-        
-        <button onclick="logout()">Sair</button>
-    </div>
-    
-</div>
-        </nav>
-    </header>
-    
-        
-
-
-    <!-- Container dos setores -->
-    <main id="setoresContainer" class="list-view">
-        <!-- Os setores e máquinas serão inseridos dinamicamente aqui -->
-    </main>
-
-    <!-- MODAL: Informações da Máquina -->
-    <div id="infoModal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
-            <h2>Informações da Máquina</h2>
-            <p id="modalText"></p>
-
-            <section id="maintenanceSection">
-                <h3>Chamado (Observação)</h3>
-                <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
-                <label for="priority">Prioridade:</label>
-                <select id="priority">
-                    <option value="Baixa">Baixa</option>
-                    <option value="Média">Média</option>
-                    <option value="Alta">Alta</option>
-                </select>
-                <button onclick="saveObservation()">Salvar Chamado</button>
-            </section>
-
-            <section id="observationsList">
-                <h3>Chamados Anteriores</h3>
-                <ul id="observationsUl">
-                    <!-- Observações serão exibidas aqui -->
-                </ul>
-            </section>
-
-            <div id="maintenanceMessage" style="display:none;">
-                <p>A máquina foi marcada para manutenção.</p>
-            </div>
-
-            <!-- Botões de ação -->
-            <div class="modal-actions">
-                <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
-                <button id="releaseBtn" onclick="releaseMachine()" style="display:none;">Liberar</button>
-                <!-- <button id="deleteMachineBtn" onclick="deleteMachine()">Excluir Máquina</button> -->
-            </div>
-        </div>
+    <div class="container" id="loginContainer">
+        <h2>Login</h2>
+        <input type="text" id="loginUser" placeholder="Usuário">
+        <input type="password" id="loginPass" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+        <p>Não tem uma conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></p>
     </div>
 
-    <div id="configModal" class="config-modal">
-        <div class="config-modal-content">
-            <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
-            <h2>Configurações</h2>
-                
-            <!-- Trocar foto do perfil -->
-            <div class="profile-picture-section">
-                <img src="/img/avatar.webp" alt="Foto de Perfil" id="profilePic">
-                <input type="file" id="profilePicInput" accept="image/*" onchange="changeProfilePicture(event)">
-                <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
-            </div>
-            <button onclick="importFromCSVButton()">Importar CSV</button>
-            <button onclick="exportToCSV()">Exportar para CSV</button>
-            <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)">
-            <!-- Alternar Dark Mode -->
-            </div>
-    
-            <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
-        </div>
+    <div class="container" id="registerContainer" style="display: none;">
+        <h2>Cadastro</h2>
+        <input type="text" id="registerUser" placeholder="Usuário">
+        <input type="password" id="registerPass" placeholder="Senha">
+        <button onclick="register()">Cadastrar</button>
+        <p>Já tem uma conta? <a href="#" onclick="toggleForms()">Faça login</a></p>
     </div>
 
+    <script>
+        function toggleForms() {
+            document.getElementById('loginContainer').style.display = 
+                document.getElementById('loginContainer').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('registerContainer').style.display = 
+                document.getElementById('registerContainer').style.display === 'none' ? 'block' : 'none';
+        }
 
-    <!-- MODAL: Adicionar Máquina -->
-    <div id="addMachineModal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeAddMachineModal()" aria-label="Fechar">&times;</button>
-            <h2>Adicionar Máquina</h2>
+        function register() {
+            let user = document.getElementById('registerUser').value;
+            let pass = document.getElementById('registerPass').value;
+            if (user && pass) {
+                localStorage.setItem(user, pass);
+                alert('Cadastro realizado!');
+                toggleForms();
+            } else {
+                alert('Preencha todos os campos!');
+            }
+        }
 
-            <label for="machineName">Nome da Máquina:</label>
-            <input type="text" id="machineName" placeholder="Digite o nome da máquina">
-
-            <label for="machineType">Tipo:</label>
-            <select id="machineType">
-                <option value="Notebook">Notebook</option>
-                <option value="Desktop">Desktop</option>
-                <option value="Workstation">Workstation</option>
-                <option value="Outro">Outro</option>
-            </select>
-
-            <button onclick="addMaquina()">Adicionar</button>
-        </div>
-    </div>
-    
-
-    <script src="/js/script.js"></script>
+        function login() {
+            let user = document.getElementById('loginUser').value;
+            let pass = document.getElementById('loginPass').value;
+            if (localStorage.getItem(user) === pass) {
+                alert('Login bem-sucedido!');
+                sessionStorage.setItem('loggedUser', user);
+                window.location.href = 'index.html';
+            } else {
+                alert('Usuário ou senha incorretos!');
+            }
+        }
+    </script>
 </body>
 </html>

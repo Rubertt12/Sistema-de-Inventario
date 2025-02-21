@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventário de Setores</title>
+    <link rel="stylesheet" href="/style/styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+    <header class="navbar">
+        <h1>Inventário de Setores</h1>
+    
+        <!-- Botão do Menu Hamburguer -->
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    
+        <!-- Navegação -->
+        <nav class="nav-links">
+            <!-- Botão para alternar entre lista e grid -->
+            <button onclick="toggleLayout()">Alternar Layout</button>
+    
+            <!-- Filtro de pesquisa -->
+            <input type="text" id="searchInput" onkeyup="filterMachines()" placeholder="Pesquisar máquinas..." aria-label="Pesquisar máquinas">
+    
+            <!-- Botão para adicionar setor -->
+            <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor</button>
+    
+            <!-- Botão que alterna o tema
+            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button> -->
+
+            <!-- Menu de Usuário -->
+<div class="user-menu">
+    <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"> <p class="user-name"><span id="userName">Usuário</span></p>
+    <div class="user-dropdown" id="userDropdown">
+       
+        <button onclick="openConfigModal()">Configurações</button>
+
+        
+        <button onclick="logout()">Sair</button>
+    </div>
+    
+</div>
+        </nav>
+    </header>
+    
+        
+
+
+    <!-- Container dos setores -->
+    <main id="setoresContainer" class="list-view">
+        <!-- Os setores e máquinas serão inseridos dinamicamente aqui -->
+    </main>
+
+    <!-- MODAL: Informações da Máquina -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
+            <h2>Informações da Máquina</h2>
+            <p id="modalText"></p>
+
+            <section id="maintenanceSection">
+                <h3>Chamado (Observação)</h3>
+                <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
+                <label for="priority">Prioridade:</label>
+                <select id="priority">
+                    <option value="Baixa">Baixa</option>
+                    <option value="Média">Média</option>
+                    <option value="Alta">Alta</option>
+                </select>
+                <button onclick="saveObservation()">Salvar Chamado</button>
+            </section>
+
+            <section id="observationsList">
+                <h3>Chamados Anteriores</h3>
+                <ul id="observationsUl">
+                    <!-- Observações serão exibidas aqui -->
+                </ul>
+            </section>
+
+            <div id="maintenanceMessage" style="display:none;">
+                <p>A máquina foi marcada para manutenção.</p>
+            </div>
+
+            <!-- Botões de ação -->
+            <div class="modal-actions">
+                <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
+                <button id="releaseBtn" onclick="releaseMachine()" style="display:none;">Liberar</button>
+                <!-- <button id="deleteMachineBtn" onclick="deleteMachine()">Excluir Máquina</button> -->
+            </div>
+        </div>
+    </div>
+
+    <div id="configModal" class="config-modal">
+        <div class="config-modal-content">
+            <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
+            <h2>Configurações</h2>
+                
+            <!-- Trocar foto do perfil -->
+            <div class="profile-picture-section">
+                <img src="/img/avatar.webp" alt="Foto de Perfil" id="profilePic">
+                <input type="file" id="profilePicInput" accept="image/*" onchange="changeProfilePicture(event)">
+                <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
+            </div>
+            <button onclick="importFromCSVButton()">Importar CSV</button>
+            <button onclick="exportToCSV()">Exportar para CSV</button>
+            <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)">
+            <!-- Alternar Dark Mode -->
+            </div>
+    
+            <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
+        </div>
+    </div>
+
+
+    <!-- MODAL: Adicionar Máquina -->
+    <div id="addMachineModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeAddMachineModal()" aria-label="Fechar">&times;</button>
+            <h2>Adicionar Máquina</h2>
+
+            <label for="machineName">Nome da Máquina:</label>
+            <input type="text" id="machineName" placeholder="Digite o nome da máquina">
+
+            <label for="machineType">Tipo:</label>
+            <select id="machineType">
+                <option value="Notebook">Notebook</option>
+                <option value="Desktop">Desktop</option>
+                <option value="Workstation">Workstation</option>
+                <option value="Outro">Outro</option>
+            </select>
+
+            <button onclick="addMaquina()">Adicionar</button>
+        </div>
+    </div>
+    
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

@@ -262,88 +262,6 @@ function loadSetoresAndMachines() {
 // Carregar os dados após o carregamento da página
 document.addEventListener('DOMContentLoaded', loadSetoresAndMachines);
 
-// Função para exportar os setores e máquinas para CSV
-// function exportToCSV() {
-//     let csvContent = "Setor;Nome da Máquina;Tipo;Em Manutenção;Tempo de Manutenção;Observações;Prioridade\n";
-
-//     setores.forEach(setor => {
-//         setor.maquinas.forEach(maquina => {
-//             const observacoes = maquina.chamado.map(chamado => `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`).join(" | ") || "Nenhuma Observação";
-//             const row = `"${setor.nome}";"${maquina.nome}";"${maquina.tipo}";${maquina.emManutencao};${maquina.tempoManutencao};"${observacoes}"\n`;
-//             csvContent += row;
-//         });
-//     });
-
-//     const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
-//     const link = document.createElement('a');
-//     link.setAttribute('href', encodedUri);
-//     link.setAttribute('download', 'setores_maquinas.csv');
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-// }
-
-// // Botão para exportar CSV
-// const exportButton = document.createElement('button');
-// exportButton.textContent = "Exportar para CSV";
-// exportButton.onclick = exportToCSV;
-// document.body.appendChild(exportButton);
-
-// // Função para importar o CSV e adicionar setores e máquinas
-// function importFromCSV(event) {
-//     const file = event.target.files[0];
-//     const reader = new FileReader();
-
-//     reader.onload = function(e) {
-//         const content = e.target.result;
-//         const rows = content.split("\n");
-
-//         setores = [];
-//         setoresVisiveis = [];
-
-//         rows.forEach((row, index) => {
-//             if (index === 0 || !row.trim()) return;
-
-//             const cols = row.split(";");
-
-//             const setorNome = cols[0].replace(/"/g, '').trim();
-//             const maquinaNome = cols[1].replace(/"/g, '').trim();
-//             const maquinaTipo = cols[2].replace(/"/g, '').trim(); // Tipo da máquina
-//             const emManutencao = cols[3].trim() === 'true';
-//             const tempoManutencao = parseInt(cols[4].trim()) || 0;
-//             const observacoes = cols[5].replace(/"/g, '').trim();
-            
-
-//             let setor = setores.find(s => s.nome === setorNome);
-//             if (!setor) {
-//                 setor = { nome: setorNome, maquinas: [] };
-//                 setores.push(setor);
-//                 setoresVisiveis.push(false);
-//             }
-
-//             const maquina = {
-//                 nome: maquinaNome,
-//                 tipo: maquinaTipo, // Tipo da máquina
-//                 emManutencao: emManutencao,
-//                 tempoManutencao: tempoManutencao,
-//                 chamado: observacoes ? [{ observacao: observacoes, prioridade: 'Média' }] : []
-//             };
-//             setor.maquinas.push(maquina);
-//         });
-
-//         saveSetoresAndMachines();
-//         renderSetores();
-//     };
-
-//     reader.readAsText(file);
-// }
-
-// // Criar um campo para importar o CSV
-// const importButton = document.createElement('input');
-// importButton.type = 'file';
-// importButton.accept = '.csv';
-// importButton.addEventListener('change', importFromCSV);
-// document.body.appendChild(importButton);
 
 // Carregar os dados após o carregamento da página
 document.addEventListener('DOMContentLoaded', loadSetoresAndMachines);
@@ -411,7 +329,7 @@ document.addEventListener("click", function(event) {
 
 function logout() {
     sessionStorage.removeItem("loggedUser");
-    window.location.href = "login.html"; // Redireciona para a tela de login
+    window.location.href = "index.html"; // Redireciona para a tela de login
 }
 
 // Exibir nome do usuário no menu
