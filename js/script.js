@@ -34,7 +34,7 @@ function login() {
     // Simulação de usuário e senha (substituir por autenticação real)
     if (usuario === "admin" && senha === "1234") {
         localStorage.setItem("userLoggedIn", "true"); // Marca como logado
-        window.location.href = "pagina_restrita.html"; // Redireciona para a página
+        window.location.href = "dashboard.html"; // Redireciona para a página
     } else {
         alert("Usuário ou senha incorretos!");
     }
