@@ -26,6 +26,9 @@ function addSetor() {
     }
 }
 
+sessionStorage.setItem("userLoggedIn", "true"); // No login
+sessionStorage.getItem("userLoggedIn"); // Para verificar
+sessionStorage.removeItem("userLoggedIn"); // No logout
 
 
 
