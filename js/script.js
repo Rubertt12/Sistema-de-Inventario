@@ -31,9 +31,6 @@ function addSetor() {
 
 
 
-
-
-
 // Função para renderizar setores
 function renderSetores() {
     const container = document.getElementById('setoresContainer');
