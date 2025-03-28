@@ -19,25 +19,25 @@
     
         <!-- Navegação -->
         <nav class="nav-links">
-            <!-- Botão para alternar entre lista e grid -->
-            <button onclick="toggleLayout()">Alternar Layout</button>
-    
+            
             <!-- Filtro de pesquisa -->
             <input type="text" id="searchInput" onkeyup="filterMachines()" placeholder="Pesquisar máquinas..." aria-label="Pesquisar máquinas">
-    
-            <!-- Botão para adicionar setor -->
-            <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor</button>
-    
+            
+            
             <!-- Botão que alterna o tema
             <button id="theme-toggle" class="theme-toggle">Alternar Tema</button> -->
-
+            
             <!-- Menu de Usuário -->
-<div class="user-menu">
-    <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"> <p class="user-name"><span id="userName">Usuário</span></p>
-    <div class="user-dropdown" id="userDropdown">
-       
-        <button onclick="openConfigModal()">Configurações</button>
-
+            <div class="user-menu">
+                <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"> <p class="user-name"><span id="userName">Usuário</span></p>
+                <div class="user-dropdown" id="userDropdown">
+                    
+                    <button onclick="openConfigModal()">Configurações</button>
+                    
+                    <!-- Botão para alternar entre lista e grid -->
+                    <button onclick="toggleLayout()">Alternar Layout</button>
+                    <!-- Botão para adicionar setor -->
+                    <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor</button>
         
         <button onclick="logout()">Sair</button>
     </div>
