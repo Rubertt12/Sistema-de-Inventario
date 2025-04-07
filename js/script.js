@@ -445,10 +445,32 @@ document.addEventListener("click", function(event) {
     }
 });
 
-function logout() {
-    sessionStorage.removeItem("loggedUser");
-    window.location.href = "index.html"; // Redireciona para a tela de login
-}
+// function logout() {
+//     sessionStorage.removeItem("loggedUser");
+//     window.location.href = "index.html"; // Redireciona para a tela de login
+// }
+
+function logout(button) {
+    // Se já tiver animado, evita repetir
+    if (button.classList.contains('animate')) return;
+  
+    // Envolve o emoji da porta num <span>
+    if (!button.querySelector('span')) {
+      const parts = button.innerHTML.split('🚪');
+      button.innerHTML = `${parts[0]}<span>🚪</span>`;
+    }
+  
+    const door = button.querySelector('span');
+    button.classList.add('animate');
+  
+    // Espera a animação e então desloga
+    setTimeout(() => {
+      console.log("Tchau, piazito! 👋");
+      sessionStorage.removeItem("loggedUser");
+      window.location.href = "index.html"; // Redireciona para a tela de login
+    }, 700);
+  }
+  
 
 // Exibir nome do usuário no menu
 document.addEventListener("DOMContentLoaded", function() {
@@ -593,3 +615,5 @@ function importFromCSV(event) {
 
     reader.readAsText(file);
 }
+
+

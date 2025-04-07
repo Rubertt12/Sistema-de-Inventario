@@ -33,11 +33,18 @@
                     <button onclick="openConfigModal()">Configurações ⚙️</button>
                     
                     <!-- Botão para alternar entre lista e grid -->
-                    <button onclick="toggleLayout()">Alternar Layout</button>
+                    <div class="box-switch">
+                        <h3>Alterar Layout</h3>
+                        <label class="switch">
+                          <input type="checkbox" id="layoutToggle" onchange="toggleLayout()">
+                          <span class="slider"></span>
+                        </label>
+                      </div>
                     <!-- Botão para adicionar setor -->
                     <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor  ➕ </button>
         
-                    <button onclick="logout()">Sair🚪</button>
+                    <button class="logout-btn" onclick="logout(this)">Sair🚪</button>
+
                 </div>
     
             </div>

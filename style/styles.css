@@ -433,7 +433,6 @@ button:disabled {
     max-width: 600px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
-
   
 
 @keyframes modal-appear {
@@ -745,3 +744,93 @@ select {
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 30px;
 }
+
+.box-switch {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 8px;
+    width: fit-content;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    font-family: sans-serif;
+  }
+  
+  .box-switch h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: #fffcfc;
+  }
+  
+  /* Switch menorzinho */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 22px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px; width: 16px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #4caf50;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(18px);
+  }
+  
+
+  .logout-btn {
+    position: relative;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-btn:hover {
+    background-color: #e04343;
+  }
+  
+  /* Animação da porta */
+  .logout-btn span {
+    display: inline-block;
+    transition: transform 0.6s ease;
+  }
+  
+  .logout-btn.animate span {
+    transform: rotateY(120deg);
+  }
+  
