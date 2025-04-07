@@ -24,9 +24,7 @@
             <input type="text" id="searchInput" onkeyup="filterMachines()" placeholder="Pesquisar máquinas..." aria-label="Pesquisar máquinas">
             
             
-            <!-- Botão que alterna o tema
-            <button id="theme-toggle" class="theme-toggle">Alternar Tema</button> -->
-            
+           
             <!-- Menu de Usuário -->
             <div class="user-menu">
                 <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"> <p class="user-name"><span id="userName">Usuário</span></p>
@@ -39,12 +37,23 @@
                     <!-- Botão para adicionar setor -->
                     <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor</button>
         
-        <button onclick="logout()">Sair</button>
-    </div>
+                    <button onclick="logout()">Sair</button>
+                </div>
     
-</div>
+            </div>
         </nav>
     </header>
+
+
+    <!-- Modal de Adicionar Setor -->
+<div id="modalSetor" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModalSetor()">&times;</span>
+      <h2>Adicionar Setor</h2>
+      <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor">
+      <button onclick="confirmarAddSetor()">Adicionar</button>
+    </div>
+  </div>
     
         
 
@@ -88,7 +97,7 @@
             <div class="modal-actions">
                 <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
                 <button id="releaseBtn" onclick="releaseMachine()" style="display:none;">Liberar</button>
-                <!-- <button id="deleteMachineBtn" onclick="deleteMachine()">Excluir Máquina</button> -->
+                <!-- <button id="deleteMachineBtn" onclick="deleteMachine()">Excluir Máquina</button>  -->
             </div>
         </div>
     </div>
@@ -106,35 +115,52 @@
             </div>
             <button onclick="importFromCSVButton()">Importar CSV</button>
             <button onclick="exportToCSV()">Exportar para CSV</button>
-            <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)">
-            <!-- Alternar Dark Mode -->
-            </div>
+            <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)">      
+            
     
             <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
         </div>
     </div>
 
 
-    <!-- MODAL: Adicionar Máquina -->
-    <div id="addMachineModal" class="modal">
+    <div id="modalMaquina" class="modal">
         <div class="modal-content">
-            <button class="close-btn" onclick="closeAddMachineModal()" aria-label="Fechar">&times;</button>
-            <h2>Adicionar Máquina</h2>
-
-            <label for="machineName">Nome da Máquina:</label>
-            <input type="text" id="machineName" placeholder="Digite o nome da máquina">
-
-            <label for="machineType">Tipo:</label>
-            <select id="machineType">
-                <option value="Notebook">Notebook</option>
+          <h2>Adicionar Máquina ou Monitor</h2>
+      
+          <label for="tipoEquipamento">Tipo:</label>
+          <select id="tipoEquipamento" onchange="trocarCampos()">
+            <option value="">Selecione</option>
+            <option value="máquina">Máquina</option>
+            <option value="monitor">Monitor</option>
+          </select>
+      
+          <div id="camposMaquina" style="display: none;">
+            <select id="tipoMaquina" onchange="trocarCampos()">
+                <option value="">Selecione</option>
                 <option value="Desktop">Desktop</option>
-                <option value="Workstation">Workstation</option>
-                <option value="Outro">Outro</option>
-            </select>
-
-            <button onclick="addMaquina()">Adicionar</button>
+                <option value="Notebook">Notebook</option>
+                <option value="Notebook">Workstation</option>
+              </select>
+           
+            
+            <label for="nomeMaquina">Número de Série:</label>
+            <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC">
+            <br>
+            <label for="etiquetaMaquina">Etiqueta:</label>
+            <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001">
+          </div>
+      
+          <div id="camposMonitor" style="display: none;">
+            <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
+            <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123">
+          </div>
+      
+          <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button onclick="fecharModalMaquina()">Cancelar</button>
+            <button onclick="confirmarAddMaquina()">Adicionar</button>
+          </div>
         </div>
-    </div>
+      </div>
     
     <script src="/js/script.js"></script>
 </body>

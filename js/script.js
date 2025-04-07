@@ -11,21 +11,51 @@ function toggleLayout() {
     container.style.transition = 'all 0.5s ease';
 }
 
-// Função para adicionar um setor
-function addSetor() {
-    const setorName = prompt("Digite o nome do setor:");
-    if (setorName) {
-        const setor = {
-            nome: setorName,
-            maquinas: []
-        };
-        setores.push(setor);
-        setoresVisiveis.push(false); // Inicialmente os setores estarão fechados
-        saveSetoresAndMachines();
-        renderSetores();
-    }
-}
+// // Função para adicionar um setor
+// function addSetor() {
+//     const setorName = prompt("Digite o nome do setor:");
+//     if (setorName) {
+//         const setor = {
+//             nome: setorName,
+//             maquinas: []
+//         };
+//         setores.push(setor);
+//         setoresVisiveis.push(false); // Inicialmente os setores estarão fechados
+//         saveSetoresAndMachines();
+//         renderSetores();
+//     }
+// }
 
+
+// Abre o modal
+function addSetor() {
+    document.getElementById("modalSetor").style.display = "flex";
+  }
+  
+  // Fecha o modal
+  function fecharModalSetor() {
+    document.getElementById("modalSetor").style.display = "none";
+  }
+  
+  // Confirma e adiciona o setor
+  function confirmarAddSetor() {
+    const setorName = document.getElementById("inputSetorNome").value.trim();
+    if (setorName) {
+      const setor = {
+        nome: setorName,
+        maquinas: []
+      };
+      setores.push(setor);
+      setoresVisiveis.push(false);
+      saveSetoresAndMachines();
+      renderSetores();
+      fecharModalSetor();
+      document.getElementById("inputSetorNome").value = "";
+    } else {
+      alert("Por favor, insira um nome para o setor.");
+    }
+  }
+  
 
 
 
@@ -71,50 +101,133 @@ function createMachineElement(maquina, maquinaIndex, setorIndex) {
         </div>
     `;
 }
-// Função para adicionar uma máquina ou monitor
-function addMaquina(setorIndex) {
-    const tipo = prompt("É uma máquina ou um monitor? (Digite 'máquina' ou 'monitor')").toLowerCase();
+// // Função para adicionar uma máquina ou monitor
+// function addMaquina(setorIndex) {
+//     const tipo = prompt("É uma máquina ou um monitor? (Digite 'máquina' ou 'monitor')").toLowerCase();
     
-    if (tipo === 'máquina') {
-        const maquinaTipo = prompt("Digite o tipo da máquina (Desktop, Notebook ou Workstation):");
-        const maquinaName = prompt("Digite o número de série da máquina:");
-        const etiqueta = prompt("Digite a etiqueta da máquina:");
+//     if (tipo === 'máquina') {
+//         const maquinaTipo = prompt("Digite o tipo da máquina (Desktop, Notebook ou Workstation):");
+//         const maquinaName = prompt("Digite o número de série da máquina:");
+//         const etiqueta = prompt("Digite a etiqueta da máquina:");
         
-        if (maquinaTipo && maquinaName && etiqueta) {
-            setores[setorIndex].maquinas.push({
-                nome: maquinaName,
-                tipo: maquinaTipo,
-                etiqueta: etiqueta,
-                chamado: [],
-                emManutencao: false,
-                tempoManutencao: 0
-            });
-            saveSetoresAndMachines();
-            renderSetores();
-        } else {
-            alert("Todos os campos são obrigatórios para adicionar uma máquina.");
-        }
-    } else if (tipo === 'monitor') {
-        const etiquetaMonitor = prompt("Digite a etiqueta do monitor:");
+//         if (maquinaTipo && maquinaName && etiqueta) {
+//             setores[setorIndex].maquinas.push({
+//                 nome: maquinaName,
+//                 tipo: maquinaTipo,
+//                 etiqueta: etiqueta,
+//                 chamado: [],
+//                 emManutencao: false,
+//                 tempoManutencao: 0
+//             });
+//             saveSetoresAndMachines();
+//             renderSetores();
+//         } else {
+//             alert("Todos os campos são obrigatórios para adicionar uma máquina.");
+//         }
+//     } else if (tipo === 'monitor') {
+//         const etiquetaMonitor = prompt("Digite a etiqueta do monitor:");
         
-        if (etiquetaMonitor) {
-            setores[setorIndex].maquinas.push({
-                nome: `Monitor - ${etiquetaMonitor}`,
-                tipo: 'Monitor',
-                etiqueta: etiquetaMonitor,
-                chamado: [],
-                emManutencao: false,
-                tempoManutencao: 0
-            });
-            saveSetoresAndMachines();
-            renderSetores();
-        } else {
-            alert("A etiqueta do monitor é obrigatória.");
-        }
-    } else {
-        alert("Opção inválida. Digite 'máquina' ou 'monitor'.");
-    }
+//         if (etiquetaMonitor) {
+//             setores[setorIndex].maquinas.push({
+//                 nome: `Monitor - ${etiquetaMonitor}`,
+//                 tipo: 'Monitor',
+//                 etiqueta: etiquetaMonitor,
+//                 chamado: [],
+//                 emManutencao: false,
+//                 tempoManutencao: 0
+//             });
+//             saveSetoresAndMachines();
+//             renderSetores();
+//         } else {
+//             alert("A etiqueta do monitor é obrigatória.");
+//         }
+//     } else {
+//         alert("Opção inválida. Digite 'máquina' ou 'monitor'.");
+//     }
+// }
+
+let setorSelecionado = null;
+
+function abrirModalMaquina(index) {
+  setorSelecionado = index;
+  document.getElementById("modalMaquina").style.display = "flex";
 }
+
+function fecharModalMaquina() {
+  document.getElementById("modalMaquina").style.display = "none";
+  setorSelecionado = null;
+
+  // Limpa os campos
+  document.getElementById("tipoEquipamento").value = "";
+  document.getElementById("tipoMaquina").value = "";
+  document.getElementById("nomeMaquina").value = "";
+  document.getElementById("etiquetaMaquina").value = "";
+  document.getElementById("etiquetaMonitor").value = "";
+
+  trocarCampos();
+}
+
+function trocarCampos() {
+  const tipo = document.getElementById("tipoEquipamento").value;
+  document.getElementById("camposMaquina").style.display = tipo === 'máquina' ? 'block' : 'none';
+  document.getElementById("camposMonitor").style.display = tipo === 'monitor' ? 'block' : 'none';
+}
+
+function confirmarAddMaquina() {
+  const tipo = document.getElementById("tipoEquipamento").value;
+
+  if (tipo === 'máquina') {
+    const tipoMaquina = document.getElementById("tipoMaquina").value.trim();
+    const nomeMaquina = document.getElementById("nomeMaquina").value.trim();
+    const etiquetaMaquina = document.getElementById("etiquetaMaquina").value.trim();
+
+    if (tipoMaquina && nomeMaquina && etiquetaMaquina) {
+      setores[setorSelecionado].maquinas.push({
+        nome: nomeMaquina,
+        tipo: tipoMaquina,
+        etiqueta: etiquetaMaquina,
+        chamado: [],
+        emManutencao: false,
+        tempoManutencao: 0
+      });
+    } else {
+      alert("Preencha todos os campos da máquina.");
+      return;
+    }
+
+  } else if (tipo === 'monitor') {
+    const etiquetaMonitor = document.getElementById("etiquetaMonitor").value.trim();
+
+    if (etiquetaMonitor) {
+      setores[setorSelecionado].maquinas.push({
+        nome: `Monitor - ${etiquetaMonitor}`,
+        tipo: 'Monitor',
+        etiqueta: etiquetaMonitor,
+        chamado: [],
+        emManutencao: false,
+        tempoManutencao: 0
+      });
+    } else {
+      alert("Preencha a etiqueta do monitor.");
+      return;
+    }
+
+  } else {
+    alert("Selecione um tipo de equipamento.");
+    return;
+  }
+
+  saveSetoresAndMachines();
+  renderSetores();
+  fecharModalMaquina();
+}
+
+
+
+
+
+
+
 // Função para remover setor
 function removeSetor(setorIndex) {
     if (confirm("Tem certeza que deseja excluir este setor?")) {
@@ -135,12 +248,16 @@ function removeMaquina(setorIndex, maquinaIndex) {
     }
 }
 
-// Função para mostrar informações da máquina
 function showInfo(setorIndex, maquinaIndex) {
     const modal = document.getElementById('infoModal');
     const maquina = setores[setorIndex].maquinas[maquinaIndex];
 
-    document.getElementById('modalText').textContent = `Máquina: ${maquina.nome} (${maquina.tipo})`;
+    document.getElementById('modalText').innerHTML = `
+        <strong>Máquina:</strong> ${maquina.nome}<br>
+        <strong>Tipo:</strong> ${maquina.tipo}<br>
+        <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}
+    `;
+
     document.getElementById('observationsUl').innerHTML = maquina.chamado.map(chamado => `
         <li>${chamado.observacao} - Prioridade: ${chamado.prioridade}</li>
     `).join('');
@@ -288,7 +405,8 @@ function createSetorElement(setor, index) {
             <button class="edit-btn" onclick="editSetorName(${index})">✎</button>
             <button class="delete-btn" onclick="removeSetor(${index})">X</button>
         </h2>
-        <button class="add-machine-btn" onclick="addMaquina(${index})">Adicionar Máquina</button>
+       <button class="add-machine-btn" onclick="abrirModalMaquina(${index})">Adicionar Máquina</button>
+
         <button class="toggle-btn" onclick="toggleMachines(${index})">Mostrar Máquinas</button>
         <div id="maquinas-${index}" class="machines-list" style="display: ${setoresVisiveis[index] ? 'block' : 'none'};">
             ${setor.maquinas.map((maquina, maquinaIndex) => createMachineElement(maquina, maquinaIndex, index)).join('')}
@@ -378,30 +496,6 @@ function changeProfilePicture(event) {
 
 
 
-let darkMode = localStorage.getItem("darkMode") === "enabled";
-
-    // Função para alternar entre Dark Mode e Light Mode
-    function toggleDarkMode() {
-        darkMode = !darkMode;
-        document.body.classList.toggle("dark-mode", darkMode);
-        localStorage.setItem("darkMode", darkMode ? "enabled" : "disabled");
-    }
-
-    // Aplica o Dark Mode ao carregar a página se estiver ativado
-    document.addEventListener("DOMContentLoaded", () => {
-        if (darkMode) {
-            document.body.classList.add("dark-mode");
-            document.getElementById("darkModeToggle").checked = true;
-        }
-
-        // Adiciona evento ao botão de alternância dentro do modal
-        document.getElementById("darkModeToggle").addEventListener("change", toggleDarkMode);
-    });
-
-    // Função para fechar o modal
-    function closeConfigModal() {
-        document.getElementById("configModal").style.display = "none";
-    }
 
 
     // Função para alternar a visibilidade do menu de configurações
@@ -428,14 +522,13 @@ function importFromCSVButton() {
     document.getElementById('csvInput').click();
 }
 
-// Função para exportar setores e máquinas para CSV
 function exportToCSV() {
-    let csvContent = "Setor;Nome da Máquina;Tipo;Em Manutenção;Tempo de Manutenção;Observações;Prioridade\n";
+    let csvContent = "Setor;Tipo;Nome da Máquina;Etiqueta;Em Manutenção;Tempo de Manutenção;Observações;Prioridade\n";
 
     setores.forEach(setor => {
         setor.maquinas.forEach(maquina => {
             const observacoes = maquina.chamado.map(chamado => `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`).join(" | ") || "Nenhuma Observação";
-            const row = `"${setor.nome}";"${maquina.nome}";"${maquina.tipo}";${maquina.emManutencao};${maquina.tempoManutencao};"${observacoes}"\n`;
+            const row = `"${setor.nome}";"${maquina.tipo}";"${maquina.nome}";"${maquina.etiqueta || 'Sem etiqueta'}";${maquina.emManutencao};${maquina.tempoManutencao};"${observacoes}"\n`;
             csvContent += row;
         });
     });
@@ -448,6 +541,8 @@ function exportToCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
+
 
 // Função para importar o CSV e adicionar setores e máquinas
 function importFromCSV(event) {

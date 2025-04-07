@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style/style.css">
-  
-    <title>Login e Cadastro</title>    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Cadastro</title>
+  <link rel="stylesheet" href="/style/style.css" />
 </head>
 <body>
-    <div class="container" id="loginContainer">
-        <h2>Login</h2>
-        <input type="text" id="loginUser" placeholder="Usuário">
-        <input type="password" id="loginPass" placeholder="Senha">
-        <button onclick="login()">Entrar</button>
-        <p>Não tem uma conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></p>
+  <div class="wrapper">
+    <div class="form-container" id="loginContainer">
+      <h2>Entrar</h2>
+      <input type="text" id="loginUser" placeholder="Usuário" />
+      <input type="password" id="loginPass" placeholder="Senha" />
+      <input type="text" id="login2FA" placeholder="Código 2FA (opcional)" />
+      <button onclick="login()">Entrar</button>
+      <p>Não tem conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></p>
     </div>
 
-    <div class="container" id="registerContainer" style="display: none;">
-        <h2>Cadastro</h2>
-        <input type="text" id="registerUser" placeholder="Usuário">
-        <input type="password" id="registerPass" placeholder="Senha">
-        <button onclick="register()">Cadastrar</button>
-        <p>Já tem uma conta? <a href="#" onclick="toggleForms()">Faça login</a></p>
+    <div class="form-container hidden" id="registerContainer">
+      <h2>Cadastro</h2>
+      <input type="email" id="registerEmail" placeholder="E-mail" required />
+      <input type="text" id="registerUser" placeholder="Nome de usuário" required />
+      <input type="password" id="registerPass" placeholder="Senha" required />
+      <input type="tel" id="registerPhone" placeholder="Celular (para 2FA)" required />
+      <button onclick="register()">Cadastrar</button>
+      <p>Já tem conta? <a href="#" onclick="toggleForms()">Entrar</a></p>
     </div>
-    
-    </div>
-    
-    <script src="/js/index.js"></script>
+  </div>
+
+  <script src="/js/index.js"></script>
 </body>
 </html>

@@ -115,7 +115,7 @@ body {
     display: block;
     margin: 10px auto;
     padding: 8px 15px;
-    background: #04a835;
+    background: #111312;
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -144,7 +144,7 @@ body {
 }
 
 .save-btn:hover {
-    background: #218838;
+    background: #0081b4;
 }
 
 
@@ -384,6 +384,57 @@ button:disabled {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     animation: modal-appear 0.3s ease-out;
 }
+/* Modal do Setor - usa os mesmos estilos do modal base */
+#modalSetor {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: all 0.3s ease;
+  }
+  #modalSetor .modal-content {
+    background: white;
+    padding: 35px;
+    max-width: 450px;
+    width: 90%;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: modal-appear 0.3s ease-out;
+    text-align: center;
+  }
+
+  #modalMaquina.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  
 
 @keyframes modal-appear {
     from { opacity: 0; transform: scale(0.8); }
