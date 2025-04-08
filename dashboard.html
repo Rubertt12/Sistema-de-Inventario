@@ -97,10 +97,11 @@
               
           </section>
                 
+          
 
             </section>
 
-            <div id="maintenanceMessage" style="display:none;">
+            <div id="maintenanceMessage">
                 <p>A máquina foi marcada para manutenção.</p>
             </div>
 
@@ -108,7 +109,7 @@
             <div class="modal-actions">
                 <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
                 <button id="releaseBtn" onclick="releaseMachine()" style="display:none;">Liberar</button>
-                <!-- <button id="deleteMachineBtn" onclick="deleteMachine()">Excluir Máquina</button>  -->
+            
             </div>
         </div>
     </div>
@@ -171,8 +172,19 @@
             <button onclick="confirmarAddMaquina()">Adicionar</button>
           </div>
         </div>
+
+        <div id="listaChamados">
+          <!-- Aqui vão aparecer os chamados -->
+        </div>
+
+
+
       </div>
-    
-    <script src="/js/script.js"></script>
+      <script src="/js/chamado.js"></script>
+      <script src="/js/setores.js"></script>
+      <script src="/js/main.js"></script>
+      <script src="/js/index.js"></script>
+      <script src="/js/csv.js"></script>
+      <script src="/js/script.js"></script>
 </body>
 </html>
