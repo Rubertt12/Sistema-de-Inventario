@@ -5,17 +5,7 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #000000, #e8ebe8d2);
-    color: #000000;
-    line-height: 1.7;
-    padding: 0 20px 20px;
-    min-height: 100vh;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
-    padding-top: 100px; /* necessário por causa da navbar fixa */
-}
+
 
 
 /* Menu de Usuário */
@@ -184,7 +174,8 @@ body {
 /* Corpo da página */
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #000000, #e8ebe8d2);
+    background-color: #0072ff;
+    /* background: linear-gradient(to right, #4facfe, #00f2fe); */
     color: #000000;
     line-height: 1.7;
     padding: 0 20px 20px;
