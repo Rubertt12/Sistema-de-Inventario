@@ -71,3 +71,7 @@ function toggleForms() {
     window.location.href = "dashboard.html";
   }
   
+  window.onload = () => {
+    document.activeElement.blur();
+  };
+  

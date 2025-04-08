@@ -558,7 +558,7 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
-    color: #2c3e50;
+    color: #000000;
     text-transform: uppercase;
 }
 
@@ -654,13 +654,17 @@ button:disabled {
     right: 10px;
     font-size: 26px;
     cursor: pointer;
-    color: #7f8c8d;
+    color: #cf2900;
     font-weight: bold;
     transition: color 0.3s ease;
+    background-color: rgb(80, 72, 72);
+   
 }
 
 .close-btn:hover {
-    color: #e74c3c;
+    color: #e62503;
+    background: rgb(255, 255, 255);
+    
 }
 
 /* Textarea */
@@ -834,3 +838,22 @@ select {
     transform: rotateY(120deg);
   }
   
+
+  #paginationControls {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.page-btn {
+    margin: 0 4px;
+    padding: 4px 8px;
+    background-color: #eee;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.page-btn.active {
+    background-color: #333;
+    color: white;
+}

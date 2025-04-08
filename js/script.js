@@ -3,13 +3,39 @@ let currentSetorIndex, currentMaquinaIndex;
 let timers = []; // Array para armazenar os temporizadores de cada máquina
 let setoresVisiveis = []; // Array para armazenar o estado de visibilidade dos setores
 
-// Função para alternar entre lista e grid
+/// Função para alternar entre lista e grid
 function toggleLayout() {
     const container = document.getElementById('setoresContainer');
-    container.classList.toggle('list-view');
-    container.classList.toggle('grid-view');
+    const toggle = document.getElementById('layoutToggle');
+  
+    if (toggle.checked) {
+      // Lista
+      container.classList.remove('grid-view');
+      container.classList.add('list-view');
+    } else {
+      // Grid
+      container.classList.remove('list-view');
+      container.classList.add('grid-view');
+    }
+  
     container.style.transition = 'all 0.5s ease';
-}
+  }
+  
+  // Ao carregar a página
+  window.onload = () => {
+    document.activeElement.blur();
+  
+    const container = document.getElementById('setoresContainer');
+    const toggle = document.getElementById('layoutToggle');
+  
+    // Força o grid como padrão
+    container.classList.add('grid-view');
+    container.classList.remove('list-view');
+  
+    // Garante que o switch comece desmarcado (grid)
+    toggle.checked = false;
+  };
+  
 
 // // Função para adicionar um setor
 // function addSetor() {
@@ -248,6 +274,12 @@ function removeMaquina(setorIndex, maquinaIndex) {
     }
 }
 
+
+
+// Variáveis globais
+let paginaAtual = 1;
+const chamadosPorPagina = 3;
+
 function showInfo(setorIndex, maquinaIndex) {
     const modal = document.getElementById('infoModal');
     const maquina = setores[setorIndex].maquinas[maquinaIndex];
@@ -258,13 +290,12 @@ function showInfo(setorIndex, maquinaIndex) {
         <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}
     `;
 
-    document.getElementById('observationsUl').innerHTML = maquina.chamado.map(chamado => `
-        <li>${chamado.observacao} - Prioridade: ${chamado.prioridade}</li>
-    `).join('');
-
-    modal.style.display = 'flex';
     currentSetorIndex = setorIndex;
     currentMaquinaIndex = maquinaIndex;
+    paginaAtual = 1;
+
+    renderChamados(maquina);
+    modal.style.display = 'flex';
 
     const maintenanceBtn = document.getElementById('maintenanceBtn');
     maintenanceBtn.textContent = maquina.emManutencao ? "Desmarcar para Manutenção" : "Marcar para Manutenção";
@@ -272,18 +303,82 @@ function showInfo(setorIndex, maquinaIndex) {
     document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
 }
 
-// Função para fechar o modal
-function closeModal() {
-    document.getElementById('infoModal').style.display = 'none';
+function renderChamados(maquina) {
+    const lista = document.getElementById('observationsUl');
+    const paginacao = document.getElementById('pagination');
+
+    // Ordena do mais recente para o mais antigo
+    const chamadosOrdenados = [...maquina.chamado].sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
+    const totalChamados = chamadosOrdenados.length;
+    const totalPaginas = Math.ceil(totalChamados / chamadosPorPagina);
+
+    const inicio = (paginaAtual - 1) * chamadosPorPagina;
+    const fim = inicio + chamadosPorPagina;
+    const chamadosVisiveis = chamadosOrdenados.slice(inicio, fim);
+
+    lista.innerHTML = chamadosVisiveis.map((chamado, index) => `
+        <li>
+            <strong>${chamado.dataHora}</strong><br>
+            ${chamado.observacao} - Prioridade: ${chamado.prioridade}
+            <button onclick="excluirChamado(${inicio + index})" class="delete-btn">🗑️</button>
+        </li>
+    `).join('');
+
+    // Botões de paginação
+    paginacao.innerHTML = '';
+    if (totalPaginas > 1) {
+        if (paginaAtual > 1) {
+            const btnAnterior = document.createElement('button');
+            btnAnterior.textContent = 'Anterior';
+            btnAnterior.onclick = () => {
+                paginaAtual--;
+                renderChamados(maquina);
+            };
+            paginacao.appendChild(btnAnterior);
+        }
+
+        if (paginaAtual < totalPaginas) {
+            const btnProximo = document.createElement('button');
+            btnProximo.textContent = 'Próximo';
+            btnProximo.onclick = () => {
+                paginaAtual++;
+                renderChamados(maquina);
+            };
+            paginacao.appendChild(btnProximo);
+        }
+    }
 }
 
-// Função para salvar uma observação
+function excluirChamado(index) {
+    const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
+    
+    // Ordena os chamados mais recentes primeiro
+    const chamadosOrdenados = [...maquina.chamado].sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
+    chamadosOrdenados.splice(index, 1);
+
+    // Atualiza a lista original
+    setores[currentSetorIndex].maquinas[currentMaquinaIndex].chamado = chamadosOrdenados;
+
+    // Recalcula o número total de páginas
+    const totalPaginas = Math.ceil(chamadosOrdenados.length / chamadosPorPagina);
+
+    // Se a página atual estiver além do total de páginas, volta uma
+    if (paginaAtual > totalPaginas) {
+        paginaAtual = totalPaginas;
+    }
+
+    saveSetoresAndMachines();
+    renderChamados(maquina);
+}
+
+
 function saveObservation() {
     const observacao = document.getElementById('observacao').value;
     const prioridade = document.getElementById('priority').value;
 
     if (observacao) {
-        setores[currentSetorIndex].maquinas[currentMaquinaIndex].chamado.push({ observacao, prioridade });
+        const dataHoraAtual = new Date().toLocaleString('pt-BR');
+        setores[currentSetorIndex].maquinas[currentMaquinaIndex].chamado.push({ observacao, prioridade, dataHora: dataHoraAtual });
         document.getElementById('observacao').value = '';
         saveSetoresAndMachines();
         renderSetores();
@@ -315,6 +410,7 @@ function markForMaintenance() {
 
     saveSetoresAndMachines();
 }
+
 
 // Função para iniciar o temporizador de manutenção
 function startMaintenanceTimer(setorIndex, maquinaIndex) {

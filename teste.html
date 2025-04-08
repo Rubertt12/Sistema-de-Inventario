@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teste Paginação de Chamados</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    textarea, select, button {
+      margin: 10px 0;
+      display: block;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f1f1f1;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+
+    #paginationControls {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .page-btn {
+      margin: 0 4px;
+      padding: 4px 8px;
+      background-color: #eee;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .page-btn.active {
+      background-color: #333;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Chamados da Máquina</h2>
+  
+  <textarea id="observacao" placeholder="Adicione um chamado..." rows="3"></textarea>
+  <select id="priority">
+    <option value="Baixa">Baixa</option>
+    <option value="Média">Média</option>
+    <option value="Alta">Alta</option>
+  </select>
+  <button onclick="saveObservation()">Salvar Chamado</button>
+
+  <h3>Chamados Anteriores</h3>
+  <ul id="observationsUl"></ul>
+  <div id="paginationControls"></div>
+
+  <script>
+    let currentPage = 1;
+    const itemsPerPage = 3;
+
+    function getStoredObservations() {
+      return JSON.parse(localStorage.getItem("observationsList") || "[]");
+    }
+
+    function saveObservation() {
+      const obsText = document.getElementById("observacao").value;
+      const priority = document.getElementById("priority").value;
+
+      if (!obsText.trim()) return;
+
+      const newObservation = { text: obsText, priority };
+      const stored = getStoredObservations();
+      stored.push(newObservation);
+      localStorage.setItem("observationsList", JSON.stringify(stored));
+
+      document.getElementById("observacao").value = "";
+      currentPage = Math.ceil(stored.length / itemsPerPage);
+      renderObservations(stored);
+    }
+
+    function renderObservations(observations) {
+      const list = document.getElementById("observationsUl");
+      const paginationControls = document.getElementById("paginationControls");
+
+      list.innerHTML = "";
+      paginationControls.innerHTML = "";
+
+      const totalPages = Math.ceil(observations.length / itemsPerPage);
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedItems = observations.slice(start, end);
+
+      paginatedItems.forEach(obs => {
+        const li = document.createElement("li");
+        li.textContent = `🛠️ [${obs.priority}] ${obs.text}`;
+        list.appendChild(li);
+      });
+
+      if (totalPages > 1) {
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.className = "page-btn";
+          btn.onclick = () => {
+            currentPage = i;
+            renderObservations(observations);
+          };
+          if (i === currentPage) btn.classList.add("active");
+          paginationControls.appendChild(btn);
+        }
+      }
+    }
+
+    // Inicializar com os dados salvos
+    renderObservations(getStoredObservations());
+  </script>
+</body>
+</html>
