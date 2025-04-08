@@ -42,7 +42,10 @@
                       </div>
                     <!-- Botão para adicionar setor -->
                     <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor  ➕ </button>
-        
+                    <button onclick="excluirTodosSetores()" class="excluir-tudo-btn">
+                      🧨 Excluir Todos os Setores
+                    </button>
+                    
                     <button class="logout-btn" onclick="logout(this)">Sair🚪</button>
 
                 </div>
@@ -176,6 +179,31 @@
         <div id="listaChamados">
           <!-- Aqui vão aparecer os chamados -->
         </div>
+
+
+        <div id="editChamadoModal" class="modal">
+          <div class="modal-content">
+            <h3>Editar Chamado</h3>
+            <label for="editObservacao">Observação:</label>
+            <textarea id="editObservacao"></textarea>
+        
+            <label for="editPrioridade">Prioridade:</label>
+            <select id="editPrioridade">
+              <option value="Baixa">Baixa</option>
+              <option value="Média">Média</option>
+              <option value="Alta">Alta</option>
+            </select>
+        
+            <div style="margin-top: 10px;">
+              <button onclick="salvarEdicaoChamado()" class="save-btn">Salvar</button>
+              <button onclick="fecharEditChamadoModal()" class="cancel-btn">Cancelar</button>
+            </div>
+          </div>
+        </div>
+        
+        
+
+        
 
 
 

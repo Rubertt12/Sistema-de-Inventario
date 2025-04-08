@@ -270,3 +270,22 @@ function removeMaquina(setorIndex, maquinaIndex) {
         renderSetores();
     }
 }
+
+
+function excluirTodosSetores() {
+  if (confirm("Tem certeza que deseja excluir todos os setores?")) {
+    const container = document.getElementById("setoresContainer");
+    container.innerHTML = "";
+
+    // Limpa o localStorage com a chave correta usada no sistema
+    localStorage.setItem("setores", JSON.stringify([]));
+
+    // Limpa também os arrays em memória
+    setores = [];
+    setoresVisiveis = [];
+
+    renderSetores();
+
+    alert("Todos os setores foram removidos com sucesso!");
+  }
+}

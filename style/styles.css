@@ -310,6 +310,22 @@ button:disabled {
     cursor: not-allowed;
 }
 
+.setor-nome {
+    max-width: 100%; /* Garante que não ultrapasse o container */
+    word-wrap: break-word; /* Quebra as palavras longas */
+    overflow-wrap: break-word;
+    white-space: normal; /* Permite múltiplas linhas se quiser */
+}
+
+/* OU se preferir cortar com reticências (1 linha só): */
+.setor-nome {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
 .setores-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
