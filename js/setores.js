@@ -48,6 +48,16 @@ function addSetor() {
     document.getElementById("modalSetor").style.display = "none";
   }
   
+
+// Fecha o modal ao clicar fora do conteúdo
+window.addEventListener('click', function(event) {
+  const modal = document.getElementById('modalSetor');
+  if (event.target === modal) {
+    fecharModalSetor();
+  }
+});
+
+
   // Confirma e adiciona o setor
   function confirmarAddSetor() {
     const setorName = document.getElementById("inputSetorNome").value.trim();

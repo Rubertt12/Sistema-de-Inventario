@@ -29,48 +29,47 @@
             
             
            
-            <!-- Menu de Usuário -->
-            <div class="user-menu">
-                <img src="/img/avatar.webp" alt="Usuário" class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"> <p class="user-name"><span id="userName">Usuário</span></p>
-                <div class="user-dropdown" id="userDropdown">
-                    
-                    <button onclick="openConfigModal()">Configurações ⚙️</button>
-                    
-                    <!-- Botão para alternar entre lista e grid -->
-                    <div class="box-switch">
-                        <h3>Alterar Layout</h3>
-                        <label class="switch">
-                          <input type="checkbox" id="layoutToggle" onchange="toggleLayout()">
-                          <span class="slider"></span>
-                        </label>
-                      </div>
-                    <!-- Botão para adicionar setor -->
-                    <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor  ➕ </button>
-                    <button onclick="excluirTodosSetores()" class="excluir-tudo-btn">
-                      🧨 Excluir Todos os Setores
-                    </button>
-                    
-                    <button class="logout-btn" onclick="logout(this)">Sair🚪</button>
+         <!-- Menu de Usuário -->
+<div class="user-menu user-name"  onclick="toggleUserMenu()">
+  <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar">
+  <span class="user-name" id="userName">Usuário</span>
+
+  <div class="user-dropdown" id="userDropdown" hidden>
+    <button onclick="openConfigModal()">Configurações ⚙️</button>
+
+    <div class="box-switch">
+      <h3>Alterar Layout</h3>
+      <label class="switch">
+        <input type="checkbox" id="layoutToggle" onchange="toggleLayout()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor ➕</button>
+
+    <button onclick="excluirTodosSetores()" class="excluir-tudo-btn">
+      🧨 Excluir Todos os Setores
+    </button>
+
+    <!-- Botão de logout centralizado -->
+    <button class="logout-btn"><span>Logout</span></button>
+  </div>
+</div>
 
                 </div>
     
             </div>
         </nav>
     </header>
-
-
-    <!-- Modal de Adicionar Setor -->
+<!-- Modal de Adicionar Setor -->
 <div id="modalSetor" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="fecharModalSetor()">&times;</span>
-      <h2>Adicionar Setor</h2>
-      <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor">
-      <button onclick="confirmarAddSetor()">Adicionar</button>
-    </div>
+  <div class="modal-content">
+    <span class="close-btn" onclick="fecharModalSetor()">&times;</span>
+    <h2>Adicionar Setor</h2>
+    <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor">
+    <button onclick="confirmarAddSetor()">Adicionar</button>
   </div>
-    
-        
-
+</div>
 
     <!-- Container dos setores -->
     <main id="setoresContainer" class="list-view">
