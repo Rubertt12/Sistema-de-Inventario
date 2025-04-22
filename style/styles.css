@@ -5,7 +5,15 @@
     box-sizing: border-box;
 }
 
-
+h3 {
+  margin-top: 80px; /* ajusta conforme a altura real da navbar */
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  text-align: center;
+  padding: 0 1rem;
+  color: #000; /* ou branco, dependendo do fundo */
+  max-width: 90%;
+  word-break: break-word;
+}
 
 .user-menu {
     display: flex;
@@ -343,14 +351,13 @@ button:disabled {
 
 
 .setores-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 30px;
-    padding: 30px;
-    margin-top: 100px;
-    animation: fadeIn 0.5s ease-out;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 30px; /* Esse já resolve tanto horizontal quanto vertical */
+  padding: 30px;
+  margin-top: 100px;
+  animation: fadeIn 0.5s ease-out;
 }
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -363,6 +370,7 @@ button:disabled {
     padding: 30px;
     transition: all 0.3s ease;
     min-height: 220px;
+    margin-top: 20px;
 }
 
 .setor:hover {
@@ -372,11 +380,19 @@ button:disabled {
 }
 
 .setor h2 {
-    font-size: 22px;
-    font-weight: bold;
-    color: #2c3e50;
-    text-transform: uppercase;
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  color: #000000;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+  gap: 10px;
+  word-break: break-word;
 }
+
 
 
 /* Botão para alternar visibilidade das máquinas */
@@ -566,36 +582,49 @@ button:disabled {
     }
 }
 
-/* Estilo para cada Setor */
-.setor {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    min-height: 200px;
-    overflow: hidden;
-    margin-top: 20px;
+/* Novo estilo para header do setor */
+.setor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 20px;
 }
 
-.setor:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    background-color: #f7f7f7;
+/* Título com comportamento responsivo */
+.setor-nome {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #000;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
-.setor h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-    color: #000000;
-    text-transform: uppercase;
+/* Botões de ação (editar e excluir) */
+.setor-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
+
+.setor-actions button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.setor-actions button:hover {
+  background-color: #c0392b;
+}
+
 
 .toggle-btn {
     background: #2b2a2a;

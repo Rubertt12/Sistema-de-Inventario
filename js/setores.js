@@ -98,15 +98,21 @@ function createSetorElement(setor, index) {
     const setorDiv = document.createElement('div');
     setorDiv.classList.add('setor');
     setorDiv.innerHTML = `
-        <h2>${setor.nome} 
-            <button class="delete-btn" onclick="removeSetor(${index})">X</button>
-        </h2>
+    <div class="setor-header">
+        <h2 class="setor-nome" title="${setor.nome}">${setor.nome}</h2>
+        <div class="setor-actions">
+            <button onclick="editarSetor(${index})">✏️</button>
+            <button onclick="removeSetor(${index})">X</button>
+        </div>
+    </div>
+    <div class="card-botoes">
         <button class="add-machine-btn" onclick="addMaquina(${index})">Adicionar Máquina</button>
         <button class="toggle-btn" onclick="toggleMachines(${index})">Mostrar Máquinas</button>
-        <div id="maquinas-${index}" class="machines-list" style="display: ${setoresVisiveis[index] ? 'block' : 'none'};">
-            ${setor.maquinas.map((maquina, maquinaIndex) => createMachineElement(maquina, maquinaIndex, index)).join('')}
-        </div>
-    `;
+    </div>
+    <div id="maquinas-${index}" class="machines-list" style="display: ${setoresVisiveis[index] ? 'block' : 'none'};">
+        ${setor.maquinas.map((maquina, maquinaIndex) => createMachineElement(maquina, maquinaIndex, index)).join('')}
+    </div>
+`;
     return setorDiv;
 }
 
