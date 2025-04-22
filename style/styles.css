@@ -15,6 +15,16 @@ h3 {
   word-break: break-word;
 }
 
+
+/* Ajuste do ícone */
+.navbar-icon {
+  width: 50px; /* Largura do ícone */
+  height: 50px; /* Altura do ícone */
+  margin-right: 8px; /* Espaçamento entre o ícone e o texto */
+  vertical-align: middle; /* Alinha verticalmente com o texto */
+}
+
+
 .user-menu {
     display: flex;
     align-items: center;
@@ -417,6 +427,11 @@ button:disabled {
   word-break: break-word;
 }
 
+.setor-buttons {
+  display: flex;
+  gap: 8px; /* Espaço entre os botões */
+  align-items: center; /* Alinha os botões verticalmente */
+}
 
 
 /* Botão para alternar visibilidade das máquinas */
