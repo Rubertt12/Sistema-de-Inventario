@@ -61,6 +61,7 @@ h3 {
     right: 0;
     min-width: 220px;
     z-index: 10;
+    border: 2px solid rgba(0, 0, 0, 0.836);
   }
   
   
@@ -71,6 +72,7 @@ h3 {
         left: 50%;
         right: auto;
         transform: translateX(-50%);
+
     }
 }
 
@@ -83,15 +85,21 @@ h3 {
     transform: translate(-50%, -50%);
     width: 90%;
     max-width: 400px;
-    background: rgb(82, 81, 81);
+    background: rgba(255, 255, 255, 1);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     z-index: 1000;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(25px);
+-webkit-backdrop-filter: blur(5px);
+border: 3px solid rgba(1, 100, 18, 0.808);
+    
 }
 
 .config-modal-content {
     text-align: center;
+    border: 2px solid rgba(0, 0, 0, 0.836);
 }
 
 .close-btn {
@@ -194,7 +202,7 @@ h3 {
     transform: translateX(-50%);
     z-index: 100;
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(0, 0, 0, 0.836);
   }
   
   /* Navbar após scroll */
@@ -215,6 +223,17 @@ h3 {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   }
   
+  .menu {
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  }
+  .menu:hover {
+    transform: scale(1.02);
+  }
+
+
+
   /* Menu Hamburguer */
   .menu-toggle {
     display: none;
@@ -232,6 +251,7 @@ h3 {
     font-size: 16px;
     color: #fff;
     transition: all 0.3s ease-in-out;
+    
   }
   
   .nav-links a {
@@ -240,10 +260,12 @@ h3 {
     padding: 8px 14px;
     border-radius: 12px;
     transition: background 0.3s ease;
+    border: 2px solid rgba(0, 0, 0, 0.836);
   }
   
   .nav-links a:hover {
     background-color: rgba(255, 255, 255, 0.1);
+     border: 2px solid rgba(0, 0, 0, 0.836);
   }
   
   /* Responsivo (Mobile) */
@@ -312,7 +334,7 @@ h3 {
 /* Botões */
 button {
     padding: 12px 24px;
-    background: linear-gradient(135deg, #2980b9, #6dd5fa);
+    background-color: #111;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -324,8 +346,8 @@ button {
 }
 
 button:hover {
-    background: linear-gradient(135deg, #3498db, #8ac8f7);
-    transform: translateY(-3px);
+  background-color: #444;
+  transform: scale(1.05);
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
@@ -356,6 +378,7 @@ button:disabled {
   gap: 30px; /* Esse já resolve tanto horizontal quanto vertical */
   padding: 30px;
   margin-top: 100px;
+  
   animation: fadeIn 0.5s ease-out;
 }
 @keyframes fadeIn {
@@ -371,6 +394,7 @@ button:disabled {
     transition: all 0.3s ease;
     min-height: 220px;
     margin-top: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.836);
 }
 
 .setor:hover {
@@ -423,6 +447,8 @@ button:disabled {
     align-items: center;
     z-index: 1000;
     transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
 }
 
 .modal-content {
@@ -514,6 +540,7 @@ button:disabled {
 /* Adicionando espaço extra devido à barra fixada */
 body {
     padding-top: 100px;
+    font-family: 'Poppins', sans-serif;
 }
 
 input[type="text"] {
@@ -651,6 +678,7 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     border-radius: 8px;
+    border: 2px solid rgba(0, 0, 0, 0.836);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -704,6 +732,7 @@ button:disabled {
     animation: modal-appear 0.3s ease-out;
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: #aaa transparent;
+    border: 2px solid rgba(0, 0, 0, 0.836);
 }
 
 /* Scrollbar bonitinha no Chrome */
@@ -999,6 +1028,7 @@ select {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    border: 2px solid rgba(0, 0, 0, 0.836);
   }
   
   /* Estilo do conteúdo do modal */
@@ -1084,6 +1114,7 @@ select {
     justify-content: center;
     align-items: center;
     z-index: 999;
+    border: 2px solid rgba(0, 0, 0, 0.836);
   }
   
   .modal-editar-chamado.hidden {

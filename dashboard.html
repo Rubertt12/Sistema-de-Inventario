@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventário de Setores</title>
     <link rel="stylesheet" href="/style/styles.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
    
     
 </head>
@@ -30,31 +31,35 @@
             
            
          <!-- Menu de Usuário -->
-<div class="user-menu user-name"  onclick="toggleUserMenu()">
-  <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar">
-  <span class="user-name" id="userName">Usuário</span>
+            <div class="user-menu user-name"  onclick="toggleUserMenu()">
+                 <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar">
+                 <span class="user-name" id="userName">Usuário</span>
 
-  <div class="user-dropdown" id="userDropdown" hidden>
-    <button onclick="openConfigModal()">Configurações ⚙️</button>
+               <div class="user-dropdown" id="userDropdown" hidden>
+                 <button onclick="openConfigModal()">Configurações ⚙️</button>
 
-    <div class="box-switch">
-      <h3>Alterar Layout</h3>
-      <label class="switch">
-        <input type="checkbox" id="layoutToggle" onchange="toggleLayout()">
-        <span class="slider"></span>
-      </label>
-    </div>
+                  <div class="box-switch">
+                    <h3>Alterar Layout</h3>
+                      <label class="switch">
+                      <input type="checkbox" id="layoutToggle" onchange="toggleLayout()">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
 
-    <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor ➕</button>
+                    <button id="addSetorBtn" onclick="addSetor()">
+                      Adicionar Setor ➕
+                    </button>
 
-    <button onclick="excluirTodosSetores()" class="excluir-tudo-btn">
-      🧨 Excluir Todos os Setores
-    </button>
+                      <button onclick="excluirTodosSetores()" 
+                        class="excluir-tudo-btn">
+                        🧨 Excluir Todos os Setores
+                      </button>
 
-   <button class="logout-btn" onclick="logout(this)"><span>Logout</span></button>
-
-  </div>
-</div>
+                    <button class="logout-btn" onclick="logout(this)">
+                      <span>Logout</span>
+                    </button>
+               </div>
+             </div>
 
                 </div>
     
