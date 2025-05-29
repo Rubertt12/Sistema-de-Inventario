@@ -72,6 +72,12 @@ h3 {
     min-width: 220px;
     z-index: 10;
     border: 2px solid rgba(0, 0, 0, 0.836);
+  /* Por padrão, sem scroll */
+  overflow-y: hidden;
+  overflow-x: hidden;
+    
+    
+    
   }
   
   
@@ -83,8 +89,25 @@ h3 {
         right: auto;
         transform: translateX(-50%);
 
+        max-height: 300px; /* define altura máxima */
+    overflow-y: auto; 
+
+    
+
     }
 }
+
+@media (max-width: 768px) {
+  .user-dropdown::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .user-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+  }
+}
+
 
 /* Modal de Configurações */
 .config-modal {
