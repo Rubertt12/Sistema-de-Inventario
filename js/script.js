@@ -95,6 +95,12 @@ function trocarCampos() {
   }
 }
 
+const cameraId = devices[0].id;
+
+
+
+
+
 function abrirScanner() {
   document.getElementById("modalScanner").style.display = "flex";
 
@@ -151,4 +157,57 @@ function fecharScanner() {
       console.error("Erro ao parar scanner", err);
     });
   }
+}
+function abrirScanner() {
+  document.getElementById("modalScanner").style.display = "flex";
+
+  html5QrCode = new Html5Qrcode("reader");
+
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices && devices.length) {
+      // Procurar câmera traseira pelo nome
+      let cameraId = devices[0].id;
+      for (let device of devices) {
+        if (/back|rear|traseira|environment/i.test(device.label)) {
+          cameraId = device.id;
+          break;
+        }
+      }
+
+      html5QrCode.start(
+        { deviceId: cameraId },
+        {
+          fps: 10,
+          qrbox: 250,
+          formatsToSupport: [
+            Html5QrcodeSupportedFormats.QR_CODE,
+            Html5QrcodeSupportedFormats.CODE_128,
+            Html5QrcodeSupportedFormats.CODE_39,
+            Html5QrcodeSupportedFormats.EAN_13,
+            Html5QrcodeSupportedFormats.EAN_8,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.UPC_E,
+          ],
+        },
+        qrCodeMessage => {
+          // Só preenche o campo etiqueta da máquina se o tipo selecionado for 'máquina'
+          if (document.getElementById('tipoEquipamento').value === 'máquina') {
+            document.getElementById('etiquetaMaquina').value = qrCodeMessage;
+          }
+          fecharScanner();
+        },
+        errorMessage => {
+          // erros momentâneos de leitura podem ser ignorados
+        }
+      ).catch(err => {
+        console.error("Erro ao iniciar câmera", err);
+        alert("Erro ao acessar a câmera.");
+      });
+    } else {
+      alert("Nenhuma câmera encontrada.");
+    }
+  }).catch(err => {
+    console.error("Erro ao obter câmeras", err);
+    alert("Erro ao acessar as câmeras do dispositivo.");
+  });
 }
