@@ -87,11 +87,11 @@ function trocarCampos() {
   } else if (tipoEquip === 'monitor') {
     camposMaquina.style.display = 'none';
     camposMonitor.style.display = 'block';
-    btnScanner.style.display = 'none'; // esconder botão
+    btnScanner.style.display = 'inline-block'; // esconder botão
   } else {
     camposMaquina.style.display = 'none';
     camposMonitor.style.display = 'none';
-    btnScanner.style.display = 'none'; // esconder botão
+    btnScanner.style.display = 'inline-block'; // esconder botão
   }
 }
 
@@ -127,8 +127,9 @@ function abrirScanner() {
         },
         qrCodeMessage => {
           // Só preenche o campo etiqueta da máquina se o tipo selecionado for 'máquina'
-          if (document.getElementById('tipoEquipamento').value === 'máquina') {
+          if (document.getElementById('tipoEquipamento').value === 'máquina','monitor') {
             document.getElementById('etiquetaMaquina').value = qrCodeMessage;
+            document.getElementById('etiquetaMonitor').value = qrCodeMessage;
           }
           fecharScanner();
         },
@@ -189,13 +190,21 @@ function abrirScanner() {
             Html5QrcodeSupportedFormats.UPC_E,
           ],
         },
-        qrCodeMessage => {
-          // Só preenche o campo etiqueta da máquina se o tipo selecionado for 'máquina'
-          if (document.getElementById('tipoEquipamento').value === 'máquina') {
-            document.getElementById('etiquetaMaquina').value = qrCodeMessage;
-          }
-          fecharScanner();
-        },
+      qrCodeMessage => {
+  // Só preenche o campo etiqueta da máquina se o tipo selecionado for 'máquina'
+  const tipo = document.getElementById('tipoEquipamento').value;
+
+  if (tipo === 'máquina') {
+    document.getElementById('etiquetaMaquina').value = qrCodeMessage;
+  } else if (tipo === 'monitor') {
+    document.getElementById('etiquetaMonitor').value = qrCodeMessage;
+  }
+
+  fecharScanner();
+},
+
+ 
+
         errorMessage => {
           // erros momentâneos de leitura podem ser ignorados
         }
