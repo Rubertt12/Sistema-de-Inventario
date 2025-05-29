@@ -72,3 +72,83 @@ function addSetor() {
 
 
 
+let html5QrCode;
+
+function trocarCampos() {
+  const tipoEquip = document.getElementById('tipoEquipamento').value;
+  const camposMaquina = document.getElementById('camposMaquina');
+  const camposMonitor = document.getElementById('camposMonitor');
+  const btnScanner = document.getElementById('btnAbrirScanner');
+
+  if (tipoEquip === 'máquina') {
+    camposMaquina.style.display = 'block';
+    camposMonitor.style.display = 'none';
+    btnScanner.style.display = 'inline-block'; // mostrar botão
+  } else if (tipoEquip === 'monitor') {
+    camposMaquina.style.display = 'none';
+    camposMonitor.style.display = 'block';
+    btnScanner.style.display = 'none'; // esconder botão
+  } else {
+    camposMaquina.style.display = 'none';
+    camposMonitor.style.display = 'none';
+    btnScanner.style.display = 'none'; // esconder botão
+  }
+}
+
+function abrirScanner() {
+  document.getElementById("modalScanner").style.display = "flex";
+
+  html5QrCode = new Html5Qrcode("reader");
+
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices && devices.length) {
+      const cameraId = devices[0].id;
+
+      html5QrCode.start(
+        { deviceId: cameraId },
+        {
+          fps: 10,
+          qrbox: 250,
+          formatsToSupport: [
+            Html5QrcodeSupportedFormats.QR_CODE,
+            Html5QrcodeSupportedFormats.CODE_128,
+            Html5QrcodeSupportedFormats.CODE_39,
+            Html5QrcodeSupportedFormats.EAN_13,
+            Html5QrcodeSupportedFormats.EAN_8,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.UPC_E,
+          ],
+        },
+        qrCodeMessage => {
+          // Só preenche o campo etiqueta da máquina se o tipo selecionado for 'máquina'
+          if (document.getElementById('tipoEquipamento').value === 'máquina') {
+            document.getElementById('etiquetaMaquina').value = qrCodeMessage;
+          }
+          fecharScanner();
+        },
+        errorMessage => {
+          // pode ignorar erros momentâneos
+        }
+      ).catch(err => {
+        console.error("Erro ao iniciar câmera", err);
+        alert("Erro ao acessar a câmera.");
+      });
+    } else {
+      alert("Nenhuma câmera encontrada.");
+    }
+  }).catch(err => {
+    console.error("Erro ao obter câmeras", err);
+    alert("Erro ao acessar as câmeras do dispositivo.");
+  });
+}
+
+function fecharScanner() {
+  if (html5QrCode) {
+    html5QrCode.stop().then(() => {
+      html5QrCode.clear();
+      document.getElementById("modalScanner").style.display = "none";
+    }).catch(err => {
+      console.error("Erro ao parar scanner", err);
+    });
+  }
+}

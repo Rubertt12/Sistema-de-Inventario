@@ -162,12 +162,17 @@
     <div id="modalMaquina" class="modal">
         <div class="modal-content">
           <h2>Adicionar Máquina ou Monitor</h2>
-      
+          <label for="codigoEquipamento"></label>
+        
+
+
+
           <label for="tipoEquipamento">Tipo:</label>
           <select id="tipoEquipamento" onchange="trocarCampos()">
             <option value="">Selecione</option>
             <option value="máquina">Máquina</option>
             <option value="monitor">Monitor</option>
+            
           </select>
       
           <div id="camposMaquina" style="display: none;">
@@ -182,7 +187,7 @@
             <label for="nomeMaquina">Número de Série:</label>
             <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC">
             <br>
-            <label for="etiquetaMaquina">Etiqueta:</label>
+            <label for="etiquetaMaquina">Etiqueta:</label><button onclick="abrirScanner()">📷 Ler QR/Barra</button>
             <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001">
           </div>
       
@@ -223,13 +228,25 @@
         </div>
         
         
-      
+      <!-- Scanner Modal -->
+<div id="modalScanner" style="display: none; position: fixed; top: 0; left: 0; 
+  width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000;">
+  <div style="background: white; padding: 20px; border-radius: 10px;">
+    <h3>Escaneie o QR Code ou Código de Barras</h3>
+    <div id="reader" style="width: 300px;"></div>
+    <button onclick="fecharScanner()" style="margin-top: 10px;">Fechar</button>
+  </div>
+</div>
+
         
         
 
 
 
       </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+
       <script src="/js/chamado.js"></script>
       <script src="/js/setores.js"></script>
       <script src="/js/main.js"></script>
