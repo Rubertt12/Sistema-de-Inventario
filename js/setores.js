@@ -177,6 +177,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ----- Chamados ----- //
 
+function toggleChecklist(legendElement) {
+  const content = legendElement.nextElementSibling; // pega o div com checklist
+  const arrow = legendElement.querySelector('.arrow');
+  
+  if (content.style.display === "none") {
+    content.style.display = "block";
+    arrow.textContent = "▼"; // seta para baixo (expandido)
+  } else {
+    content.style.display = "none";
+    arrow.textContent = "►"; // seta para direita (recolhido)
+  }
+}
+
+
+
 // Mostrar informações da máquina e seus chamados
 function showInfo(setorIndex, maquinaIndex) {
   maquinaAtivaSetor = setorIndex;
@@ -201,6 +216,9 @@ function showInfo(setorIndex, maquinaIndex) {
     document.getElementById('releaseBtn').style.display = 'none';
   }
 }
+
+
+
 
 // Fecha modal info
 function closeModal() {

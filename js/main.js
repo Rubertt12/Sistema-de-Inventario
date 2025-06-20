@@ -1,109 +1,161 @@
 function toggleMenu() {
-    document.querySelector('.nav-links').classList.toggle('active');
+  document.querySelector('.nav-links').classList.toggle('active');
 }
+
+// Toggle do menu do usuário (abre e fecha)
 function toggleUserMenu() {
-    let menu = document.getElementById("userDropdown");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  const dropdown = document.getElementById('userDropdown');
+  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
-
-
-// Fechar menu ao clicar fora
-document.addEventListener("click", function(event) {
-    let menu = document.getElementById("userDropdown");
-    let avatar = document.querySelector(".user-avatar");
-    if (menu.style.display === "block" && !menu.contains(event.target) && !avatar.contains(event.target)) {
-        menu.style.display = "none";
-    }
-});
-
-
-
-function logout(button) {
-    // Se já tiver animado, evita repetir
-    if (button.classList.contains('animate')) return;
+// Fecha menu do usuário ao clicar fora dele
+document.addEventListener('click', function(event) {
+  const userMenu = document.querySelector('.user-menu');
+  const dropdown = document.getElementById('userDropdown');
   
-    // Envolve o emoji da porta num <span>
-    if (!button.querySelector('span')) {
-      const parts = button.innerHTML.split('🚪');
-      button.innerHTML = `${parts[0]}<span>🚪</span>`;
-    }
-  
-    const door = button.querySelector('span');
-    button.classList.add('animate');
-  
-    // Espera a animação e então desloga
-    setTimeout(() => {
-      console.log("Tchau, piazito! 👋");
-      sessionStorage.removeItem("loggedUser");
-      window.location.href = "index.html"; // Redireciona para a tela de login
-    }, 700);
+  if (dropdown.style.display === 'block' && !userMenu.contains(event.target)) {
+    dropdown.style.display = 'none';
   }
-  
-
-// Exibir nome do usuário no menu
-document.addEventListener("DOMContentLoaded", function() {
-    let user = sessionStorage.getItem("loggedUser") || "Usuário";
-    document.getElementById("userName").textContent = user;
 });
 
-// Alternar Menu de Usuário
-function toggleUserMenu() {
-    const dropdown = document.getElementById("userDropdown");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+// Logout com animação do emoji da porta
+function logout(button) {
+  if (button.classList.contains('animate')) return;
+
+  if (!button.querySelector('span')) {
+    const parts = button.innerHTML.split('🚪');
+    button.innerHTML = `${parts[0]}<span>🚪</span>`;
+  }
+
+  button.classList.add('animate');
+
+  setTimeout(() => {
+    console.log('Tchau, piazito! 👋');
+    sessionStorage.removeItem('loggedUser'); // só um item por vez!
+    window.location.href = 'index.html';
+  }, 700);
 }
 
-// Fechar menu ao clicar fora
-document.addEventListener("click", function (event) {
-    const userMenu = document.querySelector(".user-menu");
-    const dropdown = document.getElementById("userDropdown");
-    if (!userMenu.contains(event.target)) {
-        dropdown.style.display = "none";
-    }
+// Mostrar nome do usuário no menu ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+  const user = sessionStorage.getItem('loggedUser') || 'Usuário';
+  const userNameElem = document.getElementById('userName');
+  if (userNameElem) {
+    userNameElem.textContent = user;
+  }
 });
 
-// Abrir Modal de Configurações
+// Abrir modal de configurações e fechar dropdown do usuário
 function openConfigModal() {
-    document.getElementById("configModal").style.display = "block";
+  document.getElementById('configModal').style.display = 'block';
+  const dropdown = document.getElementById('userDropdown');
+  if (dropdown) dropdown.style.display = 'none';
 }
 
-// Fechar Modal de Configurações
+// Fechar modal de configurações
 function closeConfigModal() {
-    document.getElementById("configModal").style.display = "none";
+  const modal = document.getElementById('configModal');
+  if (modal) modal.style.display = 'none';
 }
 
-// Alterar Foto de Perfil
+// Alterar foto de perfil e atualizar no menu
 function changeProfilePicture(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById("profilePic").src = e.target.result;
-            document.getElementById("userAvatar").src = e.target.result; // Atualiza no menu também
-        };
-        reader.readAsDataURL(file);
-    }
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const profilePic = document.getElementById('profilePic');
+      const userAvatar = document.getElementById('userAvatar');
+      if (profilePic) profilePic.src = e.target.result;
+      if (userAvatar) userAvatar.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+function toggleForms() {
+  document.getElementById("loginContainer").classList.toggle("hidden");
+  document.getElementById("registerContainer").classList.toggle("hidden");
 }
 
+function register() {
+  const email = document.getElementById("registerEmail").value.trim();
+  const user = document.getElementById("registerUser").value.trim();
+  const pass = document.getElementById("registerPass").value;
+  const phone = document.getElementById("registerPhone").value.trim();
 
-    // Função para alternar a visibilidade do menu de configurações
-function toggleUserMenu() {
-    const userDropdown = document.getElementById('userDropdown');
-    userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+  if (!email || !user || !pass || !phone) {
+    alert("Preenche todos os campos, tchê!");
+    return;
+  }
+
+  if (localStorage.getItem(`user_${user}`)) {
+    alert("Usuário já existe! Escolhe outro nome.");
+    return;
+  }
+
+  const userData = {
+    email,
+    user,
+    pass,
+    phone
+  };
+
+  localStorage.setItem(`user_${user}`, JSON.stringify(userData));
+  alert("Cadastro feito com sucesso! Agora entra ali no login.");
+
+  // Limpa os campos
+  document.getElementById("registerEmail").value = "";
+  document.getElementById("registerUser").value = "";
+  document.getElementById("registerPass").value = "";
+  document.getElementById("registerPhone").value = "";
+
+  toggleForms();
 }
 
-// Função para abrir o modal de configurações
-function openConfigModal() {
-    const modal = document.getElementById('configModal');
-    modal.style.display = 'block';
-    toggleUserMenu(); // Fecha o menu dropdown após abrir o modal
+function login() {
+  const loginInput = document.getElementById("loginUser").value.trim();
+  const password = document.getElementById("loginPass").value;
+  const code = document.getElementById("login2FA").value.trim();
+
+  if (!loginInput || !password) {
+    alert("Preenche usuário e senha, vivente!");
+    return;
+  }
+
+  const storedData = localStorage.getItem(`user_${loginInput}`);
+  if (!storedData) {
+    alert("Usuário não encontrado.");
+    return;
+  }
+
+  const userData = JSON.parse(storedData);
+
+  if (userData.pass !== password) {
+    alert("Senha incorreta!");
+    return;
+  }
+
+  // Aqui você pode validar o 2FA, se quiser, mas vou deixar só o alerta
+  if (code) {
+    alert(`Login com 2FA validado! Bem-vindo, ${userData.user}!`);
+  } else {
+    alert(`Login realizado sem 2FA. Bem-vindo, ${userData.user}!`);
+  }
+
+  // Salva no sessionStorage o nome do usuário logado para usar no menu depois
+  sessionStorage.setItem("loggedUser", userData.user);
+
+  // Redireciona para dashboard
+  window.location.href = "dashboard.html";
 }
 
-// Função para fechar o modal de configurações
-function closeConfigModal() {
-    const modal = document.getElementById('configModal');
-    modal.style.display = 'none';
-}
-
-
-
+window.onload = () => {
+  document.activeElement.blur();
+};
+document.addEventListener('DOMContentLoaded', function() {
+  const user = sessionStorage.getItem('loggedUser') || 'Usuário';
+  const userNameElem = document.getElementById('userName');
+  if (userNameElem) {
+    userNameElem.textContent = user;
+  }
+});

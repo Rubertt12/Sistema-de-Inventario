@@ -41,9 +41,10 @@
       />
       
       <!-- Menu do usuário -->
-      <div class="user-menu user-name" onclick="toggleUserMenu()">
-        <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
-        <span class="user-name" id="userName">Usuário</span>
+     <div class="user-menu user-name" onclick="toggleUserMenu(event)" style="cursor:pointer;">
+  <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
+  <span id="userName" onclick="toggleUserMenu">Usuário</span>
+
         
         <div class="user-dropdown" id="userDropdown" hidden>
           <button onclick="openConfigModal()">Configurações ⚙️</button>
@@ -95,14 +96,20 @@
         <h3>Chamado (Observação)</h3>
         <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
         
-        <fieldset style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;">
-          <legend><strong>Checklist de Manutenção Preventiva</strong></legend>
-          <label><input type="checkbox" name="checklist" value="funciona" /> Equipamento funcionando normalmente</label><br />
-          <label><input type="checkbox" name="checklist" value="ligaReinicia" /> Liga e reinicia sem erros</label><br />
-          <label><input type="checkbox" name="checklist" value="semBarulho" /> Sem barulhos estranhos</label><br />
-          <label><input type="checkbox" name="checklist" value="temperaturaNormal" /> Temperatura normal (ao toque)</label><br />
-          <label><input type="checkbox" name="checklist" value="equipamentoLimpo" /> Equipamento limpo (sem poeira visível)</label><br />
-        </fieldset>
+      <fieldset style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;">
+  <legend style="cursor: pointer; user-select: none;" onclick="toggleChecklist(this)">
+    <strong>Checklist de Manutenção Preventiva</strong> 
+    <span class="arrow" style="float: right;">▼</span>
+  </legend>
+  <div class="checklist-content">
+    <label><input type="checkbox" name="checklist" value="funciona" /> Equipamento funcionando normalmente</label><br />
+    <label><input type="checkbox" name="checklist" value="ligaReinicia" /> Liga e reinicia sem erros</label><br />
+    <label><input type="checkbox" name="checklist" value="semBarulho" /> Sem barulhos estranhos</label><br />
+    <label><input type="checkbox" name="checklist" value="temperaturaNormal" /> Temperatura normal (ao toque)</label><br />
+    <label><input type="checkbox" name="checklist" value="equipamentoLimpo" /> Equipamento limpo (sem poeira visível)</label><br />
+  </div>
+</fieldset>
+
         
         <label for="priority" style="margin-top: 10px; display: block;">Prioridade:</label>
         <select id="priority">

@@ -8,7 +8,7 @@ function showInfo(setorIndex, maquinaIndex) {
 
     document.getElementById('modalText').innerHTML = `
         <strong>Máquina:</strong> ${maquina.nome}<br>
-        <strong>Tipo:</strong> ${maquina.tipo}<br>
+        <strong>Tipo:</strong> ${maquina.tipo}<br>*
         <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}
     `;
 

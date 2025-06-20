@@ -1,4 +1,5 @@
-function toggleUserMenu() {
+function toggleUserMenu(event) {
+    event.stopPropagation(); // para evitar fechar logo em seguida
     const dropdown = document.getElementById("userDropdown");
     dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
 }
@@ -26,11 +27,16 @@ function mostrarNomeUsuario() {
     document.getElementById("userName").textContent = user;
 }
 
-// Fecha o menu ao clicar fora
 document.addEventListener("click", function (event) {
     const userMenu = document.querySelector(".user-menu");
     const dropdown = document.getElementById("userDropdown");
     if (!userMenu.contains(event.target)) {
         dropdown.style.display = "none";
     }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const user = sessionStorage.getItem('loggedUser') || 'userName';
+  document.getElementById('userName').textContent = user;
 });

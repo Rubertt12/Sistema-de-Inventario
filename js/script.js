@@ -1,7 +1,7 @@
-// // let setores = [];
-// let currentSetorIndex, currentMaquinaIndex;
-// let timers = []; // Array para armazenar os temporizadores de cada máquina
-// let setoresVisiveis = []; // Array para armazenar o estado de visibilidade dos setores
+let setores = [];
+ let currentSetorIndex, currentMaquinaIndex;
+let timers = []; // Array para armazenar os temporizadores de cada máquina
+let setoresVisiveis = []; // Array para armazenar o estado de visibilidade dos setores
 
 /// Função para alternar entre lista e grid
 function toggleLayout() {
