@@ -1,259 +1,245 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventário de Setores</title>
-    <link rel="stylesheet" href="/style/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    
-
-     <!-- Definindo o Favicon -->
-     <link rel="icon" href="/img/icon-png.png" type="image/png">
-
-     <!-- Caso queira adicionar um favicon em formato .ico -->
-     <link rel="icon" href="/img/icon-png.png" type="image/x-icon">
- 
-     <!-- Favicon para dispositivos Apple (iOS) -->
-     <link rel="apple-touch-icon" href="/img/icon-png.png">
- 
-     <!-- Favicon para dispositivos Android -->
-     <link rel="icon" sizes="192x192" href="/img/icon-png.png">
-
-   
-    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inventário de Setores</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  
+  <!-- Seu CSS -->
+  <link rel="stylesheet" href="/style/styles.css" />
+  
+  <!-- Favicons -->
+  <link rel="icon" href="/img/icon-png.png" type="image/png" />
+  <link rel="icon" href="/img/icon-png.png" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="/img/icon-png.png" />
+  <link rel="icon" sizes="192x192" href="/img/icon-png.png" />
 </head>
 <body>
-
-
-  <h3> Clique no menu do usuario para adicionar ou excluir o setor (+)</h3>
- 
-
-    <header class="navbar">
-        <h1><img src="/img/icon-png.png" alt="Ícone" class="navbar-icon">Inventário de Setores</h1>
+  
+  <h3>Clique no menu do usuário para adicionar ou excluir o setor (+)</h3>
+  
+  <header class="navbar">
+    <h1>
+      <img src="/img/icon-png.png" alt="Ícone" class="navbar-icon" /> Inventário de Setores
+    </h1>
     
-        <!-- Botão do Menu Hamburguer -->
-        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <!-- Botão do Menu Hamburguer -->
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     
-        <!-- Navegação -->
-        <nav class="nav-links">
-            
-            <!-- Filtro de pesquisa -->
-            <input type="text" id="searchInput" onkeyup="filterMachines()" placeholder="Pesquisar máquinas..." aria-label="Pesquisar máquinas">
-            
-            
-           
-         <!-- Menu de Usuário -->
-            <div class="user-menu user-name"  onclick="toggleUserMenu()">
-                 <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar">
-                 <span class="user-name" id="userName">Usuário</span>
-
-               <div class="user-dropdown" id="userDropdown" hidden>
-                 <button onclick="openConfigModal()">Configurações ⚙️</button>
-
-                  <div class="box-switch">
-                    <h3>Alterar Layout</h3>
-                      <label class="switch">
-                      <input type="checkbox" id="layoutToggle" onchange="toggleLayout()">
-                      <span class="slider"></span>
-                    </label>
-                  </div>
-
-                    <button id="addSetorBtn" onclick="addSetor()">
-                      Adicionar Setor ➕
-                    </button>
-
-                      <button onclick="excluirTodosSetores()" 
-                        class="excluir-tudo-btn">
-                        🧨 Excluir Todos os Setores
-                      </button>
-
-                    <button class="logout-btn" onclick="logout(this)">
-                      <span>Logout</span>
-                    </button>
-               </div>
-             </div>
-
-                </div>
-    
-            </div>
-        </nav>
-    </header>
-<!-- Modal de Adicionar Setor -->
-<div id="modalSetor" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="fecharModalSetor()">&times;</span>
-    <h2>Adicionar Setor</h2>
-    <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor">
-    <button onclick="confirmarAddSetor()">Adicionar</button>
-  </div>
-</div>
-
-    <!-- Container dos setores -->
-    <main id="setoresContainer" class="list-view">
-        <!-- Os setores e máquinas serão inseridos dinamicamente aqui -->
-    </main>
-
-    <!-- MODAL: Informações da Máquina -->
-    <div id="infoModal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
-            <h2>Informações da Máquina</h2>
-            <p id="modalText"></p>
-
-            <section id="maintenanceSection">
-                <h3>Chamado (Observação)</h3>
-                <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
-                <label for="priority">Prioridade:</label>
-                <select id="priority">
-                    <option value="Baixa">Baixa</option>
-                    <option value="Média">Média</option>
-                    <option value="Alta">Alta</option>
-                </select>
-                <button onclick="saveObservation()">Salvar Chamado</button>
-            </section>
-
-            <section id="observationsList">
-              <h3>Chamados Anteriores</h3>
-              <ul id="observationsUl"></ul>
-              <div id="pagination" class="pagination"></div>
-
-              
-          </section>
-                
+    <!-- Navegação -->
+    <nav class="nav-links">
+      <!-- Filtro de pesquisa -->
+      <input
+        type="text"
+        id="searchInput"
+        onkeyup="filterMachines()"
+        placeholder="Pesquisar máquinas..."
+        aria-label="Pesquisar máquinas"
+      />
+      
+      <!-- Menu do usuário -->
+      <div class="user-menu user-name" onclick="toggleUserMenu()">
+        <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
+        <span class="user-name" id="userName">Usuário</span>
+        
+        <div class="user-dropdown" id="userDropdown" hidden>
+          <button onclick="openConfigModal()">Configurações ⚙️</button>
           
-
-            </section>
-
-            <div id="maintenanceMessage">
-                <p>A máquina foi marcada para manutenção.</p>
-            </div>
-
-            <!-- Botões de ação -->
-            <div class="modal-actions">
-                <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
-                <button id="releaseBtn" onclick="releaseMachine()" style="display:none;">Liberar</button>
-            
-            </div>
-        </div>
-    </div>
-
-    <div id="configModal" class="config-modal">
-        <div class="config-modal-content">
-            <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
-            <h2>Configurações</h2>
-                
-            <!-- Trocar foto do perfil -->
-            <div class="profile-picture-section">
-                <img src="/img/avatar.webp" alt="Foto de Perfil" id="profilePic">
-                <input type="file" id="profilePicInput" accept="image/*" onchange="changeProfilePicture(event)">
-                <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
-            </div>
-            <button onclick="importFromCSVButton()">Importar CSV</button>
-            <button onclick="exportToCSV()">Exportar para CSV</button>
-            <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)">      
-            
-    
-            <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
-        </div>
-    </div>
-
-
-    <div id="modalMaquina" class="modal">
-        <div class="modal-content">
-          <h2>Adicionar Máquina ou Monitor</h2>
-          <label for="codigoEquipamento"></label>
-        
-
-
-
-          <label for="tipoEquipamento">Tipo:</label>
-          <select id="tipoEquipamento" onchange="trocarCampos()">
-            <option value="">Selecione</option>
-            <option value="máquina">Máquina</option>
-            <option value="monitor">Monitor</option>
-            
-          </select>
-      
-          <div id="camposMaquina" style="display: none;">
-            <select id="tipoMaquina" onchange="trocarCampos()">
-                <option value="">Selecione</option>
-                <option value="Desktop">Desktop</option>
-                <option value="Notebook">Notebook</option>
-                <option value="Notebook">Workstation</option>
-              </select>
-           
-            
-            <label for="nomeMaquina">Número de Série:</label>
-            <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC">
-            <br>
-            <label for="etiquetaMaquina">Etiqueta:</label>
-            <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001">
-            <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
+          <div class="box-switch">
+            <h3>Alterar Layout</h3>
+            <label class="switch">
+              <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
+              <span class="slider"></span>
+            </label>
           </div>
-      
-          <div id="camposMonitor" style="display: none;">
-            <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
-            <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123">
-            <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
-          </div>
-      
-          <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-            <button onclick="fecharModalMaquina()">Cancelar</button>
-            <button onclick="confirmarAddMaquina()">Adicionar</button>
-          </div>
+          
+          <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor ➕</button>
+          
+          <button onclick="excluirTodosSetores()" class="excluir-tudo-btn">
+            🧨 Excluir Todos os Setores
+          </button>
+          
+          <button class="logout-btn" onclick="logout(this)">
+            <span>Logout</span>
+          </button>
         </div>
-
-        <div id="listaChamados">
-          <!-- Aqui vão aparecer os chamados -->
-        </div>
-
-
-        <div id="editChamadoModal" class="modal">
-          <div class="modal-content">
-            <h3>Editar Chamado</h3>
-            <label for="editObservacao">Observação:</label>
-            <textarea id="editObservacao"></textarea>
-        
-            <label for="editPrioridade">Prioridade:</label>
-            <select id="editPrioridade">
-              <option value="Baixa">Baixa</option>
-              <option value="Média">Média</option>
-              <option value="Alta">Alta</option>
-            </select>
-        
-            <div style="margin-top: 10px;">
-              <button onclick="salvarEdicaoChamado()" class="save-btn">Salvar</button>
-              <button onclick="fecharEditChamadoModal()" class="cancel-btn">Cancelar</button>
-            </div>
-          </div>
-        </div>
-        
-        
-      <!-- Scanner Modal -->
-<div id="modalScanner" style="display: none; position: fixed; top: 0; left: 0; 
-  width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000;">
-  <div style="background: white; padding: 20px; border-radius: 10px;">
-    <h3>Escaneie o QR Code ou Código de Barras</h3>
-    <div id="reader" style="width: 300px;"></div>
-    <button onclick="fecharScanner()" style="margin-top: 10px;">Fechar</button>
-  </div>
-</div>
-
-        
-        
-
-
-
       </div>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-      <script src="/js/chamado.js"></script>
-      <script src="/js/setores.js"></script>
-      <script src="/js/main.js"></script>
-      <script src="/js/index.js"></script>
-      <script src="/js/csv.js"></script>
-      <script src="/js/script.js"></script>
+    </nav>
+  </header>
+  
+  <!-- Modal de Adicionar Setor -->
+  <div id="modalSetor" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="fecharModalSetor()" aria-label="Fechar">&times;</span>
+      <h2>Adicionar Setor</h2>
+      <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor" />
+      <button onclick="confirmarAddSetor()">Adicionar</button>
+    </div>
+  </div>
+  
+  <!-- Container dos setores -->
+  <main id="setoresContainer" class="list-view">
+    <!-- Setores e máquinas serão inseridos dinamicamente aqui -->
+  </main>
+  
+  <!-- MODAL: Informações da Máquina -->
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
+      <h2>Informações da Máquina</h2>
+      
+      <section id="maintenanceSection">
+        <h3>Chamado (Observação)</h3>
+        <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
+        
+        <fieldset style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;">
+          <legend><strong>Checklist de Manutenção Preventiva</strong></legend>
+          <label><input type="checkbox" name="checklist" value="funciona" /> Equipamento funcionando normalmente</label><br />
+          <label><input type="checkbox" name="checklist" value="ligaReinicia" /> Liga e reinicia sem erros</label><br />
+          <label><input type="checkbox" name="checklist" value="semBarulho" /> Sem barulhos estranhos</label><br />
+          <label><input type="checkbox" name="checklist" value="temperaturaNormal" /> Temperatura normal (ao toque)</label><br />
+          <label><input type="checkbox" name="checklist" value="equipamentoLimpo" /> Equipamento limpo (sem poeira visível)</label><br />
+        </fieldset>
+        
+        <label for="priority" style="margin-top: 10px; display: block;">Prioridade:</label>
+        <select id="priority">
+          <option value="Baixa">Baixa</option>
+          <option value="Média">Média</option>
+          <option value="Alta">Alta</option>
+        </select>
+        
+        <button style="margin-top: 10px;" onclick="saveObservation()">Salvar Chamado</button>
+      </section>
+      
+      <section id="observationsList" style="margin-top: 20px;">
+        <h3>Chamados Anteriores</h3>
+        <ul
+          id="observationsUl"
+          style="max-height: 250px; overflow-y: auto; list-style: none; padding-left: 0;"
+        ></ul>
+      </section>
+      
+      <div
+        id="maintenanceMessage"
+        style="display: none; margin-top: 15px; color: rgb(221, 212, 212); font-weight: bold;border-radius: 10px;"
+      >
+        <p>A máquina foi marcada para manutenção.</p>
+      </div>
+      
+      <!-- Botões de ação -->
+      <div class="modal-actions" style="margin-top: 20px;">
+        <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
+        <button id="releaseBtn" onclick="releaseMachine()" style="display: none;">Liberar</button>
+        
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal de Configurações -->
+  <div id="configModal" class="config-modal">
+    <div class="config-modal-content">
+      <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
+      <h2>Configurações</h2>
+      
+      <!-- Trocar foto do perfil -->
+      <div class="profile-picture-section">
+        <img src="/img/avatar.webp" alt="Foto de Perfil" id="profilePic" />
+        <input
+          type="file"
+          id="profilePicInput"
+          accept="image/*"
+          onchange="changeProfilePicture(event)"
+        />
+        <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
+      </div>
+      
+      <button onclick="importFromCSVButton()">Importar CSV</button>
+      <button onclick="exportToCSV()">Exportar para CSV</button>
+      <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)" />
+      
+      <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
+    </div>
+  </div>
+  
+  <!-- Modal Adicionar Máquina/Monitor -->
+  <div id="modalMaquina" class="modal">
+    <div class="modal-content">
+      <h2>Adicionar Máquina ou Monitor</h2>
+      
+      <label for="tipoEquipamento">Tipo:</label>
+      <select id="tipoEquipamento" onchange="trocarCampos()">
+        <option value="">Selecione</option>
+        <option value="máquina">Máquina</option>
+        <option value="monitor">Monitor</option>
+      </select>
+      
+      <div id="camposMaquina" style="display: none;">
+        <select id="tipoMaquina">
+          <option value="">Selecione</option>
+          <option value="Desktop">Desktop</option>
+          <option value="Notebook">Notebook</option>
+          <option value="Workstation">Workstation</option>
+        </select>
+        
+        <label for="nomeMaquina">Número de Série:</label>
+        <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC" />
+        
+        <label for="etiquetaMaquina">Etiqueta:</label>
+        <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001" />
+        
+        <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
+      </div>
+      
+      <div id="camposMonitor" style="display: none;">
+        <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
+        <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123" />
+        <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
+      </div>
+      
+      <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+        <button onclick="fecharModalMaquina()">Cancelar</button>
+        <button onclick="confirmarAddMaquina()">Adicionar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scanner Modal -->
+  <div
+    id="modalScanner"
+    style="
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    "
+  >
+    <div style="background: white; padding: 20px; border-radius: 10px;">
+      <h3>Escaneie o QR Code ou Código de Barras</h3>
+      <div id="reader" style="width: 300px;"></div>
+      <button onclick="fecharScanner()" style="margin-top: 10px;">Fechar</button>
+    </div>
+  </div>
+  
+  <!-- Scripts externos -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  
+  <!-- Seus scripts JS -->
+  <script src="/js/chamado.js"></script>
+  <script src="/js/setores.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/index.js"></script>
+  <script src="/js/csv.js"></script>
+  <script src="/js/script.js"></script>
+  
 </body>
 </html>
