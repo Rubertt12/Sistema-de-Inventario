@@ -1,42 +1,3 @@
-let setores = [];
-let setoresVisiveis = [];
-let currentMachineId = null; // Guarda a máquina que está aberta no modal
-
-// Guarda qual máquina está ativa no modal info
-let maquinaAtivaSetor = null;
-let maquinaAtivaIndex = null;
-
-// Função para alternar entre lista e grid
-function toggleLayout() {
-  const container = document.getElementById('setoresContainer');
-  const toggle = document.getElementById('layoutToggle');
-
-  if (toggle.checked) {
-    container.classList.remove('grid-view');
-    container.classList.add('list-view');
-  } else {
-    container.classList.remove('list-view');
-    container.classList.add('grid-view');
-  }
-  container.style.transition = 'all 0.5s ease';
-}
-
-// Ao carregar a página
-window.onload = () => {
-  document.activeElement.blur();
-
-  const container = document.getElementById('setoresContainer');
-  const toggle = document.getElementById('layoutToggle');
-
-  container.classList.add('grid-view');
-  container.classList.remove('list-view');
-
-  toggle.checked = false;
-
-  loadSetoresAndMachines();
-  renderSetores();
-};
-
 // Modal de setores
 function addSetor() {
   document.getElementById("modalSetor").style.display = "flex";
@@ -206,7 +167,13 @@ function saveSetoresAndMachines() {
 function loadSetoresAndMachines() {
   setores = JSON.parse(localStorage.getItem('setores')) || [];
   setoresVisiveis = new Array(setores.length).fill(false);
+  renderSetores(); // <-- garante que a renderização sempre ocorra após carregar
 }
+// Carrega dados do localStorage e renderiza setores quando a página abrir
+document.addEventListener('DOMContentLoaded', () => {
+  loadSetoresAndMachines();
+  renderSetores();
+});
 
 // ----- Chamados ----- //
 
@@ -395,6 +362,3 @@ function releaseMachine() {
   document.getElementById('maintenanceBtn').style.display = 'inline-block';
   document.getElementById('releaseBtn').style.display = 'none';
 }
-
-
-

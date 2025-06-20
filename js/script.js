@@ -95,7 +95,13 @@ function trocarCampos() {
   }
 }
 
-const cameraId = devices[0].id;
+navigator.mediaDevices.enumerateDevices().then(devices => {
+  const videoDevices = devices.filter(device => device.kind === 'videoinput');
+  const cameraId = videoDevices[0].deviceId;
+
+  console.log('ID da primeira câmera:', cameraId);
+});
+
 
 
 
