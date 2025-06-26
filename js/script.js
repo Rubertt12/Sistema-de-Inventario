@@ -5,21 +5,48 @@ let setoresVisiveis = []; // Array para armazenar o estado de visibilidade dos s
 
 /// Função para alternar entre lista e grid
 function toggleLayout() {
-    const container = document.getElementById('setoresContainer');
-    const toggle = document.getElementById('layoutToggle');
-  
-    if (toggle.checked) {
-      // Lista
-      container.classList.remove('grid-view');
-      container.classList.add('list-view');
-    } else {
-      // Grid
-      container.classList.remove('list-view');
-      container.classList.add('grid-view');
-    }
-  
-    container.style.transition = 'all 0.5s ease';
+  const container = document.getElementById('setoresContainer');
+  const toggle = document.getElementById('layoutToggle');
+
+  if (toggle.checked) {
+    container.classList.remove('grid-view');
+    container.classList.add('list-view');
+  } else {
+    container.classList.remove('list-view');
+    container.classList.add('grid-view');
   }
+
+  renderSetores(); // Força re-renderizar com o novo estilo
+}
+
+
+let paginaAtual = 1;
+const chamadosPorPagina = 3;
+
+function showInfo(setorIndex, maquinaIndex) {
+    const modal = document.getElementById('infoModal');
+    const maquina = setores[setorIndex].maquinas[maquinaIndex];
+
+    document.getElementById('modalText').innerHTML = `
+        <strong>Máquina:</strong> ${maquina.nome}<br>
+        <strong>Tipo:</strong> ${maquina.tipo}<br>
+        <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}
+    `;
+
+    currentSetorIndex = setorIndex;
+    currentMaquinaIndex = maquinaIndex;
+    paginaAtual = 1;
+
+    renderChamados(maquina);
+    modal.style.display = 'flex';
+
+    const maintenanceBtn = document.getElementById('maintenanceBtn');
+    maintenanceBtn.textContent = maquina.emManutencao ? "Desmarcar para Manutenção" : "Marcar para Manutenção";
+
+    document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
+}
+
+
   
   // Ao carregar a página
   window.onload = () => {

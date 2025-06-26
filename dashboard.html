@@ -43,7 +43,8 @@
       <!-- Menu do usuário -->
      <div class="user-menu user-name" onclick="toggleUserMenu(event)" style="cursor:pointer;">
   <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
-  <span id="userName" onclick="toggleUserMenu">Usuário</span>
+  <span id="userName" onclick="toggleUserMenu()">Usuário</span>
+
 
         
         <div class="user-dropdown" id="userDropdown" hidden>
@@ -52,7 +53,8 @@
           <div class="box-switch">
             <h3>Alterar Layout</h3>
             <label class="switch">
-              <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
+             <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
+
               <span class="slider"></span>
             </label>
           </div>
@@ -87,10 +89,19 @@
   </main>
   
   <!-- MODAL: Informações da Máquina -->
-  <div id="infoModal" class="modal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
-      <h2>Informações da Máquina</h2>
+  <!-- Modal de Informações da Máquina -->
+ <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
+            <h2>Informações da Máquina</h2>
+            <p id="modalText"></p>
+            
+
+
+    
+
+    <!-- ...restante do conteúdo do modal -->
+
       
       <section id="maintenanceSection">
         <h3>Chamado (Observação)</h3>
@@ -172,46 +183,47 @@
   </div>
   
   <!-- Modal Adicionar Máquina/Monitor -->
-  <div id="modalMaquina" class="modal">
-    <div class="modal-content">
-      <h2>Adicionar Máquina ou Monitor</h2>
-      
-      <label for="tipoEquipamento">Tipo:</label>
-      <select id="tipoEquipamento" onchange="trocarCampos()">
+ <div id="modalMaquina" class="modal" style="display: none;">
+  <div class="modal-content">
+    <h2>Adicionar Máquina ou Monitor</h2>
+    
+    <label for="tipoEquipamento">Tipo:</label>
+    <select id="tipoEquipamento" onchange="trocarCampos()">
+      <option value="">Selecione</option>
+      <option value="máquina">Máquina</option>
+      <option value="monitor">Monitor</option>
+    </select>
+    
+    <div id="camposMaquina" style="display: none; margin-top: 10px;">
+      <label for="tipoMaquina">Tipo de Máquina:</label>
+      <select id="tipoMaquina">
         <option value="">Selecione</option>
-        <option value="máquina">Máquina</option>
-        <option value="monitor">Monitor</option>
+        <option value="Desktop">Desktop</option>
+        <option value="Notebook">Notebook</option>
+        <option value="Workstation">Workstation</option>
       </select>
       
-      <div id="camposMaquina" style="display: none;">
-        <select id="tipoMaquina">
-          <option value="">Selecione</option>
-          <option value="Desktop">Desktop</option>
-          <option value="Notebook">Notebook</option>
-          <option value="Workstation">Workstation</option>
-        </select>
-        
-        <label for="nomeMaquina">Número de Série:</label>
-        <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC" />
-        
-        <label for="etiquetaMaquina">Etiqueta:</label>
-        <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001" />
-        
-        <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
-      </div>
+      <label for="nomeMaquina" style="margin-top: 10px;">Número de Série:</label>
+      <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC" />
       
-      <div id="camposMonitor" style="display: none;">
-        <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
-        <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123" />
-        <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
-      </div>
+      <label for="etiquetaMaquina" style="margin-top: 10px;">Etiqueta:</label>
+      <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001" />
       
-      <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-        <button onclick="fecharModalMaquina()">Cancelar</button>
-        <button onclick="confirmarAddMaquina()">Adicionar</button>
-      </div>
+      <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
+    </div>
+    
+    <div id="camposMonitor" style="display: none; margin-top: 10px;">
+      <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
+      <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123" />
+      <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
+    </div>
+    
+    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+      <button onclick="fecharModalMaquina()">Cancelar</button>
+      <button onclick="confirmarAddMaquina()">Adicionar</button>
     </div>
   </div>
+</div>
   
   <!-- Scanner Modal -->
   <div

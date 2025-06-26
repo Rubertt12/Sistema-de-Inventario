@@ -3,14 +3,24 @@ let paginaAtual = 1;
 const chamadosPorPagina = 3;
 
 function showInfo(setorIndex, maquinaIndex) {
-    const modal = document.getElementById('infoModal');
-    const maquina = setores[setorIndex].maquinas[maquinaIndex];
+  const modal = document.getElementById('infoModal');
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+  const tipoLower = maquina.tipo.toLowerCase();
 
-    document.getElementById('modalText').innerHTML = `
-        <strong>Máquina:</strong> ${maquina.nome}<br>
-        <strong>Tipo:</strong> ${maquina.tipo}<br>*
-        <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}
-    `;
+  const isMaquina = ['desktop', 'workstation', 'notebook', 'máquina', 'pc'].includes(tipoLower);
+  const isMonitor = tipoLower === 'monitor';
+
+  document.getElementById('modalText').innerHTML = `
+    <strong>Tipo de Equipamento:</strong> ${maquina.tipo || 'N/A'}<br>
+    ${isMaquina ? `
+      <strong>Nome da Máquina:</strong> ${maquina.nome || 'N/A'}<br>
+      <strong>Número de Série:</strong> ${maquina.numeroSerie || 'N/A'}<br>
+      <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>
+    ` : ''}
+    ${isMonitor ? `
+      <strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>
+    ` : ''}
+  `;
 
     currentSetorIndex = setorIndex;
     currentMaquinaIndex = maquinaIndex;
@@ -25,6 +35,7 @@ function showInfo(setorIndex, maquinaIndex) {
     document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
 }
 
+
 function closeModal() {
     const modal = document.getElementById("infoModal");
     modal.style.display = "none";
@@ -37,23 +48,12 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 };
-function closeModal() {
-    const modal = document.getElementById("infoModal");
-    modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    const modal = document.getElementById("infoModal");
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-};
-
-
 
 function renderChamados(maquina) {
-    const lista = document.getElementById('observationsUl');
+    const lista = document.getElementById('observationsUl'); // Certifique que esse ID bate com seu HTML
     const paginacao = document.getElementById('pagination');
+
+    if(!maquina.chamado) maquina.chamado = [];
 
     // Ordena do mais recente para o mais antigo
     const chamadosOrdenados = [...maquina.chamado].sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
@@ -100,6 +100,8 @@ function renderChamados(maquina) {
 function excluirChamado(index) {
     const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
     
+    if(!maquina.chamado) maquina.chamado = [];
+
     // Ordena os chamados mais recentes primeiro
     const chamadosOrdenados = [...maquina.chamado].sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
     chamadosOrdenados.splice(index, 1);
@@ -112,21 +114,26 @@ function excluirChamado(index) {
 
     // Se a página atual estiver além do total de páginas, volta uma
     if (paginaAtual > totalPaginas) {
-        paginaAtual = totalPaginas;
+        paginaAtual = totalPaginas || 1;
     }
 
     saveSetoresAndMachines();
     renderChamados(maquina);
 }
 
-
 function saveObservation() {
-    const observacao = document.getElementById('observacao').value;
+    const observacao = document.getElementById('observacao').value.trim();
     const prioridade = document.getElementById('priority').value;
 
     if (observacao) {
         const dataHoraAtual = new Date().toLocaleString('pt-BR');
+
+        if(!setores[currentSetorIndex].maquinas[currentMaquinaIndex].chamado){
+          setores[currentSetorIndex].maquinas[currentMaquinaIndex].chamado = [];
+        }
+
         setores[currentSetorIndex].maquinas[currentMaquinaIndex].chamado.push({ observacao, prioridade, dataHora: dataHoraAtual });
+
         document.getElementById('observacao').value = '';
         saveSetoresAndMachines();
         renderSetores();
@@ -136,13 +143,14 @@ function saveObservation() {
     }
 }
 
-// Função para marcar a máquina para manutenção
 function markForMaintenance() {
     const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
     const maquinaElement = document.getElementById(`maquina-${currentMaquinaIndex}`);
 
     maquina.emManutencao = !maquina.emManutencao;
-    maquinaElement.style.backgroundColor = maquina.emManutencao ? "red" : "";
+    if(maquinaElement) {
+      maquinaElement.style.backgroundColor = maquina.emManutencao ? "red" : "";
+    }
 
     if (maquina.emManutencao) {
         maquina.tempoManutencao = 0;
@@ -159,8 +167,6 @@ function markForMaintenance() {
     saveSetoresAndMachines();
 }
 
-
-// Função para iniciar o temporizador de manutenção
 function startMaintenanceTimer(setorIndex, maquinaIndex) {
     const maquina = setores[setorIndex].maquinas[maquinaIndex];
     if (timers[maquinaIndex]) clearInterval(timers[maquinaIndex]);
@@ -174,7 +180,6 @@ function startMaintenanceTimer(setorIndex, maquinaIndex) {
     }, 1000);
 }
 
-// Função para parar o temporizador de manutenção
 function stopMaintenanceTimer(setorIndex, maquinaIndex) {
     if (timers[maquinaIndex]) {
         clearInterval(timers[maquinaIndex]);
@@ -182,7 +187,6 @@ function stopMaintenanceTimer(setorIndex, maquinaIndex) {
     }
 }
 
-// Função para filtrar máquinas
 function filterMachines() {
     const input = document.getElementById("searchInput").value.toUpperCase();
     const setoresContainer = document.getElementById('setoresContainer');
@@ -191,7 +195,8 @@ function filterMachines() {
     setores.forEach((setor, setorIndex) => {
         const setorMatches = setor.nome.toUpperCase().includes(input);
         const maquinasMatches = setor.maquinas.some(maquina =>
-            maquina.nome.toUpperCase().includes(input) || maquina.tipo.toUpperCase().includes(input)
+            (maquina.numeroSerie && maquina.numeroSerie.toUpperCase().includes(input)) ||
+            (maquina.tipo && maquina.tipo.toUpperCase().includes(input))
         );
 
         if (setorMatches || maquinasMatches) {
@@ -199,4 +204,32 @@ function filterMachines() {
             setoresContainer.appendChild(setorDiv);
         }
     });
+}
+function confirmarAddMaquina() {
+  const tipoEquip = document.getElementById('tipoEquipamento').value;
+
+  if (!tipoEquip) {
+    alert("Selecione o tipo de equipamento!");
+    return;
+  }
+
+  let maquina = { tipo: tipoEquip, chamado: [], emManutencao: false, tempoManutencao: 0 };
+
+  if (tipoEquip === 'máquina') {
+    maquina.tipoMaquina = document.getElementById('tipoMaquina').value;
+    maquina.numeroSerie = document.getElementById('nomeMaquina').value;
+    maquina.etiqueta = document.getElementById('etiquetaMaquina').value;
+  } else if (tipoEquip === 'monitor') {
+    maquina.etiqueta = document.getElementById('etiquetaMonitor').value;
+  }
+
+  // adiciona a máquina no setor atual
+  setores[currentSetorIndex].maquinas.push(maquina);
+
+  saveSetoresAndMachines();
+  renderSetores();
+  fecharModalMaquina();
+
+  // abre modal da máquina recém adicionada
+  showInfo(currentSetorIndex, setores[currentSetorIndex].maquinas.length - 1);
 }

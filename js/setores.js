@@ -113,21 +113,22 @@ function confirmarAddMaquina() {
   const tipo = document.getElementById("tipoEquipamento").value;
   const idUnico = `maquina_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
   if (tipo === 'máquina') {
-    const tipoMaquina = document.getElementById("tipoMaquina").value.trim();
-    const nomeMaquina = document.getElementById("nomeMaquina").value.trim();
-    const etiquetaMaquina = document.getElementById("etiquetaMaquina").value.trim();
+ const tipoMaquina = document.getElementById("tipoMaquina").value.trim();
+const nomeMaquina = document.getElementById("nomeMaquina").value.trim();
+const etiquetaMaquina = document.getElementById("etiquetaMaquina").value.trim();
+
 
     if (!tipoMaquina || !nomeMaquina || !etiquetaMaquina) return alert("Preencha todos os campos da máquina.");
+setores[setorSelecionado].maquinas.push({
+  id: idUnico,
+  nome: nomeMaquina,
+  tipo: tipoMaquina,
+  etiqueta: etiquetaMaquina,
+  chamado: [],
+  emManutencao: false,
+  tempoManutencao: 0
+});
 
-    setores[setorSelecionado].maquinas.push({
-      id: idUnico,
-      nome: nomeMaquina,
-      tipo: tipoMaquina,
-      etiqueta: etiquetaMaquina,
-      chamado: [],
-      emManutencao: false,
-      tempoManutencao: 0
-    });
 
   } else if (tipo === 'monitor') {
     const etiquetaMonitor = document.getElementById("etiquetaMonitor").value.trim();
@@ -198,6 +199,20 @@ function showInfo(setorIndex, maquinaIndex) {
   maquinaAtivaIndex = maquinaIndex;
   currentMachineId = setores[setorIndex].maquinas[maquinaIndex].id;
 
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+
+  // Preenche o modalText com os detalhes da máquina
+document.getElementById('modalText').innerHTML = `
+  <strong>Nome:</strong> ${maquina.nome || 'N/A'}<br>
+  <strong>Tipo:</strong> ${maquina.tipo || 'N/A'}<br>
+  ${maquina.tipo.toLowerCase() === 'monitor' 
+    ? `<strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>`
+    : `<strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>`
+  }
+`;
+
+
+
   // Exibir modal info
   const modal = document.getElementById('infoModal');
   modal.style.display = 'flex';
@@ -205,7 +220,6 @@ function showInfo(setorIndex, maquinaIndex) {
   atualizarListaChamados(currentMachineId);
 
   // Ajusta visibilidade dos botões e mensagem conforme estado da máquina
-  const maquina = setores[setorIndex].maquinas[maquinaIndex];
   if (maquina.emManutencao) {
     document.getElementById('maintenanceMessage').style.display = 'block';
     document.getElementById('maintenanceBtn').style.display = 'none';
@@ -216,6 +230,7 @@ function showInfo(setorIndex, maquinaIndex) {
     document.getElementById('releaseBtn').style.display = 'none';
   }
 }
+
 
 
 

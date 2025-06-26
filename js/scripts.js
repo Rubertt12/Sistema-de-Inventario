@@ -19,7 +19,8 @@ function toggleLayout() {
     }
   
     container.style.transition = 'all 0.5s ease';
-  }
+}
+
   
   // Ao carregar a página
   window.onload = () => {
@@ -120,57 +121,15 @@ function createMachineElement(maquina, maquinaIndex, setorIndex) {
     return `
         <div class="machine" id="maquina-${maquinaIndex}" style="background-color: ${maquina.emManutencao ? 'red' : ''}">
             <div class="machine-info">
-                <strong>${maquina.nome}</strong> (${maquina.tipo}) - ${maquina.emManutencao ? 'Em Manutenção' : 'Operando'}
+                <strong>${maquina.nome}</strong> (${maquina.tipo}) - Etiqueta: ${maquina.etiqueta || 'Sem etiqueta'} - ${maquina.emManutencao ? 'Em Manutenção' : 'Operando'}
             </div>
             <button class="info-btn" onclick="showInfo(${setorIndex}, ${maquinaIndex})">Info</button>
             <button class="delete-machine-btn" onclick="removeMaquina(${setorIndex}, ${maquinaIndex})">Excluir Máquina</button>
         </div>
     `;
 }
-// // Função para adicionar uma máquina ou monitor
-// function addMaquina(setorIndex) {
-//     const tipo = prompt("É uma máquina ou um monitor? (Digite 'máquina' ou 'monitor')").toLowerCase();
-    
-//     if (tipo === 'máquina') {
-//         const maquinaTipo = prompt("Digite o tipo da máquina (Desktop, Notebook ou Workstation):");
-//         const maquinaName = prompt("Digite o número de série da máquina:");
-//         const etiqueta = prompt("Digite a etiqueta da máquina:");
-        
-//         if (maquinaTipo && maquinaName && etiqueta) {
-//             setores[setorIndex].maquinas.push({
-//                 nome: maquinaName,
-//                 tipo: maquinaTipo,
-//                 etiqueta: etiqueta,
-//                 chamado: [],
-//                 emManutencao: false,
-//                 tempoManutencao: 0
-//             });
-//             saveSetoresAndMachines();
-//             renderSetores();
-//         } else {
-//             alert("Todos os campos são obrigatórios para adicionar uma máquina.");
-//         }
-//     } else if (tipo === 'monitor') {
-//         const etiquetaMonitor = prompt("Digite a etiqueta do monitor:");
-        
-//         if (etiquetaMonitor) {
-//             setores[setorIndex].maquinas.push({
-//                 nome: `Monitor - ${etiquetaMonitor}`,
-//                 tipo: 'Monitor',
-//                 etiqueta: etiquetaMonitor,
-//                 chamado: [],
-//                 emManutencao: false,
-//                 tempoManutencao: 0
-//             });
-//             saveSetoresAndMachines();
-//             renderSetores();
-//         } else {
-//             alert("A etiqueta do monitor é obrigatória.");
-//         }
-//     } else {
-//         alert("Opção inválida. Digite 'máquina' ou 'monitor'.");
-//     }
-// }
+
+
 
 let setorSelecionado = null;
 
@@ -276,7 +235,6 @@ function removeMaquina(setorIndex, maquinaIndex) {
 
 
 
-// Variáveis globais
 let paginaAtual = 1;
 const chamadosPorPagina = 3;
 
@@ -285,10 +243,14 @@ function showInfo(setorIndex, maquinaIndex) {
     const maquina = setores[setorIndex].maquinas[maquinaIndex];
 
     document.getElementById('modalText').innerHTML = `
-        <strong>Máquina:</strong> ${maquina.nome}<br>
-        <strong>Tipo:</strong> ${maquina.tipo}<br>
-        <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}
+      <strong>Máquina:</strong> ${maquina.nome}<br>
+      <strong>Tipo:</strong> ${maquina.tipo}<br>
+      <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}
     `;
+
+    // ... resto do código
+
+
 
     currentSetorIndex = setorIndex;
     currentMaquinaIndex = maquinaIndex;
@@ -696,13 +658,13 @@ function importFromCSV(event) {
             }
 
             const maquina = {
-                nome: maquinaNome,
-                tipo: maquinaTipo,
-                etiqueta: cols[1].trim(),
-                chamado: observacoes ? [{ observacao: observacoes, prioridade: 'Normal' }] : [],
-                emManutencao,
-                tempoManutencao,
-            };
+    nome: maquinaNome,
+    tipo: maquinaTipo,
+    etiqueta: cols[1].trim(),  // <--- aqui está errado, tá pegando o tipo de novo
+    chamado: observacoes ? [{ observacao: observacoes, prioridade: 'Normal' }] : [],
+    emManutencao,
+    tempoManutencao,
+};
 
             setor.maquinas.push(maquina);
         });
