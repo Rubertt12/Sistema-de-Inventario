@@ -498,11 +498,11 @@ button:disabled {
     border: 2px solid rgba(0, 0, 0, 0.836);
 }
 
-.setor:hover {
+/* .setor:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     background: #f9f9f9;
-}
+} */
 
 .setor h2 {
   font-size: 24px;
