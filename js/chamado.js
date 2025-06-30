@@ -213,3 +213,7 @@ function confirmarAddMaquina() {
     fecharModalMaquina();
     showInfo(currentSetorIndex, setores[currentSetorIndex].maquinas.length - 1);
 }
+function toggleChecklist(legendElement) {
+  const fieldset = legendElement.parentElement;
+  fieldset.classList.toggle('collapsed');
+}

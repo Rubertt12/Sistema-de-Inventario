@@ -187,3 +187,9 @@ function importarBackupJSON(event) {
   };
   reader.readAsText(file);
 }
+
+
+function toggleChecklist(legendElement) {
+  const fieldset = legendElement.parentElement;
+  fieldset.classList.toggle('collapsed');
+}

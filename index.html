@@ -1,32 +1,20 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login & Cadastro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
   <link rel="stylesheet" href="/style/style.css" />
 </head>
 <body>
-  <div class="wrapper">
-    <div class="form-container" id="loginContainer">
-      <h2>Entrar</h2>
-      <input type="text" id="loginUser" placeholder="Usuário" />
-      <input type="password" id="loginPass" placeholder="Senha" />
-      <input type="text" id="login2FA" placeholder="Código 2FA (opcional)" />
-      <button onclick="login()">Entrar</button>
-      <p>Não tem conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></p>
-    </div>
-
-    <div class="form-container hidden" id="registerContainer">
-      <h2>Cadastro</h2>
-      <input type="email" id="registerEmail" placeholder="E-mail" required />
-      <input type="text" id="registerUser" placeholder="Nome de usuário" required />
-      <input type="password" id="registerPass" placeholder="Senha" required />
-      <input type="tel" id="registerPhone" placeholder="Celular (para 2FA)" required />
-      <button onclick="register()">Cadastrar</button>
-      <p>Já tem conta? <a href="#" onclick="toggleForms()">Entrar</a></p>
-    </div>
+  <div class="login-container">
+    <h2>Entrar no Sistema</h2>
+    <input type="text" id="username" placeholder="Usuário" />
+    <input type="password" id="password" placeholder="Senha" />
+    <button onclick="login()">Entrar</button>
+    <p id="loginError" style="color:red; display:none;">Usuário ou senha inválidos</p>
   </div>
-  <script src="/js/index.js"></script>
+
+  <script src="/js/login.js"></script>
 </body>
 </html>

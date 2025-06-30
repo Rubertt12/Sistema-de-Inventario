@@ -530,3 +530,7 @@ function dropMachine(event, novoSetorIndex) {
 
   maquinaEmMovimento = null;
 }
+
+
+
+
