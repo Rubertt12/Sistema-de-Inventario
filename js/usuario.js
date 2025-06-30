@@ -1,42 +1,46 @@
+// Alterna visibilidade do dropdown do usuário
 function toggleUserMenu(event) {
-    event.stopPropagation(); // para evitar fechar logo em seguida
-    const dropdown = document.getElementById("userDropdown");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  event.stopPropagation(); // impede fechamento imediato ao clicar no botão
+  const dropdown = document.getElementById("userDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
 }
 
+// Função para logout com animação no botão
 function logout(button) {
-    if (button.classList.contains('animate')) return;
+  if (button.classList.contains('animate')) return; // evita logout duplicado durante animação
 
-    if (!button.querySelector('span')) {
-        const parts = button.innerHTML.split('🚪');
-        button.innerHTML = `${parts[0]}<span>🚪</span>`;
-    }
+  // Se ainda não tem o span com o emoji da porta, adiciona
+  if (!button.querySelector('span')) {
+    const parts = button.innerHTML.split('🚪');
+    button.innerHTML = `${parts[0]}<span>🚪</span>`;
+  }
 
-    const door = button.querySelector('span');
-    button.classList.add('animate');
+  const door = button.querySelector('span');
+  button.classList.add('animate');
 
-    setTimeout(() => {
-        console.log("Tchau, piazito! 👋");
-        sessionStorage.removeItem("loggedUser");
-        window.location.href = "index.html";
-    }, 700);
+  setTimeout(() => {
+    console.log("Tchau, piazito! 👋");
+    sessionStorage.removeItem("loggedUser");
+    window.location.href = "index.html";
+  }, 700);
 }
 
+// Exibe o nome do usuário salvo na sessão, ou "Usuário" padrão
 function mostrarNomeUsuario() {
-    const user = sessionStorage.getItem("loggedUser") || "Usuário";
-    document.getElementById("userName").textContent = user;
+  const user = sessionStorage.getItem("loggedUser") || "Usuário";
+  document.getElementById("userName").textContent = user;
 }
 
-document.addEventListener("click", function (event) {
-    const userMenu = document.querySelector(".user-menu");
-    const dropdown = document.getElementById("userDropdown");
-    if (!userMenu.contains(event.target)) {
-        dropdown.style.display = "none";
-    }
+// Fecha o menu de usuário ao clicar fora dele
+document.addEventListener("click", function(event) {
+  const userMenu = document.querySelector(".user-menu");
+  const dropdown = document.getElementById("userDropdown");
+  if (!userMenu.contains(event.target)) {
+    dropdown.style.display = "none";
+  }
 });
 
-
-document.addEventListener('DOMContentLoaded', function() {
-  const user = sessionStorage.getItem('loggedUser') || 'userName';
-  document.getElementById('userName').textContent = user;
+// Atualiza o nome do usuário quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
+  mostrarNomeUsuario();
 });

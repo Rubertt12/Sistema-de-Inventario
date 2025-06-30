@@ -1,4 +1,8 @@
-// Modal de setores
+// Variáveis globais para máquina ativa no modal info
+let maquinaAtivaSetor = null;
+let maquinaAtivaIndex = null;
+
+// Modal de Setores
 function addSetor() {
   document.getElementById("modalSetor").style.display = "flex";
 }
@@ -21,7 +25,7 @@ function confirmarAddSetor() {
   document.getElementById("inputSetorNome").value = "";
 }
 
-// Renderização
+// Renderização de setores e máquinas
 function renderSetores() {
   const container = document.getElementById('setoresContainer');
   container.innerHTML = '';
@@ -33,18 +37,18 @@ function renderSetores() {
       <div class="setor-header">
         <h2>${setor.nome}</h2>
         <div>
-          <button onclick="editSetorName(${i})">✏️</button>
-          <button onclick="removeSetor(${i})">X</button>
+          <button onclick="editSetorName(${i})" title="Editar nome">✏️</button>
+          <button onclick="removeSetor(${i})" title="Excluir setor">X</button>
         </div>
       </div>
       <button onclick="abrirModalMaquina(${i})">Adicionar Máquina</button>
       <button onclick="toggleMachines(${i})">${setoresVisiveis[i] ? 'Esconder Máquinas' : 'Mostrar Máquinas'}</button>
       <div id="maquinas-${i}" style="display: ${setoresVisiveis[i] ? 'block' : 'none'};">
         ${setor.maquinas.map((m, mi) => `
-          <div style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc;border-radius:10px">
+          <div style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc; border-radius:10px;">
             <strong>${m.nome}</strong> (${m.tipo}) - ${m.emManutencao ? 'Em Manutenção' : 'Operando'}
-            <button onclick="showInfo(${i}, ${mi})">Info</button>
-            <button onclick="removeMaquina(${i}, ${mi})">Excluir</button>
+            <button onclick="showInfo(${i}, ${mi})" title="Informações">Info</button>
+            <button onclick="removeMaquina(${i}, ${mi})" title="Excluir máquina">Excluir</button>
           </div>
         `).join('')}
       </div>
@@ -53,9 +57,9 @@ function renderSetores() {
   });
 }
 
-// Alterna visibilidade das máquinas
-function toggleMachines(index) {
-  setoresVisiveis[index] = !setoresVisiveis[index];
+// Alterna visibilidade das máquinas no setor
+function toggleMachines(i) {
+  setoresVisiveis[i] = !setoresVisiveis[i];
   renderSetores();
 }
 
@@ -66,7 +70,9 @@ function editSetorName(i) {
     setores[i].nome = novoNome.trim();
     saveSetoresAndMachines();
     renderSetores();
-  } else alert("Nome inválido.");
+  } else {
+    alert("Nome inválido.");
+  }
 }
 
 // Remover setor
@@ -112,23 +118,23 @@ function trocarCampos() {
 function confirmarAddMaquina() {
   const tipo = document.getElementById("tipoEquipamento").value;
   const idUnico = `maquina_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-  if (tipo === 'máquina') {
- const tipoMaquina = document.getElementById("tipoMaquina").value.trim();
-const nomeMaquina = document.getElementById("nomeMaquina").value.trim();
-const etiquetaMaquina = document.getElementById("etiquetaMaquina").value.trim();
 
+  if (tipo === 'máquina') {
+    const tipoMaquina = document.getElementById("tipoMaquina").value.trim();
+    const nomeMaquina = document.getElementById("nomeMaquina").value.trim();
+    const etiquetaMaquina = document.getElementById("etiquetaMaquina").value.trim();
 
     if (!tipoMaquina || !nomeMaquina || !etiquetaMaquina) return alert("Preencha todos os campos da máquina.");
-setores[setorSelecionado].maquinas.push({
-  id: idUnico,
-  nome: nomeMaquina,
-  tipo: tipoMaquina,
-  etiqueta: etiquetaMaquina,
-  chamado: [],
-  emManutencao: false,
-  tempoManutencao: 0
-});
 
+    setores[setorSelecionado].maquinas.push({
+      id: idUnico,
+      nome: nomeMaquina,
+      tipo: tipoMaquina,
+      etiqueta: etiquetaMaquina,
+      chamado: [],
+      emManutencao: false,
+      tempoManutencao: 0
+    });
 
   } else if (tipo === 'monitor') {
     const etiquetaMonitor = document.getElementById("etiquetaMonitor").value.trim();
@@ -168,58 +174,25 @@ function saveSetoresAndMachines() {
 function loadSetoresAndMachines() {
   setores = JSON.parse(localStorage.getItem('setores')) || [];
   setoresVisiveis = new Array(setores.length).fill(false);
-  renderSetores(); // <-- garante que a renderização sempre ocorra após carregar
+  renderSetores();
 }
-// Carrega dados do localStorage e renderiza setores quando a página abrir
 document.addEventListener('DOMContentLoaded', () => {
   loadSetoresAndMachines();
-  renderSetores();
 });
 
 // ----- Chamados ----- //
 
-function toggleChecklist(legendElement) {
-  const content = legendElement.nextElementSibling; // pega o div com checklist
-  const arrow = legendElement.querySelector('.arrow');
-  
-  if (content.style.display === "none") {
-    content.style.display = "block";
-    arrow.textContent = "▼"; // seta para baixo (expandido)
-  } else {
-    content.style.display = "none";
-    arrow.textContent = "►"; // seta para direita (recolhido)
-  }
-}
-
-
-
-// Mostrar informações da máquina e seus chamados
+// Mostrar modal info e listar chamados da máquina
 function showInfo(setorIndex, maquinaIndex) {
   maquinaAtivaSetor = setorIndex;
   maquinaAtivaIndex = maquinaIndex;
-  currentMachineId = setores[setorIndex].maquinas[maquinaIndex].id;
 
-  const maquina = setores[setorIndex].maquinas[maquinaIndex];
-
-  // Preenche o modalText com os detalhes da máquina
-document.getElementById('modalText').innerHTML = `
-  <strong>Nome:</strong> ${maquina.nome || 'N/A'}<br>
-  <strong>Tipo:</strong> ${maquina.tipo || 'N/A'}<br>
-  ${maquina.tipo.toLowerCase() === 'monitor' 
-    ? `<strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>`
-    : `<strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>`
-  }
-`;
-
-
-
-  // Exibir modal info
   const modal = document.getElementById('infoModal');
   modal.style.display = 'flex';
 
-  atualizarListaChamados(currentMachineId);
+  atualizarListaChamados();
 
-  // Ajusta visibilidade dos botões e mensagem conforme estado da máquina
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
   if (maquina.emManutencao) {
     document.getElementById('maintenanceMessage').style.display = 'block';
     document.getElementById('maintenanceBtn').style.display = 'none';
@@ -231,17 +204,11 @@ document.getElementById('modalText').innerHTML = `
   }
 }
 
-
-
-
-
 // Fecha modal info
 function closeModal() {
   document.getElementById('infoModal').style.display = 'none';
-  currentMachineId = null;
   maquinaAtivaSetor = null;
   maquinaAtivaIndex = null;
-
   clearForm();
 }
 window.addEventListener('click', e => {
@@ -249,80 +216,22 @@ window.addEventListener('click', e => {
   if (e.target === modal) closeModal();
 });
 
-// Salvar chamado
-function saveObservation() {
-  const observacao = document.getElementById('observacao').value.trim();
-  const prioridade = document.getElementById('priority').value;
-  const checkboxes = document.querySelectorAll('#maintenanceSection input[type="checkbox"]:checked');
-
-  if (!currentMachineId) {
-    alert('Nenhuma máquina selecionada para salvar o chamado.');
-    return;
-  }
-
-  let checklistDescr = '';
-  if (checkboxes.length > 0) {
-    checklistDescr = 'Checklist:\n';
-    checkboxes.forEach(cb => {
-      checklistDescr += '- ' + cb.parentElement.textContent.trim() + '\n';
-    });
-  }
-
-  let descricaoCompleta = '';
-  if (observacao) descricaoCompleta += `Observação:\n${observacao}\n\n`;
-  if (checklistDescr) descricaoCompleta += checklistDescr;
-
-  if (!descricaoCompleta) {
-    alert('Informe uma observação ou marque ao menos uma opção do checklist.');
-    return;
-  }
-
-  const chamado = {
-    maquinaId: currentMachineId,
-    descricao: descricaoCompleta,
-    prioridade,
-    data: new Date().toISOString()
-  };
-
-  salvarChamado(chamado);
-  alert('Chamado salvo com sucesso!');
-  clearForm();
-  atualizarListaChamados(currentMachineId);
-}
-
-// Limpa form chamados
-function clearForm() {
-  document.getElementById('observacao').value = '';
-  document.querySelectorAll('#maintenanceSection input[type="checkbox"]').forEach(cb => cb.checked = false);
-  document.getElementById('priority').value = 'Baixa';
-}
-
-// Salvar chamado no localStorage
-function salvarChamado(chamado) {
-  let chamados = JSON.parse(localStorage.getItem('chamados')) || [];
-
-  // Evita duplicata id + descrição exata
-  const existe = chamados.some(c => c.maquinaId === chamado.maquinaId && c.descricao === chamado.descricao && c.data === chamado.data);
-  if (!existe) {
-    chamados.push(chamado);
-    localStorage.setItem('chamados', JSON.stringify(chamados));
-  }
-}
-
-// Atualizar lista de chamados do modal
-function atualizarListaChamados(maquinaId) {
+// Atualiza lista de chamados da máquina ativa
+function atualizarListaChamados() {
   const ul = document.getElementById('observationsUl');
   ul.innerHTML = '';
 
-  const chamados = JSON.parse(localStorage.getItem('chamados')) || [];
-  const chamadosDaMaquina = chamados.filter(c => c.maquinaId === maquinaId);
+  if (maquinaAtivaSetor === null || maquinaAtivaIndex === null) return;
 
-  if (chamadosDaMaquina.length === 0) {
+  const maquina = setores[maquinaAtivaSetor].maquinas[maquinaAtivaIndex];
+  const chamados = maquina.chamado || [];
+
+  if (chamados.length === 0) {
     ul.innerHTML = '<li style="font-style: italic; color: #666;">Nenhum chamado registrado.</li>';
     return;
   }
 
-  chamadosDaMaquina.forEach(chamado => {
+  chamados.forEach(chamado => {
     const li = document.createElement('li');
     li.style.marginBottom = '1rem';
     li.style.padding = '0.5rem';
@@ -348,7 +257,7 @@ function atualizarListaChamados(maquinaId) {
     const descPre = document.createElement('pre');
     descPre.style.whiteSpace = 'pre-wrap';
     descPre.style.marginTop = '0.5rem';
-    descPre.textContent = chamado.descricao;
+    descPre.textContent = chamado.descricao || chamado.observacao || '';
 
     li.appendChild(dataSpan);
     li.appendChild(prioridadeSpan);
@@ -358,40 +267,202 @@ function atualizarListaChamados(maquinaId) {
   });
 }
 
-// Funções para marcar e liberar manutenção da máquina
+// Salvar novo chamado na máquina ativa
+function saveObservation() {
+  if (maquinaAtivaSetor === null || maquinaAtivaIndex === null) {
+    alert('Nenhuma máquina selecionada para salvar o chamado.');
+    return;
+  }
 
+  const observacao = document.getElementById('observacao').value.trim();
+  const prioridade = document.getElementById('priority').value;
+  const checkboxes = document.querySelectorAll('#maintenanceSection input[type="checkbox"]:checked');
+
+  if (!observacao && checkboxes.length === 0) {
+    alert('Informe uma observação ou marque ao menos uma opção do checklist.');
+    return;
+  }
+
+  let checklistDescr = '';
+  if (checkboxes.length > 0) {
+    checklistDescr = 'Checklist:\n';
+    checkboxes.forEach(cb => {
+      checklistDescr += '- ' + cb.parentElement.textContent.trim() + '\n';
+    });
+  }
+
+  let descricaoCompleta = '';
+  if (observacao) descricaoCompleta += `Observação:\n${observacao}\n\n`;
+  if (checklistDescr) descricaoCompleta += checklistDescr;
+
+  const chamado = {
+    data: new Date().toISOString(),
+    prioridade,
+    descricao: descricaoCompleta
+  };
+
+  setores[maquinaAtivaSetor].maquinas[maquinaAtivaIndex].chamado.push(chamado);
+  saveSetoresAndMachines();
+  atualizarListaChamados();
+  clearForm();
+  alert('Chamado salvo com sucesso!');
+}
+
+// Limpa form do chamado
+function clearForm() {
+  document.getElementById('observacao').value = '';
+  document.querySelectorAll('#maintenanceSection input[type="checkbox"]').forEach(cb => cb.checked = false);
+  document.getElementById('priority').value = 'Baixa';
+}
+
+// Marcar máquina para manutenção
 function markForMaintenance() {
   if (maquinaAtivaSetor === null || maquinaAtivaIndex === null) {
     alert('Nenhuma máquina selecionada para manutenção.');
     return;
   }
-
   const maquina = setores[maquinaAtivaSetor].maquinas[maquinaAtivaIndex];
   maquina.emManutencao = true;
   maquina.tempoManutencao = Date.now();
-
   saveSetoresAndMachines();
   renderSetores();
-
   document.getElementById('maintenanceMessage').style.display = 'block';
   document.getElementById('maintenanceBtn').style.display = 'none';
   document.getElementById('releaseBtn').style.display = 'inline-block';
 }
 
+// Liberar máquina da manutenção
 function releaseMachine() {
   if (maquinaAtivaSetor === null || maquinaAtivaIndex === null) {
     alert('Nenhuma máquina selecionada para liberar.');
     return;
   }
-
   const maquina = setores[maquinaAtivaSetor].maquinas[maquinaAtivaIndex];
   maquina.emManutencao = false;
   maquina.tempoManutencao = 0;
-
   saveSetoresAndMachines();
   renderSetores();
-
   document.getElementById('maintenanceMessage').style.display = 'none';
   document.getElementById('maintenanceBtn').style.display = 'inline-block';
   document.getElementById('releaseBtn').style.display = 'none';
+}
+
+
+let setoresFiltradosIndices = null; // null = sem filtro
+
+function filterMachines() {
+  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (!termo) {
+    setoresFiltradosIndices = null;
+    renderSetores();
+    return;
+  }
+
+  setoresFiltradosIndices = setores.reduce((acc, setor, i) => {
+    const setorMatch = setor.nome.toLowerCase().includes(termo);
+    const maquinasMatch = setor.maquinas.some(m => {
+      return (
+        m.nome.toLowerCase().includes(termo) ||
+        m.tipo.toLowerCase().includes(termo) ||
+        (m.etiqueta && m.etiqueta.toLowerCase().includes(termo))
+      );
+    });
+
+    if (setorMatch || maquinasMatch) acc.push(i);
+    return acc;
+  }, []);
+
+  renderSetores(termo);
+}
+
+// Agora ajusta o renderSetores para aceitar o termo (string) ou null
+function renderSetores(termoBusca = null) {
+  const container = document.getElementById('setoresContainer');
+  container.innerHTML = '';
+
+  let indicesParaMostrar = setoresFiltradosIndices;
+  if (!indicesParaMostrar) {
+    // Sem filtro: mostra todos
+    indicesParaMostrar = setores.map((_, i) => i);
+  }
+
+  if (indicesParaMostrar.length === 0) {
+    container.innerHTML = '<p style="font-style: italic; color: #666;">Nenhum setor ou máquina encontrado.</p>';
+    return;
+  }
+
+  indicesParaMostrar.forEach(i => {
+    const setor = setores[i];
+    const div = document.createElement('div');
+    div.classList.add('setor');
+
+    // Se tiver termo e o termo bater no setor (busca por setor), mostramos todas máquinas
+    // Senão, filtramos as máquinas que batem no termo
+    let maquinasParaRenderizar = setor.maquinas;
+
+    if (termoBusca && !setor.nome.toLowerCase().includes(termoBusca)) {
+      maquinasParaRenderizar = setor.maquinas.filter(m => {
+        return (
+          m.nome.toLowerCase().includes(termoBusca) ||
+          m.tipo.toLowerCase().includes(termoBusca) ||
+          (m.etiqueta && m.etiqueta.toLowerCase().includes(termoBusca))
+        );
+      });
+    }
+
+    // Render com botões e funcionalidades intactas
+    div.innerHTML = `
+      <div class="setor-header">
+        <h2>${setor.nome}</h2>
+        <div>
+          <button onclick="editSetorName(${i})">✏️</button>
+          <button onclick="removeSetor(${i})">X</button>
+        </div>
+      </div>
+      <button onclick="abrirModalMaquina(${i})">Adicionar Máquina</button>
+      <button onclick="toggleMachines(${i})">${setoresVisiveis[i] ? 'Esconder Máquinas' : 'Mostrar Máquinas'}</button>
+      <div id="maquinas-${i}" style="display: ${setoresVisiveis[i] ? 'block' : 'none'};">
+        ${maquinasParaRenderizar.map((m, mi) => `
+          <div style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc;border-radius:10px">
+            <strong>${m.nome}</strong> (${m.tipo}) - ${m.emManutencao ? 'Em Manutenção' : 'Operando'}
+            <button onclick="showInfo(${i}, ${mi})">Info</button>
+            <button onclick="removeMaquina(${i}, ${mi})">Excluir</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+
+
+
+function excluirTodosSetores() {
+  if (confirm("Tem certeza que deseja excluir TODOS os setores? Esta ação não pode ser desfeita.")) {
+    setores = [];
+    setoresVisiveis = [];
+    localStorage.removeItem('setores');  // limpa do localStorage
+    localStorage.removeItem('chamados'); // se quiser apagar também os chamados (opcional)
+
+    renderSetores();
+    alert("Todos os setores foram excluídos.");
+  }
+}
+
+
+
+
+function toggleLayout() {
+  const container = document.getElementById('setoresContainer');
+  const toggle = document.getElementById('layoutToggle');
+
+  if (toggle.checked) {
+    container.classList.remove('list-view');
+    container.classList.add('grid-view');
+  } else {
+    container.classList.remove('grid-view');
+    container.classList.add('list-view');
+  }
 }

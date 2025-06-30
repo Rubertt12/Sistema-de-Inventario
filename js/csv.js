@@ -1,15 +1,14 @@
-// Função para abrir o seletor de arquivos para importação
 function importFromCSVButton() {
     document.getElementById('csvInput').click();
 }
 
 function exportToCSV() {
-    let csvContent = "Setor;Tipo;Nome da Máquina;Etiqueta;Em Manutenção;Tempo de Manutenção;Observações;Prioridade\n";
+    let csvContent = "Setor;Tipo;Nome da Máquina;Etiqueta;Em Manutenção;Tempo de Manutenção;Observações\n";
 
     setores.forEach(setor => {
         setor.maquinas.forEach(maquina => {
-            const observacoes = maquina.chamado.map(chamado => `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`).join(" | ") || "Nenhuma Observação";
-            const row = `"${setor.nome}";"${maquina.tipo}";"${maquina.nome}";"${maquina.etiqueta || 'Sem etiqueta'}";${maquina.emManutencao};${maquina.tempoManutencao};"${observacoes}"\n`;
+            const observacoes = maquina.chamado?.map(chamado => `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`).join(" | ") || "Nenhuma Observação";
+            const row = `"${setor.nome}";"${maquina.tipo}";"${maquina.numeroSerie || maquina.nome || 'Sem nome'}";"${maquina.etiqueta || 'Sem etiqueta'}";${maquina.emManutencao};${maquina.tempoManutencao};${observacoes}\n`;
             csvContent += row;
         });
     });
@@ -23,11 +22,6 @@ function exportToCSV() {
     document.body.removeChild(link);
 }
 
-
-
-
-
-// Função para importar o CSV e adicionar setores e máquinas
 function importFromCSV(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -40,19 +34,20 @@ function importFromCSV(event) {
         setoresVisiveis = [];
 
         rows.forEach((row, index) => {
-            if (index === 0 || !row.trim()) return;
+            if (index === 0 || !row.trim()) return; // pula cabeçalho ou linha vazia
 
             const cols = row.split(";");
+            if (cols.length < 6) return; // validação mínima
 
             const setorNome = cols[0].replace(/"/g, '').trim();
-            const maquinaTipo = cols[1].replace(/"/g, '').trim(); // corrige aqui
-            const maquinaNome = cols[2].replace(/"/g, '').trim(); // e aqui
-            const etiqueta = cols[3].trim();
-            const emManutencao = cols[4].trim() === 'true';
+            const maquinaTipo = cols[1].replace(/"/g, '').trim();
+            const maquinaNome = cols[2].replace(/"/g, '').trim();
+            const etiqueta = cols[3].replace(/"/g, '').trim();
+            const emManutencao = cols[4].trim().toLowerCase() === 'true';
             const tempoManutencao = parseInt(cols[5].trim()) || 0;
-            const observacoes = cols[6].replace(/"/g, '').trim();
-            
-            
+            const observacoesString = cols.slice(6).join(";").replace(/"/g, '').trim(); // junta tudo depois da 6ª coluna
+
+            // Garante que o setor exista
             let setor = setores.find(s => s.nome === setorNome);
             if (!setor) {
                 setor = { nome: setorNome, maquinas: [] };
@@ -60,11 +55,21 @@ function importFromCSV(event) {
                 setoresVisiveis.push(false);
             }
 
+            const chamados = observacoesString && observacoesString !== "Nenhuma Observação"
+                ? observacoesString.split(" | ").map(obs => {
+                    const partes = obs.split(" - Prioridade: ");
+                    return {
+                        observacao: partes[0].trim(),
+                        prioridade: partes[1]?.trim() || 'Normal'
+                    };
+                })
+                : [];
+
             const maquina = {
                 nome: maquinaNome,
                 tipo: maquinaTipo,
-                etiqueta: cols[1].trim(),
-                chamado: observacoes ? [{ observacao: observacoes, prioridade: 'Normal' }] : [],
+                etiqueta,
+                chamado: chamados,
                 emManutencao,
                 tempoManutencao,
             };
@@ -76,5 +81,7 @@ function importFromCSV(event) {
         renderSetores();
     };
 
-    reader.readAsText(file);
+    if (file) {
+        reader.readAsText(file);
+    }
 }
