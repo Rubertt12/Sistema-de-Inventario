@@ -143,3 +143,47 @@ document.addEventListener('DOMContentLoaded', function() {
   const userNameElem = document.getElementById('userName');
   if (userNameElem) userNameElem.textContent = user;
 });
+
+
+
+
+
+
+function exportarBackupJSON() {
+  const dados = {
+    setores: setores,
+    chamados: JSON.parse(localStorage.getItem('chamados')) || []
+  };
+  const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'backup-inventario.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+
+function importarBackupJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return alert("Selecione um arquivo JSON válido.");
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const dados = JSON.parse(e.target.result);
+      if (!dados.setores || !Array.isArray(dados.setores)) throw "Formato inválido";
+
+      localStorage.setItem('setores', JSON.stringify(dados.setores));
+      localStorage.setItem('chamados', JSON.stringify(dados.chamados || []));
+
+      alert("Backup restaurado com sucesso!");
+      window.location.reload();
+    } catch (err) {
+      alert("Erro ao importar backup: " + err);
+    }
+  };
+  reader.readAsText(file);
+}

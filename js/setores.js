@@ -466,3 +466,67 @@ function toggleLayout() {
     container.classList.add('list-view');
   }
 }
+
+
+
+
+let maquinaEmMovimento = null;
+
+function renderSetores() {
+  const container = document.getElementById('setoresContainer');
+  container.innerHTML = '';
+
+  setores.forEach((setor, i) => {
+    // Cria div do setor com ondrop e ondragover
+    const divSetor = document.createElement('div');
+    divSetor.classList.add('setor');
+    divSetor.ondragover = e => e.preventDefault();
+    divSetor.ondrop = e => dropMachine(e, i);
+
+    divSetor.innerHTML = `
+      <div class="setor-header">
+        <h2>${setor.nome}</h2>
+        <div>
+          <button onclick="editSetorName(${i})">✏️</button>
+          <button onclick="removeSetor(${i})">X</button>
+        </div>
+      </div>
+      <button onclick="abrirModalMaquina(${i})">Adicionar Máquina</button>
+      <button onclick="toggleMachines(${i})">${setoresVisiveis[i] ? 'Esconder Máquinas' : 'Mostrar Máquinas'}</button>
+      <div id="maquinas-${i}" style="display: ${setoresVisiveis[i] ? 'block' : 'none'};">
+        ${setor.maquinas.map((m, mi) => `
+          <div 
+            draggable="true" 
+            ondragstart="dragStart(event, ${i}, ${mi})" 
+            style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc; border-radius:10px; cursor: grab;">
+            <strong>${m.nome}</strong> (${m.tipo}) - ${m.emManutencao ? 'Em Manutenção' : 'Operando'}
+            <button onclick="showInfo(${i}, ${mi})">Info</button>
+            <button onclick="removeMaquina(${i}, ${mi})">Excluir</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    container.appendChild(divSetor);
+  });
+}
+
+function dragStart(event, setorIndex, maquinaIndex) {
+  maquinaEmMovimento = { setorIndex, maquinaIndex };
+}
+
+function dropMachine(event, novoSetorIndex) {
+  if (!maquinaEmMovimento) return;
+
+  const { setorIndex, maquinaIndex } = maquinaEmMovimento;
+  if (setorIndex === novoSetorIndex) return; // evita soltar no mesmo setor
+
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+  setores[setorIndex].maquinas.splice(maquinaIndex, 1);
+  setores[novoSetorIndex].maquinas.push(maquina);
+
+  saveSetoresAndMachines();
+  renderSetores();
+
+  maquinaEmMovimento = null;
+}

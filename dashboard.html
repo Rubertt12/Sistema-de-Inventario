@@ -175,10 +175,18 @@
         />
         <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
       </div>
-      
+      <h3>Backup / Restauração</h3>
+<button onclick="exportarBackupJSON()">📤 Exportar Backup (JSON)</button>
+<button onclick="document.getElementById('jsonInput').click()">📥 Importar Backup (JSON)</button>
+<input type="file" id="jsonInput" accept=".json" onchange="importarBackupJSON(event)" style="display:none;" />
+
+  <h3> DADOS CSV</h3>
       <button onclick="importFromCSVButton()">Importar CSV</button>
       <button onclick="exportToCSV()">Exportar para CSV</button>
       <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)" />
+      
+
+
       
       <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
     </div>
@@ -255,6 +263,8 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
   
   <!-- Seus scripts JS -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script src="/js/chamado.js"></script>
   <script src="/js/setores.js"></script>
   <script src="/js/main.js"></script>
