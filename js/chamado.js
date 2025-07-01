@@ -229,10 +229,9 @@ async function abrirScanner() {
   html5QrcodeScanner = new Html5Qrcode("reader");
 
   try {
-    // Força câmera traseira com facingMode
     const config = {
-      fps: 25,
-      qrbox: { width: 150, height: 150 },
+      fps: 30, // Mais frames por segundo pra capturar rápido
+      qrbox: { width: 200, height: 200 }, // Área menor de leitura (mais precisão)
       aspectRatio: 1.3333
     };
 
@@ -245,21 +244,20 @@ async function abrirScanner() {
         document.getElementById(campo).value = decodedText;
         fecharScanner();
       },
-      (errorMessage) => {
-        // Pode ignorar leitura falha
+      (err) => {
+        // Erros de leitura ignorados silenciosamente
       }
     );
 
-    // Tenta aplicar zoom (experimental)
-    await tentarAplicarZoom();
+    await tentarAplicarZoom(2); // Tenta zoom de 2x
 
   } catch (err) {
-    alert("Erro ao iniciar scanner ou acessar a câmera traseira: " + err);
+    alert("Erro ao acessar a câmera traseira: " + err);
     fecharScanner();
   }
 }
 
-async function tentarAplicarZoom() {
+async function tentarAplicarZoom(zoomNivel = 2) {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: { exact: "environment" } }
@@ -269,17 +267,14 @@ async function tentarAplicarZoom() {
     const capabilities = track.getCapabilities();
 
     if (capabilities.zoom) {
-      const idealZoom = Math.min(2, capabilities.zoom.max);
-      await track.applyConstraints({
-        advanced: [{ zoom: idealZoom }]
-      });
-      console.log("Zoom aplicado:", idealZoom);
+      const zoomDesejado = Math.min(zoomNivel, capabilities.zoom.max);
+      await track.applyConstraints({ advanced: [{ zoom: zoomDesejado }] });
+      console.log("Zoom aplicado:", zoomDesejado);
     }
 
-    // Fecha o stream extra criado só pro zoom
     stream.getTracks().forEach(t => t.stop());
   } catch (err) {
-    console.warn("Zoom não suportado ou falhou:", err);
+    console.warn("Zoom não disponível:", err);
   }
 }
 
@@ -290,7 +285,7 @@ function fecharScanner() {
       html5QrcodeScanner = null;
       document.getElementById('modalScanner').style.display = 'none';
     }).catch(err => {
-      alert("Erro ao parar scanner: " + err);
+      alert("Erro ao parar o scanner: " + err);
     });
   } else {
     document.getElementById('modalScanner').style.display = 'none';
