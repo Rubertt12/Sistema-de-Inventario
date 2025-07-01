@@ -152,3 +152,56 @@ function fecharScanner() {
     });
   }
 }
+
+
+
+let html5QrcodeScanner;
+
+function abrirScanner() {
+  document.getElementById('modalScanner').style.display = 'flex';
+
+  if (html5QrcodeScanner) return; // Já iniciado
+
+  html5QrcodeScanner = new Html5Qrcode("reader");
+
+  html5QrcodeScanner.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: 250
+    },
+    (decodedText, decodedResult) => {
+      // Preenche o campo correto conforme o tipo selecionado
+      const tipoEquip = document.getElementById('tipoEquipamento').value;
+
+      if (tipoEquip === 'máquina') {
+        document.getElementById('nomeMaquina').value = decodedText;
+      } else if (tipoEquip === 'monitor') {
+        document.getElementById('etiquetaMonitor').value = decodedText;
+      }
+
+      fecharScanner(); // Fecha modal e para câmera após leitura
+    },
+    (errorMessage) => {
+      // Pode ignorar erros de leitura aqui
+      // console.log("Erro leitura QR:", errorMessage);
+    }
+  ).catch(err => {
+    alert("Erro ao acessar a câmera: " + err);
+    fecharScanner();
+  });
+}
+
+function fecharScanner() {
+  if (html5QrcodeScanner) {
+    html5QrcodeScanner.stop().then(() => {
+      html5QrcodeScanner.clear();
+      html5QrcodeScanner = null;
+      document.getElementById('modalScanner').style.display = 'none';
+    }).catch(err => {
+      alert("Erro ao parar scanner: " + err);
+    });
+  } else {
+    document.getElementById('modalScanner').style.display = 'none';
+  }
+}
