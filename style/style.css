@@ -7,7 +7,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  touch-action: manipulation; /* evita zoom por toque duplo */
+ 
 }
 
 .login-container {
