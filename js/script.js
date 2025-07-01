@@ -330,8 +330,8 @@ verificarPermissao();
 
 let usuarios = [
   {
-    nome: "AdmRubertt",
-    senha: "123",
+    nome: "admin",
+    senha: "Yugioh22@",
     permissao: "admin"
   },
   {
@@ -358,3 +358,5 @@ function loginUsuario(nome, senha) {
 function abrirPaginaUsuarios() {
   window.location.href = 'usuarios.html'; // Ou o caminho correto do seu arquivo
 }
+
+
