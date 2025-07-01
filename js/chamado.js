@@ -228,72 +228,56 @@ async function abrirScanner() {
 
   html5QrcodeScanner = new Html5Qrcode("reader");
 
-  // Tenta obter permissão e controle da câmera
   try {
-    const devices = await Html5Qrcode.getCameras();
-    if (devices && devices.length) {
-      const cameraId = devices[0].id;
+    // Força câmera traseira com facingMode
+    const config = {
+      fps: 25,
+      qrbox: { width: 150, height: 150 },
+      aspectRatio: 1.3333
+    };
 
-      html5QrcodeScanner.start(
-        { deviceId: { exact: cameraId } },
-        {
-          fps: 25,
-          qrbox: { width: 150, height: 150 },
-          aspectRatio: 1.3333
-        },
-        (decodedText) => {
-          const tipo = document.getElementById('tipoEquipamento').value;
-          const campo = tipo === 'monitor' ? 'etiquetaMonitor' : 'etiquetaMaquina';
-          document.getElementById(campo).value = decodedText;
-          fecharScanner();
-        },
-        (errorMessage) => {
-          // Ignora erros pequenos
-        }
-      ).then(() => {
-        // Tenta aplicar zoom se suportado
-        tentarAplicarZoom(cameraId);
-      }).catch((err) => {
-        alert("Erro ao iniciar scanner: " + err);
+    await html5QrcodeScanner.start(
+      { facingMode: { exact: "environment" } },
+      config,
+      (decodedText) => {
+        const tipo = document.getElementById('tipoEquipamento').value;
+        const campo = tipo === 'monitor' ? 'etiquetaMonitor' : 'etiquetaMaquina';
+        document.getElementById(campo).value = decodedText;
         fecharScanner();
-      });
-    } else {
-      alert("Nenhuma câmera encontrada!");
-      fecharScanner();
-    }
+      },
+      (errorMessage) => {
+        // Pode ignorar leitura falha
+      }
+    );
+
+    // Tenta aplicar zoom (experimental)
+    await tentarAplicarZoom();
+
   } catch (err) {
-    alert("Erro ao acessar câmera: " + err);
+    alert("Erro ao iniciar scanner ou acessar a câmera traseira: " + err);
     fecharScanner();
   }
 }
 
-async function tentarAplicarZoom(cameraId) {
+async function tentarAplicarZoom() {
   try {
-    const constraints = {
-      video: {
-        deviceId: cameraId,
-        advanced: [{ zoom: 2 }] // Zoom 2x (ajuste conforme suporte da câmera)
-      }
-    };
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { exact: "environment" } }
+    });
 
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
     const track = stream.getVideoTracks()[0];
     const capabilities = track.getCapabilities();
 
     if (capabilities.zoom) {
-      const settings = track.getSettings();
-      const zoomMax = capabilities.zoom.max;
-      const idealZoom = Math.min(2, zoomMax);
-
+      const idealZoom = Math.min(2, capabilities.zoom.max);
       await track.applyConstraints({
         advanced: [{ zoom: idealZoom }]
       });
-
       console.log("Zoom aplicado:", idealZoom);
     }
 
-    // Interrompe o stream manual extra (não é usado pela html5-qrcode)
-    stream.getTracks().forEach((t) => t.stop());
+    // Fecha o stream extra criado só pro zoom
+    stream.getTracks().forEach(t => t.stop());
   } catch (err) {
     console.warn("Zoom não suportado ou falhou:", err);
   }
