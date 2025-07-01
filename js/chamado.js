@@ -235,19 +235,21 @@ function abrirScanner() {
       qrbox: 250
     },
     (decodedText, decodedResult) => {
-      // Preenche o campo correto conforme o tipo selecionado
+      // Sempre coloca o código lido no campo de etiqueta correto
       const tipoEquip = document.getElementById('tipoEquipamento').value;
 
       if (tipoEquip === 'máquina') {
-        document.getElementById('nomeMaquina').value = decodedText;
+        // Para máquinas, coloca no campo etiquetaMaquina
+        document.getElementById('etiquetaMaquina').value = decodedText;
       } else if (tipoEquip === 'monitor') {
+        // Para monitores, no etiquetaMonitor
         document.getElementById('etiquetaMonitor').value = decodedText;
       }
 
       fecharScanner(); // Fecha modal e para câmera após leitura
     },
     (errorMessage) => {
-      // Pode ignorar erros de leitura aqui
+      // Ignora erros pequenos de leitura
       // console.log("Erro leitura QR:", errorMessage);
     }
   ).catch(err => {
