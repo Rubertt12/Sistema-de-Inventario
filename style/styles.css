@@ -1286,3 +1286,31 @@ select {
     color: white;
   }
   
+
+
+
+
+
+
+  .table-setores {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.table-setores th, .table-setores td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.table-setores thead {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.table-setores tbody tr:hover {
+  background-color: #f0f0f0;
+}

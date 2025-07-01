@@ -203,7 +203,8 @@ function confirmarAddMaquina() {
         novaMaquina.numeroSerie = document.getElementById('nomeMaquina').value;
         novaMaquina.etiqueta = document.getElementById('etiquetaMaquina').value;
     } else if (tipoEquip === 'monitor') {
-        novaMaquina.etiqueta = document.getElementById('etiquetaMonitor').value;
+        
+
     }
 
     setores[currentSetorIndex].maquinas.push(novaMaquina);
@@ -291,3 +292,5 @@ function fecharScanner() {
     document.getElementById('modalScanner').style.display = 'none';
   }
 }
+
+

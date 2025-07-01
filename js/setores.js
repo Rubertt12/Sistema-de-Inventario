@@ -107,6 +107,7 @@ function resetModalMaquina() {
   document.getElementById("nomeMaquina").value = "";
   document.getElementById("etiquetaMaquina").value = "";
   document.getElementById("etiquetaMonitor").value = "";
+  document.getElementById("usuarioResponsavel").value = "";
   trocarCampos();
 }
 function trocarCampos() {
@@ -120,6 +121,7 @@ function confirmarAddMaquina() {
   const idUnico = `maquina_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
   if (tipo === 'máquina') {
+    const nomeUsuario = document.getElementById("usuarioResponsavel").value.trim();
     const tipoMaquina = document.getElementById("tipoMaquina").value.trim();
     const nomeMaquina = document.getElementById("nomeMaquina").value.trim();
     const etiquetaMaquina = document.getElementById("etiquetaMaquina").value.trim();
@@ -127,6 +129,7 @@ function confirmarAddMaquina() {
     if (!tipoMaquina || !nomeMaquina || !etiquetaMaquina) return alert("Preencha todos os campos da máquina.");
 
     setores[setorSelecionado].maquinas.push({
+      usuarioResponsavel: nomeUsuario,
       id: idUnico,
       nome: nomeMaquina,
       tipo: tipoMaquina,
@@ -138,10 +141,13 @@ function confirmarAddMaquina() {
 
   } else if (tipo === 'monitor') {
     const etiquetaMonitor = document.getElementById("etiquetaMonitor").value.trim();
+    const nomeUsuario = document.getElementById("usuarioResponsavel").value.trim();
     if (!etiquetaMonitor) return alert("Preencha a etiqueta do monitor.");
+
 
     setores[setorSelecionado].maquinas.push({
       id: idUnico,
+      usuarioResponsavel: nomeUsuario,
       nome: `Monitor - ${etiquetaMonitor}`,
       tipo: 'Monitor',
       etiqueta: etiquetaMonitor,
@@ -546,11 +552,16 @@ function showInfo(setorIndex, maquinaIndex) {
   const maquina = setores[setorIndex].maquinas[maquinaIndex];
 
   // ⬇️ Aqui preenche o texto com as informações
+  
   document.getElementById('modalText').innerHTML = `
+  <strong>Usuário:</strong> ${maquina.usuarioResponsavel || 'Não informado'}<br>
   <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
-    <strong>Nome:</strong> ${maquina.nome}<br>
-    <strong>Tipo:</strong> ${maquina.tipo}<br>
-    <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
+  <strong>Nome:</strong> ${maquina.nome}<br>
+  <strong>Tipo:</strong> ${maquina.tipo}<br>
+  <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
+
+  
+
   `;
 
   atualizarListaChamados(currentMachineId);
