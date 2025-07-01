@@ -1,179 +1,113 @@
-/* Reset básico */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Corpo e html ocupam 100% da tela */
-html, body {
-  height: 100%;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #4A90E2, #002F6C);
-  color: #333;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Body usa flex para centralizar o container */
+/* Fonte base e reset */
 body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #0a3b96;
+  margin: 0;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* viewport height */
-  overflow: hidden;
-  padding: 0 1rem;
+  touch-action: manipulation; /* evita zoom por toque duplo */
 }
 
-/* Container do login */
 .login-container {
-  background: #fff;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
   width: 100%;
-  max-width: 420px;
-  height: 90vh;
-  max-height: 620px;
-  border-radius: 18px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
-  padding: 2.5rem 2.5rem 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  max-width: 400px;
+  box-sizing: border-box;
 }
 
-/* Logo no topo, com espaçamento */
 .logo-container {
-  margin-bottom: 2rem;
-  width: 120px;
-  height: 120px;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .logo-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  max-width: 150px;
+  height: auto;
 }
 
-/* Tabs (Login e Cadastro) */
 .tabs {
   display: flex;
-  width: 100%;
-  margin-bottom: 2rem;
-  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .tabs button {
   flex: 1;
-  padding: 0.85rem 0;
-  font-weight: 600;
+  padding: 0.75rem 0;
   border: none;
-  border-bottom: 3px solid transparent;
-  background: none;
+  background: #eee;
+  font-size: 16px;
   cursor: pointer;
-  font-size: 1.1rem;
-  transition: border-color 0.3s ease, color 0.3s ease;
-  color: #555;
+  border-radius: 8px 8px 0 0;
+  transition: background-color 0.3s ease;
 }
 
 .tabs button.active {
-  border-bottom-color: #4A90E2;
-  color: #004bb5;
-  font-weight: 700;
-}
-
-/* Forms */
-form {
-  width: 100%;
-  display: none;
-  flex-direction: column;
-  gap: 1.15rem;
-}
-
-form.active {
-  display: flex;
-}
-
-/* Inputs */
-input, select {
-  width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1.7px solid #ddd;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: border-color 0.25s ease;
-  font-weight: 500;
-  color: #222;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: #4A90E2;
-  box-shadow: 0 0 6px rgba(74, 144, 226, 0.5);
-}
-
-/* Botão */
-button[type="submit"] {
-  width: 100%;
-  padding: 0.95rem 0;
-  background-color: #4A90E2;
-  border: none;
-  border-radius: 14px;
+  background-color: #4a90e2;
   color: white;
-  font-weight: 700;
-  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.form {
+  display: none;
+}
+
+.form.active {
+  display: block;
+}
+
+input, select, button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px; /* evita zoom no celular */
+  box-sizing: border-box;
+}
+
+button[type="submit"] {
+  background-color: #4a90e2;
+  color: white;
+  font-weight: 600;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 8px 15px rgba(74, 144, 226, 0.4);
   transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
-  background-color: #2e65c7;
+  background-color: #357ABD;
 }
 
-/* Mensagens */
 .msg {
   font-size: 0.9rem;
-  height: 1.2rem;
-  color: #d9534f; /* vermelho suave para erro */
-  text-align: center;
-  min-height: 1.3rem;
+  color: red;
+  min-height: 1.2em;
 }
 
-/* Scroll interno no container para mobile */
-.login-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.login-container::-webkit-scrollbar-thumb {
-  background-color: #4A90E2;
-  border-radius: 8px;
-}
-
-.login-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Responsividade */
+/* Responsividade para telas pequenas */
 @media (max-width: 480px) {
   .login-container {
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    padding: 2rem 1.5rem 2.5rem;
+    padding: 1.5rem;
+    max-width: 320px;
+    margin: 0 1rem;
   }
 
-  .logo-container {
-    width: 90px;
-    height: 90px;
-    margin-bottom: 1.5rem;
+  .logo-container img {
+    max-width: 120px;
   }
 
   .tabs button {
-    font-size: 1rem;
+    font-size: 14px;
   }
 
-  button[type="submit"] {
-    font-size: 1rem;
+  input, select, button {
+    font-size: 16px;
   }
 }
