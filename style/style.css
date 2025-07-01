@@ -70,3 +70,24 @@ button:hover {
   margin-top: 8px;
   color: red;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centraliza tudo horizontalmente */
+}
+
+.logo-container {
+  margin-top: 30px; /* distância do topo da página */
+  margin-bottom: 20px; /* espaço entre logo e formulário */
+}
+
+.logo-container img {
+  max-width: 140px;
+  height: auto;
+  display: block;
+}

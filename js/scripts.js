@@ -205,3 +205,8 @@ function fecharScanner() {
     document.getElementById('modalScanner').style.display = 'none';
   }
 }
+
+
+
+
+

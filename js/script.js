@@ -198,3 +198,121 @@ function toggleChecklist(legendElement) {
 // Após validar o login com sucesso
 localStorage.setItem('usuarioLogado', JSON.stringify(user));
 window.location.href = "dashboard.html"; // redireciona para o dashboard
+
+
+
+
+// Controle do modal
+const userModal = document.getElementById('userModal');
+const openUserModalBtn = document.getElementById('openUserModalBtn');
+const closeUserModalBtn = document.getElementById('closeUserModalBtn');
+
+openUserModalBtn.addEventListener('click', () => {
+  userModal.classList.add('show');
+  loadUsersTable();
+});
+
+closeUserModalBtn.addEventListener('click', () => {
+  userModal.classList.remove('show');
+});
+
+window.addEventListener('click', e => {
+  if (e.target === userModal) userModal.classList.remove('show');
+});
+
+// Função para salvar usuários no localStorage
+function getUsers() {
+  const users = localStorage.getItem('users');
+  return users ? JSON.parse(users) : [];
+}
+
+function saveUsers(users) {
+  localStorage.setItem('users', JSON.stringify(users));
+}
+
+// Formulário
+const userForm = document.getElementById('userForm');
+userForm.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const name = userForm.userName.value.trim();
+  const email = userForm.userEmail.value.trim().toLowerCase();
+  const password = userForm.userPassword.value;
+  const profile = userForm.userProfile.value;
+
+  if (!name || !email || !password || !profile) {
+    alert('Preencha todos os campos corretamente!');
+    return;
+  }
+
+  // Validação simples email
+  if (!email.match(/^\S+@\S+\.\S+$/)) {
+    alert('Email inválido!');
+    return;
+  }
+
+  if (password.length < 6) {
+    alert('A senha deve ter no mínimo 6 caracteres!');
+    return;
+  }
+
+  let users = getUsers();
+
+  // Verifica se email já existe
+  if (users.find(u => u.email === email)) {
+    alert('Este email já está cadastrado!');
+    return;
+  }
+
+  users.push({ id: Date.now(), name, email, password, profile });
+  saveUsers(users);
+
+  alert('Usuário cadastrado com sucesso!');
+
+  userForm.reset();
+  loadUsersTable();
+});
+
+// Listagem usuários
+function loadUsersTable() {
+  const tbody = document.querySelector('#usersTable tbody');
+  const users = getUsers();
+  tbody.innerHTML = '';
+
+  if (users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum usuário cadastrado.</td></tr>';
+    return;
+  }
+
+  users.forEach(user => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${user.name}</td>
+      <td>${user.email}</td>
+      <td>${user.profile.charAt(0).toUpperCase() + user.profile.slice(1)}</td>
+      <td>
+        <button class="delete-btn" data-id="${user.id}" style="background-color:#e74c3c; padding: 4px 8px; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;">Excluir</button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  // Adiciona evento para exclusão
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const id = Number(e.target.getAttribute('data-id'));
+      if (confirm('Tem certeza que deseja excluir este usuário?')) {
+        deleteUser(id);
+      }
+    });
+  });
+}
+
+function deleteUser(id) {
+  let users = getUsers();
+  users = users.filter(u => u.id !== id);
+  saveUsers(users);
+  loadUsersTable();
+}
