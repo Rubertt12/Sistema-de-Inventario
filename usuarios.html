@@ -6,9 +6,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: 'Poppins', sans-serif;
@@ -41,11 +39,8 @@
       cursor: pointer;
       padding: 8px 0;
       margin-bottom: 20px;
-      user-select: none;
-      transition: color 0.3s ease;
       align-self: flex-start;
     }
-
     #btnVoltar:hover {
       color: #372fda;
       text-decoration: underline;
@@ -57,7 +52,6 @@
       font-weight: 700;
       font-size: 2.2rem;
       text-align: center;
-      letter-spacing: 1.2px;
     }
 
     form {
@@ -70,26 +64,36 @@
       font-weight: 600;
       font-size: 0.9rem;
       color: #555;
-      margin-bottom: 6px;
     }
 
-    input[type="text"],
-    input[type="password"],
-    select {
+    input[type="text"], input[type="password"], select {
       padding: 12px 15px;
       border: 1.8px solid #ddd;
       border-radius: 12px;
       font-size: 1rem;
       transition: border-color 0.3s ease;
-      outline-offset: 2px;
-      outline-color: transparent;
+      width: 100%;
     }
 
-    input[type="text"]:focus,
-    input[type="password"]:focus,
-    select:focus {
+    input:focus, select:focus {
       border-color: #4f46e5;
-      outline-color: #c7d3ff;
+      outline: none;
+    }
+
+    .senha-wrapper {
+      position: relative;
+    }
+    .senha-wrapper input { padding-right: 40px; }
+    .toggle-olhinho-btn {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      color: #4f46e5;
     }
 
     button[type="submit"] {
@@ -102,19 +106,11 @@
       border-radius: 14px;
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
-      transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-      user-select: none;
     }
 
     button[type="submit"]:hover {
       background: #4338ca;
-      box-shadow: 0 8px 20px rgba(67, 56, 202, 0.6);
       transform: translateY(-2px);
-    }
-
-    button[type="submit"]:active {
-      transform: translateY(0);
-      box-shadow: 0 3px 8px rgba(67, 56, 202, 0.4);
     }
 
     table {
@@ -131,36 +127,20 @@
       padding: 14px 15px;
       text-align: left;
       border-radius: 12px 12px 0 0;
-      user-select: none;
     }
 
     tbody tr {
       background: #fafafa;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
       border-radius: 12px;
       transition: background 0.3s ease;
     }
+    tbody tr:hover { background: #e9ecff; }
 
-    tbody tr:hover {
-      background: #e9ecff;
-    }
+    td { padding: 14px 15px; }
+    td:first-child { font-weight: 600; color: #2c2c2c; }
+    .actions-cell { white-space: nowrap; }
 
-    td {
-      padding: 14px 15px;
-      vertical-align: middle;
-    }
-
-    td:first-child {
-      font-weight: 600;
-      color: #2c2c2c;
-    }
-
-    .actions-cell {
-      white-space: nowrap;
-    }
-
-    button.edit-btn,
-    button.delete-btn {
+    button.edit-btn, button.delete-btn, button.view-pass-btn {
       background: transparent;
       border: none;
       cursor: pointer;
@@ -168,30 +148,87 @@
       margin-right: 12px;
       border-radius: 8px;
       padding: 6px 10px;
-      transition: background-color 0.25s ease;
-      user-select: none;
+      color: #4f46e5;
+    }
+    button.edit-btn:hover { background: #c7d3ff; }
+    button.delete-btn:hover { background: #fbb6b6; color: #b91c1c; }
+    button.view-pass-btn:hover { background: #c7d3ff; }
+
+    /* Modais com estilo aprimorado */
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
-    button.edit-btn:hover {
-      background: #c7d3ff;
+    #modalSenha, #modalMensagem, #modalConfirm {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 380px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #2c2c2c;
+      animation: fadeInScale 0.3s ease;
+    }
+
+    #modalSenha .modal-content::before { content: "\1F512"; }
+    #modalMensagem .modal-content::before { content: "\1F4A1"; }
+    #modalConfirm .modal-content::before { content: "\2753"; }
+    .modal-content::before {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 12px;
       color: #4f46e5;
     }
 
-    button.delete-btn:hover {
-      background: #fbb6b6;
-      color: #b91c1c;
+    .modal-content button {
+      background: #4f46e5;
+      color: white;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      margin: 10px 5px 0;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #modalConfirm #btnSim {
+      background: #22c55e;
+    }
+    #modalConfirm #btnSim:hover {
+      background: #16a34a;
+    }
+    #modalConfirm #btnNao {
+      background: #ef4444;
+      color: white;
+    }
+    #modalConfirm #btnNao:hover {
+      background: #dc2626;
+    }
+
+    .modal-content button:hover {
+      background: #372fda;
+      transform: translateY(-2px);
     }
 
     @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-      table, th, td {
-        font-size: 0.85rem;
-      }
-      button.edit-btn, button.delete-btn {
-        font-size: 18px;
-      }
+      .container { padding: 20px; }
+      table, th, td { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -211,7 +248,10 @@
       <input type="text" id="nome" required placeholder="Digite o nome" />
 
       <label for="senha">Senha:</label>
-      <input type="password" id="senha" required placeholder="Digite a senha" />
+      <div class="senha-wrapper">
+        <input type="password" id="senha" required placeholder="Digite a senha" />
+        <button type="button" class="toggle-olhinho-btn" aria-label="Visualizar senha" onclick="mostrarSenhaInputModal()">👁️</button>
+      </div>
 
       <label for="perfil">Perfil / Permissão:</label>
       <select id="perfil" required>
@@ -238,7 +278,42 @@
     </table>
   </div>
 
+  <!-- Modal para mostrar senha -->
+  <div id="modalSenha">
+    <div class="modal-content">
+      <div id="modalSenhaDesc"></div>
+      <button onclick="fecharModalSenha()">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Modal genérico para alertas -->
+  <div id="modalMensagem">
+    <div class="modal-content">
+      <div id="modalMensagemTexto"></div>
+      <button id="modalMensagemBtnOk">OK</button>
+    </div>
+  </div>
+
+  <!-- Modal genérico para confirmação -->
+  <div id="modalConfirm">
+    <div class="modal-content">
+      <div id="modalConfirmTexto"></div>
+      <button id="btnSim">Sim</button>
+      <button id="btnNao">Não</button>
+    </div>
+  </div>
+
   <script>
+    // Função para gerar senha aleatória segura
+    function gerarSenhaAleatoria(tamanho = 12) {
+      const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
+      let senha = "";
+      for (let i = 0; i < tamanho; i++) {
+        senha += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return senha;
+    }
+
     // Pega elementos
     const userForm = document.getElementById('userForm');
     const nomeInput = document.getElementById('nome');
@@ -247,109 +322,171 @@
     const userTableBody = document.getElementById('userTableBody');
     const userIndexInput = document.getElementById('userIndex');
 
-    // Carrega lista de usuários do localStorage ou cria usuário padrão se vazio
-    let usuarios = JSON.parse(localStorage.getItem('usuarios'));
+    // Modal senha
+    const modalSenha = document.getElementById('modalSenha');
+    const modalSenhaDesc = document.getElementById('modalSenhaDesc');
 
-    if (!usuarios || usuarios.length === 0) {
-      usuarios = [{
-        nome: "admin",
-        senha: "Yugioh22@",
-        perfil: "admin"
-      }];
-      localStorage.setItem('usuarios', JSON.stringify(usuarios));
-      alert('Usuário padrão criado:\n\nUsuário: admin\nSenha: Yugioh22@\nPerfil: administrador');
-    }
+    // Modal mensagem (alert)
+    const modalMensagem = document.getElementById('modalMensagem');
+    const modalMensagemTexto = document.getElementById('modalMensagemTexto');
+    const modalMensagemBtnOk = document.getElementById('modalMensagemBtnOk');
 
-    function salvarUsuarios() {
-      localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    }
+    // Modal confirmação
+    const modalConfirm = document.getElementById('modalConfirm');
+    const modalConfirmTexto = document.getElementById('modalConfirmTexto');
+const btnSim = document.getElementById('btnSim');
+const btnNao = document.getElementById('btnNao');
+function mostrarAlerta(msg) {
+  return new Promise(resolve => {
+    modalMensagemTexto.textContent = msg;
+    modalMensagem.style.display = 'flex';
+    modalMensagemBtnOk.onclick = () => {
+      modalMensagem.style.display = 'none';
+      resolve();
+    };
+  });
+}
 
-    function limparFormulario() {
-      userIndexInput.value = -1;
-      nomeInput.value = '';
-      senhaInput.value = '';
-      perfilSelect.value = '';
-      perfilSelect.selectedIndex = 0;
-    }
+function mostrarConfirmacao(msg) {
+  return new Promise(resolve => {
+    modalConfirmTexto.textContent = msg;
+    modalConfirm.style.display = 'flex';
+    btnSim.onclick = () => {
+      modalConfirm.style.display = 'none';
+      resolve(true);
+    };
+    btnNao.onclick = () => {
+      modalConfirm.style.display = 'none';
+      resolve(false);
+    };
+  });
+}
 
-    function renderizarTabela() {
-      userTableBody.innerHTML = '';
+let usuarios = JSON.parse(localStorage.getItem('usuarios'));
 
-      usuarios.forEach((user, index) => {
-        const tr = document.createElement('tr');
+(async () => {
+  if (!usuarios || usuarios.length === 0) {
+    const senhaGerada = gerarSenhaAleatoria();
+    usuarios = [{
+      nome: "admin",
+      senha: senhaGerada,
+      perfil: "admin"
+    }];
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    await mostrarAlerta(`Usuário padrão criado:\n\nUsuário: admin\nSenha: ${senhaGerada}\nPerfil: administrador`);
+  }
 
-        tr.innerHTML = `
-          <td>${user.nome}</td>
-          <td>${user.perfil}</td>
-          <td class="actions-cell">
-            <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
-            <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
-          </td>
-        `;
+  renderizarTabela();
+})();
 
-        userTableBody.appendChild(tr);
-      });
-    }
+function salvarUsuarios() {
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+}
 
-    function editarUsuario(index) {
-      const user = usuarios[index];
-      userIndexInput.value = index;
-      nomeInput.value = user.nome;
-      senhaInput.value = user.senha;
-      perfilSelect.value = user.perfil;
-    }
+function limparFormulario() {
+  userIndexInput.value = -1;
+  nomeInput.value = '';
+  senhaInput.value = '';
+  perfilSelect.value = '';
+  perfilSelect.selectedIndex = 0;
+}
 
-    function excluirUsuario(index) {
-      if (confirm(`Excluir usuário "${usuarios[index].nome}"?`)) {
-        usuarios.splice(index, 1);
-        salvarUsuarios();
-        renderizarTabela();
-        limparFormulario();
-      }
-    }
+function renderizarTabela() {
+  userTableBody.innerHTML = '';
 
-    userForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+  usuarios.forEach((user, index) => {
+    const tr = document.createElement('tr');
 
-      const nome = nomeInput.value.trim();
-      const senha = senhaInput.value.trim();
-      const perfil = perfilSelect.value;
+    tr.innerHTML = `
+      <td>${user.nome}</td>
+      <td>${user.perfil}</td>
+      <td class="actions-cell">
+        <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
+        <button class="view-pass-btn" title="Visualizar Senha" onclick="mostrarSenhaModal(${index})">👁️</button>
+        <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
+      </td>
+    `;
 
-      if (!nome || !senha || !perfil) {
-        alert('Preencha todos os campos!');
-        return;
-      }
+    userTableBody.appendChild(tr);
+  });
+}
 
-      const index = parseInt(userIndexInput.value);
+function editarUsuario(index) {
+  const user = usuarios[index];
+  userIndexInput.value = index;
+  nomeInput.value = user.nome;
+  senhaInput.value = user.senha;
+  perfilSelect.value = user.perfil;
+}
 
-      if (index === -1) {
-        // Criar novo usuário
-        if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
-          alert('Já existe um usuário com esse nome!');
-          return;
-        }
-        usuarios.push({ nome, senha, perfil });
-      } else {
-        // Editar usuário existente
-        usuarios[index] = { nome, senha, perfil };
-      }
-
-      salvarUsuarios();
-      renderizarTabela();
-      limparFormulario();
-    });
-
-    // Expor funções para escopo global (para chamar do HTML)
-    window.editarUsuario = editarUsuario;
-    window.excluirUsuario = excluirUsuario;
-
-    function voltarDashboard() {
-      window.location.href = 'dashboard.html'; // Ajuste o caminho se necessário
-    }
-
-    // Inicializa tabela ao carregar a página
+async function excluirUsuario(index) {
+  const confirmar = await mostrarConfirmacao(`Excluir usuário "${usuarios[index].nome}"?`);
+  if (confirmar) {
+    usuarios.splice(index, 1);
+    salvarUsuarios();
     renderizarTabela();
-  </script>
+    limparFormulario();
+  }
+}
 
-</body>
+userForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const nome = nomeInput.value.trim();
+  const senha = senhaInput.value.trim();
+  const perfil = perfilSelect.value;
+
+  if (!nome || !senha || !perfil) {
+    await mostrarAlerta('Preencha todos os campos!');
+    return;
+  }
+
+  const index = parseInt(userIndexInput.value);
+
+  if (index === -1) {
+    if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
+      await mostrarAlerta('Já existe um usuário com esse nome!');
+      return;
+    }
+    usuarios.push({ nome, senha, perfil });
+  } else {
+    usuarios[index] = { nome, senha, perfil };
+  }
+
+  salvarUsuarios();
+  renderizarTabela();
+  limparFormulario();
+});
+
+function mostrarSenhaModal(index) {
+  const senha = usuarios[index].senha;
+  modalSenhaDesc.textContent = `Senha: ${senha}`;
+  modalSenha.style.display = 'flex';
+}
+
+async function mostrarSenhaInputModal() {
+  const senhaAtual = senhaInput.value;
+  if (!senhaAtual) {
+    await mostrarAlerta('Digite a senha para visualizar.');
+    return;
+  }
+  modalSenhaDesc.textContent = `Senha digitada: ${senhaAtual}`;
+  modalSenha.style.display = 'flex';
+}
+
+function fecharModalSenha() {
+  modalSenha.style.display = 'none';
+}
+
+function voltarDashboard() {
+  window.location.href = 'dashboard.html';
+}
+
+window.editarUsuario = editarUsuario;
+window.excluirUsuario = excluirUsuario;
+window.mostrarSenhaModal = mostrarSenhaModal;
+window.mostrarSenhaInputModal = mostrarSenhaInputModal;
+window.fecharModalSenha = fecharModalSenha;
+</script> 
+</body> 
 </html>
