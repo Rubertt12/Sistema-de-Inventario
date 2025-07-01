@@ -1,25 +1,72 @@
 body {
-  font-family: Poppins, sans-serif;
-  background-color: #f4f4f4;
+  font-family: 'Poppins', sans-serif;
+  background: #f0f2f5;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  margin: 0;
 }
 
-.login-container {
+.container {
   background: white;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  width: 300px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  width: 360px;
 }
 
-input {
-  display: block;
-  width: 100%;
+.tabs {
+  display: flex;
   margin-bottom: 1rem;
-  padding: 0.5rem;
-  border-radius: 6px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tabs button.active {
+  background: #2563eb;
+  color: white;
+}
+
+.form {
+  display: none;
+  flex-direction: column;
+}
+
+.form.active {
+  display: flex;
+}
+
+input, select {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
   border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+  margin-top: 15px;
+  background-color: #2563eb;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1e40af;
+}
+
+.msg {
+  font-size: 0.85rem;
+  margin-top: 8px;
+  color: red;
 }

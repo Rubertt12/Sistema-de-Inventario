@@ -1,20 +1,40 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login</title>
-  <link rel="stylesheet" href="/style/style.css" />
+  <meta charset="UTF-8">
+  <title>Login | Cadastro</title>
+  <link rel="stylesheet" href="/style/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="login-container">
-    <h2>Entrar no Sistema</h2>
-    <input type="text" id="username" placeholder="Usuário" />
-    <input type="password" id="password" placeholder="Senha" />
-    <button onclick="login()">Entrar</button>
-    <p id="loginError" style="color:red; display:none;">Usuário ou senha inválidos</p>
+  <div class="container">
+    <div class="tabs">
+      <button id="tabLogin" class="active">Login</button>
+      <button id="tabCadastro">Cadastro</button>
+    </div>
+
+    <form id="formLogin" class="form active">
+      <input type="email" id="loginEmail" placeholder="E-mail" required>
+      <input type="password" id="loginSenha" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
+      <p class="msg" id="loginMsg"></p>
+    </form>
+
+    <form id="formCadastro" class="form">
+      <input type="text" id="cadastroNome" placeholder="Nome completo" required>
+      <input type="email" id="cadastroEmail" placeholder="E-mail" required>
+      <input type="password" id="cadastroSenha" placeholder="Senha" required>
+      <select id="cadastroPerfil" required>
+        <option value="">Perfil</option>
+        <option value="admin">Administrador</option>
+        <option value="editor">Editor</option>
+        <option value="visualizador">Visualizador</option>
+      </select>
+      <button type="submit">Cadastrar</button>
+      <p class="msg" id="cadastroMsg"></p>
+    </form>
   </div>
 
-  <script src="/js/login.js"></script>
+  <script src="/js/index.js"></script>
 </body>
 </html>

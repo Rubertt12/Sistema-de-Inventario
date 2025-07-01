@@ -17,6 +17,8 @@
   <link rel="apple-touch-icon" href="/img/icon-png.png" />
   <link rel="icon" sizes="192x192" href="/img/icon-png.png" />
 </head>
+<body onload="verificarPermissoes()">
+
 <body>
   
   <h3>Clique no menu do usuário para adicionar ou excluir o setor (+)</h3>
@@ -61,11 +63,11 @@
             </label>
           </div>
           
-          <button id="addSetorBtn" onclick="addSetor()">Adicionar Setor ➕</button>
-          
-          <button onclick="excluirTodosSetores()" class="excluir-tudo-btn">
-            🧨 Excluir Todos os Setores
-          </button>
+          <<button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
+
+<button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
+  🧨 Excluir Todos os Setores
+</button>
           
           <button class="logout-btn" onclick="logout(this)">
             <span>Logout</span>
@@ -276,6 +278,66 @@
   <script src="/js/index.js"></script>
   <script src="/js/csv.js"></script>
   <script src="/js/script.js"></script>
+
+
+
+  <script>
+   const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+  if (!usuario) {
+    alert("Acesso negado! Faça login primeiro.");
+    window.location.href = "index.html";
+  } else {
+    document.getElementById("userName").textContent = usuario.nome;
+    const perfil = usuario.perfil;
+
+    if (perfil === "visualizador") {
+      // Remove botões de ação do menu
+      document.getElementById("addSetorBtn").style.display = "none";
+      document.querySelector(".excluir-tudo-btn").style.display = "none";
+
+      // Bloqueia funções de alteração
+      window.addSetor = () => {};
+      window.confirmarAddSetor = () => {};
+      window.confirmarAddMaquina = () => {};
+      window.abrirScanner = () => {};
+      window.saveObservation = () => {};
+      window.markForMaintenance = () => {};
+      window.releaseMachine = () => {};
+
+      // Remove botão de salvar chamado no modal
+      const btnSalvar = document.querySelector('#observacao + select + button');
+      if (btnSalvar) btnSalvar.remove();
+
+      // Remove botões de ação no modal (se existirem)
+      const btnManutencao = document.getElementById("maintenanceBtn");
+      const btnLiberar = document.getElementById("releaseBtn");
+      const btnFechar = document.getElementById("close-btn");
+
+      if (btnManutencao) btnManutencao.remove();
+      if (btnLiberar) btnLiberar.remove();
+
+      // Impede exclusão de chamados
+      const observer = new MutationObserver(() => {
+        const botoesExcluir = document.querySelectorAll(".excluir-chamado");
+        botoesExcluir.forEach(btn => btn.remove());
+      });
+      observer.observe(document.getElementById("observationsUl"), { childList: true, subtree: true });
+    }
+
+    if (perfil === "editor") {
+      document.querySelector(".excluir-tudo-btn").style.display = "none";
+      window.saveObservation = () => {};
+      window.markForMaintenance = () => {};
+      window.releaseMachine = () => {};
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("usuarioLogado");
+    window.location.href = "index.html";
+  }
+</script>
   
 </body>
 </html>

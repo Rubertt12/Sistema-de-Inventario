@@ -1,72 +1,59 @@
-function toggleForms() {
-  document.getElementById("loginContainer").classList.toggle("hidden");
-  document.getElementById("registerContainer").classList.toggle("hidden");
+// Alternância de abas
+document.getElementById("tabLogin").onclick = () => {
+  toggleTab("login");
+};
+document.getElementById("tabCadastro").onclick = () => {
+  toggleTab("cadastro");
+};
+
+function toggleTab(tab) {
+  document.getElementById("formLogin").classList.toggle("active", tab === "login");
+  document.getElementById("formCadastro").classList.toggle("active", tab === "cadastro");
+  document.getElementById("tabLogin").classList.toggle("active", tab === "login");
+  document.getElementById("tabCadastro").classList.toggle("active", tab === "cadastro");
 }
 
-function register() {
-  const email = document.getElementById("registerEmail").value.trim();
-  const user = document.getElementById("registerUser").value.trim();
-  const pass = document.getElementById("registerPass").value;
-  const phone = document.getElementById("registerPhone").value.trim();
+// Cadastro
+document.getElementById("formCadastro").onsubmit = (e) => {
+  e.preventDefault();
+  const nome = document.getElementById("cadastroNome").value.trim();
+  const email = document.getElementById("cadastroEmail").value.trim();
+  const senha = document.getElementById("cadastroSenha").value;
+  const perfil = document.getElementById("cadastroPerfil").value;
 
-  if (!email || !user || !pass || !phone) {
-    alert("Preenche todos os campos, tchê!");
+  if (!nome || !email || !senha || !perfil) {
+    document.getElementById("cadastroMsg").textContent = "Preencha todos os campos.";
     return;
   }
 
-  if (localStorage.getItem(`user_${user}`)) {
-    alert("Usuário já existe! Escolhe outro nome.");
+  let usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
+  if (usuarios.some(u => u.email === email)) {
+    document.getElementById("cadastroMsg").textContent = "E-mail já cadastrado!";
     return;
   }
 
-  const userData = { email, user, pass, phone };
-  localStorage.setItem(`user_${user}`, JSON.stringify(userData));
-  alert("Cadastro feito com sucesso! Agora entra ali no login.");
+  usuarios.push({ nome, email, senha, perfil });
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  document.getElementById("cadastroMsg").style.color = "green";
+  document.getElementById("cadastroMsg").textContent = "Cadastro realizado!";
+  e.target.reset();
+  setTimeout(() => toggleTab("login"), 1000);
+};
 
-  clearRegisterFields();
-  toggleForms();
-}
+// Login
+document.getElementById("formLogin").onsubmit = (e) => {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim();
+  const senha = document.getElementById("loginSenha").value;
 
-function login() {
-  const loginInput = document.getElementById("loginUser").value.trim();
-  const password = document.getElementById("loginPass").value;
-  const code = document.getElementById("login2FA").value.trim();
+  const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
+  const user = usuarios.find(u => u.email === email && u.senha === senha);
 
-  if (!loginInput || !password) {
-    alert("Preenche usuário e senha, vivente!");
+  if (!user) {
+    document.getElementById("loginMsg").textContent = "Usuário ou senha inválidos.";
     return;
   }
 
-  const storedData = localStorage.getItem(`user_${loginInput}`);
-  if (!storedData) {
-    alert("Usuário não encontrado.");
-    return;
-  }
-
-  const userData = JSON.parse(storedData);
-
-  if (userData.pass !== password) {
-    alert("Senha incorreta!");
-    return;
-  }
-
-  if (code) {
-    alert(`Login com 2FA validado! Bem-vindo, ${userData.user}!`);
-  } else {
-    alert(`Login realizado sem 2FA. Bem-vindo, ${userData.user}!`);
-  }
-
-  // Redirecionamento para dashboard
+  localStorage.setItem("usuarioLogado", JSON.stringify(user));
   window.location.href = "dashboard.html";
-}
-
-function clearRegisterFields() {
-  document.getElementById("registerEmail").value = "";
-  document.getElementById("registerUser").value = "";
-  document.getElementById("registerPass").value = "";
-  document.getElementById("registerPhone").value = "";
-}
-
-window.onload = () => {
-  document.activeElement.blur();
 };

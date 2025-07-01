@@ -193,3 +193,8 @@ function toggleChecklist(legendElement) {
   const fieldset = legendElement.parentElement;
   fieldset.classList.toggle('collapsed');
 }
+
+
+// Após validar o login com sucesso
+localStorage.setItem('usuarioLogado', JSON.stringify(user));
+window.location.href = "dashboard.html"; // redireciona para o dashboard
