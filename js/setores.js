@@ -534,3 +534,29 @@ function dropMachine(event, novoSetorIndex) {
 
 
 
+
+function showInfo(setorIndex, maquinaIndex) {
+  maquinaAtivaSetor = setorIndex;
+  maquinaAtivaIndex = maquinaIndex;
+  currentMachineId = setores[setorIndex].maquinas[maquinaIndex].id;
+
+  const modal = document.getElementById('infoModal');
+  modal.style.display = 'flex';
+
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+
+  // ⬇️ Aqui preenche o texto com as informações
+  document.getElementById('modalText').innerHTML = `
+  <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
+    <strong>Nome:</strong> ${maquina.nome}<br>
+    <strong>Tipo:</strong> ${maquina.tipo}<br>
+    <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
+  `;
+
+  atualizarListaChamados(currentMachineId);
+
+  // Botões manutenção
+  document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
+  document.getElementById('maintenanceBtn').style.display = maquina.emManutencao ? 'none' : 'inline-block';
+  document.getElementById('releaseBtn').style.display = maquina.emManutencao ? 'inline-block' : 'none';
+}
