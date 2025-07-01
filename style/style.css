@@ -1,130 +1,179 @@
-/* Reset e base */
-html, body {
-  height: 100%;
+/* Reset básico */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* evita scroll */
-  font-family: 'Poppins', sans-serif;
-  background-color: #f4f4f4;
 }
 
-/* Centraliza o container login */
+/* Corpo e html ocupam 100% da tela */
+html, body {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #4A90E2, #002F6C);
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Body usa flex para centralizar o container */
 body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  padding: 0 10px; /* espaço nas laterais em telas pequenas */
+  height: 100vh; /* viewport height */
+  overflow: hidden;
+  padding: 0 1rem;
 }
 
-/* Container principal do login */
+/* Container do login */
 .login-container {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  width: 320px; /* largura um pouco maior */
-  max-width: 100%;
-  box-sizing: border-box;
-  text-align: center;
+  background: #fff;
+  width: 100%;
+  max-width: 420px;
+  height: 90vh;
+  max-height: 620px;
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  padding: 2.5rem 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
-/* Logo */
+/* Logo no topo, com espaçamento */
 .logo-container {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  width: 120px;
+  height: 120px;
 }
 
 .logo-container img {
-  max-width: 120px;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-/* Tabs de login e cadastro */
+/* Tabs (Login e Cadastro) */
 .tabs {
   display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-  gap: 10px;
+  width: 100%;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
 .tabs button {
   flex: 1;
-  padding: 0.6rem 0;
-  background: #eee;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  padding: 0.85rem 0;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  color: #555;
 }
 
 .tabs button.active {
-  background: #007bff;
-  color: white;
+  border-bottom-color: #4A90E2;
+  color: #004bb5;
+  font-weight: 700;
 }
 
 /* Forms */
-.form {
+form {
+  width: 100%;
   display: none;
   flex-direction: column;
-  text-align: left;
+  gap: 1.15rem;
 }
 
-.form.active {
+form.active {
   display: flex;
 }
 
-/* Inputs e selects */
+/* Inputs */
 input, select {
   width: 100%;
-  padding: 0.6rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  border: 1.7px solid #ddd;
+  border-radius: 12px;
   font-size: 1rem;
+  transition: border-color 0.25s ease;
+  font-weight: 500;
+  color: #222;
 }
 
-/* Botões */
+input:focus, select:focus {
+  outline: none;
+  border-color: #4A90E2;
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.5);
+}
+
+/* Botão */
 button[type="submit"] {
-  background-color: #007bff;
+  width: 100%;
+  padding: 0.95rem 0;
+  background-color: #4A90E2;
   border: none;
-  padding: 0.7rem;
+  border-radius: 14px;
   color: white;
-  font-weight: 600;
-  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.15rem;
   cursor: pointer;
+  box-shadow: 0 8px 15px rgba(74, 144, 226, 0.4);
   transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
-  background-color: #0056b3;
+  background-color: #2e65c7;
 }
 
 /* Mensagens */
 .msg {
   font-size: 0.9rem;
-  color: #e74c3c; /* vermelho para erro */
-  min-height: 1.2rem;
+  height: 1.2rem;
+  color: #d9534f; /* vermelho suave para erro */
+  text-align: center;
+  min-height: 1.3rem;
+}
+
+/* Scroll interno no container para mobile */
+.login-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.login-container::-webkit-scrollbar-thumb {
+  background-color: #4A90E2;
+  border-radius: 8px;
+}
+
+.login-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
 /* Responsividade */
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .login-container {
-    width: 100%;
-    padding: 1.5rem;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 2rem 1.5rem 2.5rem;
   }
-  
-  .logo-container img {
-    max-width: 100px;
+
+  .logo-container {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 1.5rem;
   }
-  
+
   .tabs button {
-    font-size: 0.9rem;
-    padding: 0.5rem 0;
+    font-size: 1rem;
   }
-  
-  input, select, button[type="submit"] {
-    font-size: 0.9rem;
+
+  button[type="submit"] {
+    font-size: 1rem;
   }
 }
