@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-br" >
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestão de Usuários</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 40px 20px;
+      color: #333;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(79, 70, 229, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    #btnVoltar {
+      background: transparent;
+      border: none;
+      color: #4f46e5;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 8px 0;
+      margin-bottom: 20px;
+      user-select: none;
+      transition: color 0.3s ease;
+      align-self: flex-start;
+    }
+
+    #btnVoltar:hover {
+      color: #372fda;
+      text-decoration: underline;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      color: #4f46e5;
+      font-weight: 700;
+      font-size: 2.2rem;
+      text-align: center;
+      letter-spacing: 1.2px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select {
+      padding: 12px 15px;
+      border: 1.8px solid #ddd;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      outline-offset: 2px;
+      outline-color: transparent;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    select:focus {
+      border-color: #4f46e5;
+      outline-color: #c7d3ff;
+    }
+
+    button[type="submit"] {
+      background: #4f46e5;
+      color: white;
+      padding: 14px 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    }
+
+    button[type="submit"]:hover {
+      background: #4338ca;
+      box-shadow: 0 8px 20px rgba(67, 56, 202, 0.6);
+      transform: translateY(-2px);
+    }
+
+    button[type="submit"]:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px rgba(67, 56, 202, 0.4);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 12px;
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    th {
+      background: #4f46e5;
+      color: white;
+      padding: 14px 15px;
+      text-align: left;
+      border-radius: 12px 12px 0 0;
+      user-select: none;
+    }
+
+    tbody tr {
+      background: #fafafa;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      border-radius: 12px;
+      transition: background 0.3s ease;
+    }
+
+    tbody tr:hover {
+      background: #e9ecff;
+    }
+
+    td {
+      padding: 14px 15px;
+      vertical-align: middle;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: #2c2c2c;
+    }
+
+    .actions-cell {
+      white-space: nowrap;
+    }
+
+    button.edit-btn,
+    button.delete-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      margin-right: 12px;
+      border-radius: 8px;
+      padding: 6px 10px;
+      transition: background-color 0.25s ease;
+      user-select: none;
+    }
+
+    button.edit-btn:hover {
+      background: #c7d3ff;
+      color: #4f46e5;
+    }
+
+    button.delete-btn:hover {
+      background: #fbb6b6;
+      color: #b91c1c;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      table, th, td {
+        font-size: 0.85rem;
+      }
+      button.edit-btn, button.delete-btn {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <button id="btnVoltar" onclick="voltarDashboard()" aria-label="Voltar ao Dashboard">
+      ← Voltar ao Dashboard
+    </button>
+
+    <h1>Gestão de Usuários</h1>
+
+    <form id="userForm">
+      <input type="hidden" id="userIndex" value="-1" />
+      
+      <label for="nome">Nome do Usuário:</label>
+      <input type="text" id="nome" required placeholder="Digite o nome" />
+
+      <label for="senha">Senha:</label>
+      <input type="password" id="senha" required placeholder="Digite a senha" />
+
+      <label for="perfil">Perfil / Permissão:</label>
+      <select id="perfil" required>
+        <option value="" disabled selected>Selecione um perfil</option>
+        <option value="admin">Administrador</option>
+        <option value="editor">Editor</option>
+        <option value="visualizador">Visualizador</option>
+      </select>
+
+      <button type="submit">Salvar Usuário</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Perfil</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+        <!-- Usuários listados aqui -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Pega elementos
+    const userForm = document.getElementById('userForm');
+    const nomeInput = document.getElementById('nome');
+    const senhaInput = document.getElementById('senha');
+    const perfilSelect = document.getElementById('perfil');
+    const userTableBody = document.getElementById('userTableBody');
+    const userIndexInput = document.getElementById('userIndex');
+
+    // Carrega lista de usuários do localStorage ou cria usuário padrão se vazio
+    let usuarios = JSON.parse(localStorage.getItem('usuarios'));
+
+    if (!usuarios || usuarios.length === 0) {
+      usuarios = [{
+        nome: "admin",
+        senha: "L7QKP09r09d$",
+        perfil: "admin"
+      }];
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      alert('Usuário padrão criado:\n\nUsuário: admin\nSenha: L7QKP09r09d$\nPerfil: administrador');
+    }
+
+    function salvarUsuarios() {
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    }
+
+    function limparFormulario() {
+      userIndexInput.value = -1;
+      nomeInput.value = '';
+      senhaInput.value = '';
+      perfilSelect.value = '';
+      perfilSelect.selectedIndex = 0;
+    }
+
+    function renderizarTabela() {
+      userTableBody.innerHTML = '';
+
+      usuarios.forEach((user, index) => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${user.nome}</td>
+          <td>${user.perfil}</td>
+          <td class="actions-cell">
+            <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
+            <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
+          </td>
+        `;
+
+        userTableBody.appendChild(tr);
+      });
+    }
+
+    function editarUsuario(index) {
+      const user = usuarios[index];
+      userIndexInput.value = index;
+      nomeInput.value = user.nome;
+      senhaInput.value = user.senha;
+      perfilSelect.value = user.perfil;
+    }
+
+    function excluirUsuario(index) {
+      if (confirm(`Excluir usuário "${usuarios[index].nome}"?`)) {
+        usuarios.splice(index, 1);
+        salvarUsuarios();
+        renderizarTabela();
+        limparFormulario();
+      }
+    }
+
+    userForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const nome = nomeInput.value.trim();
+      const senha = senhaInput.value.trim();
+      const perfil = perfilSelect.value;
+
+      if (!nome || !senha || !perfil) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+
+      const index = parseInt(userIndexInput.value);
+
+      if (index === -1) {
+        // Criar novo usuário
+        if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
+          alert('Já existe um usuário com esse nome!');
+          return;
+        }
+        usuarios.push({ nome, senha, perfil });
+      } else {
+        // Editar usuário existente
+        usuarios[index] = { nome, senha, perfil };
+      }
+
+      salvarUsuarios();
+      renderizarTabela();
+      limparFormulario();
+    });
+
+    // Expor funções para escopo global (para chamar do HTML)
+    window.editarUsuario = editarUsuario;
+    window.excluirUsuario = excluirUsuario;
+
+    function voltarDashboard() {
+      window.location.href = 'index.html'; // Ajuste o caminho se necessário
+    }
+
+    // Inicializa tabela ao carregar a página
+    renderizarTabela();
+  </script>
+
+</body>
+</html>

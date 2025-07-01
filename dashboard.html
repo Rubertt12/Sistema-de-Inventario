@@ -62,8 +62,16 @@
               <span class="slider"></span>
             </label>
           </div>
-          
-          <<button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
+ 
+
+         <div id="adminMenu" style="display: none;">
+  <button onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
+</div>
+
+
+
+
+          <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
 
 <button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
   🧨 Excluir Todos os Setores
@@ -77,6 +85,11 @@
     </nav>
   </header>
   
+
+
+
+
+
   <!-- Modal de Adicionar Setor -->
   <div id="modalSetor" class="modal">
     <div class="modal-content">
@@ -86,6 +99,9 @@
       <button onclick="confirmarAddSetor()">Adicionar</button>
     </div>
   </div>
+
+
+  
   
   <!-- Container dos setores -->
   <main id="setoresContainer" class="list-view">
@@ -343,7 +359,16 @@
     localStorage.removeItem("usuarioLogado");
     window.location.href = "index.html";
   }
+
+
+
 </script>
   
+<script type="module">
+  import { verificarPermissoes } from './js/permissoes.js';
+  verificarPermissoes();
+</script>
+
+
 </body>
 </html>

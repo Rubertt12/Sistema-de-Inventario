@@ -316,3 +316,45 @@ function deleteUser(id) {
   saveUsers(users);
   loadUsersTable();
 }
+
+
+function verificarPermissao() {
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+  if (usuarioLogado && usuarioLogado.permissao === 'admin') {
+    document.getElementById('adminMenu').style.display = 'block';
+  }
+}
+
+verificarPermissao();
+
+
+let usuarios = [
+  {
+    nome: "AdmRubertt",
+    senha: "123",
+    permissao: "admin"
+  },
+  {
+    nome: "João",
+    senha: "abc",
+    permissao: "editor"
+  }
+];
+localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+
+function loginUsuario(nome, senha) {
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  const usuario = usuarios.find(u => u.nome === nome && u.senha === senha);
+
+  if (usuario) {
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+    location.href = 'dashboard.html';
+  } else {
+    alert('Usuário ou senha inválidos!');
+  }
+}
+
+function abrirPaginaUsuarios() {
+  window.location.href = 'usuarios.html'; // Ou o caminho correto do seu arquivo
+}
