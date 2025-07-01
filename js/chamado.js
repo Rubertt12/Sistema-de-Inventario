@@ -221,41 +221,82 @@ function toggleChecklist(legendElement) {
 
 let html5QrcodeScanner;
 
-function abrirScanner() {
+async function abrirScanner() {
   document.getElementById('modalScanner').style.display = 'flex';
 
-  if (html5QrcodeScanner) return; // Já iniciado
+  if (html5QrcodeScanner) return;
 
   html5QrcodeScanner = new Html5Qrcode("reader");
 
-  html5QrcodeScanner.start(
-    { facingMode: "environment" },
-    {
-      fps: 10,
-      qrbox: 250
-    },
-    (decodedText, decodedResult) => {
-      // Sempre coloca o código lido no campo de etiqueta correto
-      const tipoEquip = document.getElementById('tipoEquipamento').value;
+  // Tenta obter permissão e controle da câmera
+  try {
+    const devices = await Html5Qrcode.getCameras();
+    if (devices && devices.length) {
+      const cameraId = devices[0].id;
 
-      if (tipoEquip === 'máquina') {
-        // Para máquinas, coloca no campo etiquetaMaquina
-        document.getElementById('etiquetaMaquina').value = decodedText;
-      } else if (tipoEquip === 'monitor') {
-        // Para monitores, no etiquetaMonitor
-        document.getElementById('etiquetaMonitor').value = decodedText;
-      }
-
-      fecharScanner(); // Fecha modal e para câmera após leitura
-    },
-    (errorMessage) => {
-      // Ignora erros pequenos de leitura
-      // console.log("Erro leitura QR:", errorMessage);
+      html5QrcodeScanner.start(
+        { deviceId: { exact: cameraId } },
+        {
+          fps: 25,
+          qrbox: { width: 150, height: 150 },
+          aspectRatio: 1.3333
+        },
+        (decodedText) => {
+          const tipo = document.getElementById('tipoEquipamento').value;
+          const campo = tipo === 'monitor' ? 'etiquetaMonitor' : 'etiquetaMaquina';
+          document.getElementById(campo).value = decodedText;
+          fecharScanner();
+        },
+        (errorMessage) => {
+          // Ignora erros pequenos
+        }
+      ).then(() => {
+        // Tenta aplicar zoom se suportado
+        tentarAplicarZoom(cameraId);
+      }).catch((err) => {
+        alert("Erro ao iniciar scanner: " + err);
+        fecharScanner();
+      });
+    } else {
+      alert("Nenhuma câmera encontrada!");
+      fecharScanner();
     }
-  ).catch(err => {
-    alert("Erro ao acessar a câmera: " + err);
+  } catch (err) {
+    alert("Erro ao acessar câmera: " + err);
     fecharScanner();
-  });
+  }
+}
+
+async function tentarAplicarZoom(cameraId) {
+  try {
+    const constraints = {
+      video: {
+        deviceId: cameraId,
+        advanced: [{ zoom: 2 }] // Zoom 2x (ajuste conforme suporte da câmera)
+      }
+    };
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const track = stream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities();
+
+    if (capabilities.zoom) {
+      const settings = track.getSettings();
+      const zoomMax = capabilities.zoom.max;
+      const idealZoom = Math.min(2, zoomMax);
+
+      await track.applyConstraints({
+        advanced: [{ zoom: idealZoom }]
+      });
+
+      console.log("Zoom aplicado:", idealZoom);
+    }
+
+    // Interrompe o stream manual extra (não é usado pela html5-qrcode)
+    stream.getTracks().forEach((t) => t.stop());
+  } catch (err) {
+    console.warn("Zoom não suportado ou falhou:", err);
+  }
 }
 
 function fecharScanner() {
