@@ -2,32 +2,37 @@
 <html lang="pt-br" >
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Gestão de Usuários</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Poppins', sans-serif;
       background: #f0f2f5;
       margin: 0;
-      padding: 40px 20px;
+      padding: 20px 15px;
       color: #333;
       display: flex;
       justify-content: center;
+      min-height: 100vh;
     }
 
     .container {
       width: 100%;
       max-width: 720px;
       background: #fff;
-      padding: 30px 40px;
+      padding: 25px 30px;
       border-radius: 15px;
       box-shadow: 0 8px 25px rgba(79, 70, 229, 0.15);
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 25px;
+      box-sizing: border-box;
     }
 
     #btnVoltar {
@@ -40,6 +45,7 @@
       padding: 8px 0;
       margin-bottom: 20px;
       align-self: flex-start;
+      transition: color 0.3s ease;
     }
     #btnVoltar:hover {
       color: #372fda;
@@ -52,12 +58,13 @@
       font-weight: 700;
       font-size: 2.2rem;
       text-align: center;
+      word-break: break-word;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     label {
@@ -73,6 +80,7 @@
       font-size: 1rem;
       transition: border-color 0.3s ease;
       width: 100%;
+      box-sizing: border-box;
     }
 
     input:focus, select:focus {
@@ -82,8 +90,9 @@
 
     .senha-wrapper {
       position: relative;
+      width: 100%;
     }
-    .senha-wrapper input { padding-right: 40px; }
+    .senha-wrapper input { padding-right: 42px; }
     .toggle-olhinho-btn {
       position: absolute;
       top: 50%;
@@ -92,8 +101,15 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       color: #4f46e5;
+      padding: 0;
+      line-height: 1;
+      user-select: none;
+    }
+    .toggle-olhinho-btn:focus {
+      outline: 2px solid #4f46e5;
+      outline-offset: 2px;
     }
 
     button[type="submit"] {
@@ -106,6 +122,10 @@
       border-radius: 14px;
       cursor: pointer;
       box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      transition: background 0.3s ease, transform 0.2s ease;
+      width: 100%;
+      max-width: 300px;
+      align-self: center;
     }
 
     button[type="submit"]:hover {
@@ -119,6 +139,8 @@
       border-spacing: 0 12px;
       font-size: 0.95rem;
       color: #444;
+      table-layout: fixed;
+      word-wrap: break-word;
     }
 
     th {
@@ -127,6 +149,7 @@
       padding: 14px 15px;
       text-align: left;
       border-radius: 12px 12px 0 0;
+      user-select: none;
     }
 
     tbody tr {
@@ -136,9 +159,22 @@
     }
     tbody tr:hover { background: #e9ecff; }
 
-    td { padding: 14px 15px; }
-    td:first-child { font-weight: 600; color: #2c2c2c; }
-    .actions-cell { white-space: nowrap; }
+    td {
+      padding: 14px 15px;
+      overflow-wrap: break-word;
+    }
+    td:first-child {
+      font-weight: 600;
+      color: #2c2c2c;
+      max-width: 150px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .actions-cell {
+      white-space: nowrap;
+      width: 130px;
+    }
 
     button.edit-btn, button.delete-btn, button.view-pass-btn {
       background: transparent;
@@ -149,12 +185,13 @@
       border-radius: 8px;
       padding: 6px 10px;
       color: #4f46e5;
+      transition: background 0.3s ease;
     }
     button.edit-btn:hover { background: #c7d3ff; }
     button.delete-btn:hover { background: #fbb6b6; color: #b91c1c; }
     button.view-pass-btn:hover { background: #c7d3ff; }
 
-    /* Modais com estilo aprimorado */
+    /* Modais com estilo aprimorado e responsivo */
     @keyframes fadeInScale {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
@@ -168,20 +205,24 @@
       justify-content: center;
       align-items: center;
       z-index: 10000;
+      padding: 15px;
+      box-sizing: border-box;
     }
 
     .modal-content {
       background: #fff;
-      padding: 30px 25px;
+      padding: 25px 20px 30px;
       border-radius: 16px;
-      width: 90%;
-      max-width: 380px;
+      width: 100%;
+      max-width: 400px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
       text-align: center;
       font-size: 1.05rem;
       font-weight: 500;
       color: #2c2c2c;
       animation: fadeInScale 0.3s ease;
+      box-sizing: border-box;
+      word-wrap: break-word;
     }
 
     #modalSenha .modal-content::before { content: "\1F512"; }
@@ -192,6 +233,7 @@
       display: block;
       margin-bottom: 12px;
       color: #4f46e5;
+      user-select: none;
     }
 
     .modal-content button {
@@ -205,6 +247,7 @@
       margin: 10px 5px 0;
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
+      min-width: 100px;
     }
 
     #modalConfirm #btnSim {
@@ -226,10 +269,80 @@
       transform: translateY(-2px);
     }
 
-    @media (max-width: 600px) {
-      .container { padding: 20px; }
-      table, th, td { font-size: 0.85rem; }
+    /* Ajuste para botão copiar no modal senha */
+    .copy-btn {
+      margin-right: 10px;
     }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 15px 10px;
+      }
+      .container {
+        padding: 20px 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      button[type="submit"] {
+        max-width: 100%;
+      }
+
+      table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+      }
+
+      thead tr {
+        display: none;
+      }
+
+      tbody tr {
+        margin-bottom: 15px;
+        border-radius: 12px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        background: #fff;
+        padding: 15px 15px 20px;
+      }
+
+      tbody tr:hover {
+        background: #f0f3ff;
+      }
+
+      tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      tbody td:first-child {
+        font-weight: 700;
+        color: #4f46e5;
+        max-width: none;
+        white-space: normal;
+        overflow: visible;
+        flex-grow: 1;
+        border-bottom: none;
+      }
+
+      .actions-cell {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        padding-top: 8px;
+      }
+
+      .actions-cell button {
+        margin-right: 0;
+        font-size: 22px;
+        padding: 6px 10px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -279,25 +392,26 @@
   </div>
 
   <!-- Modal para mostrar senha -->
-  <div id="modalSenha">
+  <div id="modalSenha" role="dialog" aria-modal="true" aria-labelledby="modalSenhaLabel">
     <div class="modal-content">
-      <div id="modalSenhaDesc"></div>
+      <div id="modalSenhaDesc" tabindex="0"></div>
+      <button class="copy-btn" onclick="copiarSenhaModal()">Copiar Senha</button>
       <button onclick="fecharModalSenha()">Fechar</button>
     </div>
   </div>
 
   <!-- Modal genérico para alertas -->
-  <div id="modalMensagem">
+  <div id="modalMensagem" role="alertdialog" aria-modal="true" aria-labelledby="modalMensagemTexto">
     <div class="modal-content">
-      <div id="modalMensagemTexto"></div>
+      <div id="modalMensagemTexto" tabindex="0"></div>
       <button id="modalMensagemBtnOk">OK</button>
     </div>
   </div>
 
   <!-- Modal genérico para confirmação -->
-  <div id="modalConfirm">
+  <div id="modalConfirm" role="dialog" aria-modal="true" aria-labelledby="modalConfirmTexto">
     <div class="modal-content">
-      <div id="modalConfirmTexto"></div>
+      <div id="modalConfirmTexto" tabindex="0"></div>
       <button id="btnSim">Sim</button>
       <button id="btnNao">Não</button>
     </div>
@@ -334,159 +448,193 @@
     // Modal confirmação
     const modalConfirm = document.getElementById('modalConfirm');
     const modalConfirmTexto = document.getElementById('modalConfirmTexto');
-const btnSim = document.getElementById('btnSim');
-const btnNao = document.getElementById('btnNao');
-function mostrarAlerta(msg) {
-  return new Promise(resolve => {
-    modalMensagemTexto.textContent = msg;
-    modalMensagem.style.display = 'flex';
-    modalMensagemBtnOk.onclick = () => {
-      modalMensagem.style.display = 'none';
-      resolve();
-    };
-  });
-}
+    const btnSim = document.getElementById('btnSim');
+    const btnNao = document.getElementById('btnNao');
 
-function mostrarConfirmacao(msg) {
-  return new Promise(resolve => {
-    modalConfirmTexto.textContent = msg;
-    modalConfirm.style.display = 'flex';
-    btnSim.onclick = () => {
-      modalConfirm.style.display = 'none';
-      resolve(true);
-    };
-    btnNao.onclick = () => {
-      modalConfirm.style.display = 'none';
-      resolve(false);
-    };
-  });
-}
+    // Função mostrar alerta com opção de copiar senha
+    function mostrarAlerta(msg, isSenha = false) {
+      return new Promise(resolve => {
+        modalMensagemTexto.textContent = msg;
+        modalMensagem.style.display = 'flex';
 
-let usuarios = JSON.parse(localStorage.getItem('usuarios'));
+        if (isSenha) {
+          modalMensagemBtnOk.focus();
+        }
 
-(async () => {
-  if (!usuarios || usuarios.length === 0) {
-    const senhaGerada = gerarSenhaAleatoria();
-    usuarios = [{
-      nome: "admin",
-      senha: senhaGerada,
-      perfil: "admin"
-    }];
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    await mostrarAlerta(`Usuário padrão criado:\n\nUsuário: admin\nSenha: ${senhaGerada}\nPerfil: administrador`);
-  }
-
-  renderizarTabela();
-})();
-
-function salvarUsuarios() {
-  localStorage.setItem('usuarios', JSON.stringify(usuarios));
-}
-
-function limparFormulario() {
-  userIndexInput.value = -1;
-  nomeInput.value = '';
-  senhaInput.value = '';
-  perfilSelect.value = '';
-  perfilSelect.selectedIndex = 0;
-}
-
-function renderizarTabela() {
-  userTableBody.innerHTML = '';
-
-  usuarios.forEach((user, index) => {
-    const tr = document.createElement('tr');
-
-    tr.innerHTML = `
-      <td>${user.nome}</td>
-      <td>${user.perfil}</td>
-      <td class="actions-cell">
-        <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
-        <button class="view-pass-btn" title="Visualizar Senha" onclick="mostrarSenhaModal(${index})">👁️</button>
-        <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
-      </td>
-    `;
-
-    userTableBody.appendChild(tr);
-  });
-}
-
-function editarUsuario(index) {
-  const user = usuarios[index];
-  userIndexInput.value = index;
-  nomeInput.value = user.nome;
-  senhaInput.value = user.senha;
-  perfilSelect.value = user.perfil;
-}
-
-async function excluirUsuario(index) {
-  const confirmar = await mostrarConfirmacao(`Excluir usuário "${usuarios[index].nome}"?`);
-  if (confirmar) {
-    usuarios.splice(index, 1);
-    salvarUsuarios();
-    renderizarTabela();
-    limparFormulario();
-  }
-}
-
-userForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const nome = nomeInput.value.trim();
-  const senha = senhaInput.value.trim();
-  const perfil = perfilSelect.value;
-
-  if (!nome || !senha || !perfil) {
-    await mostrarAlerta('Preencha todos os campos!');
-    return;
-  }
-
-  const index = parseInt(userIndexInput.value);
-
-  if (index === -1) {
-    if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
-      await mostrarAlerta('Já existe um usuário com esse nome!');
-      return;
+        modalMensagemBtnOk.onclick = () => {
+          modalMensagem.style.display = 'none';
+          resolve();
+        };
+      });
     }
-    usuarios.push({ nome, senha, perfil });
-  } else {
-    usuarios[index] = { nome, senha, perfil };
-  }
 
-  salvarUsuarios();
-  renderizarTabela();
-  limparFormulario();
-});
+    // Função mostrar confirmação
+    function mostrarConfirmacao(msg) {
+      return new Promise(resolve => {
+        modalConfirmTexto.textContent = msg;
+        modalConfirm.style.display = 'flex';
+        btnSim.focus();
 
-function mostrarSenhaModal(index) {
-  const senha = usuarios[index].senha;
-  modalSenhaDesc.textContent = `Senha: ${senha}`;
-  modalSenha.style.display = 'flex';
-}
+        btnSim.onclick = () => {
+          modalConfirm.style.display = 'none';
+          resolve(true);
+        };
+        btnNao.onclick = () => {
+          modalConfirm.style.display = 'none';
+          resolve(false);
+        };
+      });
+    }
 
-async function mostrarSenhaInputModal() {
-  const senhaAtual = senhaInput.value;
-  if (!senhaAtual) {
-    await mostrarAlerta('Digite a senha para visualizar.');
-    return;
-  }
-  modalSenhaDesc.textContent = `Senha digitada: ${senhaAtual}`;
-  modalSenha.style.display = 'flex';
-}
+    // LocalStorage e usuários
+    let usuarios = JSON.parse(localStorage.getItem('usuarios'));
 
-function fecharModalSenha() {
-  modalSenha.style.display = 'none';
-}
+    (async () => {
+      if (!usuarios || usuarios.length === 0) {
+        const senhaGerada = gerarSenhaAleatoria();
+        usuarios = [{
+          nome: "admin",
+          senha: senhaGerada,
+          perfil: "admin"
+        }];
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        await mostrarAlerta(`Usuário padrão criado:\n\nUsuário: admin\nSenha: ${senhaGerada}\nPerfil: administrador`, true);
+      }
 
-function voltarDashboard() {
-  window.location.href = 'dashboard.html';
-}
+      renderizarTabela();
+    })();
 
-window.editarUsuario = editarUsuario;
-window.excluirUsuario = excluirUsuario;
-window.mostrarSenhaModal = mostrarSenhaModal;
-window.mostrarSenhaInputModal = mostrarSenhaInputModal;
-window.fecharModalSenha = fecharModalSenha;
-</script> 
+    function salvarUsuarios() {
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    }
+
+    function limparFormulario() {
+      userIndexInput.value = -1;
+      nomeInput.value = '';
+      senhaInput.value = '';
+      perfilSelect.value = '';
+      perfilSelect.selectedIndex = 0;
+    }
+
+    function renderizarTabela() {
+      userTableBody.innerHTML = '';
+
+      usuarios.forEach((user, index) => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td title="${user.nome}">${user.nome}</td>
+          <td>${user.perfil}</td>
+          <td class="actions-cell">
+            <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
+            <button class="view-pass-btn" title="Visualizar Senha" onclick="mostrarSenhaModal(${index})">👁️</button>
+            <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
+          </td>
+        `;
+
+        userTableBody.appendChild(tr);
+      });
+    }
+
+    function copiarSenhaModal() {
+      const textoCompleto = modalSenhaDesc.textContent;
+
+      // Pega só a senha após os dois pontos e espaço ": "
+      const senha = textoCompleto.split(': ')[1] || '';
+
+      if (!senha) {
+        alert('Nenhuma senha encontrada para copiar.');
+        return;
+      }
+
+      navigator.clipboard.writeText(senha.trim()).then(() => {
+        alert('Senha copiada para a área de transferência!');
+      }).catch(() => {
+        alert('Erro ao copiar senha.');
+      });
+    }
+
+    function editarUsuario(index) {
+      const user = usuarios[index];
+      userIndexInput.value = index;
+      nomeInput.value = user.nome;
+      senhaInput.value = user.senha;
+      perfilSelect.value = user.perfil;
+    }
+
+    async function excluirUsuario(index) {
+      const confirmar = await mostrarConfirmacao(`Excluir usuário "${usuarios[index].nome}"?`);
+      if (confirmar) {
+        usuarios.splice(index, 1);
+        salvarUsuarios();
+        renderizarTabela();
+        limparFormulario();
+      }
+    }
+
+    userForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nome = nomeInput.value.trim();
+      const senha = senhaInput.value.trim();
+      const perfil = perfilSelect.value;
+
+      if (!nome || !senha || !perfil) {
+        await mostrarAlerta('Preencha todos os campos!');
+        return;
+      }
+
+      const index = parseInt(userIndexInput.value);
+
+      if (index === -1) {
+        if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
+          await mostrarAlerta('Já existe um usuário com esse nome!');
+          return;
+        }
+        usuarios.push({ nome, senha, perfil });
+      } else {
+        usuarios[index] = { nome, senha, perfil };
+      }
+
+      salvarUsuarios();
+      renderizarTabela();
+      limparFormulario();
+    });
+
+    function mostrarSenhaModal(index) {
+      const senha = usuarios[index].senha;
+      modalSenhaDesc.textContent = `Senha: ${senha}`;
+      modalSenha.style.display = 'flex';
+      modalSenhaDesc.focus();
+    }
+
+    async function mostrarSenhaInputModal() {
+      const senhaAtual = senhaInput.value;
+      if (!senhaAtual) {
+        await mostrarAlerta('Digite a senha para visualizar.');
+        return;
+      }
+      modalSenhaDesc.textContent = `Senha digitada: ${senhaAtual}`;
+      modalSenha.style.display = 'flex';
+      modalSenhaDesc.focus();
+    }
+
+    function fecharModalSenha() {
+      modalSenha.style.display = 'none';
+    }
+
+    function voltarDashboard() {
+      window.location.href = 'dashboard.html';
+    }
+
+    // Expor funções para o escopo global
+    window.editarUsuario = editarUsuario;
+    window.excluirUsuario = excluirUsuario;
+    window.mostrarSenhaModal = mostrarSenhaModal;
+    window.mostrarSenhaInputModal = mostrarSenhaInputModal;
+    window.fecharModalSenha = fecharModalSenha;
+    window.copiarSenhaModal = copiarSenhaModal;
+
+  </script> 
 </body> 
 </html>
