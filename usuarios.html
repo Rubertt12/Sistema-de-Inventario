@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" >
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <title>Gestão de Usuários</title>
@@ -239,7 +239,6 @@
   </div>
 
   <script>
-    // Pega elementos
     const userForm = document.getElementById('userForm');
     const nomeInput = document.getElementById('nome');
     const senhaInput = document.getElementById('senha');
@@ -247,7 +246,6 @@
     const userTableBody = document.getElementById('userTableBody');
     const userIndexInput = document.getElementById('userIndex');
 
-    // Carrega lista de usuários do localStorage ou cria usuário padrão se vazio
     let usuarios = JSON.parse(localStorage.getItem('usuarios'));
 
     if (!usuarios || usuarios.length === 0) {
@@ -277,14 +275,17 @@
 
       usuarios.forEach((user, index) => {
         const tr = document.createElement('tr');
+        const acoes = (user.nome === "admin")
+          ? ''
+          : `
+            <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
+            <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
+          `;
 
         tr.innerHTML = `
           <td>${user.nome}</td>
           <td>${user.perfil}</td>
-          <td class="actions-cell">
-            <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
-            <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
-          </td>
+          <td class="actions-cell">${acoes}</td>
         `;
 
         userTableBody.appendChild(tr);
@@ -300,6 +301,11 @@
     }
 
     function excluirUsuario(index) {
+      if (usuarios[index].nome === "admin") {
+        alert("Você não pode excluir o usuário administrador padrão.");
+        return;
+      }
+
       if (confirm(`Excluir usuário "${usuarios[index].nome}"?`)) {
         usuarios.splice(index, 1);
         salvarUsuarios();
@@ -323,14 +329,16 @@
       const index = parseInt(userIndexInput.value);
 
       if (index === -1) {
-        // Criar novo usuário
         if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
           alert('Já existe um usuário com esse nome!');
           return;
         }
         usuarios.push({ nome, senha, perfil });
       } else {
-        // Editar usuário existente
+        if (usuarios[index].nome === "admin") {
+          alert("Você não pode editar o usuário administrador padrão.");
+          return;
+        }
         usuarios[index] = { nome, senha, perfil };
       }
 
@@ -339,15 +347,13 @@
       limparFormulario();
     });
 
-    // Expor funções para escopo global (para chamar do HTML)
     window.editarUsuario = editarUsuario;
     window.excluirUsuario = excluirUsuario;
 
     function voltarDashboard() {
-      window.location.href = 'index.html'; // Ajuste o caminho se necessário
+      window.location.href = 'dashboard.html';
     }
 
-    // Inicializa tabela ao carregar a página
     renderizarTabela();
   </script>
 

@@ -16,26 +16,27 @@ function toggleTab(tab) {
 // Cadastro
 document.getElementById("formCadastro").onsubmit = (e) => {
   e.preventDefault();
+
   const nome = document.getElementById("cadastroNome").value.trim();
-  const email = document.getElementById("cadastroEmail").value.trim();
   const senha = document.getElementById("cadastroSenha").value;
   const perfil = document.getElementById("cadastroPerfil").value;
 
-  if (!nome || !email || !senha || !perfil) {
+  if (!nome || !senha || !perfil) {
     document.getElementById("cadastroMsg").textContent = "Preencha todos os campos.";
     return;
   }
 
   let usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-  if (usuarios.some(u => u.email === email)) {
-    document.getElementById("cadastroMsg").textContent = "E-mail já cadastrado!";
+
+  if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
+    document.getElementById("cadastroMsg").textContent = "Usuário já cadastrado!";
     return;
   }
 
-  usuarios.push({ nome, email, senha, perfil });
+  usuarios.push({ nome, senha, perfil });
   localStorage.setItem("usuarios", JSON.stringify(usuarios));
   document.getElementById("cadastroMsg").style.color = "green";
-  document.getElementById("cadastroMsg").textContent = "Cadastro realizado!";
+  document.getElementById("cadastroMsg").textContent = "Cadastro realizado com sucesso!";
   e.target.reset();
   setTimeout(() => toggleTab("login"), 1000);
 };
@@ -43,11 +44,12 @@ document.getElementById("formCadastro").onsubmit = (e) => {
 // Login
 document.getElementById("formLogin").onsubmit = (e) => {
   e.preventDefault();
-  const email = document.getElementById("loginEmail").value.trim();
+
+  const nome = document.getElementById("loginUsuario").value.trim();
   const senha = document.getElementById("loginSenha").value;
 
   const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-  const user = usuarios.find(u => u.email === email && u.senha === senha);
+  const user = usuarios.find(u => u.nome === nome && u.senha === senha);
 
   if (!user) {
     document.getElementById("loginMsg").textContent = "Usuário ou senha inválidos.";
@@ -55,5 +57,5 @@ document.getElementById("formLogin").onsubmit = (e) => {
   }
 
   localStorage.setItem("usuarioLogado", JSON.stringify(user));
-  window.location.href = "dashboard.html";
+  window.location.href = "dashboard.html"; // ajuste conforme sua página inicial
 };
