@@ -235,18 +235,15 @@ async function abrirScanner() {
       aspectRatio: 1.3333
     };
 
-  await html5QrcodeScanner.start(
-  {
-    facingMode: { exact: "environment" },
-    focusMode: "continuous" // 👈 isso ajuda o navegador a manter o foco automático ligado
-  },
-  config,
-  (decodedText) => {
-    const tipo = document.getElementById('tipoEquipamento').value;
-    const campo = tipo === 'monitor' ? 'etiquetaMonitor' : 'etiquetaMaquina';
-    document.getElementById(campo).value = decodedText;
-    fecharScanner();
-  },
+    await html5QrcodeScanner.start(
+      { facingMode: { exact: "environment" } },
+      config,
+      (decodedText) => {
+        const tipo = document.getElementById('tipoEquipamento').value;
+        const campo = tipo === 'monitor' ? 'etiquetaMonitor' : 'etiquetaMaquina';
+        document.getElementById(campo).value = decodedText;
+        fecharScanner();
+      },
       (err) => {
         // Erros de leitura ignorados silenciosamente
       }
