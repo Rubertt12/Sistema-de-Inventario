@@ -1,93 +1,130 @@
-body {
+/* Reset e base */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* evita scroll */
   font-family: 'Poppins', sans-serif;
-  background: #f0f2f5;
+  background-color: #f4f4f4;
+}
+
+/* Centraliza o container login */
+body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
+  padding: 0 10px; /* espaço nas laterais em telas pequenas */
 }
 
-.container {
+/* Container principal do login */
+.login-container {
   background: white;
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-  width: 360px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  width: 320px; /* largura um pouco maior */
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
 }
 
+/* Logo */
+.logo-container {
+  margin-bottom: 1.5rem;
+}
+
+.logo-container img {
+  max-width: 120px;
+  height: auto;
+}
+
+/* Tabs de login e cadastro */
 .tabs {
   display: flex;
-  margin-bottom: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  gap: 10px;
 }
 
 .tabs button {
   flex: 1;
-  padding: 10px;
-  border: none;
+  padding: 0.6rem 0;
   background: #eee;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 .tabs button.active {
-  background: #2563eb;
+  background: #007bff;
   color: white;
 }
 
+/* Forms */
 .form {
   display: none;
   flex-direction: column;
+  text-align: left;
 }
 
 .form.active {
   display: flex;
 }
 
+/* Inputs e selects */
 input, select {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button[type="submit"] {
-  margin-top: 15px;
-  background-color: #2563eb;
-  color: white;
-  padding: 10px;
-  border: none;
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
   border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+/* Botões */
+button[type="submit"] {
+  background-color: #007bff;
+  border: none;
+  padding: 0.7rem;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #1e40af;
+button[type="submit"]:hover {
+  background-color: #0056b3;
 }
 
+/* Mensagens */
 .msg {
-  font-size: 0.85rem;
-  margin-top: 8px;
-  color: red;
+  font-size: 0.9rem;
+  color: #e74c3c; /* vermelho para erro */
+  min-height: 1.2rem;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #f5f5f5;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* centraliza tudo horizontalmente */
-}
-
-.logo-container {
-  margin-top: 30px; /* distância do topo da página */
-  margin-bottom: 20px; /* espaço entre logo e formulário */
-}
-
-.logo-container img {
-  max-width: 140px;
-  height: auto;
-  display: block;
+/* Responsividade */
+@media (max-width: 400px) {
+  .login-container {
+    width: 100%;
+    padding: 1.5rem;
+  }
+  
+  .logo-container img {
+    max-width: 100px;
+  }
+  
+  .tabs button {
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+  }
+  
+  input, select, button[type="submit"] {
+    font-size: 0.9rem;
+  }
 }
