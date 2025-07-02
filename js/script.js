@@ -124,14 +124,29 @@ function changeProfilePicture(event) {
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = function(e) {
-    const profilePic = document.getElementById('profilePic');
-    const userAvatar = document.getElementById('userAvatar');
-    if (profilePic) profilePic.src = e.target.result;
-    if (userAvatar) userAvatar.src = e.target.result;
+
+  reader.onload = function (e) {
+    const base64Image = e.target.result;
+
+    // Atualiza a imagem no perfil
+    const imgElement = document.getElementById("profilePic");
+    imgElement.src = base64Image;
+
+    // Salva no localStorage
+    localStorage.setItem("userProfileImage", base64Image);
   };
+
   reader.readAsDataURL(file);
 }
+
+
+window.addEventListener("DOMContentLoaded", function () {
+  const savedImage = localStorage.getItem("userProfileImage");
+  if (savedImage) {
+    document.getElementById("profilePic").src = savedImage;
+    document.getElementById("userAvatar").src = savedImage;
+  }
+});
 
 // ======= INICIALIZAÇÃO =======
 window.onload = () => {
@@ -145,10 +160,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+function realizarLogin() {
+  const nome = document.getElementById("nome").value;
+  const senha = document.getElementById("senha").value;
+
+  const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+  const user = usuarios.find(u => u.nome === nome && u.senha === senha);
+
+  if (user) {
+    localStorage.setItem("usuarioLogado", JSON.stringify(user));
+    window.location.href = "dashboard.html"; // ou onde estiver seu painel
+  } else {
+    alert("Usuário ou senha inválidos");
+  }
+}
 
 
-
-
+window.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("usuarioLogado"));
+  if (user && user.nome) {
+    document.getElementById("userName").textContent = user.nome;
+  }
+});
 function exportarBackupJSON() {
   const dados = {
     setores: setores,

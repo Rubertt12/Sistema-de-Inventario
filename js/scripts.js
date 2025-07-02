@@ -33,8 +33,26 @@ window.onload = () => {
 };
 
 
+function realizarLogin() {
+  const nome = document.getElementById("nome").value;
+  const senha = document.getElementById("senha").value;
 
+  const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+  const user = usuarios.find(u => u.nome === nome && u.senha === senha);
 
+  if (user) {
+    localStorage.setItem("usuarioLogado", JSON.stringify(user));
+    window.location.href = "dashboard.html"; // ou onde estiver seu painel
+  } else {
+    alert("Usuário ou senha inválidos");
+  }
+}
+window.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("usuarioLogado"));
+  if (user && user.nome) {
+    document.getElementById("userName").textContent = user.nome;
+  }
+});
 /// ==========================
 /// Modal de Setor
 /// ==========================
