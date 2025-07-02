@@ -19,3 +19,24 @@ localStorage.setItem("usuarioLogado", JSON.stringify({ nome: "AdmRubertt", perfi
 function abrirPaginaUsuarios() {
   window.location.href = 'usuarios.html'; // Ou o caminho correto do seu arquivo
 }
+
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+
+    if (!usuarioLogado) {
+      alert("Você precisa estar logado!");
+      window.location.href = 'index.html';
+      return;
+    }
+
+    // Mostra o menu somente se o usuário for admin ou editor
+    if (usuarioLogado.perfil === 'admin' || usuarioLogado.perfil === 'editor') {
+      document.getElementById("adminMenu").style.display = "block";
+    }
+  });
+
+  function abrirPaginaUsuarios() {
+    window.location.href = 'usuarios.html';
+  }

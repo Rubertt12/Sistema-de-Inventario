@@ -21,8 +21,10 @@
 
 <body>
   
-  <h3>Clique no menu do usuário para adicionar ou excluir o setor (+)</h3>
+  <h3>
   
+  <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
+  </h3>
   <header class="navbar">
     <h1>
       <img src="/img/icon-png.png" alt="Ícone" class="navbar-icon" /> Inventário de Setores
@@ -71,80 +73,79 @@
 
 
 
-          <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
 
 <button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
   🧨 Excluir Todos os Setores
 </button>
-          
-          <button class="logout-btn" onclick="logout(this)">
-            <span>Logout</span>
-          </button>
-        </div>
-      </div>
-    </nav>
-  </header>
-  
+
+<button class="logout-btn" onclick="logout(this)">
+  <span>Logout</span>
+</button>
+</div>
+</div>
+</nav>
+</header>
 
 
 
 
 
-  <!-- Modal de Adicionar Setor -->
-  <div id="modalSetor" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="fecharModalSetor()" aria-label="Fechar">&times;</span>
-      <h2>Adicionar Setor</h2>
-      <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor" />
-      <button onclick="confirmarAddSetor()">Adicionar</button>
-    </div>
+
+<!-- Modal de Adicionar Setor -->
+<div id="modalSetor" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="fecharModalSetor()" aria-label="Fechar">&times;</span>
+    <h2>Adicionar Setor</h2>
+    <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor" />
+    <button onclick="confirmarAddSetor()">Adicionar</button>
   </div>
+</div>
 
 
+
+
+<!-- Container dos setores -->
+<main id="setoresContainer" class="list-view">
+  <!-- Setores e máquinas serão inseridos dinamicamente aqui -->
+</main>
   
-  
-  <!-- Container dos setores -->
-  <main id="setoresContainer" class="list-view">
-    <!-- Setores e máquinas serão inseridos dinamicamente aqui -->
-  </main>
-  
-  <!-- MODAL: Informações da Máquina -->
-  <!-- Modal de Informações da Máquina -->
- <div id="infoModal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
-            <h2>Informações da Máquina</h2>
-            <p id="modalText"></p>
-            
-
-
+<!-- MODAL: Informações da Máquina -->
+<!-- Modal de Informações da Máquina -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
+    <h2>Informações da Máquina</h2>
+    <p id="modalText"></p>
     
-
+    
+    
+    
+    
     <!-- ...restante do conteúdo do modal -->
-
+    
+    
+    <section id="maintenanceSection">
+      <h3>Chamado (Observação)</h3>
+      <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
       
-      <section id="maintenanceSection">
-        <h3>Chamado (Observação)</h3>
-        <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
-        
       <fieldset style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;">
-  <legend style="cursor: pointer; user-select: none;" onclick="toggleChecklist(this)">
-    <strong>Checklist de Manutenção Preventiva</strong> 
-    <span class="arrow" style="float: right;">▼</span>
-  </legend>
-  <div class="checklist-content">
-    <label><input type="checkbox" name="checklist" value="funciona" /> Equipamento funcionando normalmente</label><br />
-    <label><input type="checkbox" name="checklist" value="ligaReinicia" /> Liga e reinicia sem erros</label><br />
-    <label><input type="checkbox" name="checklist" value="semBarulho" /> Sem barulhos estranhos</label><br />
-    <label><input type="checkbox" name="checklist" value="temperaturaNormal" /> Temperatura normal (ao toque)</label><br />
-    <label><input type="checkbox" name="checklist" value="equipamentoLimpo" /> Equipamento limpo (sem poeira visível)</label><br />
-  </div>
-</fieldset>
-
-        
-        <label for="priority" style="margin-top: 10px; display: block;">Prioridade:</label>
-        <select id="priority">
-          <option value="Baixa">Baixa</option>
+        <legend style="cursor: pointer; user-select: none;" onclick="toggleChecklist(this)">
+          <strong>Checklist de Manutenção Preventiva</strong> 
+          <span class="arrow" style="float: right;">▼</span>
+        </legend>
+        <div class="checklist-content">
+          <label><input type="checkbox" name="checklist" value="funciona" /> Equipamento funcionando normalmente</label><br />
+          <label><input type="checkbox" name="checklist" value="ligaReinicia" /> Liga e reinicia sem erros</label><br />
+          <label><input type="checkbox" name="checklist" value="semBarulho" /> Sem barulhos estranhos</label><br />
+          <label><input type="checkbox" name="checklist" value="temperaturaNormal" /> Temperatura normal (ao toque)</label><br />
+          <label><input type="checkbox" name="checklist" value="equipamentoLimpo" /> Equipamento limpo (sem poeira visível)</label><br />
+        </div>
+      </fieldset>
+      
+      
+      <label for="priority" style="margin-top: 10px; display: block;">Prioridade:</label>
+      <select id="priority">
+        <option value="Baixa">Baixa</option>
           <option value="Média">Média</option>
           <option value="Alta">Alta</option>
         </select>
@@ -155,21 +156,21 @@
       <section id="observationsList" style="margin-top: 20px;">
         <h3>Chamados Anteriores</h3>
         <ul
-          id="observationsUl"
-          style="max-height: 250px; overflow-y: auto; list-style: none; padding-left: 0;"
+        id="observationsUl"
+        style="max-height: 250px; overflow-y: auto; list-style: none; padding-left: 0;"
         ></ul>
       </section>
       
       <div
-        id="maintenanceMessage"
-        style="display: none; margin-top: 15px; color: rgb(221, 212, 212); font-weight: bold;border-radius: 10px;"
+      id="maintenanceMessage"
+      style="display: none; margin-top: 15px; color: rgb(221, 212, 212); font-weight: bold;border-radius: 10px;"
       >
-        <p>A máquina foi marcada para manutenção.</p>
-      </div>
-      
-      <!-- Botões de ação -->
-      <div class="modal-actions" style="margin-top: 20px;">
-        <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
+      <p>A máquina foi marcada para manutenção.</p>
+    </div>
+    
+    <!-- Botões de ação -->
+    <div class="modal-actions" style="margin-top: 20px;">
+      <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
         <button id="releaseBtn" onclick="releaseMachine()" style="display: none;">Liberar</button>
         <button id="close-btn" onclick="closeModal()"> Fechar</button>
         
@@ -368,6 +369,8 @@
   import { verificarPermissoes } from './js/permissoes.js';
   verificarPermissoes();
 </script>
+
+
 
 
 </body>
