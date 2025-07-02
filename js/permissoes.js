@@ -6,8 +6,8 @@ export function verificarPermissoes() {
 
   if (!usuario || !adminMenu) return;
 
-  // Só exibe o botão se for admin
-  if (usuario.perfil === "admin") {
+  // Mostrar botão para admin e editor (se quiser só admin, tire o editor)
+  if (usuario.perfil === "admin" || usuario.perfil === "") {
     adminMenu.style.display = "block";
   } else {
     adminMenu.style.display = "none";

@@ -66,7 +66,7 @@
           </div>
  
 
-         <div id="adminMenu" style="display: none;">
+        <div id="adminMenu" style="display: none;">
   <button onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
 </div>
 
@@ -366,10 +366,31 @@
 </script>
   
 <script type="module">
-  import { verificarPermissoes } from './js/permissoes.js';
-  verificarPermissoes();
-</script>
+    function verificarPermissoes() {
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+      const adminMenu = document.getElementById("adminMenu");
+      if (!usuario || !adminMenu) return;
 
+      if (usuario.perfil === "admin" || usuario.perfil === "") {
+        adminMenu.style.display = "block";
+      } else {
+        adminMenu.style.display = "none";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+      if (!usuarioLogado) {
+        alert("Você precisa estar logado!");
+        window.location.href = "index.html";
+        return;
+      }
+      verificarPermissoes();
+
+     
+    });
+
+  </script>
 
 
 
