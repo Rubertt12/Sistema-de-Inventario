@@ -75,7 +75,7 @@
 
 
 <button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
-  🧨 Excluir Todos os Setores
+  🧨 Excluir os Setores
 </button>
 
 <button class="logout-btn" onclick="logout(this)">
@@ -179,39 +179,39 @@
     </div>
   </div>
   
-  <!-- Modal de Configurações -->
   <div id="configModal" class="config-modal">
-    <div class="config-modal-content">
-      <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
-      <h2>Configurações</h2>
-      
-      <!-- Trocar foto do perfil -->
-      <div class="profile-picture-section">
-        <img src="/img/avatar.webp" alt="Foto de Perfil" id="profilePic" />
-        <input
-          type="file"
-          id="profilePicInput"
-          accept="image/*"
-          onchange="changeProfilePicture(event)"
-        />
-        <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
-      </div>
-      <h3>Backup / Restauração</h3>
-<button onclick="exportarBackupJSON()">📤 Exportar Backup (JSON)</button>
-<button onclick="document.getElementById('jsonInput').click()">📥 Importar Backup (JSON)</button>
-<input type="file" id="jsonInput" accept=".json" onchange="importarBackupJSON(event)" style="display:none;" />
+  <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
+  
+  <h2 class="modal-title">Configurações</h2>
 
-  <h3> DADOS CSV</h3>
-      <button onclick="importFromCSVButton()">Importar CSV</button>
-      <button onclick="exportToCSV()">Exportar para CSV</button>
-      <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)" />
-      
-
-
-      
-      <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
+  <div class="modal-left">
+    <!-- Trocar foto do perfil -->
+    <div class="profile-picture-section">
+      <img src="/img/avatar.webp" alt="Foto de Perfil" id="profilePic" />
+      <input
+        type="file"
+        id="profilePicInput"
+        accept="image/*"
+        onchange="changeProfilePicture(event)"
+      />
     </div>
+    <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
   </div>
+  
+  <div class="modal-right">
+    <h3>Backup / Restauração</h3>
+    <button onclick="exportarBackupJSON()">📤 Exportar Backup (JSON)</button>
+    <button onclick="document.getElementById('jsonInput').click()">📥 Importar Backup (JSON)</button>
+    <input type="file" id="jsonInput" accept=".json" onchange="importarBackupJSON(event)" style="display:none;" />
+
+    <h3>DADOS CSV</h3>
+    <button onclick="importFromCSVButton()">Importar CSV</button>
+    <button onclick="exportToCSV()">Exportar para CSV</button>
+    <input type="file" id="csvInput" style="display: none;" onchange="importFromCSV(event)" />
+
+    <button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
+  </div>
+</div>
   
   <!-- Modal Adicionar Máquina/Monitor -->
  <div id="modalMaquina" class="modal" style="display: none;">

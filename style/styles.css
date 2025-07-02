@@ -41,6 +41,25 @@ h3 {
   .user-menu:hover {
     background: #01a77d;
   }
+
+  .user-dropdown button {
+  width: 100%;        /* botão ocupa toda a largura do container */
+  max-width: 200px;   /* limite máximo, pra não esticar demais */
+  text-align: center; /* texto centralizado dentro do botão */
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #1d201f;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-dropdown button:hover {
+  background-color: #018d5a;
+}
+
   
   .user-avatar {
     width: 36px;
@@ -56,6 +75,7 @@ h3 {
     color: #fff;
     
   }
+  
   
   /* Dropdown básico (opcional) */
   .user-dropdown {
@@ -74,13 +94,20 @@ h3 {
     z-index: 10;
     border: 2px solid rgba(0, 0, 0, 0.836);
   /* Por padrão, sem scroll */
-  overflow-y: hidden;
-  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-x: auto;
     
     
     
   }
-  
+  @media (max-width: 600px) {
+  .user-dropdown {
+    max-height: 200px; /* altura máxima no mobile */
+    overflow-y: auto;  /* scroll vertical */
+  }
+}
+
+ 
 
   .modal {
   display: none; /* Escondido por padrão */
@@ -122,40 +149,63 @@ h3 {
     border-radius: 3px;
   }
 }
-
-
-/* Modal de Configurações */
+.modal-title {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  z-index: 15;
+  color: #111312;
+  pointer-events: none; /* não atrapalha cliques */
+}
 .config-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 400px;
-    background: rgba(255, 255, 255, 1);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-backdrop-filter: blur(25px);
--webkit-backdrop-filter: blur(5px);
-border: 3px solid rgba(0, 0, 0, 0.808);
-    
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 700px;
+  max-height: 95vh;
+  background: rgba(255, 255, 255, 1);
+  padding: 40px 20px 20px;
+  border-radius: 12px;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 2px solid rgba(0, 0, 0, 0.7);
+  gap: 30px;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  flex-wrap: nowrap;
 }
 
-.modal-content {
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 20px;
-  position: relative;
+/* Título fixo no topo e centralizado */
+.modal-title {
+  position: absolute;
+  top: 12px;
+  left: 20%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111;
+  z-index: 20;
 }
+
+/* Botão fechar no canto superior direito */
 .close-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 2000;
+  position: absolute;
+  top: 12px;
+  right: 12px;
   background-color: #e74c3c;
   color: white;
   font-size: 24px;
@@ -164,56 +214,132 @@ border: 3px solid rgba(0, 0, 0, 0.808);
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 30;
 }
 
-/* Estilização da foto de perfil */
-.profile-picture-section {
-    margin-top: 15px;
+/* Lado esquerdo: foto e botão lado a lado */
+.modal-left {
+  flex: 1;
+  min-width: 280px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
+/* Foto do perfil */
 .profile-picture-section img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    border: 3px solid #ccc;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ccc;
+  max-width: 100%;
 }
 
+/* Esconde input file */
+.profile-picture-section input {
+  display: none;
+}
+
+/* Botão Alterar Foto ao lado da imagem */
 .upload-btn {
-    display: block;
-    margin: 10px auto;
-    padding: 8px 15px;
-    background: #111312;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #111312;
+  color: white;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .upload-btn:hover {
-    background: #0056b3;
+  background-color: #0056b3;
 }
 
+/* Lado direito - opções */
+.modal-right {
+  flex: 2;
+  max-height: 75vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
 
+/* Botões gerais */
+button {
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #111312;
+  color: white;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  box-sizing: border-box;
+  white-space: nowrap;
+  max-width: 100%;
+}
 
+button:hover {
+  background-color: #0056b3;
+}
 
-
-
-/* Botão de salvar */
+/* Botão salvar */
 .save-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: #2b2a2a;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+  margin-top: auto;
+  background-color: #2b2a2a;
 }
 
 .save-btn:hover {
-    background: #0081b4;
+  background-color: #0081b4;
+}
+
+/* Responsividade para telas menores empilha vertical */
+@media (max-width: 600px) {
+  .config-modal {
+    flex-direction: column;
+    max-width: 90%;
+    max-height: 80vh;
+    padding-top: 60px;
+    overflow: hidden;
+    flex-wrap: wrap;
+  }
+  .modal-left {
+    flex-direction: column;
+    max-width: 100%;
+    min-width: auto;
+    align-items: center;
+    gap: 10px;
+  }
+  .modal-right {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 0;
+  }
+  .modal-title {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+  .close-btn {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    transform: none;
+    z-index: 1000;
+  }
 }
 
 
