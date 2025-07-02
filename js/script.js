@@ -124,29 +124,33 @@ function changeProfilePicture(event) {
   if (!file) return;
 
   const reader = new FileReader();
-
   reader.onload = function (e) {
-    const base64Image = e.target.result;
+    const imageDataUrl = e.target.result;
 
     // Atualiza a imagem no perfil
     const imgElement = document.getElementById("profilePic");
-    imgElement.src = base64Image;
+    const userAvatar = document.getElementById("userAvatar"); // caso tenha no topo também
+    if (imgElement) imgElement.src = imageDataUrl;
+    if (userAvatar) userAvatar.src = imageDataUrl;
 
     // Salva no localStorage
-    localStorage.setItem("userProfileImage", base64Image);
+    localStorage.setItem("userProfileImage", imageDataUrl);
   };
 
   reader.readAsDataURL(file);
 }
 
 
-window.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("DOMContentLoaded", () => {
   const savedImage = localStorage.getItem("userProfileImage");
   if (savedImage) {
-    document.getElementById("profilePic").src = savedImage;
-    document.getElementById("userAvatar").src = savedImage;
+    const imgElement = document.getElementById("profilePic");
+    const userAvatar = document.getElementById("userAvatar");
+    if (imgElement) imgElement.src = savedImage;
+    if (userAvatar) userAvatar.src = savedImage;
   }
 });
+
 
 // ======= INICIALIZAÇÃO =======
 window.onload = () => {
