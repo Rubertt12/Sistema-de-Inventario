@@ -36,13 +36,16 @@
     <!-- Navegação -->
     <nav class="nav-links">
       <!-- Filtro de pesquisa -->
-      <input
-        type="text"
-        id="searchInput"
-        onkeyup="filterMachines()"
-        placeholder="Pesquisar máquinas..."
-        aria-label="Pesquisar máquinas"
-      />
+  <input
+  type="text"
+  id="searchInput"
+  onkeyup="filterMachines()"
+  placeholder="Pesquisar máquinas..."
+  aria-label="Pesquisar máquinas"
+  autocomplete="off"
+/>
+
+
       
       <!-- Menu do usuário -->
    <div class="user-menu user-name" onclick="toggleUserMenu(event)" style="cursor:pointer;">

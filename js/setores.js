@@ -1,8 +1,14 @@
-// Variáveis globais para máquina ativa no modal info
+// Variáveis globais
+let setores = [];
+let setoresVisiveis = [];
+let setoresFiltradosIndices = null; // null = sem filtro
 let maquinaAtivaSetor = null;
 let maquinaAtivaIndex = null;
+let maquinaEmMovimento = null;
+let setorSelecionado = null;
+let debounceTimer = null;
 
-// Modal de Setores
+// ---------- MODAL SETOR ----------
 function addSetor() {
   document.getElementById("modalSetor").style.display = "flex";
 }
@@ -25,14 +31,36 @@ function confirmarAddSetor() {
   document.getElementById("inputSetorNome").value = "";
 }
 
-// Renderização de setores e máquinas
-function renderSetores() {
+// ---------- RENDERIZAÇÃO SETORES E MÁQUINAS ----------
+function renderSetores(termoBusca = null) {
   const container = document.getElementById('setoresContainer');
   container.innerHTML = '';
 
-  setores.forEach((setor, i) => {
+  let indicesParaMostrar = setoresFiltradosIndices ?? setores.map((_, i) => i);
+
+  if (indicesParaMostrar.length === 0) {
+    container.innerHTML = '<p style="font-style: italic; color: #666;">Nenhum setor ou máquina encontrado.</p>';
+    return;
+  }
+
+  indicesParaMostrar.forEach(i => {
+    const setor = setores[i];
     const div = document.createElement('div');
     div.classList.add('setor');
+
+    // Filtra máquinas se o termo não bater no setor
+    let maquinasParaRenderizar = setor.maquinas;
+    if (termoBusca && !setor.nome.toLowerCase().includes(termoBusca)) {
+      maquinasParaRenderizar = setor.maquinas.filter(m =>
+        m.nome.toLowerCase().includes(termoBusca) ||
+        m.tipo.toLowerCase().includes(termoBusca) ||
+        (m.etiqueta && m.etiqueta.toLowerCase().includes(termoBusca))
+      );
+    }
+
+    div.ondragover = e => e.preventDefault();
+    div.ondrop = e => dropMachine(e, i);
+
     div.innerHTML = `
       <div class="setor-header">
         <h2>${setor.nome}</h2>
@@ -44,8 +72,11 @@ function renderSetores() {
       <button onclick="abrirModalMaquina(${i})">Adicionar Máquina</button>
       <button onclick="toggleMachines(${i})">${setoresVisiveis[i] ? 'Esconder Máquinas' : 'Mostrar Máquinas'}</button>
       <div id="maquinas-${i}" style="display: ${setoresVisiveis[i] ? 'block' : 'none'};">
-        ${setor.maquinas.map((m, mi) => `
-          <div style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc; border-radius:10px;">
+        ${maquinasParaRenderizar.map((m, mi) => `
+          <div 
+            draggable="true" 
+            ondragstart="dragStart(event, ${i}, ${mi})" 
+            style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc; border-radius:10px; cursor: grab;">
             <strong>${m.nome}</strong> (${m.tipo}) - ${m.emManutencao ? 'Em Manutenção' : 'Operando'}
             <button onclick="showInfo(${i}, ${mi})" title="Informações">Info</button>
             <button onclick="removeMaquina(${i}, ${mi})" title="Excluir máquina">Excluir</button>
@@ -53,17 +84,18 @@ function renderSetores() {
         `).join('')}
       </div>
     `;
+
     container.appendChild(div);
   });
 }
 
-// Alterna visibilidade das máquinas no setor
+// ---------- TOGGLE MÁQUINAS VISÍVEIS ----------
 function toggleMachines(i) {
   setoresVisiveis[i] = !setoresVisiveis[i];
   renderSetores();
 }
 
-// Editar nome do setor
+// ---------- EDITAR SETOR ----------
 function editSetorName(i) {
   const novoNome = prompt("Digite o novo nome do setor:", setores[i].nome);
   if (novoNome && novoNome.trim()) {
@@ -75,7 +107,7 @@ function editSetorName(i) {
   }
 }
 
-// Remover setor
+// ---------- REMOVER SETOR ----------
 function removeSetor(i) {
   if (confirm("Excluir este setor?")) {
     setores.splice(i, 1);
@@ -85,8 +117,7 @@ function removeSetor(i) {
   }
 }
 
-// Modal de máquinas
-let setorSelecionado = null;
+// ---------- MODAL MÁQUINA ----------
 function abrirModalMaquina(i) {
   setorSelecionado = i;
   document.getElementById("modalMaquina").style.display = "flex";
@@ -100,7 +131,6 @@ window.addEventListener('click', e => {
   const modal = document.getElementById('modalMaquina');
   if (e.target === modal) fecharModalMaquina();
 });
-
 function resetModalMaquina() {
   document.getElementById("tipoEquipamento").value = "";
   document.getElementById("tipoMaquina").value = "";
@@ -115,7 +145,6 @@ function trocarCampos() {
   document.getElementById("camposMaquina").style.display = tipo === 'máquina' ? 'block' : 'none';
   document.getElementById("camposMonitor").style.display = tipo === 'monitor' ? 'block' : 'none';
 }
-
 function confirmarAddMaquina() {
   const tipo = document.getElementById("tipoEquipamento").value;
   const idUnico = `maquina_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
@@ -144,7 +173,6 @@ function confirmarAddMaquina() {
     const nomeUsuario = document.getElementById("usuarioResponsavel").value.trim();
     if (!etiquetaMonitor) return alert("Preencha a etiqueta do monitor.");
 
-
     setores[setorSelecionado].maquinas.push({
       id: idUnico,
       usuarioResponsavel: nomeUsuario,
@@ -164,7 +192,7 @@ function confirmarAddMaquina() {
   fecharModalMaquina();
 }
 
-// Remover máquina
+// ---------- REMOVER MÁQUINA ----------
 function removeMaquina(setorI, maquinaI) {
   if (confirm("Excluir esta máquina?")) {
     setores[setorI].maquinas.splice(maquinaI, 1);
@@ -173,7 +201,7 @@ function removeMaquina(setorI, maquinaI) {
   }
 }
 
-// Salvar e carregar localStorage
+// ---------- SALVAR E CARREGAR LOCALSTORAGE ----------
 function saveSetoresAndMachines() {
   localStorage.setItem('setores', JSON.stringify(setores));
 }
@@ -186,31 +214,35 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSetoresAndMachines();
 });
 
-// ----- Chamados ----- //
+// ---------- CHAMADOS ----------
+// Variável para armazenar id da máquina ativa (não usada no seu código, mas deixei)
+let currentMachineId = null;
 
-// Mostrar modal info e listar chamados da máquina
 function showInfo(setorIndex, maquinaIndex) {
   maquinaAtivaSetor = setorIndex;
   maquinaAtivaIndex = maquinaIndex;
+  currentMachineId = setores[setorIndex].maquinas[maquinaIndex].id;
 
   const modal = document.getElementById('infoModal');
   modal.style.display = 'flex';
 
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+
+  document.getElementById('modalText').innerHTML = `
+  <strong>Usuário:</strong> ${maquina.usuarioResponsavel || 'Não informado'}<br>
+  <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
+  <strong>Nome:</strong> ${maquina.nome}<br>
+  <strong>Tipo:</strong> ${maquina.tipo}<br>
+  <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
+  `;
+
   atualizarListaChamados();
 
-  const maquina = setores[setorIndex].maquinas[maquinaIndex];
-  if (maquina.emManutencao) {
-    document.getElementById('maintenanceMessage').style.display = 'block';
-    document.getElementById('maintenanceBtn').style.display = 'none';
-    document.getElementById('releaseBtn').style.display = 'inline-block';
-  } else {
-    document.getElementById('maintenanceMessage').style.display = 'none';
-    document.getElementById('maintenanceBtn').style.display = 'inline-block';
-    document.getElementById('releaseBtn').style.display = 'none';
-  }
+  document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
+  document.getElementById('maintenanceBtn').style.display = maquina.emManutencao ? 'none' : 'inline-block';
+  document.getElementById('releaseBtn').style.display = maquina.emManutencao ? 'inline-block' : 'none';
 }
 
-// Fecha modal info
 function closeModal() {
   document.getElementById('infoModal').style.display = 'none';
   maquinaAtivaSetor = null;
@@ -222,7 +254,6 @@ window.addEventListener('click', e => {
   if (e.target === modal) closeModal();
 });
 
-// Atualiza lista de chamados da máquina ativa
 function atualizarListaChamados() {
   const ul = document.getElementById('observationsUl');
   ul.innerHTML = '';
@@ -273,7 +304,6 @@ function atualizarListaChamados() {
   });
 }
 
-// Salvar novo chamado na máquina ativa
 function saveObservation() {
   if (maquinaAtivaSetor === null || maquinaAtivaIndex === null) {
     alert('Nenhuma máquina selecionada para salvar o chamado.');
@@ -314,14 +344,12 @@ function saveObservation() {
   alert('Chamado salvo com sucesso!');
 }
 
-// Limpa form do chamado
 function clearForm() {
   document.getElementById('observacao').value = '';
   document.querySelectorAll('#maintenanceSection input[type="checkbox"]').forEach(cb => cb.checked = false);
   document.getElementById('priority').value = 'Baixa';
 }
 
-// Marcar máquina para manutenção
 function markForMaintenance() {
   if (maquinaAtivaSetor === null || maquinaAtivaIndex === null) {
     alert('Nenhuma máquina selecionada para manutenção.');
@@ -337,7 +365,6 @@ function markForMaintenance() {
   document.getElementById('releaseBtn').style.display = 'inline-block';
 }
 
-// Liberar máquina da manutenção
 function releaseMachine() {
   if (maquinaAtivaSetor === null || maquinaAtivaIndex === null) {
     alert('Nenhuma máquina selecionada para liberar.');
@@ -353,113 +380,47 @@ function releaseMachine() {
   document.getElementById('releaseBtn').style.display = 'none';
 }
 
-
-let setoresFiltradosIndices = null; // null = sem filtro
-
+// ---------- FILTRO COM DEBOUNCE ----------
 function filterMachines() {
-  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
-  if (!termo) {
-    setoresFiltradosIndices = null;
-    renderSetores();
-    return;
-  }
-
-  setoresFiltradosIndices = setores.reduce((acc, setor, i) => {
-    const setorMatch = setor.nome.toLowerCase().includes(termo);
-    const maquinasMatch = setor.maquinas.some(m => {
-      return (
-        m.nome.toLowerCase().includes(termo) ||
-        m.tipo.toLowerCase().includes(termo) ||
-        (m.etiqueta && m.etiqueta.toLowerCase().includes(termo))
-      );
-    });
-
-    if (setorMatch || maquinasMatch) acc.push(i);
-    return acc;
-  }, []);
-
-  renderSetores(termo);
-}
-
-// Agora ajusta o renderSetores para aceitar o termo (string) ou null
-function renderSetores(termoBusca = null) {
-  const container = document.getElementById('setoresContainer');
-  container.innerHTML = '';
-
-  let indicesParaMostrar = setoresFiltradosIndices;
-  if (!indicesParaMostrar) {
-    // Sem filtro: mostra todos
-    indicesParaMostrar = setores.map((_, i) => i);
-  }
-
-  if (indicesParaMostrar.length === 0) {
-    container.innerHTML = '<p style="font-style: italic; color: #666;">Nenhum setor ou máquina encontrado.</p>';
-    return;
-  }
-
-  indicesParaMostrar.forEach(i => {
-    const setor = setores[i];
-    const div = document.createElement('div');
-    div.classList.add('setor');
-
-    // Se tiver termo e o termo bater no setor (busca por setor), mostramos todas máquinas
-    // Senão, filtramos as máquinas que batem no termo
-    let maquinasParaRenderizar = setor.maquinas;
-
-    if (termoBusca && !setor.nome.toLowerCase().includes(termoBusca)) {
-      maquinasParaRenderizar = setor.maquinas.filter(m => {
-        return (
-          m.nome.toLowerCase().includes(termoBusca) ||
-          m.tipo.toLowerCase().includes(termoBusca) ||
-          (m.etiqueta && m.etiqueta.toLowerCase().includes(termoBusca))
-        );
-      });
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (!termo) {
+      setoresFiltradosIndices = null;
+      renderSetores();
+      return;
     }
 
-    // Render com botões e funcionalidades intactas
-    div.innerHTML = `
-      <div class="setor-header">
-        <h2>${setor.nome}</h2>
-        <div>
-          <button onclick="editSetorName(${i})">✏️</button>
-          <button onclick="removeSetor(${i})">X</button>
-        </div>
-      </div>
-      <button onclick="abrirModalMaquina(${i})">Adicionar Máquina</button>
-      <button onclick="toggleMachines(${i})">${setoresVisiveis[i] ? 'Esconder Máquinas' : 'Mostrar Máquinas'}</button>
-      <div id="maquinas-${i}" style="display: ${setoresVisiveis[i] ? 'block' : 'none'};">
-        ${maquinasParaRenderizar.map((m, mi) => `
-          <div style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc;border-radius:10px">
-            <strong>${m.nome}</strong> (${m.tipo}) - ${m.emManutencao ? 'Em Manutenção' : 'Operando'}
-            <button onclick="showInfo(${i}, ${mi})">Info</button>
-            <button onclick="removeMaquina(${i}, ${mi})">Excluir</button>
-          </div>
-        `).join('')}
-      </div>
-    `;
+    setoresFiltradosIndices = setores.reduce((acc, setor, i) => {
+      const setorMatch = setor.nome.toLowerCase().includes(termo);
+      const maquinasMatch = setor.maquinas.some(m => {
+        return (
+          m.nome.toLowerCase().includes(termo) ||
+          m.tipo.toLowerCase().includes(termo) ||
+          (m.etiqueta && m.etiqueta.toLowerCase().includes(termo))
+        );
+      });
 
-    container.appendChild(div);
-  });
+      if (setorMatch || maquinasMatch) acc.push(i);
+      return acc;
+    }, []);
+
+    renderSetores(termo);
+  }, 250);
 }
 
-
-
-
+// ---------- EXCLUIR TODOS SETORES ----------
 function excluirTodosSetores() {
   if (confirm("Tem certeza que deseja excluir TODOS os setores? Esta ação não pode ser desfeita.")) {
     setores = [];
     setoresVisiveis = [];
-    localStorage.removeItem('setores');  // limpa do localStorage
-    localStorage.removeItem('chamados'); // se quiser apagar também os chamados (opcional)
-
+    localStorage.removeItem('setores');
     renderSetores();
     alert("Todos os setores foram excluídos.");
   }
 }
 
-
-
-
+// ---------- LAYOUT ----------
 function toggleLayout() {
   const container = document.getElementById('setoresContainer');
   const toggle = document.getElementById('layoutToggle');
@@ -473,50 +434,7 @@ function toggleLayout() {
   }
 }
 
-
-
-
-let maquinaEmMovimento = null;
-
-function renderSetores() {
-  const container = document.getElementById('setoresContainer');
-  container.innerHTML = '';
-
-  setores.forEach((setor, i) => {
-    // Cria div do setor com ondrop e ondragover
-    const divSetor = document.createElement('div');
-    divSetor.classList.add('setor');
-    divSetor.ondragover = e => e.preventDefault();
-    divSetor.ondrop = e => dropMachine(e, i);
-
-    divSetor.innerHTML = `
-      <div class="setor-header">
-        <h2>${setor.nome}</h2>
-        <div>
-          <button onclick="editSetorName(${i})">✏️</button>
-          <button onclick="removeSetor(${i})">X</button>
-        </div>
-      </div>
-      <button onclick="abrirModalMaquina(${i})">Adicionar Máquina</button>
-      <button onclick="toggleMachines(${i})">${setoresVisiveis[i] ? 'Esconder Máquinas' : 'Mostrar Máquinas'}</button>
-      <div id="maquinas-${i}" style="display: ${setoresVisiveis[i] ? 'block' : 'none'};">
-        ${setor.maquinas.map((m, mi) => `
-          <div 
-            draggable="true" 
-            ondragstart="dragStart(event, ${i}, ${mi})" 
-            style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc; border-radius:10px; cursor: grab;">
-            <strong>${m.nome}</strong> (${m.tipo}) - ${m.emManutencao ? 'Em Manutenção' : 'Operando'}
-            <button onclick="showInfo(${i}, ${mi})">Info</button>
-            <button onclick="removeMaquina(${i}, ${mi})">Excluir</button>
-          </div>
-        `).join('')}
-      </div>
-    `;
-
-    container.appendChild(divSetor);
-  });
-}
-
+// ---------- DRAG & DROP ----------
 function dragStart(event, setorIndex, maquinaIndex) {
   maquinaEmMovimento = { setorIndex, maquinaIndex };
 }
@@ -525,7 +443,7 @@ function dropMachine(event, novoSetorIndex) {
   if (!maquinaEmMovimento) return;
 
   const { setorIndex, maquinaIndex } = maquinaEmMovimento;
-  if (setorIndex === novoSetorIndex) return; // evita soltar no mesmo setor
+  if (setorIndex === novoSetorIndex) return;
 
   const maquina = setores[setorIndex].maquinas[maquinaIndex];
   setores[setorIndex].maquinas.splice(maquinaIndex, 1);
@@ -535,39 +453,4 @@ function dropMachine(event, novoSetorIndex) {
   renderSetores();
 
   maquinaEmMovimento = null;
-}
-
-
-
-
-
-function showInfo(setorIndex, maquinaIndex) {
-  maquinaAtivaSetor = setorIndex;
-  maquinaAtivaIndex = maquinaIndex;
-  currentMachineId = setores[setorIndex].maquinas[maquinaIndex].id;
-
-  const modal = document.getElementById('infoModal');
-  modal.style.display = 'flex';
-
-  const maquina = setores[setorIndex].maquinas[maquinaIndex];
-
-  // ⬇️ Aqui preenche o texto com as informações
-  
-  document.getElementById('modalText').innerHTML = `
-  <strong>Usuário:</strong> ${maquina.usuarioResponsavel || 'Não informado'}<br>
-  <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
-  <strong>Nome:</strong> ${maquina.nome}<br>
-  <strong>Tipo:</strong> ${maquina.tipo}<br>
-  <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
-
-  
-
-  `;
-
-  atualizarListaChamados(currentMachineId);
-
-  // Botões manutenção
-  document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
-  document.getElementById('maintenanceBtn').style.display = maquina.emManutencao ? 'none' : 'inline-block';
-  document.getElementById('releaseBtn').style.display = maquina.emManutencao ? 'inline-block' : 'none';
 }
