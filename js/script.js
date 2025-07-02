@@ -124,27 +124,27 @@ function changeProfilePicture(event) {
   if (!file) return;
 
   const reader = new FileReader();
+
   reader.onload = function (e) {
-    const imageDataUrl = e.target.result;
+    const base64Image = e.target.result;
 
+    // Atualiza a imagem no perfil
     const imgElement = document.getElementById("profilePic");
-    const userAvatar = document.getElementById("userAvatar");
-    if (imgElement) imgElement.src = imageDataUrl;
-    if (userAvatar) userAvatar.src = imageDataUrl;
+    imgElement.src = base64Image;
 
-    localStorage.setItem("userProfileImage", imageDataUrl);
+    // Salva no localStorage
+    localStorage.setItem("userProfileImage", base64Image);
   };
 
   reader.readAsDataURL(file);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+
+window.addEventListener("DOMContentLoaded", function () {
   const savedImage = localStorage.getItem("userProfileImage");
   if (savedImage) {
-    const imgElement = document.getElementById("profilePic");
-    const userAvatar = document.getElementById("userAvatar");
-    if (imgElement) imgElement.src = savedImage;
-    if (userAvatar) userAvatar.src = savedImage;
+    document.getElementById("profilePic").src = savedImage;
+    document.getElementById("userAvatar").src = savedImage;
   }
 });
 
@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (userNameElem) userNameElem.textContent = user;
 });
 
+
 function realizarLogin() {
   const nome = document.getElementById("nome").value;
   const senha = document.getElementById("senha").value;
@@ -168,11 +169,12 @@ function realizarLogin() {
 
   if (user) {
     localStorage.setItem("usuarioLogado", JSON.stringify(user));
-    window.location.href = "dashboard.html";
+    window.location.href = "dashboard.html"; // ou onde estiver seu painel
   } else {
     alert("Usuário ou senha inválidos");
   }
 }
+
 
 window.addEventListener("DOMContentLoaded", () => {
   const user = JSON.parse(localStorage.getItem("usuarioLogado"));
@@ -180,7 +182,6 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("userName").textContent = user.nome;
   }
 });
-
 function exportarBackupJSON() {
   const dados = {
     setores: setores,
@@ -195,6 +196,8 @@ function exportarBackupJSON() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+
 
 function importarBackupJSON(event) {
   const file = event.target.files[0];
@@ -218,43 +221,51 @@ function importarBackupJSON(event) {
   reader.readAsText(file);
 }
 
+
 function toggleChecklist(legendElement) {
   const fieldset = legendElement.parentElement;
   fieldset.classList.toggle('collapsed');
 }
 
-// Após validar o login com sucesso
-// localStorage.setItem('usuarioLogado', JSON.stringify(user));
-// window.location.href = "dashboard.html"; // redireciona para o dashboard
 
-// Controle do modal usuários
+// Após validar o login com sucesso
+localStorage.setItem('usuarioLogado', JSON.stringify(user));
+window.location.href = "dashboard.html"; // redireciona para o dashboard
+
+
+
+
+// Controle do modal
 const userModal = document.getElementById('userModal');
 const openUserModalBtn = document.getElementById('openUserModalBtn');
 const closeUserModalBtn = document.getElementById('closeUserModalBtn');
 
-if (openUserModalBtn) openUserModalBtn.addEventListener('click', () => {
+openUserModalBtn.addEventListener('click', () => {
   userModal.classList.add('show');
   loadUsersTable();
 });
-if (closeUserModalBtn) closeUserModalBtn.addEventListener('click', () => {
+
+closeUserModalBtn.addEventListener('click', () => {
   userModal.classList.remove('show');
 });
+
 window.addEventListener('click', e => {
   if (e.target === userModal) userModal.classList.remove('show');
 });
 
-// Funções para gerenciar usuários no localStorage
+// Função para salvar usuários no localStorage
 function getUsers() {
   const users = localStorage.getItem('users');
   return users ? JSON.parse(users) : [];
 }
+
 function saveUsers(users) {
   localStorage.setItem('users', JSON.stringify(users));
 }
 
-// Formulário cadastro usuário
+// Formulário
 const userForm = document.getElementById('userForm');
-if(userForm) userForm.addEventListener('submit', e => {
+userForm.addEventListener('submit', e => {
   e.preventDefault();
 
   const name = userForm.userName.value.trim();
@@ -267,6 +278,7 @@ if(userForm) userForm.addEventListener('submit', e => {
     return;
   }
 
+  // Validação simples email
   if (!email.match(/^\S+@\S+\.\S+$/)) {
     alert('Email inválido!');
     return;
@@ -279,6 +291,7 @@ if(userForm) userForm.addEventListener('submit', e => {
 
   let users = getUsers();
 
+  // Verifica se email já existe
   if (users.find(u => u.email === email)) {
     alert('Este email já está cadastrado!');
     return;
@@ -293,7 +306,7 @@ if(userForm) userForm.addEventListener('submit', e => {
   loadUsersTable();
 });
 
-// Carrega tabela usuários
+// Listagem usuários
 function loadUsersTable() {
   const tbody = document.querySelector('#usersTable tbody');
   const users = getUsers();
@@ -319,6 +332,7 @@ function loadUsersTable() {
     tbody.appendChild(tr);
   });
 
+  // Adiciona evento para exclusão
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       const id = Number(e.target.getAttribute('data-id'));
@@ -336,15 +350,16 @@ function deleteUser(id) {
   loadUsersTable();
 }
 
+
 function verificarPermissao() {
   const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
   if (usuarioLogado && usuarioLogado.permissao === 'admin') {
-    const adminMenu = document.getElementById('adminMenu');
-    if (adminMenu) adminMenu.style.display = 'block';
+    document.getElementById('adminMenu').style.display = 'block';
   }
 }
 
 verificarPermissao();
+
 
 let usuarios = [
   {
@@ -360,6 +375,7 @@ let usuarios = [
 ];
 localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
+
 function loginUsuario(nome, senha) {
   const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
   const usuario = usuarios.find(u => u.nome === nome && u.senha === senha);
@@ -373,5 +389,7 @@ function loginUsuario(nome, senha) {
 }
 
 function abrirPaginaUsuarios() {
-  window.location.href = 'usuarios.html';
+  window.location.href = 'usuarios.html'; // Ou o caminho correto do seu arquivo
 }
+
+
