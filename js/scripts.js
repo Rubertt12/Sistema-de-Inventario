@@ -32,6 +32,9 @@ window.onload = () => {
   toggle.checked = false;
 };
 
+
+
+
 /// ==========================
 /// Modal de Setor
 /// ==========================
