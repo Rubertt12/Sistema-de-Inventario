@@ -46,48 +46,37 @@
 />
 
 
-      
-      <!-- Menu do usuário -->
-   <div class="user-menu user-name" onclick="toggleUserMenu(event)" style="cursor:pointer;">
+<!-- Menu do usuário -->
+<div class="user-menu" onclick="toggleUserMenu(event)">
   <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
   <span id="userName">Usuário</span>
 
+  <div class="user-dropdown" id="userDropdown" hidden>
+    <button onclick="openConfigModal()">⚙️ Configurações</button>
 
+    <div class="box-switch">
+      <h3>Alterar Layout</h3>
+      <label class="switch">
+        <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
+        <span class="slider"></span>
+      </label>
+    </div>
 
+    <div id="adminMenu" style="display: none;">
+      <button onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
+    </div>
 
-        
-        <div class="user-dropdown" id="userDropdown" hidden>
-          <button onclick="openConfigModal()">Configurações ⚙️</button>
+    <button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
+      🧨 Excluir os Setores
+    </button>
 
-          
-          <div class="box-switch">
-            <h3>Alterar Layout</h3>
-            <label class="switch">
-             <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
-
-              <span class="slider"></span>
-            </label>
-          </div>
- 
-
-        <div id="adminMenu" style="display: none;">
-  <button onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
+    <button class="logout-btn" onclick="logout(this)">
+      <span>🚪 Logout</span>
+    </button>
+  </div>
 </div>
 
 
-
-
-
-<button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
-  🧨 Excluir os Setores
-</button>
-
-<button class="logout-btn" onclick="logout(this)">
-  <span>Logout</span>
-</button>
-</div>
-</div>
-</nav>
 </header>
 
 
@@ -356,9 +345,7 @@
 
     if (perfil === "editor") {
       document.querySelector(".excluir-tudo-btn").style.display = "none";
-      window.saveObservation = () => {};
-      window.markForMaintenance = () => {};
-      window.releaseMachine = () => {};
+      
     }
   }
 
