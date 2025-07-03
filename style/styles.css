@@ -166,7 +166,7 @@ h3 {
   backdrop-filter: blur(12px);
   border: 2px solid rgba(0,0,0,0.12);
   box-sizing: border-box;
-  display: flex;
+
   flex-direction: row;
   gap: 30px;
   overflow-y: auto;

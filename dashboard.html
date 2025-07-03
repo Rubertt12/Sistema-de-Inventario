@@ -309,7 +309,21 @@
     document.getElementById("userName").textContent = usuario.nome;
     const perfil = usuario.perfil;
 
-    if (perfil === "visualizador") {
+if (perfil === "monitoramento" || perfil === "admin") {
+  // Bloqueios para visualizador e admin
+  document.getElementById("addSetorBtn").style.display = "none";
+  document.querySelector(".excluir-tudo-btn").style.display = "none";
+ 
+  // resto do código...
+    if (perfil === "admin") {
+    const alterarLayoutBox = document.querySelector('.box-switch');
+    if (alterarLayoutBox) alterarLayoutBox.style.display = 'none';
+  }
+}
+
+
+
+    if (perfil === "monitoramento") {
       // Remove botões de ação do menu
       document.getElementById("addSetorBtn").style.display = "none";
       document.querySelector(".excluir-tudo-btn").style.display = "none";
@@ -343,11 +357,14 @@
       observer.observe(document.getElementById("observationsUl"), { childList: true, subtree: true });
     }
 
-    if (perfil === "editor") {
-      document.querySelector(".excluir-tudo-btn").style.display = "none";
+    if (perfil === "operador") {
+      
       
     }
   }
+
+
+  
 
   function logout() {
     localStorage.removeItem("usuarioLogado");
