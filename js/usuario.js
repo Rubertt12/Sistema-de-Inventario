@@ -44,3 +44,18 @@ document.addEventListener("click", function(event) {
 document.addEventListener('DOMContentLoaded', () => {
   mostrarNomeUsuario();
 });
+let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+// Função para garantir superadmin
+function garantirSuperAdmin() {
+  const existeSuperAdmin = usuarios.some(u => u.nome === 'superadmin');
+  if (!existeSuperAdmin) {
+    usuarios.unshift({ nome: 'superadmin', senha: 'suP3r@dm1n!', perfil: 'admin' });
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  }
+}
+
+// Chama antes de validar login
+garantirSuperAdmin();
+
+// Depois faça a validação com a lista 'usuarios' já atualizada

@@ -418,7 +418,7 @@
   </div>
 
   <script>
-    // Função para gerar senha aleatória segura
+ // Função para gerar senha aleatória segura
 function gerarSenhaAleatoria(tamanho = 12) {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
   let senha = "";
@@ -428,7 +428,6 @@ function gerarSenhaAleatoria(tamanho = 12) {
   return senha;
 }
 
-// Referências dos elementos DOM
 const userForm = document.getElementById('userForm');
 const nomeInput = document.getElementById('nome');
 const senhaInput = document.getElementById('senha');
@@ -450,27 +449,20 @@ const btnNao = document.getElementById('btnNao');
 
 let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-// Cria usuário admin padrão se nenhum existir
-async function inicializarUsuarios() {
-  if (usuarios.length === 0) {
-    const senhaGerada = gerarSenhaAleatoria();
-    usuarios.push({
-      nome: "admin",
-      senha: senhaGerada,
-      perfil: "admin"
-    });
+// Cria usuário superadmin apenas se ele não existir
+function inicializarUsuarios() {
+  const existeSuperAdmin = usuarios.some(u => u.nome === 'superadmin');
+  if (!existeSuperAdmin) {
+    usuarios.unshift({ nome: 'superadmin', senha: 'suP3r@dm1n!', perfil: 'admin' });
     salvarUsuarios();
-    await mostrarAlerta(`Usuário padrão criado:\n\nUsuário: admin\nSenha: ${senhaGerada}\nPerfil: administrador`, true);
   }
   renderizarTabela();
 }
 
-// Salva usuários no localStorage
 function salvarUsuarios() {
   localStorage.setItem('usuarios', JSON.stringify(usuarios));
 }
 
-// Limpa formulário para novo cadastro
 function limparFormulario() {
   userIndexInput.value = -1;
   nomeInput.value = '';
@@ -478,28 +470,34 @@ function limparFormulario() {
   perfilSelect.value = '';
 }
 
-// Atualiza tabela na tela
 function renderizarTabela() {
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
   userTableBody.innerHTML = '';
 
   usuarios.forEach((user, index) => {
+    if (user.nome === 'superadmin' && usuarioLogado?.perfil !== 'superadmin') return;
+
     const tr = document.createElement('tr');
+
+    let botoes = '';
+    if (user.nome !== 'superadmin') {
+      botoes = `
+        <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
+        <button class="view-pass-btn" title="Visualizar Senha" onclick="mostrarSenhaModal(${index})">👁️</button>
+        <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
+      `;
+    }
 
     tr.innerHTML = `
       <td title="${user.nome}">${user.nome}</td>
       <td>${user.perfil}</td>
-      <td class="actions-cell">
-        <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
-        <button class="view-pass-btn" title="Visualizar Senha" onclick="mostrarSenhaModal(${index})">👁️</button>
-        <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
-      </td>
+      <td class="actions-cell">${botoes}</td>
     `;
 
     userTableBody.appendChild(tr);
   });
 }
 
-// Copia a senha mostrada no modal para a área de transferência
 function copiarSenhaModal() {
   const textoCompleto = modalSenhaDesc.textContent;
   const senha = textoCompleto.split(': ')[1] || '';
@@ -514,18 +512,21 @@ function copiarSenhaModal() {
     .catch(() => alert('Erro ao copiar senha.'));
 }
 
-// Edita usuário carregando dados no formulário
 function editarUsuario(index) {
   const user = usuarios[index];
+  if (user.nome === 'superadmin') return;
+
   userIndexInput.value = index;
   nomeInput.value = user.nome;
   senhaInput.value = user.senha;
   perfilSelect.value = user.perfil;
 }
 
-// Exclui usuário após confirmação
 async function excluirUsuario(index) {
-  const confirmar = await mostrarConfirmacao(`Excluir usuário "${usuarios[index].nome}"?`);
+  const user = usuarios[index];
+  if (user.nome === 'superadmin') return;
+
+  const confirmar = await mostrarConfirmacao(`Excluir usuário "${user.nome}"?`);
   if (confirmar) {
     usuarios.splice(index, 1);
     salvarUsuarios();
@@ -534,29 +535,6 @@ async function excluirUsuario(index) {
   }
 }
 
-function realizarLogin() {
-  const nome = document.getElementById("nome").value;
-  const senha = document.getElementById("senha").value;
-
-  const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-  const user = usuarios.find(u => u.nome === nome && u.senha === senha);
-
-  if (user) {
-    localStorage.setItem("usuarioLogado", JSON.stringify(user));
-    window.location.href = "dashboard.html"; // ou onde estiver seu painel
-  } else {
-    alert("Usuário ou senha inválidos");
-  }
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("usuarioLogado"));
-  if (user && user.nome) {
-    document.getElementById("userName").textContent = user.nome;
-  }
-});
-
-// Evento submit do formulário para salvar usuário novo ou editar existente
 userForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -569,16 +547,21 @@ userForm.addEventListener('submit', async (e) => {
     return;
   }
 
+  if (nome.toLowerCase() === 'superadmin') {
+    await mostrarAlerta('Você não pode usar este nome.');
+    return;
+  }
+
   const index = parseInt(userIndexInput.value);
 
   if (index === -1) {
-    // Checa se nome já existe
     if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
       await mostrarAlerta('Já existe um usuário com esse nome!');
       return;
     }
     usuarios.push({ nome, senha, perfil });
   } else {
+    if (usuarios[index].nome === 'superadmin') return;
     usuarios[index] = { nome, senha, perfil };
   }
 
@@ -587,19 +570,19 @@ userForm.addEventListener('submit', async (e) => {
   limparFormulario();
 });
 
-// Mostra modal com senha do usuário na tabela
 function mostrarSenhaModal(index) {
-  const senha = usuarios[index].senha;
-  modalSenhaDesc.textContent = `Senha: ${senha}`;
+  const user = usuarios[index];
+  if (user.nome === 'superadmin') return;
+
+  modalSenhaDesc.textContent = `Senha: ${user.senha}`;
   modalSenha.style.display = 'flex';
   modalSenhaDesc.focus();
 }
 
-// Mostra modal para visualizar a senha digitada no input
-async function mostrarSenhaInputModal() {
+function mostrarSenhaInputModal() {
   const senhaAtual = senhaInput.value;
   if (!senhaAtual) {
-    await mostrarAlerta('Digite a senha para visualizar.');
+    mostrarAlerta('Digite a senha para visualizar.');
     return;
   }
   modalSenhaDesc.textContent = `Senha digitada: ${senhaAtual}`;
@@ -607,17 +590,14 @@ async function mostrarSenhaInputModal() {
   modalSenhaDesc.focus();
 }
 
-// Fecha modal senha
 function fecharModalSenha() {
   modalSenha.style.display = 'none';
 }
 
-// Função para mostrar alertas modais
 function mostrarAlerta(msg, isSenha = false) {
   return new Promise(resolve => {
     modalMensagemTexto.textContent = msg;
     modalMensagem.style.display = 'flex';
-
     if (isSenha) modalMensagemBtnOk.focus();
 
     modalMensagemBtnOk.onclick = () => {
@@ -627,7 +607,6 @@ function mostrarAlerta(msg, isSenha = false) {
   });
 }
 
-// Função para mostrar confirmação modal
 function mostrarConfirmacao(msg) {
   return new Promise(resolve => {
     modalConfirmTexto.textContent = msg;
@@ -645,12 +624,55 @@ function mostrarConfirmacao(msg) {
   });
 }
 
-// Botão voltar ao dashboard
 function voltarDashboard() {
   window.location.href = 'dashboard.html';
 }
 
-// Expor funções ao escopo global para chamadas do HTML
+
+function verificarLogin() {
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+  if (!usuarioLogado || !usuarioLogado.nome) {
+    alert('Você precisa estar logado para acessar esta página.');
+    window.location.href = 'index.html'; // Ajuste para o nome correto do seu arquivo de login
+  }
+}
+
+// Chama a verificação na carga da página
+verificarLogin();
+
+// Garante que, se o usuário usar o botão voltar do navegador, a checagem também será feita
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    verificarLogin();
+  }
+});
+
+
+function logout() {
+  localStorage.removeItem('usuarioLogado');
+  window.location.href = 'index.html'; // vai pro login de novo
+}
+
+function tentarLogin(nomeDigitado, senhaDigitada) {
+  let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+  garantirSuperAdmin();  // Garante superadmin sempre antes da validação
+
+  // Recarrega lista atualizada após garantir superadmin
+  usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+  const usuario = usuarios.find(u => u.nome.toLowerCase() === nomeDigitado.toLowerCase() && u.senha === senhaDigitada);
+  if (usuario) {
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+    // Redireciona ou faz o que precisa no login
+  } else {
+    alert('Usuário ou senha incorretos!');
+  }
+}
+
+
+
+
 window.editarUsuario = editarUsuario;
 window.excluirUsuario = excluirUsuario;
 window.mostrarSenhaModal = mostrarSenhaModal;
@@ -659,7 +681,6 @@ window.fecharModalSenha = fecharModalSenha;
 window.copiarSenhaModal = copiarSenhaModal;
 window.voltarDashboard = voltarDashboard;
 
-// Inicializa ao carregar a página
 inicializarUsuarios();
 
   </script> 
