@@ -562,7 +562,9 @@ function abrirModalTransferencia() {
   modal.style.display = 'flex';
   modal.innerHTML = `
     <div class="modal-transferencia-content styled-modal">
-      <button class="btn-fechar" onclick="fecharModalTransferencia()">×</button>
+      <div style="display: flex; justify-content: flex-end;">
+        <button class="btn-fechar" onclick="fecharModalTransferencia()">×</button>
+      </div>
       <h2 class="modal-title">🔁 Transferência de Máquinas</h2>
 
       <div class="pesquisa-transferencia">
