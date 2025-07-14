@@ -544,3 +544,206 @@ const modalHtml = `
   </div>
 `;
 document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+
+
+
+
+// JavaScript para Modal de Transferência com Paginação de Setores
+
+let setorSelecionadoOrigem = null;
+let setorSelecionadoDestino = null;
+let maquinaSelecionada = null;
+let paginaAtualOrigem = 1;
+const setoresPorPagina = 5;
+
+function abrirModalTransferencia() {
+  const modal = document.getElementById('modalTransferencia');
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-transferencia-content styled-modal">
+      <button class="btn-fechar" onclick="fecharModalTransferencia()">×</button>
+      <h2 class="modal-title">🔁 Transferência de Máquinas</h2>
+
+      <div class="pesquisa-transferencia">
+        <input type="text" id="buscaSetorOrigem" placeholder="🔍 Buscar Setor de Origem" oninput="buscarSetorOrigem()" />
+        <input type="text" id="buscaSetorDestino" placeholder="📦 Buscar Setor de Destino" oninput="buscarSetorDestino()" />
+      </div>
+
+      <div class="caixas-transferencia">
+        <div id="setorOrigemBox" class="box-setor origem">
+          <h3>📤 Setor de Origem</h3>
+          <div id="listaOrigem" class="lista-maquinas"></div>
+          <div id="paginacaoOrigem" class="paginacao"></div>
+        </div>
+
+        <div id="setorDestinoBox" class="box-setor destino" ondragover="event.preventDefault()" ondrop="soltarMaquina(event)">
+          <h3>📥 Setor de Destino</h3>
+          <div id="listaDestino" class="lista-destino"></div>
+        </div>
+      </div>
+
+      <div id="infoTransferencia" class="info-transferencia"></div>
+      <button onclick="confirmarTransferencia()" class="btn-confirmar">✅ Confirmar Transferência</button>
+    </div>
+  `;
+
+  document.getElementById('buscaSetorOrigem').value = '';
+  document.getElementById('buscaSetorDestino').value = '';
+  setorSelecionadoOrigem = null;
+  setorSelecionadoDestino = null;
+  maquinaSelecionada = null;
+  paginaAtualOrigem = 1;
+
+  renderizarSetoresOrigem();
+}
+
+function renderizarSetoresOrigem() {
+  const listaOrigem = document.getElementById('listaOrigem');
+  listaOrigem.innerHTML = '';
+
+  const inicio = (paginaAtualOrigem - 1) * setoresPorPagina;
+  const fim = inicio + setoresPorPagina;
+  const setoresPagina = setores.slice(inicio, fim);
+
+  setoresPagina.forEach(setor => {
+    const setorDiv = document.createElement('div');
+    setorDiv.className = 'setor-item styled-setor';
+    setorDiv.textContent = setor.nome;
+    setorDiv.onclick = () => mostrarMaquinasDoSetor(setor);
+    listaOrigem.appendChild(setorDiv);
+  });
+
+  renderizarPaginacaoOrigem();
+}
+
+function renderizarPaginacaoOrigem() {
+  const paginacao = document.getElementById('paginacaoOrigem');
+  paginacao.innerHTML = '';
+  const totalPaginas = Math.ceil(setores.length / setoresPorPagina);
+
+  if (totalPaginas <= 1) return;
+
+  if (paginaAtualOrigem > 1) {
+    const btnAnterior = document.createElement('button');
+    btnAnterior.textContent = '⬅ Anterior';
+    btnAnterior.onclick = () => {
+      paginaAtualOrigem--;
+      renderizarSetoresOrigem();
+    };
+    paginacao.appendChild(btnAnterior);
+  }
+
+  for (let i = 1; i <= totalPaginas; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    btn.className = i === paginaAtualOrigem ? 'btn-pagina ativo' : 'btn-pagina';
+    btn.onclick = () => {
+      paginaAtualOrigem = i;
+      renderizarSetoresOrigem();
+    };
+    paginacao.appendChild(btn);
+  }
+
+  if (paginaAtualOrigem < totalPaginas) {
+    const btnProximo = document.createElement('button');
+    btnProximo.textContent = 'Próximo ➡';
+    btnProximo.onclick = () => {
+      paginaAtualOrigem++;
+      renderizarSetoresOrigem();
+    };
+    paginacao.appendChild(btnProximo);
+  }
+}
+
+function mostrarMaquinasDoSetor(setor) {
+  setorSelecionadoOrigem = setor;
+  const listaOrigem = document.getElementById('listaOrigem');
+  const paginacao = document.getElementById('paginacaoOrigem');
+  listaOrigem.innerHTML = '';
+  paginacao.innerHTML = '';
+
+  const voltar = document.createElement('button');
+  voltar.textContent = '⬅️ Voltar aos Setores';
+  voltar.className = 'btn-voltar';
+  voltar.onclick = () => {
+    setorSelecionadoOrigem = null;
+    renderizarSetoresOrigem();
+  };
+  listaOrigem.appendChild(voltar);
+
+  const titulo = document.createElement('h4');
+  titulo.textContent = '💻 Máquinas de ' + setor.nome;
+  listaOrigem.appendChild(titulo);
+
+  setor.maquinas.forEach(maquina => {
+    const div = document.createElement('div');
+    div.className = 'maquina-item styled-maquina';
+    div.draggable = true;
+    div.textContent = maquina.etiqueta || maquina.nome || 'Sem nome';
+    div.ondragstart = e => {
+      e.dataTransfer.setData('text/plain', JSON.stringify({ maquinaId: maquina.id }));
+    };
+    div.onclick = () => selecionarMaquina(maquina, div);
+    listaOrigem.appendChild(div);
+  });
+}
+
+function fecharModalTransferencia() {
+  document.getElementById('modalTransferencia').style.display = 'none';
+}
+
+function limparCampoOrigem() {
+  const box = document.getElementById('listaOrigem');
+  if (box) box.innerHTML = '';
+}
+
+function limparCampoDestino() {
+  const box = document.getElementById('listaDestino');
+  if (box) box.innerHTML = '';
+}
+
+function buscarSetorDestino() {
+  const termo = document.getElementById('buscaSetorDestino').value.toLowerCase();
+  const setor = setores.find(s => s.nome.toLowerCase().includes(termo) && s.nome !== setorSelecionadoOrigem?.nome);
+  limparCampoDestino();
+  if (!setor) return;
+  setorSelecionadoDestino = setor;
+  document.getElementById('listaDestino').innerHTML = `<p>📦 Setor selecionado: <strong>${setor.nome}</strong></p>`;
+}
+
+function selecionarMaquina(maquina, div) {
+  maquinaSelecionada = maquina;
+  document.querySelectorAll('#listaOrigem .maquina-item').forEach(el => el.classList.remove('selecionada'));
+  div.classList.add('selecionada');
+  limparCampoDestino();
+  document.getElementById('buscaSetorDestino').value = '';
+}
+
+function soltarMaquina(event) {
+  event.preventDefault();
+  const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+  const maquina = setorSelecionadoOrigem?.maquinas.find(m => m.id === data.maquinaId);
+  if (!maquina || !setorSelecionadoDestino || setorSelecionadoDestino.nome === setorSelecionadoOrigem.nome) return;
+  setorSelecionadoOrigem.maquinas = setorSelecionadoOrigem.maquinas.filter(m => m.id !== maquina.id);
+  setorSelecionadoDestino.maquinas.push(maquina);
+  saveSetoresAndMachines();
+  renderSetores();
+  fecharModalTransferencia();
+}
+
+function confirmarTransferencia() {
+  if (!setorSelecionadoOrigem || !setorSelecionadoDestino || !maquinaSelecionada) {
+    alert('Selecione setor de origem, máquina e setor de destino.');
+    return;
+  }
+  if (setorSelecionadoOrigem.nome === setorSelecionadoDestino.nome) {
+    alert('Setor de destino deve ser diferente do setor de origem.');
+    return;
+  }
+  setorSelecionadoOrigem.maquinas = setorSelecionadoOrigem.maquinas.filter(m => m.id !== maquinaSelecionada.id);
+  setorSelecionadoDestino.maquinas.push(maquinaSelecionada);
+  saveSetoresAndMachines();
+  renderSetores();
+  fecharModalTransferencia();
+}

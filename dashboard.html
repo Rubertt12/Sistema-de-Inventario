@@ -22,8 +22,9 @@
 <body>
   
   <h3>
-  
-  <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
+    <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
+    <button onclick="abrirModalTransferencia()">🔄 Transferir Máquinas</button>
+
   </h3>
   <header class="navbar">
     <h1>
@@ -334,6 +335,33 @@
   </div>
 </div>
 
+
+<div id="modalTransferencia" class="modal-transferencia">
+  <div class="modal-transferencia-content">
+    <span class="close" onclick="fecharModalTransferencia()">&times;</span>
+    <h2>Transferência de Máquinas</h2>
+
+    <div class="pesquisa-transferencia">
+      <input type="text" id="buscaSetorOrigem" placeholder="Buscar Setor de Origem" oninput="buscarSetorOrigem()" />
+      <input type="text" id="buscaSetorDestino" placeholder="Buscar Setor de Destino" oninput="buscarSetorDestino()" />
+    </div>
+
+    <div class="caixas-transferencia">
+      <div id="setorOrigemBox" class="box-setor">
+        <h3>Setor de Origem</h3>
+        <div id="listaOrigem" class="lista-maquinas"></div>
+      </div>
+
+      <div id="setorDestinoBox" class="box-setor" ondragover="event.preventDefault()" ondrop="soltarMaquina(event)">
+        <h3>Setor de Destino</h3>
+        <div id="listaDestino" class="lista-destino"></div>
+      </div>
+    </div>
+
+    <div id="infoTransferencia" class="info-transferencia"></div>
+    <button onclick="confirmarTransferencia()" class="btn-confirmar">Confirmar Transferência</button>
+  </div>
+</div>
 
 
 
