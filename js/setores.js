@@ -563,10 +563,10 @@ function abrirModalTransferencia() {
   modal.innerHTML = `
     <div class="modal-transferencia-content styled-modal">
       <div style="display: flex; justify-content: flex-end;">
-        <button class="btn-fechar" onclick="fecharModalTransferencia()">×</button>
+      <button class="btn-fechar" onclick="fecharModalTransferencia()">×</button>
       </div>
       <h2 class="modal-title">🔁 Transferência de Máquinas</h2>
-
+      
       <div class="pesquisa-transferencia">
         <input type="text" id="buscaSetorOrigem" placeholder="🔍 Buscar Setor de Origem" oninput="buscarSetorOrigem()" />
         <input type="text" id="buscaSetorDestino" placeholder="📦 Buscar Setor de Destino" oninput="buscarSetorDestino()" />

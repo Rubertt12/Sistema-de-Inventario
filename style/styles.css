@@ -1535,147 +1535,191 @@ select {
 #btnCadastroUsuario:hover {
   background-color: #0056b3;
 }
-/* Estilo geral do modal */
-.modal-transferencia {
-  display: none;
+/* Modal base */
+#modalTransferencia {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(20, 20, 20, 0.6);
-  justify-content: center;
-  align-items: center;
   z-index: 9999;
-  font-family: 'Poppins', sans-serif;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-/* Caixa do conteúdo */
+/* Conteúdo do modal */
 .modal-transferencia-content {
-  background: #fff;
+  background-color: #fff;
   border-radius: 16px;
-  padding: 30px;
-  width: 90%;
-  max-width: 900px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease-in-out;
+  max-width: 1000px;
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  padding: 20px 30px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 /* Botão de fechar */
-.modal-transferencia .close {
-  position: absolute;
-  top: 30px;
-  right: 35px;
-  font-size: 32px;
+.btn-fechar {
+  font-size: 28px;
   font-weight: bold;
-  color: #888;
+  background: transparent;
+  border: none;
+  color: #555;
   cursor: pointer;
+  padding: 0;
+  transition: color 0.3s;
 }
 
-.modal-transferencia .close:hover {
-  color: #333;
+.btn-fechar:hover {
+  color: #d00;
 }
 
-/* Inputs */
+/* Título */
+.modal-title {
+  font-size: 24px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Campos de pesquisa */
+.pesquisa-transferencia {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .pesquisa-transferencia input {
-  width: 48%;
-  padding: 12px 16px;
-  margin: 10px 1%;
-  border: 1.5px solid #ccc;
-  border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   font-size: 16px;
-  transition: border-color 0.3s;
+  width: 100%;
 }
 
-.pesquisa-transferencia input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-/* Caixas dos setores */
+/* Caixas principais */
 .caixas-transferencia {
   display: flex;
-  justify-content: space-between;
   gap: 20px;
-  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
+/* Caixa de setor */
 .box-setor {
-  flex: 1;
-  background-color: #f8f9fa;
+  flex: 1 1 45%;
+  min-width: 300px;
+  border: 1px solid #eee;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.05);
-  min-height: 300px;
-  overflow-y: auto;
+  padding: 15px;
+  background-color: #fafafa;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
 }
 
-/* Títulos das caixas */
-.box-setor h3 {
-  margin-top: 0;
-  font-size: 1.2rem;
-  color: #444;
-  margin-bottom: 10px;
+/* Listas */
+.lista-maquinas, .lista-destino {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-/* Itens de setor e máquina */
-.setor-item,
-.maquina-item {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  margin-bottom: 8px;
-  padding: 10px 14px;
-  border-radius: 10px;
+/* Itens */
+.setor-item, .maquina-item {
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.25s, transform 0.15s;
-  font-weight: 500;
+  transition: background 0.2s;
 }
 
-.setor-item:hover,
-.maquina-item:hover {
-  background-color: #e9f2ff;
-  transform: scale(1.02);
+.setor-item:hover, .maquina-item:hover {
+  background: #e0e0e0;
 }
 
 .maquina-item.selecionada {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #0056b3;
-}
-
-/* Informações extras */
-.info-transferencia {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #555;
-}
-
-/* Botão de confirmar */
-.btn-confirmar {
-  margin-top: 20px;
-  padding: 12px 20px;
-  background-color: #28a745;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
+  background: #c5f3d6;
   font-weight: bold;
+}
+
+/* Paginação */
+.paginacao {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.paginacao button {
+  padding: 6px 12px;
+  border: none;
+  background: #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.paginacao button:hover {
+  background: #ccc;
+}
+
+.btn-pagina.ativo {
+  background-color: #90caf9;
+  font-weight: bold;
+}
+
+/* Botão confirmar */
+.btn-confirmar {
+  padding: 12px;
+  font-size: 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
   transition: background 0.3s;
 }
 
 .btn-confirmar:hover {
-  background-color: #218838;
+  background: #43a047;
 }
 
-/* Animação */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
+/* Botão voltar */
+.btn-voltar {
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .caixas-transferencia {
+    flex-direction: column;
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+
+  .box-setor {
+    width: 100%;
+  }
+
+  .modal-transferencia-content {
+    padding: 20px 16px;
+  }
+
+  .modal-title {
+    font-size: 20px;
   }
 }
