@@ -258,18 +258,20 @@
   </div>
 </div>
   </div>
-  <!-- Modal Adicionar Máquina/Monitor -->
- <div id="modalMaquina" class="modal" style="display: none;">
+ <!-- Modal Adicionar Máquina/Monitor -->
+<div id="modalMaquina" class="modal" style="display: none;">
   <div class="modal-content">
-    <h2>Adicionar Máquina ou Monitor</h2>
-    
+    <h2>Adicionar Equipamento</h2>
+
     <label for="tipoEquipamento">Tipo:</label>
     <select id="tipoEquipamento" onchange="trocarCampos()">
       <option value="">Selecione</option>
       <option value="máquina">Máquina</option>
       <option value="monitor">Monitor</option>
+      <option value="printer">Impressora</option>
     </select>
-    
+
+    <!-- Campos para Máquina -->
     <div id="camposMaquina" style="display: none; margin-top: 10px;">
       <label for="tipoMaquina">Tipo de Máquina:</label>
       <select id="tipoMaquina">
@@ -278,54 +280,58 @@
         <option value="Notebook">Notebook</option>
         <option value="Workstation">Workstation</option>
       </select>
-      
+
       <label for="usuarioResponsavel" style="margin-top: 10px;">Usuário:</label><br>
-<input type="text" id="usuarioResponsavel" placeholder="Ex: João Silva" /><br>
+      <input type="text" id="usuarioResponsavel" placeholder="Ex: João Silva" /><br>
+
       <label for="nomeMaquina" style="margin-top: 10px;">Número de Série:</label><br>
       <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC" /><br>
-      
+
       <label for="etiquetaMaquina" style="margin-top: 10px;">Etiqueta:</label><br>
       <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001" />
-      
+
       <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
     </div>
-    
+
+    <!-- Campos para Monitor -->
     <div id="camposMonitor" style="display: none; margin-top: 10px;">
       <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
       <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123" />
       <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
     </div>
-    
+
+    <!-- Campos para Impressora -->
+  <div id="camposPrinter" style="display: none; margin-top: 10px;">
+  
+
+  <label for="nomeImpressora">Nome da Impressora:</label><br>
+  <input type="text" id="nomeImpressora" placeholder="Ex: HP LaserJet 123"><br>
+
+  <label for="etiquetaImpressora">Etiqueta:</label><br>
+  <input type="text" id="etiquetaImpressora" placeholder="Ex: IMP-001"><br>
+
+  <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
+</div>
+
+    <!-- Botões -->
     <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
       <button onclick="fecharModalMaquina()">Cancelar</button>
       <button onclick="confirmarAddMaquina()">Adicionar</button>
     </div>
   </div>
 </div>
-  
-  <!-- Scanner Modal -->
-  <div
-    id="modalScanner"
-    style="
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    "
-  >
-    <div style="background: white; padding: 20px; border-radius: 10px;">
-      <h3>Escaneie o QR Code ou Código de Barras</h3>
-      <div id="reader" style="width: 300px;"></div>
-      <button onclick="fecharScanner()" style="margin-top: 10px;">Fechar</button>
-    </div>
+
+<!-- Scanner Modal -->
+<div id="modalScanner"
+     style="display: none; position: fixed; top: 0; left: 0; width: 100%;
+            height: 100%; background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center; align-items: center; z-index: 1000;">
+  <div style="background: white; padding: 20px; border-radius: 10px;">
+    <h3>Escaneie o QR Code ou Código de Barras</h3>
+    <div id="reader" style="width: 300px;"></div>
+    <button onclick="fecharScanner()" style="margin-top: 10px;">Fechar</button>
   </div>
-  
+</div>
 
 
 

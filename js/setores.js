@@ -138,15 +138,28 @@ function resetModalMaquina() {
   document.getElementById("etiquetaMaquina").value = "";
   document.getElementById("etiquetaMonitor").value = "";
   document.getElementById("usuarioResponsavel").value = "";
+  document.getElementById("nomeImpressora").value = "";
+document.getElementById("etiquetaImpressora").value = "";
   trocarCampos();
 }
 function trocarCampos() {
   const tipo = document.getElementById("tipoEquipamento").value;
-  document.getElementById("camposMaquina").style.display = tipo === 'máquina' ? 'block' : 'none';
-  document.getElementById("camposMonitor").style.display = tipo === 'monitor' ? 'block' : 'none';
+  document.getElementById("camposMaquina").style.display = tipo === "máquina" ? "block" : "none";
+  document.getElementById("camposMonitor").style.display = tipo === "monitor" ? "block" : "none";
+document.getElementById("camposPrinter").style.display = tipo === "printer" ? "block" : "none";
+
+
 }
+
+function trocarCampos() {
+  const tipo = document.getElementById("tipoEquipamento").value.toLowerCase();
+  document.getElementById("camposMaquina").style.display = tipo === "máquina" ? "block" : "none";
+  document.getElementById("camposMonitor").style.display = tipo === "monitor" ? "block" : "none";
+  document.getElementById("camposPrinter").style.display = tipo === "printer" ? "block" : "none";
+}
+
 function confirmarAddMaquina() {
-  const tipo = document.getElementById("tipoEquipamento").value;
+  const tipo = document.getElementById("tipoEquipamento").value.toLowerCase();
   const idUnico = `maquina_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
   if (tipo === 'máquina') {
@@ -163,6 +176,24 @@ function confirmarAddMaquina() {
       nome: nomeMaquina,
       tipo: tipoMaquina,
       etiqueta: etiquetaMaquina,
+      chamado: [],
+      emManutencao: false,
+      tempoManutencao: 0
+    });
+
+  } else if (tipo === 'printer') {
+    const nomeImpressora = document.getElementById("nomeImpressora").value?.trim();
+    const etiquetaImpressora = document.getElementById("etiquetaImpressora").value?.trim();
+    // const nomeUsuario = document.getElementById("usuarioResponsavelPrinter").value?.trim();
+
+    if (!nomeImpressora || !etiquetaImpressora) return alert("Preencha todos os campos da impressora.");
+
+    setores[setorSelecionado].maquinas.push({
+      id: idUnico,
+      // usuarioResponsavel: nomeUsuario,
+      nome: nomeImpressora,
+      tipo: 'Impressora',
+      etiqueta: etiquetaImpressora,
       chamado: [],
       emManutencao: false,
       tempoManutencao: 0
@@ -192,6 +223,7 @@ function confirmarAddMaquina() {
   fecharModalMaquina();
 }
 
+
 // ---------- REMOVER MÁQUINA ----------
 function removeMaquina(setorI, maquinaI) {
   if (confirm("Excluir esta máquina?")) {
@@ -218,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Variável para armazenar id da máquina ativa (não usada no seu código, mas deixei)
 let currentMachineId = null;
 
+// ---------- showInfo com opção de editar nome ----------
 function showInfo(setorIndex, maquinaIndex) {
   maquinaAtivaSetor = setorIndex;
   maquinaAtivaIndex = maquinaIndex;
@@ -225,15 +258,18 @@ function showInfo(setorIndex, maquinaIndex) {
 
   const modal = document.getElementById('infoModal');
   modal.style.display = 'flex';
+   modal.style.zIndex = '999';
 
   const maquina = setores[setorIndex].maquinas[maquinaIndex];
 
   document.getElementById('modalText').innerHTML = `
-  <strong>Usuário:</strong> ${maquina.usuarioResponsavel || 'Não informado'}<br>
-  <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
-  <strong>Nome:</strong> ${maquina.nome}<br>
-  <strong>Tipo:</strong> ${maquina.tipo}<br>
-  <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
+    <strong>Usuário:</strong> 
+    <span id="usuarioInfo">${maquina.usuarioResponsavel || ''}</span>
+    <button onclick="abrirModalEditarUsuario('${maquina.id}')" style="margin-left: 6px; cursor: pointer;" title="Editar usuário">✏️</button><br>
+    <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
+    <strong>Nome:</strong> ${maquina.nome}<br>
+    <strong>Tipo:</strong> ${maquina.tipo}<br>
+    <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
   `;
 
   atualizarListaChamados();
@@ -242,7 +278,6 @@ function showInfo(setorIndex, maquinaIndex) {
   document.getElementById('maintenanceBtn').style.display = maquina.emManutencao ? 'none' : 'inline-block';
   document.getElementById('releaseBtn').style.display = maquina.emManutencao ? 'inline-block' : 'none';
 }
-
 function closeModal() {
   document.getElementById('infoModal').style.display = 'none';
   maquinaAtivaSetor = null;
@@ -454,3 +489,58 @@ function dropMachine(event, novoSetorIndex) {
 
   maquinaEmMovimento = null;
 }
+
+
+
+
+function abrirModalEditarUsuario(idMaquina) {
+  maquinaEditandoId = idMaquina;
+
+  const maquina = setores.flatMap(s => s.maquinas).find(m => m.id === idMaquina);
+  if (!maquina) return alert("Máquina não encontrada.");
+
+  document.getElementById("novoNomeUsuario").value = maquina.usuarioResponsavel || '';
+  document.getElementById("modalEditarUsuario").style.display = "flex";
+  document.getElementById("modalEditarUsuario").style.zIndex = '1001';
+}
+
+function fecharModalEditarUsuario() {
+  document.getElementById("modalEditarUsuario").style.display = "none";
+  maquinaEditandoId = null;
+}
+
+function salvarNovoNomeUsuario() {
+  const novoNome = document.getElementById("novoNomeUsuario").value;
+
+  for (let setor of setores) {
+    const maquina = setor.maquinas.find(m => m.id === maquinaEditandoId);
+    if (maquina) {
+      maquina.usuarioResponsavel = novoNome.trim();
+      // Atualiza o modalInfo se estiver aberto
+      const usuarioSpan = document.getElementById("usuarioInfo");
+      if (usuarioSpan) {
+        usuarioSpan.textContent = maquina.usuarioResponsavel || '';
+      }
+      break;
+    }
+  }
+
+  saveSetoresAndMachines();
+  renderSetores();
+  fecharModalEditarUsuario();
+}
+
+// ---------- MODAL HTML ----------
+const modalHtml = `
+  <div id="modalEditarUsuario" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000080; align-items:center; justify-content:center; z-index:1001;">
+    <div style="background:#fff; padding:20px; border-radius:10px; max-width:400px; width:90%; position:relative;">
+      <h3>Editar Nome do Usuário</h3>
+      <input type="text" id="novoNomeUsuario" placeholder="Novo nome do usuário" style="width:100%; padding:8px; margin:10px 0;" />
+      <div style="text-align:right;">
+        <button onclick="fecharModalEditarUsuario()">Cancelar</button>
+        <button onclick="salvarNovoNomeUsuario()">Salvar</button>
+      </div>
+    </div>
+  </div>
+`;
+document.body.insertAdjacentHTML('beforeend', modalHtml);

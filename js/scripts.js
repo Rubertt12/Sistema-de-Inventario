@@ -316,3 +316,5 @@ function logout() {
 // window.addEventListener("DOMContentLoaded", () => {
 //   carregarConfigBackground();
 // });
+
+
