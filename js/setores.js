@@ -7,6 +7,9 @@ let maquinaAtivaIndex = null;
 let maquinaEmMovimento = null;
 let setorSelecionado = null;
 let debounceTimer = null;
+let paginaSetoresAtual = 1;
+const setoresPorPagina = 10;
+
 
 // ---------- MODAL SETOR ----------
 function addSetor() {
@@ -559,8 +562,7 @@ document.body.insertAdjacentHTML('beforeend', modalHtml);
 let setorSelecionadoOrigem = null;
 let setorSelecionadoDestino = null;
 let maquinaSelecionada = null;
-let paginaAtualOrigem = 1;
-const setoresPorPagina = 5;
+
 
 function abrirModalTransferencia() {
   const modal = document.getElementById('modalTransferencia');
@@ -853,3 +855,157 @@ function paginarChamados(maquina) {
 // atualizarListaChamados();
 // por:
 // paginarChamados(maquina);
+window.onload = () => {
+  // Carrega os setores salvos (se tiver isso em algum lugar)
+  setores = JSON.parse(localStorage.getItem("setores")) || [];
+  renderSetores();
+
+  // layout padrão
+  const container = document.getElementById('setoresContainer');
+  const toggle = document.getElementById('layoutToggle');
+  container.classList.add('grid-view');
+  container.classList.remove('list-view');
+  toggle.checked = false;
+};
+
+
+
+
+function renderSetores(termoBusca = null) {
+  const container = document.getElementById('setoresContainer');
+  container.innerHTML = '';
+
+  let indicesParaMostrar = setoresFiltradosIndices ?? setores.map((_, i) => i);
+
+  if (indicesParaMostrar.length === 0) {
+    container.innerHTML = '<p style="font-style: italic; color: #666;">Nenhum setor ou máquina encontrado.</p>';
+    return;
+  }
+
+  // 🔢 Paginação dos índices
+  const totalPaginas = Math.ceil(indicesParaMostrar.length / setoresPorPagina);
+  if (paginaSetoresAtual > totalPaginas) paginaSetoresAtual = totalPaginas;
+
+  const inicio = (paginaSetoresAtual - 1) * setoresPorPagina;
+  const fim = inicio + setoresPorPagina;
+  const indicesPaginados = indicesParaMostrar.slice(inicio, fim);
+
+  indicesPaginados.forEach(i => {
+    const setor = setores[i];
+    const div = document.createElement('div');
+    div.classList.add('setor');
+
+    // Filtra máquinas se o termo não bater no setor
+    let maquinasParaRenderizar = setor.maquinas;
+    if (termoBusca && !setor.nome.toLowerCase().includes(termoBusca)) {
+      maquinasParaRenderizar = setor.maquinas.filter(m =>
+        m.nome.toLowerCase().includes(termoBusca) ||
+        m.tipo.toLowerCase().includes(termoBusca) ||
+        (m.etiqueta && m.etiqueta.toLowerCase().includes(termoBusca))
+      );
+    }
+
+    div.ondragover = e => e.preventDefault();
+    div.ondrop = e => dropMachine(e, i);
+
+    div.innerHTML = `
+      <div class="setor-header">
+        <h2>${setor.nome}</h2>
+        <div>
+          <button onclick="editSetorName(${i})" title="Editar nome">✏️</button>
+          <button onclick="removeSetor(${i})" title="Excluir setor">X</button>
+        </div>
+      </div>
+      <button onclick="abrirModalMaquina(${i})">Adicionar Máquina</button>
+      <button onclick="toggleMachines(${i})">${setoresVisiveis[i] ? 'Esconder Máquinas' : 'Mostrar Máquinas'}</button>
+      <div id="maquinas-${i}" style="display: ${setoresVisiveis[i] ? 'block' : 'none'};">
+        ${maquinasParaRenderizar.map((m, mi) => `
+          <div 
+            draggable="true" 
+            ondragstart="dragStart(event, ${i}, ${mi})" 
+            style="background-color: ${m.emManutencao ? '#ff6b6b' : 'transparent'}; margin:5px; padding:5px; border:1px solid #ccc; border-radius:10px; cursor: grab;">
+            <strong>${m.nome}</strong> (${m.tipo}) - ${m.emManutencao ? 'Em Manutenção' : 'Operando'}
+            <button onclick="showInfo(${i}, ${mi})" title="Informações">Info</button>
+            <button onclick="removeMaquina(${i}, ${mi})" title="Excluir máquina">Excluir</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  renderPaginacaoSetores(totalPaginas);
+}
+
+
+function renderPaginacaoSetores(totalPaginas) {
+  let paginacaoDiv = document.getElementById('paginacaoSetores');
+  if (!paginacaoDiv) {
+    paginacaoDiv = document.createElement('div');
+    paginacaoDiv.id = 'paginacaoSetores';
+    paginacaoDiv.className = 'paginacao-setores';
+    document.getElementById('setoresContainer').after(paginacaoDiv);
+  }
+
+  // Aplica estilo direto no container
+  paginacaoDiv.style.display = 'flex';
+  paginacaoDiv.style.flexWrap = 'wrap';
+  paginacaoDiv.style.justifyContent = 'center';
+  paginacaoDiv.style.gap = '12px';
+  paginacaoDiv.style.marginTop = '20px';
+  paginacaoDiv.style.padding = '10px 0';
+
+  paginacaoDiv.innerHTML = '';
+  if (totalPaginas <= 1) return;
+
+  if (paginaSetoresAtual > 1) {
+    const btnPrev = document.createElement('button');
+    btnPrev.textContent = '⬅ Anterior';
+    aplicarEstiloBotaoPaginacao(btnPrev);
+    btnPrev.onclick = () => {
+      paginaSetoresAtual--;
+      renderSetores();
+    };
+    paginacaoDiv.appendChild(btnPrev);
+  }
+
+  for (let i = 1; i <= totalPaginas; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    aplicarEstiloBotaoPaginacao(btn);
+    if (i === paginaSetoresAtual) {
+      btn.style.backgroundColor = '#060707ff';
+      btn.style.color = 'white';
+      btn.style.fontWeight = 'bold';
+      btn.style.borderColor = '#070707ff';
+    }
+    btn.onclick = () => {
+      paginaSetoresAtual = i;
+      renderSetores();
+    };
+    paginacaoDiv.appendChild(btn);
+  }
+
+  if (paginaSetoresAtual < totalPaginas) {
+    const btnNext = document.createElement('button');
+    btnNext.textContent = 'Próximo ➡';
+    aplicarEstiloBotaoPaginacao(btnNext);
+    btnNext.onclick = () => {
+      paginaSetoresAtual++;
+      renderSetores();
+    };
+    paginacaoDiv.appendChild(btnNext);
+  }
+}
+
+// função auxiliar para aplicar estilo a todos os botões
+function aplicarEstiloBotaoPaginacao(botao) {
+  botao.style.padding = '8px 16px';
+  botao.style.backgroundColor = '#0e0c0cff';
+  botao.style.border = '1px solid #ccc';
+  botao.style.borderRadius = '8px';
+  botao.style.fontSize = '14px';
+  botao.style.cursor = 'pointer';
+  botao.style.transition = 'all 0.2s ease';
+  botao.style.boxShadow = '1px 1px 4px rgba(0,0,0,0.1)';
+}

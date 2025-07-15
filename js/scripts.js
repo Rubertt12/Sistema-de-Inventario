@@ -2,6 +2,9 @@ let setores = [];
 let currentSetorIndex, currentMaquinaIndex;
 let timers = [];
 let setoresVisiveis = [];
+let setoresPorPagina = 10;
+let paginaAtual = 1;
+
 
 /// ==========================
 /// Alternância entre List/Grid
@@ -235,5 +238,49 @@ function logout() {
 
 
 
+
+
+function renderSetores() {
+  const container = document.getElementById("setoresContainer");
+  container.innerHTML = "";
+
+  const inicio = (paginaAtual - 1) * setoresPorPagina;
+  const fim = inicio + setoresPorPagina;
+  const setoresPagina = setores.slice(inicio, fim);
+
+  setoresPagina.forEach((setor, index) => {
+    const setorDiv = document.createElement("div");
+    setorDiv.className = "setor";
+    setorDiv.innerHTML = `<strong>${setor.nome}</strong>`;
+    container.appendChild(setorDiv);
+  });
+
+  renderControlesPaginacao();
+}
+
+function renderControlesPaginacao() {
+  const totalPaginas = Math.ceil(setores.length / setoresPorPagina);
+  const paginacaoDiv = document.getElementById("paginacaoSetores");
+  paginacaoDiv.innerHTML = `
+    <button onclick="paginaAnterior()" ${paginaAtual === 1 ? "disabled" : ""}>◀ Anterior</button>
+    Página ${paginaAtual} de ${totalPaginas}
+    <button onclick="proximaPagina()" ${paginaAtual === totalPaginas ? "disabled" : ""}>Próxima ▶</button>
+  `;
+}
+
+function paginaAnterior() {
+  if (paginaAtual > 1) {
+    paginaAtual--;
+    renderSetores();
+  }
+}
+
+function proximaPagina() {
+  const totalPaginas = Math.ceil(setores.length / setoresPorPagina);
+  if (paginaAtual < totalPaginas) {
+    paginaAtual++;
+    renderSetores();
+  }
+}
 
 
