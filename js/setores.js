@@ -89,6 +89,9 @@ function renderSetores(termoBusca = null) {
   });
 }
 
+
+
+
 // ---------- TOGGLE MÁQUINAS VISÍVEIS ----------
 function toggleMachines(i) {
   setoresVisiveis[i] = !setoresVisiveis[i];
@@ -272,7 +275,7 @@ function showInfo(setorIndex, maquinaIndex) {
     <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
   `;
 
-  atualizarListaChamados();
+ paginarChamados(maquina)
 
   document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
   document.getElementById('maintenanceBtn').style.display = maquina.emManutencao ? 'none' : 'inline-block';
@@ -784,3 +787,69 @@ function confirmarTransferencia() {
   renderSetores();
   fecharModalTransferencia();
 }
+
+
+function paginarChamados(maquina) {
+  const ul = document.getElementById('observationsUl');
+  ul.innerHTML = '';
+
+  const chamados = maquina.chamado || [];
+  const chamadosPorPagina = 5;
+  let paginaAtual = 1;
+
+  if (chamados.length === 0) {
+    ul.innerHTML = '<li style="font-style: italic; color: #666;">Nenhum chamado registrado.</li>';
+    document.getElementById('paginationChamados')?.remove();
+    return;
+  }
+
+  function renderPagina(pagina) {
+    ul.innerHTML = '';
+    const inicio = (pagina - 1) * chamadosPorPagina;
+    const fim = inicio + chamadosPorPagina;
+    chamados.slice(inicio, fim).forEach(chamado => {
+      const li = document.createElement('li');
+      li.className = 'chamado-item';
+
+      const dataSpan = document.createElement('span');
+      dataSpan.className = 'chamado-data';
+      dataSpan.textContent = new Date(chamado.data).toLocaleString();
+
+      const prioridadeSpan = document.createElement('span');
+      prioridadeSpan.className = `chamado-prioridade prioridade-${chamado.prioridade.toLowerCase()}`;
+      prioridadeSpan.textContent = chamado.prioridade;
+
+      const descPre = document.createElement('pre');
+      descPre.className = 'chamado-descricao';
+      descPre.textContent = chamado.descricao || chamado.observacao || '';
+
+      li.append(dataSpan, prioridadeSpan, descPre);
+      ul.appendChild(li);
+    });
+
+    document.getElementById('paginationChamados')?.remove();
+    const totalPaginas = Math.ceil(chamados.length / chamadosPorPagina);
+    if (totalPaginas <= 1) return;
+
+    const paginacaoDiv = document.createElement('div');
+    paginacaoDiv.id = 'paginationChamados';
+    paginacaoDiv.className = 'chamado-paginacao';
+
+    for (let i = 1; i <= totalPaginas; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'paginacao-btn' + (i === pagina ? ' ativo' : '');
+      btn.textContent = i;
+      btn.onclick = () => renderPagina(i);
+      paginacaoDiv.appendChild(btn);
+    }
+
+    ul.parentElement.appendChild(paginacaoDiv);
+  }
+
+  renderPagina(paginaAtual);
+}
+
+// Em showInfo(), substitua a chamada:
+// atualizarListaChamados();
+// por:
+// paginarChamados(maquina);

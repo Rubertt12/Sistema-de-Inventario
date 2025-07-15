@@ -3,7 +3,8 @@ function importFromCSVButton() {
 }
 
 function exportToCSV() {
-    let csvContent = "Setor;Tipo;Nome da Máquina;Etiqueta;Em Manutenção;Tempo de Manutenção;Observações\n";
+    let csvContent = "Setor;Tipo;Nome da Máquina;Etiqueta;Em Manutenção;Tempo de Manutenção;Usuário;Observações;ID\n";
+
 
     setores.forEach(setor => {
         setor.maquinas.forEach(maquina => {
@@ -11,12 +12,13 @@ function exportToCSV() {
                 `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`
             ).join(" | ") || "Nenhuma Observação";
 
-            const row = `"${setor.nome}";"${maquina.tipo}";"${maquina.numeroSerie || maquina.nome || 'Sem nome'}";"${maquina.etiqueta || 'Sem etiqueta'}";${maquina.emManutencao};${maquina.tempoManutencao};${observacoes}\n`;
+            const row = `"${setor.nome}";"${maquina.tipo}";"${maquina.numeroSerie || maquina.nome || 'Sem nome'}";"${maquina.etiqueta || 'Sem etiqueta'}";${maquina.emManutencao};${maquina.tempoManutencao};"${maquina.usuarioResponsavel || ''}";${observacoes};"${maquina.id || ''}"\n`;
+
             csvContent += row;
         });
     });
 
-    const csvContentComBOM = '\uFEFF' + csvContent; // BOM para Excel ler UTF-8
+    const csvContentComBOM = '\uFEFF' + csvContent;
     const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContentComBOM);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
@@ -40,10 +42,10 @@ function importFromCSV(event) {
         setoresVisiveis = [];
 
         rows.forEach((row, index) => {
-            if (index === 0 || !row.trim()) return; // pula cabeçalho ou linha vazia
+            if (index === 0 || !row.trim()) return;
 
             const cols = row.split(";");
-            if (cols.length < 6) return;
+            if (cols.length < 7) return;
 
             const setorNome = cols[0].replace(/"/g, '').trim();
             const maquinaTipo = cols[1].replace(/"/g, '').trim();
@@ -51,7 +53,8 @@ function importFromCSV(event) {
             const etiqueta = cols[3].replace(/"/g, '').trim();
             const emManutencao = cols[4].trim().toLowerCase() === 'true';
             const tempoManutencao = parseInt(cols[5].trim()) || 0;
-            const observacoesString = cols.slice(6).join(";").replace(/"/g, '').trim();
+            const usuarioResponsavel = cols[6].replace(/"/g, '').trim();
+            const observacoesString = cols.slice(7).join(";").replace(/"/g, '').trim();
 
             let setor = setores.find(s => s.nome === setorNome);
             if (!setor) {
@@ -70,14 +73,18 @@ function importFromCSV(event) {
                 })
                 : [];
 
-            const maquina = {
-                nome: maquinaNome,
-                tipo: maquinaTipo,
-                etiqueta,
-                chamado: chamados,
-                emManutencao,
-                tempoManutencao,
-            };
+           const id = cols[8]?.replace(/"/g, '').trim(); // nova coluna ID
+
+const maquina = {
+    id: id || crypto.randomUUID(), // gera um novo se não tiver
+    nome: maquinaNome,
+    tipo: maquinaTipo,
+    etiqueta,
+    chamado: chamados,
+    emManutencao,
+    tempoManutencao,
+    usuarioResponsavel
+};
 
             setor.maquinas.push(maquina);
         });
@@ -87,6 +94,6 @@ function importFromCSV(event) {
     };
 
     if (file) {
-        reader.readAsText(file, 'UTF-8'); // Força a leitura como UTF-8
+        reader.readAsText(file, 'UTF-8');
     }
 }

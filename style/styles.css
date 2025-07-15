@@ -1105,6 +1105,8 @@ select {
 /* Lista de observações */
 #observationsList {
     margin-top: 30px;
+    font-style: #0000;
+    color: #000;
 }
 
 #observationsUl {
@@ -1127,7 +1129,7 @@ select {
 
 #observationsUl li span {
     font-size: 14px;
-    color: #7f8c8d;
+    color: #000000;
     margin-left: 10px;
 }
 
@@ -1586,11 +1588,10 @@ select {
   transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease;
 }
 
-
 .btn-fechar:hover {
-  background-color: #e0e0e0;
-  color: #d32f2f;
-  transform: scale(1.05);
+  background-color: #ffecec;
+  color: #d60000;
+  transform: scale(1.08);
 }
 
 .modal-title {
@@ -1765,4 +1766,78 @@ select {
     top: 12px;
     right: 12px;
   }
+}
+
+
+
+
+
+
+
+/* Estilo para cada chamado */
+.chamado-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: #000000;
+  border: 1px solid #ddd;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Data */
+.chamado-data {
+  font-weight: bold;
+  color: #000000;
+}
+
+/* Descrição */
+.chamado-descricao {
+  white-space: pre-wrap;
+  margin-top: 0.5rem;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.95rem;
+  color: #000000;
+}
+
+/* Prioridade */
+.chamado-prioridade {
+  margin-left: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.8rem;
+  font-style: #0000;
+}
+
+/* Cores por prioridade */
+.prioridade-alta { background-color: #e74c3c; }
+.prioridade-média { background-color: #f39c12; }
+.prioridade-baixa { background-color: #27ae60; }
+
+/* Paginação */
+.chamado-paginacao {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.paginacao-btn {
+  background: #eee;
+  border: 1px solid #000000;
+  color: #000000;
+  padding: 6px 12px;
+  margin: 0 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginacao-btn:hover {
+  background: #000000;
+}
+
+.paginacao-btn.ativo {
+  background: #27292b;
+  color: white;
+  border-color: #e2e4e6;
 }
