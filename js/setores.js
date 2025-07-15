@@ -551,6 +551,8 @@ document.body.insertAdjacentHTML('beforeend', modalHtml);
 
 // JavaScript para Modal de Transferência com Paginação de Setores
 
+// JavaScript para Modal de Transferência com Paginação de Setores
+
 let setorSelecionadoOrigem = null;
 let setorSelecionadoDestino = null;
 let maquinaSelecionada = null;
@@ -561,12 +563,13 @@ function abrirModalTransferencia() {
   const modal = document.getElementById('modalTransferencia');
   modal.style.display = 'flex';
   modal.innerHTML = `
-    <div class="modal-transferencia-content styled-modal">
+    <div class="modal-transferencia-content">
       <div style="display: flex; justify-content: flex-end;">
-      <button class="btn-fechar" onclick="fecharModalTransferencia()">×</button>
+        <button class="btn-fechar" onclick="fecharModalTransferencia()">×</button>
       </div>
+
       <h2 class="modal-title">🔁 Transferência de Máquinas</h2>
-      
+
       <div class="pesquisa-transferencia">
         <input type="text" id="buscaSetorOrigem" placeholder="🔍 Buscar Setor de Origem" oninput="buscarSetorOrigem()" />
         <input type="text" id="buscaSetorDestino" placeholder="📦 Buscar Setor de Destino" oninput="buscarSetorDestino()" />
@@ -586,10 +589,11 @@ function abrirModalTransferencia() {
       </div>
 
       <div id="infoTransferencia" class="info-transferencia"></div>
-      <button onclick="confirmarTransferencia()" class="btn-confirmar">✅ Confirmar Transferência</button>
+      <button class="btn-confirmar" onclick="confirmarTransferencia()">✅ Confirmar Transferência</button>
     </div>
   `;
 
+  // Resetar campos
   document.getElementById('buscaSetorOrigem').value = '';
   document.getElementById('buscaSetorDestino').value = '';
   setorSelecionadoOrigem = null;
@@ -609,11 +613,11 @@ function renderizarSetoresOrigem() {
   const setoresPagina = setores.slice(inicio, fim);
 
   setoresPagina.forEach(setor => {
-    const setorDiv = document.createElement('div');
-    setorDiv.className = 'setor-item styled-setor';
-    setorDiv.textContent = setor.nome;
-    setorDiv.onclick = () => mostrarMaquinasDoSetor(setor);
-    listaOrigem.appendChild(setorDiv);
+    const div = document.createElement('div');
+    div.className = 'setor-item';
+    div.textContent = setor.nome;
+    div.onclick = () => mostrarMaquinasDoSetor(setor);
+    listaOrigem.appendChild(div);
   });
 
   renderizarPaginacaoOrigem();
@@ -660,27 +664,28 @@ function renderizarPaginacaoOrigem() {
 
 function mostrarMaquinasDoSetor(setor) {
   setorSelecionadoOrigem = setor;
+
   const listaOrigem = document.getElementById('listaOrigem');
   const paginacao = document.getElementById('paginacaoOrigem');
   listaOrigem.innerHTML = '';
   paginacao.innerHTML = '';
 
-  const voltar = document.createElement('button');
-  voltar.textContent = '⬅️ Voltar aos Setores';
-  voltar.className = 'btn-voltar';
-  voltar.onclick = () => {
+  const btnVoltar = document.createElement('button');
+  btnVoltar.textContent = '⬅️ Voltar aos Setores';
+  btnVoltar.className = 'btn-voltar';
+  btnVoltar.onclick = () => {
     setorSelecionadoOrigem = null;
     renderizarSetoresOrigem();
   };
-  listaOrigem.appendChild(voltar);
+  listaOrigem.appendChild(btnVoltar);
 
   const titulo = document.createElement('h4');
-  titulo.textContent = '💻 Máquinas de ' + setor.nome;
+  titulo.textContent = `💻 Máquinas de ${setor.nome}`;
   listaOrigem.appendChild(titulo);
 
   setor.maquinas.forEach(maquina => {
     const div = document.createElement('div');
-    div.className = 'maquina-item styled-maquina';
+    div.className = 'maquina-item';
     div.draggable = true;
     div.textContent = maquina.etiqueta || maquina.nome || 'Sem nome';
     div.ondragstart = e => {
@@ -705,30 +710,57 @@ function limparCampoDestino() {
   if (box) box.innerHTML = '';
 }
 
+function buscarSetorOrigem() {
+  const termo = document.getElementById('buscaSetorOrigem').value.toLowerCase();
+  const filtrados = setores.filter(s => s.nome.toLowerCase().includes(termo));
+  setores.sort((a, b) => a.nome.localeCompare(b.nome));
+  setores = filtrados; // aplicar filtro na lista paginada
+  paginaAtualOrigem = 1;
+  renderizarSetoresOrigem();
+}
+
 function buscarSetorDestino() {
   const termo = document.getElementById('buscaSetorDestino').value.toLowerCase();
-  const setor = setores.find(s => s.nome.toLowerCase().includes(termo) && s.nome !== setorSelecionadoOrigem?.nome);
+  const setor = setores.find(s =>
+    s.nome.toLowerCase().includes(termo) &&
+    s.nome !== setorSelecionadoOrigem?.nome
+  );
+
   limparCampoDestino();
+
   if (!setor) return;
+
   setorSelecionadoDestino = setor;
-  document.getElementById('listaDestino').innerHTML = `<p>📦 Setor selecionado: <strong>${setor.nome}</strong></p>`;
+  document.getElementById('listaDestino').innerHTML = `
+    <p>📦 Setor selecionado: <strong>${setor.nome}</strong></p>
+  `;
 }
 
 function selecionarMaquina(maquina, div) {
   maquinaSelecionada = maquina;
-  document.querySelectorAll('#listaOrigem .maquina-item').forEach(el => el.classList.remove('selecionada'));
+
+  document.querySelectorAll('#listaOrigem .maquina-item').forEach(el =>
+    el.classList.remove('selecionada')
+  );
+
   div.classList.add('selecionada');
+
+  // Resetar destino
   limparCampoDestino();
   document.getElementById('buscaSetorDestino').value = '';
 }
 
 function soltarMaquina(event) {
   event.preventDefault();
+
   const data = JSON.parse(event.dataTransfer.getData('text/plain'));
   const maquina = setorSelecionadoOrigem?.maquinas.find(m => m.id === data.maquinaId);
+
   if (!maquina || !setorSelecionadoDestino || setorSelecionadoDestino.nome === setorSelecionadoOrigem.nome) return;
+
   setorSelecionadoOrigem.maquinas = setorSelecionadoOrigem.maquinas.filter(m => m.id !== maquina.id);
   setorSelecionadoDestino.maquinas.push(maquina);
+
   saveSetoresAndMachines();
   renderSetores();
   fecharModalTransferencia();
@@ -736,15 +768,18 @@ function soltarMaquina(event) {
 
 function confirmarTransferencia() {
   if (!setorSelecionadoOrigem || !setorSelecionadoDestino || !maquinaSelecionada) {
-    alert('Selecione setor de origem, máquina e setor de destino.');
+    alert('⚠️ Selecione setor de origem, máquina e setor de destino.');
     return;
   }
+
   if (setorSelecionadoOrigem.nome === setorSelecionadoDestino.nome) {
-    alert('Setor de destino deve ser diferente do setor de origem.');
+    alert('⚠️ Setor de destino deve ser diferente do setor de origem.');
     return;
   }
+
   setorSelecionadoOrigem.maquinas = setorSelecionadoOrigem.maquinas.filter(m => m.id !== maquinaSelecionada.id);
   setorSelecionadoDestino.maquinas.push(maquinaSelecionada);
+
   saveSetoresAndMachines();
   renderSetores();
   fecharModalTransferencia();

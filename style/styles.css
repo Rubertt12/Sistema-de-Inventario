@@ -1538,78 +1538,100 @@ select {
 /* Modal base */
 #modalTransferencia {
   position: fixed;
+  inset: 0;
   z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6);
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  padding: 16px;
   box-sizing: border-box;
 }
 
-/* Conteúdo do modal */
 .modal-transferencia-content {
-  background-color: #fff;
-  border-radius: 16px;
-  max-width: 1000px;
+  background: #fefefe;
+  border-radius: 20px;
+  max-width: 960px;
   width: 100%;
   max-height: 95vh;
   overflow-y: auto;
-  padding: 20px 30px 30px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  padding: 48px 32px 32px; /* espaço maior no topo */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  box-sizing: border-box;
+  gap: 24px;
   position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* Botão de fechar */
 .btn-fechar {
-  font-size: 28px;
-  font-weight: bold;
-  background: transparent;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(240, 240, 240, 0.85);
   border: none;
-  color: #555;
+  border-radius: 8px;
+  color: #444;
+  font-size: 22px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 0;
-  transition: color 0.3s;
+  z-index: 2;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease;
 }
+
 
 .btn-fechar:hover {
-  color: #d00;
+  background-color: #e0e0e0;
+  color: #d32f2f;
+  transform: scale(1.05);
 }
 
-/* Título */
 .modal-title {
-  font-size: 24px;
+  font-size: 22px;
   text-align: center;
   font-weight: 600;
+  color: #1c1c1e;
+  margin: 0;
+  padding-top: 0;
+  z-index: 0;
 }
 
-/* Campos de pesquisa */
+/* Área de pesquisa */
 .pesquisa-transferencia {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
 }
 
 .pesquisa-transferencia input {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  width: 100%;
+  flex: 1 1 48%;
+  min-width: 180px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid #dcdfe6;
+  background-color: #ffffff;
+  font-size: 15px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.pesquisa-transferencia input:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+  outline: none;
 }
 
 /* Caixas principais */
 .caixas-transferencia {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -1617,109 +1639,130 @@ select {
 /* Caixa de setor */
 .box-setor {
   flex: 1 1 45%;
-  min-width: 300px;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 15px;
-  background-color: #fafafa;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
+  min-width: 280px;
+  background: #f9fafe;
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid #e3e7ed;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 /* Listas */
-.lista-maquinas, .lista-destino {
+.lista-maquinas,
+.lista-destino {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 /* Itens */
-.setor-item, .maquina-item {
-  background: #f0f0f0;
-  padding: 8px 12px;
-  border-radius: 6px;
+.setor-item,
+.maquina-item {
+  background-color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  font-size: 15px;
+  color: #333;
+  border: 1px solid #e0e0e0;
 }
 
-.setor-item:hover, .maquina-item:hover {
-  background: #e0e0e0;
+.setor-item:hover,
+.maquina-item:hover {
+  background-color: #f1f3f5;
+  transform: scale(1.015);
 }
 
 .maquina-item.selecionada {
-  background: #c5f3d6;
-  font-weight: bold;
+  background-color: #dcffe4;
+  font-weight: 600;
+  color: #207d3f;
+  border: 1px solid #a0e3b2;
 }
 
 /* Paginação */
 .paginacao {
-  margin-top: 15px;
+  margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
 .paginacao button {
-  padding: 6px 12px;
+  padding: 8px 14px;
   border: none;
-  background: #ddd;
-  border-radius: 6px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
 }
 
 .paginacao button:hover {
-  background: #ccc;
+  background-color: #c5c5c5;
 }
 
 .btn-pagina.ativo {
-  background-color: #90caf9;
+  background-color: #007aff;
+  color: white;
   font-weight: bold;
 }
 
 /* Botão confirmar */
 .btn-confirmar {
-  padding: 12px;
+  padding: 14px;
   font-size: 16px;
-  background: #4caf50;
+  background-color: #00c851;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 14px;
   cursor: pointer;
   width: 100%;
-  transition: background 0.3s;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  font-weight: 600;
 }
 
 .btn-confirmar:hover {
-  background: #43a047;
+  background-color: #009e41;
+  transform: scale(1.02);
 }
 
 /* Botão voltar */
 .btn-voltar {
   margin-bottom: 10px;
-  padding: 6px 10px;
-  background: #eee;
+  padding: 8px 12px;
+  background-color: #eeeeee;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-voltar:hover {
+  background-color: #dddddd;
+  transform: scale(1.01);
 }
 
 /* Responsivo */
 @media (max-width: 768px) {
-  .caixas-transferencia {
-    flex-direction: column;
+  .modal-transferencia-content {
+    padding: 40px 16px 24px;
   }
 
   .box-setor {
     width: 100%;
   }
 
-  .modal-transferencia-content {
-    padding: 20px 16px;
-  }
-
   .modal-title {
     font-size: 20px;
+    padding-top: 12px;
+  }
+
+  .btn-fechar {
+    top: 12px;
+    right: 12px;
   }
 }
