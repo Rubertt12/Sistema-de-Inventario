@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
+  <head>
+    <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Inventário de Setores</title>
   
@@ -17,62 +17,66 @@
   <link rel="apple-touch-icon" href="/img/icon-png.png" />
   <link rel="icon" sizes="192x192" href="/img/icon-png.png" />
 </head>
+
+
+
 <body onload="verificarPermissoes()">
-
-<body>
   
-  <h3>
-    <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
-    <button onclick="abrirModalTransferencia()">🔄 Transferir Máquinas</button>
-
-  </h3>
-  <header class="navbar">
-    <h1>
-      <img src="/img/icon-png.png" alt="Ícone" class="navbar-icon" /> Inventário de Setores
-    </h1>
+  <body>
     
-    <!-- Botão do Menu Hamburguer -->
-    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-    
-    <!-- Navegação -->
-    <nav class="nav-links">
-      <!-- Filtro de pesquisa -->
-  <input
-  type="text"
-  id="searchInput"
-  onkeyup="filterMachines()"
-  placeholder="Pesquisar máquinas..."
-  aria-label="Pesquisar máquinas"
-  autocomplete="off"
-/>
-
-
-<!-- Menu do usuário -->
-<div class="user-menu" onclick="toggleUserMenu(event)">
-  <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
-  <span id="userName">Usuário</span>
-
-  <div class="user-dropdown" id="userDropdown" hidden>
-    <button onclick="openConfigModal()">⚙️ Configurações</button>
-
-    <div class="box-switch">
-      <h3>Alterar Layout</h3>
-      <label class="switch">
-        <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
-        <span class="slider"></span>
-      </label>
-       <!-- Seletor de cor para background -->
-  
-    </div>
-
-    <div id="adminMenu" style="display: none;">
-      <button onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
-    </div>
-
-    <button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
-      🧨 Excluir os Setores
-    </button>
-
+    <h3>
+      <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
+      
+      <button onclick="abrirModalTransferencia()">🔄 Transferir Máquinas</button>
+      <div id="painelManutencao" class="recolhido"></div>
+    </h3>
+    <header class="navbar">
+      <h1>
+        <img src="/img/icon-png.png" alt="Ícone" class="navbar-icon" /> Inventário de Setores
+      </h1>
+      
+      <!-- Botão do Menu Hamburguer -->
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      
+      <!-- Navegação -->
+      <nav class="nav-links">
+        <!-- Filtro de pesquisa -->
+        <input
+        type="text"
+        id="searchInput"
+        onkeyup="filterMachines()"
+        placeholder="Pesquisar máquinas..."
+        aria-label="Pesquisar máquinas"
+        autocomplete="off"
+        />
+        
+        
+        <!-- Menu do usuário -->
+        <div class="user-menu" onclick="toggleUserMenu(event)">
+          <img src="/img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
+          <span id="userName">Usuário</span>
+          
+          <div class="user-dropdown" id="userDropdown" hidden>
+            <button onclick="openConfigModal()">⚙️ Configurações</button>
+            
+            <div class="box-switch">
+              <h3>Alterar Layout</h3>
+              <label class="switch">
+                <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
+                <span class="slider"></span>
+              </label>
+              <!-- Seletor de cor para background -->
+              
+            </div>
+            
+            <div id="adminMenu" style="display: none;">
+              <button onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
+            </div>
+            
+            <button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
+              🧨 Excluir os Setores
+            </button>
+            
     <button class="logout-btn" onclick="logout(this)">
       <span>🚪 Logout</span>
     </button>
@@ -117,6 +121,7 @@
     
     
     
+    
     <!-- ...restante do conteúdo do modal -->
     
     
@@ -154,7 +159,9 @@
         <ul
         id="observationsUl"
         style="max-height: 250px; overflow-y: auto; list-style: none; padding-left: 0;"
-        ></ul>
+        
+        >
+      <div id="pagination"></div></ul>
         
 
       </section>
@@ -176,6 +183,9 @@
      
     </div>
   </div>
+
+
+  
   
   <div id="configModal" class="config-modal">
   <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
@@ -364,6 +374,22 @@
     <button onclick="confirmarTransferencia()" class="btn-confirmar">Confirmar Transferência</button>
   </div>
 </div>
+
+
+
+<!-- Modal de Informações da Máquina -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="modalText"></div>
+
+    <!-- ✅ Local onde os chamados serão renderizados -->
+    <h3>Chamados Registrados</h3>
+    <ul id="observationsUl"></ul>
+    <div id="pagination"></div>
+  </div>
+</div>
+
 
 
 
@@ -610,9 +636,106 @@ function tentarLogin(nomeDigitado, senhaDigitada) {
   }
 }
 
-  
+
+
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+  const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+  if (!usuarioLogado) {
+    alert("Você precisa estar logado!");
+    window.location.href = "index.html";
+    return;
+  }
+  verificarPermissoes();
+  renderPainelManutencao(); // 👈 Adicione isto
+});
+
+
+
+function renderPainelManutencao() {
+  const painel = document.getElementById("painelManutencao");
+  if (!painel) return;
+
+  let maquinasEmManutencao = [];
+  setores.forEach((setor, sIndex) => {
+    setor.maquinas.forEach((m, mIndex) => {
+      if (m.emManutencao) {
+        maquinasEmManutencao.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
+      }
+    });
+  });
+
+  const maquinasVisiveis = maquinasEmManutencao.slice(0, 5);
+
+  painel.innerHTML = `
+    <div class="painel-header" onclick="togglePainelManutencao()">
+      🛠️ Máquinas em Manutenção <span id="painelToggleIcon">◀</span>
+    </div>
+    <div class="painel-conteudo">
+      ${maquinasEmManutencao.length === 0
+        ? '<p style="padding: 10px;">Nenhuma máquina em manutenção.</p>'
+        : maquinasVisiveis.map(m => `
+            <div class="maquina-box">
+              <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
+              <small>Setor: ${m.setorNome}</small><br/>
+              <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
+            </div>
+          `).join('') +
+          (maquinasEmManutencao.length > 5
+            ? `<div style="text-align:center; margin-top: 10px;">
+                 <button onclick="abrirModalTodasManutencoes()">Ver todas (${maquinasEmManutencao.length})</button>
+               </div>`
+            : '')
+      }
+    </div>
+  `;
+}
+
+function abrirModalTodasManutencoes() {
+  const lista = document.getElementById("listaTodasManutencoes");
+  const modal = document.getElementById("modalTodasManutencoes");
+  lista.innerHTML = "";
+
+  let maquinas = [];
+  setores.forEach((setor, sIndex) => {
+    setor.maquinas.forEach((m, mIndex) => {
+      if (m.emManutencao) {
+        maquinas.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
+      }
+    });
+  });
+
+  if (maquinas.length === 0) {
+    lista.innerHTML = "<p>Nenhuma máquina em manutenção.</p>";
+  } else {
+    lista.innerHTML = maquinas.map(m => `
+      <div class="maquina-box">
+        <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
+        <small>Setor: ${m.setorNome}</small><br/>
+        <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
+      </div>
+    `).join('');
+  }
+
+  modal.style.display = "flex";
+}
+
+function fecharModalTodasManutencoes() {
+  document.getElementById("modalTodasManutencoes").style.display = "none";
+}
+
+
 
   </script>
+
+<div id="modalTodasManutencoes" class="modal" style="display:none;">
+  <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+    <button class="close-btn" onclick="fecharModalTodasManutencoes()">×</button>
+    <h2>Máquinas em Manutenção</h2>
+    <div id="listaTodasManutencoes"></div>
+  </div>
+</div>
 
 
 

@@ -1,296 +1,298 @@
+// Novo sistema de chamados com edição, reinterações, exclusão, edição, busca e feedback visual + painel de manutenção recolhível
+
 let paginaAtual = 1;
 const chamadosPorPagina = 3;
 let currentSetorIndex = null;
 let currentMaquinaIndex = null;
-let timers = [];
 
 function showInfo(setorIndex, maquinaIndex) {
-    const modal = document.getElementById('infoModal');
-    const maquina = setores[setorIndex].maquinas[maquinaIndex];
-    currentSetorIndex = setorIndex;
-    currentMaquinaIndex = maquinaIndex;
-    paginaAtual = 1;
+  currentSetorIndex = setorIndex;
+  currentMaquinaIndex = maquinaIndex;
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
 
-    const modalText = document.getElementById('modalText');
-    if (modalText) {
-        modalText.innerHTML = `
-            <strong>Tipo de Equipamento:</strong> ${maquina.tipo || 'N/A'}<br>
-            ${maquina.tipo === 'máquina' ? `
-                <strong>Tipo da Máquina:</strong> ${maquina.tipoMaquina || 'N/A'}<br>
-                <strong>Número de Série:</strong> ${maquina.numeroSerie || 'N/A'}<br>
-                <strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
-            ${maquina.tipo === 'monitor' ? `
-                <strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
-        `;
-    }
+  fecharModalTodasManutencoes(); // ✅ Fecha o modal anterior
+  bringModalToFront("infoModal"); // ✅ Traz o novo modal à frente
 
-    renderChamados(maquina);
-    modal.style.display = 'flex';
+  const modal = document.getElementById("infoModal");
+  modal.style.display = "flex";
 
-    const maintenanceBtn = document.getElementById('maintenanceBtn');
-    const msg = document.getElementById('maintenanceMessage');
-    if (maintenanceBtn && msg) {
-        maintenanceBtn.textContent = maquina.emManutencao ? "Desmarcar para Manutenção" : "Marcar para Manutenção";
-        msg.style.display = maquina.emManutencao ? 'block' : 'none';
-    }
+  const modalText = document.getElementById("modalText");
+  modalText.innerHTML = `
+    <strong>Tipo de Equipamento:</strong> ${maquina.tipo || 'N/A'}<br>
+    ${maquina.tipo === 'máquina' ? `<strong>Tipo da Máquina:</strong> ${maquina.tipoMaquina || 'N/A'}<br><strong>Número de Série:</strong> ${maquina.numeroSerie || 'N/A'}<br><strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
+    ${maquina.tipo === 'monitor' ? `<strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
+  `;
+
+  renderChamados(maquina);
+  renderPainelManutencao();
 }
+
+
 
 function closeModal() {
-    document.getElementById("infoModal").style.display = "none";
+  document.getElementById("infoModal").style.display = "none";
 }
-
-window.onclick = function (event) {
-    const modal = document.getElementById("infoModal");
-    if (event.target === modal) closeModal();
-};
 
 function renderChamados(maquina) {
-    const lista = document.getElementById('observationsUl');
-    const paginacao = document.getElementById('pagination');
+  const lista = document.getElementById("observationsUl");
+  const paginacao = document.getElementById("pagination");
 
-    if (!maquina.chamado) maquina.chamado = [];
+  if (!maquina.chamados) maquina.chamados = [];
 
-    const chamadosOrdenados = [...maquina.chamado].sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
-    const totalPaginas = Math.ceil(chamadosOrdenados.length / chamadosPorPagina);
+  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
+  const totalPaginas = Math.ceil(chamadosOrdenados.length / chamadosPorPagina);
 
-    const inicio = (paginaAtual - 1) * chamadosPorPagina;
-    const chamadosVisiveis = chamadosOrdenados.slice(inicio, inicio + chamadosPorPagina);
+  const inicio = (paginaAtual - 1) * chamadosPorPagina;
+  const chamadosVisiveis = chamadosOrdenados.slice(inicio, inicio + chamadosPorPagina);
 
-    lista.innerHTML = chamadosVisiveis.map((c, i) => `
-        <li>
-            <strong>${c.dataHora}</strong><br>
-            ${c.observacao} - Prioridade: ${c.prioridade}
-            <button onclick="excluirChamado(${inicio + i})" class="delete-btn">🗑️</button>
-        </li>
-    `).join('');
+  lista.innerHTML = chamadosVisiveis.map((chamado, i) => `
+    <li style="margin-bottom: 10px; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
+      <strong>${chamado.data}</strong><br>
+      <strong>Chamado:</strong> ${chamado.texto} - Prioridade: ${chamado.prioridade}
+      ${(chamado.interacoes || []).map((i, idx) => `
+        <div style="margin-top: 6px; border-left: 2px solid #aaa; padding-left: 10px;">
+          <strong>Interação ${idx + 1}:</strong> ${i.texto}<br>
+          <small>${i.data}</small>
+        </div>
+      `).join('')}
+      <div style="margin-top: 8px;">
+        <button onclick="abrirInteracao(${inicio + i})">➕ Interagir</button>
+        <button onclick="editarChamado(${inicio + i})">✏️ Editar</button>
+        <button onclick="excluirChamado(${inicio + i})">🗑️ Excluir</button>
+        <div id="interacao-${inicio + i}" style="display:none; margin-top:6px;">
+          <textarea id="textoInteracao-${inicio + i}" rows="3" style="width:100%;"></textarea>
+          <button onclick="salvarInteracao(${inicio + i})">💾 Salvar Interação</button>
+        </div>
+      </div>
+    </li>
+  `).join('');
 
-    renderPaginacao(totalPaginas, maquina);
+  renderPaginacao(totalPaginas, maquina);
 }
 
-function renderPaginacao(totalPaginas, maquina) {
-    const paginacao = document.getElementById('pagination');
-    paginacao.innerHTML = '';
-
-    if (totalPaginas <= 1) return;
-
-    if (paginaAtual > 1) {
-        const btnAnterior = criarBotaoPaginacao('Anterior', () => {
-            paginaAtual--;
-            renderChamados(maquina);
-        });
-        paginacao.appendChild(btnAnterior);
-    }
-
-    if (paginaAtual < totalPaginas) {
-        const btnProximo = criarBotaoPaginacao('Próximo', () => {
-            paginaAtual++;
-            renderChamados(maquina);
-        });
-        paginacao.appendChild(btnProximo);
-    }
+function abrirInteracao(index) {
+  document.getElementById(`interacao-${index}`).style.display = "block";
 }
 
-function criarBotaoPaginacao(texto, callback) {
-    const btn = document.createElement('button');
-    btn.textContent = texto;
-    btn.onclick = callback;
-    return btn;
+function salvarInteracao(index) {
+  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
+  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
+  const chamado = chamadosOrdenados[index];
+  const texto = document.getElementById(`textoInteracao-${index}`).value.trim();
+  if (!texto) return alert("Digite a interação.");
+
+  const dataAtual = new Date().toLocaleString('pt-BR');
+  if (!chamado.interacoes) chamado.interacoes = [];
+  chamado.interacoes.push({ texto, data: dataAtual });
+
+  saveSetoresAndMachines();
+  alert("Interação salva com sucesso!");
+  renderChamados(maquina);
+}
+
+function editarChamado(index) {
+  const novoTexto = prompt("Editar observação do chamado:");
+  if (!novoTexto) return;
+
+  const novaPrioridade = prompt("Editar prioridade (Alta, Média, Baixa):");
+  if (!novaPrioridade || !["Alta", "Média", "Baixa"].includes(novaPrioridade)) {
+    alert("Prioridade inválida.");
+    return;
+  }
+
+  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
+  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
+  chamadosOrdenados[index].texto = novoTexto;
+  chamadosOrdenados[index].prioridade = novaPrioridade;
+
+  saveSetoresAndMachines();
+  alert("Chamado editado com sucesso!");
+  renderChamados(maquina);
 }
 
 function excluirChamado(index) {
-    const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
-    const chamados = [...maquina.chamado].sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
-    chamados.splice(index, 1);
+  if (!confirm("Tem certeza que deseja excluir este chamado?")) return;
 
-    maquina.chamado = chamados;
+  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
+  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
+  chamadosOrdenados.splice(index, 1);
+  maquina.chamados = chamadosOrdenados;
 
-    const totalPaginas = Math.ceil(chamados.length / chamadosPorPagina);
-    paginaAtual = Math.min(paginaAtual, totalPaginas) || 1;
-
-    saveSetoresAndMachines();
-    renderChamados(maquina);
+  saveSetoresAndMachines();
+  alert("Chamado excluído com sucesso!");
+  renderChamados(maquina);
 }
 
 function saveObservation() {
-    const observacao = document.getElementById('observacao').value.trim();
-    const prioridade = document.getElementById('priority').value;
+  const observacao = document.getElementById("observacao").value.trim();
+  const prioridade = document.getElementById("priority").value;
 
-    if (!observacao) return alert("A observação não pode estar vazia.");
+  if (!observacao) return alert("A observação não pode estar vazia.");
 
-    const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
-    if (!maquina.chamado) maquina.chamado = [];
+  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
+  if (!maquina.chamados) maquina.chamados = [];
 
-    maquina.chamado.push({
-        observacao,
-        prioridade,
-        dataHora: new Date().toLocaleString('pt-BR')
-    });
+  maquina.chamados.push({
+    texto: observacao,
+    prioridade,
+    data: new Date().toLocaleString('pt-BR'),
+    interacoes: []
+  });
 
-    document.getElementById('observacao').value = '';
-    saveSetoresAndMachines();
-    renderSetores();
-    showInfo(currentSetorIndex, currentMaquinaIndex);
+  document.getElementById("observacao").value = "";
+  saveSetoresAndMachines();
+  alert("Chamado registrado com sucesso!");
+  renderChamados(maquina);
 }
 
-function markForMaintenance() {
-    const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
-    const maquinaElement = document.getElementById(`maquina-${currentMaquinaIndex}`);
+function renderPaginacao(totalPaginas, maquina) {
+  const paginacao = document.getElementById("pagination");
+  paginacao.innerHTML = "";
+  if (totalPaginas <= 1) return;
 
-    maquina.emManutencao = !maquina.emManutencao;
-    if (maquinaElement) maquinaElement.style.backgroundColor = maquina.emManutencao ? "red" : "";
-
-    if (maquina.emManutencao) {
-        maquina.tempoManutencao = 0;
-        startMaintenanceTimer(currentSetorIndex, currentMaquinaIndex);
-    } else {
-        stopMaintenanceTimer(currentSetorIndex, currentMaquinaIndex);
-    }
-
-    saveSetoresAndMachines();
-    showInfo(currentSetorIndex, currentMaquinaIndex);
-}
-
-function startMaintenanceTimer(setorIndex, maquinaIndex) {
-    const maquina = setores[setorIndex].maquinas[maquinaIndex];
-    clearInterval(timers[maquinaIndex]);
-
-    timers[maquinaIndex] = setInterval(() => {
-        if (maquina.emManutencao && maquina.tempoManutencao < 100) {
-            maquina.tempoManutencao++;
-            saveSetoresAndMachines();
-            renderSetores();
-        }
-    }, 1000);
-}
-
-function stopMaintenanceTimer(setorIndex, maquinaIndex) {
-    clearInterval(timers[maquinaIndex]);
-    timers[maquinaIndex] = null;
-}
-
-function filterMachines() {
-    const input = document.getElementById("searchInput").value.toUpperCase();
-    const setoresContainer = document.getElementById('setoresContainer');
-    setoresContainer.innerHTML = '';
-
-    setores.forEach((setor, setorIndex) => {
-        const setorMatches = setor.nome.toUpperCase().includes(input);
-        const maquinasMatches = setor.maquinas.some(maquina =>
-            (maquina.numeroSerie?.toUpperCase().includes(input)) ||
-            (maquina.tipo?.toUpperCase().includes(input))
-        );
-
-        if (setorMatches || maquinasMatches) {
-            const setorDiv = createSetorElement(setor, setorIndex);
-            setoresContainer.appendChild(setorDiv);
-        }
-    });
-}
-
-function confirmarAddMaquina() {
-    const tipoEquip = document.getElementById('tipoEquipamento').value;
-    if (!tipoEquip) return alert("Selecione o tipo de equipamento!");
-
-    const novaMaquina = {
-        tipo: tipoEquip,
-        chamado: [],
-        emManutencao: false,
-        tempoManutencao: 0
+  if (paginaAtual > 1) {
+    const btnAnterior = document.createElement("button");
+    btnAnterior.textContent = "Anterior";
+    btnAnterior.onclick = () => {
+      paginaAtual--;
+      renderChamados(maquina);
     };
+    paginacao.appendChild(btnAnterior);
+  }
 
-    if (tipoEquip === 'máquina') {
-        novaMaquina.tipoMaquina = document.getElementById('tipoMaquina').value;
-        novaMaquina.numeroSerie = document.getElementById('nomeMaquina').value;
-        novaMaquina.etiqueta = document.getElementById('etiquetaMaquina').value;
-    } else if (tipoEquip === 'monitor') {
-        
-
-    }
-
-    setores[currentSetorIndex].maquinas.push(novaMaquina);
-
-    saveSetoresAndMachines();
-    renderSetores();
-    fecharModalMaquina();
-    showInfo(currentSetorIndex, setores[currentSetorIndex].maquinas.length - 1);
-}
-function toggleChecklist(legendElement) {
-  const fieldset = legendElement.parentElement;
-  fieldset.classList.toggle('collapsed');
-}
-
-
-let html5QrcodeScanner;
-
-async function abrirScanner() {
-  document.getElementById('modalScanner').style.display = 'flex';
-
-  if (html5QrcodeScanner) return;
-
-  html5QrcodeScanner = new Html5Qrcode("reader");
-
-  try {
-    const config = {
-      fps: 30, // Mais frames por segundo pra capturar rápido
-      qrbox: { width: 200, height: 200 }, // Área menor de leitura (mais precisão)
-      aspectRatio: 1.3333
+  if (paginaAtual < totalPaginas) {
+    const btnProximo = document.createElement("button");
+    btnProximo.textContent = "Próximo";
+    btnProximo.onclick = () => {
+      paginaAtual++;
+      renderChamados(maquina);
     };
+    paginacao.appendChild(btnProximo);
+  }
+}
 
-    await html5QrcodeScanner.start(
-      { facingMode: { exact: "environment" } },
-      config,
-      (decodedText) => {
-        const tipo = document.getElementById('tipoEquipamento').value;
-        const campo = tipo === 'monitor' ? 'etiquetaMonitor' : 'etiquetaMaquina';
-        document.getElementById(campo).value = decodedText;
-        fecharScanner();
-      },
-      (err) => {
-        // Erros de leitura ignorados silenciosamente
+function togglePainelManutencao() {
+  const painel = document.getElementById("painelManutencao");
+  const icone = document.getElementById("painelToggleIcon");
+  painel.classList.toggle("recolhido");
+  icone.textContent = painel.classList.contains("recolhido") ? "▶" : "◀";
+}
+
+function abrirModalTodasManutencoes() {
+  const lista = document.getElementById("listaTodasManutencoes");
+  const modal = document.getElementById("modalTodasManutencoes");
+  lista.innerHTML = "";
+
+  let maquinas = [];
+  setores.forEach((setor, sIndex) => {
+    setor.maquinas.forEach((m, mIndex) => {
+      if (m.emManutencao) {
+        maquinas.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
       }
-    );
-
-    await tentarAplicarZoom(2); // Tenta zoom de 2x
-
-  } catch (err) {
-    alert("Erro ao acessar a câmera traseira: " + err);
-    fecharScanner();
-  }
-}
-
-async function tentarAplicarZoom(zoomNivel = 2) {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { exact: "environment" } }
     });
+  });
 
-    const track = stream.getVideoTracks()[0];
-    const capabilities = track.getCapabilities();
-
-    if (capabilities.zoom) {
-      const zoomDesejado = Math.min(zoomNivel, capabilities.zoom.max);
-      await track.applyConstraints({ advanced: [{ zoom: zoomDesejado }] });
-      console.log("Zoom aplicado:", zoomDesejado);
-    }
-
-    stream.getTracks().forEach(t => t.stop());
-  } catch (err) {
-    console.warn("Zoom não disponível:", err);
-  }
-}
-
-function fecharScanner() {
-  if (html5QrcodeScanner) {
-    html5QrcodeScanner.stop().then(() => {
-      html5QrcodeScanner.clear();
-      html5QrcodeScanner = null;
-      document.getElementById('modalScanner').style.display = 'none';
-    }).catch(err => {
-      alert("Erro ao parar o scanner: " + err);
-    });
+  if (maquinas.length === 0) {
+    lista.innerHTML = "<p>Nenhuma máquina em manutenção.</p>";
   } else {
-    document.getElementById('modalScanner').style.display = 'none';
+    lista.innerHTML = maquinas.map(m => `
+      <div class="maquina-box">
+        <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
+        <small>Setor: ${m.setorNome}</small><br/>
+        <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
+      </div>
+    `).join('');
   }
+
+  modal.style.display = "flex";
+}
+
+function fecharModalTodasManutencoes() {
+  const modal = document.getElementById("modalTodasManutencoes");
+  if (modal) modal.style.display = "none";
 }
 
 
+function renderPainelManutencao() {
+  const painel = document.getElementById("painelManutencao");
+  if (!painel) return;
+
+  let maquinasEmManutencao = [];
+  setores.forEach((setor, sIndex) => {
+    setor.maquinas.forEach((m, mIndex) => {
+      if (m.emManutencao) {
+        maquinasEmManutencao.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
+      }
+    });
+  });
+
+  const maquinasVisiveis = maquinasEmManutencao.slice(0, 5);
+
+  painel.innerHTML = `
+    <div class="painel-header" onclick="togglePainelManutencao()">
+      🛠️ Máquinas em Manutenção <span id="painelToggleIcon">◀</span>
+    </div>
+    <div class="painel-conteudo">
+      ${maquinasEmManutencao.length === 0
+        ? '<p style="padding: 10px;">Nenhuma máquina em manutenção.</p>'
+        : maquinasVisiveis.map(m => `
+            <div class="maquina-box">
+              <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
+              <small>Setor: ${m.setorNome}</small><br/>
+              <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
+            </div>
+          `).join('') +
+          (maquinasEmManutencao.length > 5
+            ? `<div style="text-align:center; margin-top: 10px;">
+                 <button onclick="abrirModalTodasManutencoes()">Ver todas (${maquinasEmManutencao.length})</button>
+               </div>`
+            : '')
+      }
+    </div>
+  `;
+}
+
+
+function showInfo(setorIndex, maquinaIndex) {
+  currentSetorIndex = setorIndex;
+  currentMaquinaIndex = maquinaIndex;
+  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+
+  const modal = document.getElementById("infoModal");
+
+  // ✅ Garantir que fique à frente de qualquer outro modal
+  modal.style.zIndex = 1600; // ou outro maior que os demais modais
+
+  modal.style.display = "flex";
+
+  const modalText = document.getElementById("modalText");
+  modalText.innerHTML = `
+    <strong>Tipo de Equipamento:</strong> ${maquina.tipo || 'N/A'}<br>
+    ${maquina.tipo === 'máquina' ? `<strong>Tipo da Máquina:</strong> ${maquina.tipoMaquina || 'N/A'}<br><strong>Número de Série:</strong> ${maquina.numeroSerie || 'N/A'}<br><strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
+    ${maquina.tipo === 'monitor' ? `<strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
+  `;
+
+  renderChamados(maquina);
+  renderPainelManutencao();
+}
+
+function bringModalToFront(modalId) {
+  const modais = ["infoModal", "modalTodasManutencoes", "configModal"]; // Adicione todos que existem
+  modais.forEach(id => {
+    const m = document.getElementById(id);
+    if (m) m.style.zIndex = id === modalId ? "1600" : "1500";
+  });
+}
+
+function closeAllModalsExcept(modalId) {
+  const modais = ["infoModal", "modalTodasManutencoes", "configModal"];
+  modais.forEach(id => {
+    if (id !== modalId) {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = "none";
+    }
+  });
+}
+closeAllModalsExcept("infoModal");
+bringModalToFront("infoModal");
+fecharModalTodasManutencoes(); // Fecha o modal de manutenção antes de abrir o infoModal

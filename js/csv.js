@@ -5,14 +5,22 @@ function importFromCSVButton() {
 function exportToCSV() {
     let csvContent = "Setor;Tipo;Nome da Máquina;Etiqueta;Em Manutenção;Tempo de Manutenção;Usuário;Observações;ID\n";
 
-
     setores.forEach(setor => {
         setor.maquinas.forEach(maquina => {
             const observacoes = maquina.chamado?.map(chamado => 
                 `"${chamado.observacao} - Prioridade: ${chamado.prioridade}"`
             ).join(" | ") || "Nenhuma Observação";
 
-            const row = `"${setor.nome}";"${maquina.tipo}";"${maquina.numeroSerie || maquina.nome || 'Sem nome'}";"${maquina.etiqueta || 'Sem etiqueta'}";${maquina.emManutencao};${maquina.tempoManutencao};"${maquina.usuarioResponsavel || ''}";${observacoes};"${maquina.id || ''}"\n`;
+            // ⏰ FORMATANDO TEMPO DE MANUTENÇÃO:
+            let tempoFormatado = "Não iniciado";
+            if (maquina.tempoManutencao) {
+                const tempo = new Date(maquina.tempoManutencao);
+                if (!isNaN(tempo.getTime())) {
+                    tempoFormatado = tempo.toLocaleString("pt-BR");
+                }
+            }
+
+            const row = `"${setor.nome}";"${maquina.tipo}";"${maquina.numeroSerie || maquina.nome || 'Sem nome'}";"${maquina.etiqueta || 'Sem etiqueta'}";${maquina.emManutencao};"${tempoFormatado}";"${maquina.usuarioResponsavel || ''}";${observacoes};"${maquina.id || ''}"\n`;
 
             csvContent += row;
         });
@@ -97,3 +105,6 @@ const maquina = {
         reader.readAsText(file, 'UTF-8');
     }
 }
+
+
+
