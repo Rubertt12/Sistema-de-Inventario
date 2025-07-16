@@ -1,17 +1,16 @@
 /* Fonte base e reset */
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #0a3b96;
+  background-color: #295991;
   margin: 0;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .login-container {
-  background: white;
+  background: #DED9C4;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0,0,0,0.1);
@@ -40,16 +39,18 @@ body {
   flex: 1;
   padding: 0.75rem 0;
   border: none;
-  background: #eee;
+  background: #ED9EF5;
   font-size: 16px;
   cursor: pointer;
   border-radius: 8px 8px 0 0;
   transition: background-color 0.3s ease;
+  color: #295991;
+  font-weight: bold;
 }
 
 .tabs button.active {
-  background-color: #4a90e2;
-  color: white;
+  background-color: #F2BF4F;
+  color: #295991;
   font-weight: 600;
 }
 
@@ -67,14 +68,16 @@ input, select, button {
   margin-bottom: 1rem;
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px; /* evita zoom no celular */
+  border: 1px solid #ED9EF5;
+  font-size: 16px;
   box-sizing: border-box;
+  background-color: #fff;
+  color: #295991;
 }
 
 button[type="submit"] {
-  background-color: #4a90e2;
-  color: white;
+  background-color: #ED9EF5;
+  color: #295991;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -82,12 +85,12 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #357ABD;
+  background-color: #d187d8;
 }
 
 .msg {
   font-size: 0.9rem;
-  color: red;
+  color: #e53935;
   min-height: 1.2em;
 }
 

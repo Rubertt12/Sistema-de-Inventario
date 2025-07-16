@@ -6,22 +6,24 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #f4f4f4;
+  background-color: #DED9C4;
   padding: 2rem;
 }
 
 .container {
   max-width: 600px;
   margin: 0 auto;
-  background: white;
+  background: #ffffff;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(41, 89, 145, 0.1);
+  border: 2px solid #ED9EF5;
 }
 
 h2 {
   text-align: center;
   margin-bottom: 1rem;
+  color: #295991;
 }
 
 form input,
@@ -30,22 +32,26 @@ form select {
   margin-bottom: 1rem;
   padding: 0.75rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #ED9EF5;
+  background-color: #fff;
+  color: #333;
 }
 
 form button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #007BFF;
-  color: white;
+  background-color: #ED9EF5;
+  color: #295991;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 form button:hover {
-  background-color: #0056b3;
+  background-color: #cf7dd7;
 }
 
 .filtro-empresa {
@@ -56,29 +62,40 @@ form button:hover {
   width: 100%;
   padding: 0.5rem;
   border-radius: 8px;
-  border: 1px solid #aaa;
+  border: 1px solid #F2BF4F;
+  background-color: #fffefc;
+  color: #333;
 }
 
 .usuario-card {
-  background: #f9f9f9;
-  border: 1px solid #ddd;
+  background: #fff9fd;
+  border: 1px solid #ED9EF5;
   padding: 1rem;
   margin-bottom: 0.75rem;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(41, 89, 145, 0.1);
 }
 
 .usuario-card p {
   margin: 0;
+  color: #295991;
+  font-weight: 500;
 }
 
 .usuario-card button {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #F2BF4F;
+  color: #295991;
   border: none;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.usuario-card button:hover {
+  background-color: #d3a53f;
 }
