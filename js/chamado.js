@@ -228,11 +228,15 @@ function renderPainelManutencao() {
         </div>
       `).join('')}
       ${totalPaginas > 1 ? `
-        <div style="text-align:center; margin-top: 10px; font-size: 0.75rem;">
-  <button onclick="trocarPaginaPainel(-1)" ${paginaAtualPainel === 1 ? 'disabled' : ''} style="padding: 2px 6px; font-size: 0.75rem;">&lt;</button>
-  <span style="margin: 0 6px;">Página ${paginaAtualPainel} de ${totalPaginas}</span>
-  <button onclick="trocarPaginaPainel(1)" ${paginaAtualPainel === totalPaginas ? 'disabled' : ''} style="padding: 2px 6px; font-size: 0.75rem;">&gt;</button>
-</div>` : ''}
+  <div style="text-align:center; margin-top: 10px; font-size: 0.75rem; color: #ccc;">
+    <button onclick="trocarPaginaPainel(-1)" ${paginaAtualPainel === 1 ? 'disabled' : ''}
+      style="padding: 3px 8px; font-size: 0.7rem; background: #0d2b45; color: #fff; border: 1px solid #1f3a56; border-radius: 4px; cursor: pointer; margin-right: 6px;"
+    >&lt;</button>
+    <span style="margin: 0 6px;">Página ${paginaAtualPainel} de ${totalPaginas}</span>
+    <button onclick="trocarPaginaPainel(1)" ${paginaAtualPainel === totalPaginas ? 'disabled' : ''}
+      style="padding: 3px 8px; font-size: 0.7rem; background: #0d2b45; color: #fff; border: 1px solid #1f3a56; border-radius: 4px; cursor: pointer; margin-left: 6px;"
+    >&gt;</button>
+  </div>` : ''}
     </div>
   `;
 }
