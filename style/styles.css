@@ -2089,16 +2089,6 @@ html, body {
 
 
 
-html, body {
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex: 1; /* para empurrar o footer para o final */
-}
 
 
 .footer-copy {

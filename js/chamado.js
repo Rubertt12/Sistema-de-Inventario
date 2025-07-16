@@ -40,6 +40,7 @@ function renderChamados(maquina) {
   if (!maquina.chamados) maquina.chamados = [];
 
   const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
+
   const totalPaginas = Math.ceil(chamadosOrdenados.length / chamadosPorPagina);
 
   const inicio = (paginaAtual - 1) * chamadosPorPagina;
@@ -47,12 +48,13 @@ function renderChamados(maquina) {
 
   lista.innerHTML = chamadosVisiveis.map((chamado, i) => `
     <li style="margin-bottom: 10px; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
-      <strong>${chamado.data}</strong><br>
-      <strong>Chamado:</strong> ${chamado.texto} - Prioridade: ${chamado.prioridade}
+      
+      <strong>Chamado:</strong> ${chamado.texto} - Prioridade: 
       ${(chamado.interacoes || []).map((i, idx) => `
         <div style="margin-top: 6px; border-left: 2px solid #aaa; padding-left: 10px;">
           <strong>Interação ${idx + 1}:</strong> ${i.texto}<br>
-          <small>${i.data}</small>
+          <small>${formatarData(i.data)}</small>
+
         </div>
       `).join('')}
       <div style="margin-top: 8px;">
@@ -94,11 +96,7 @@ function editarChamado(index) {
   const novoTexto = prompt("Editar observação do chamado:");
   if (!novoTexto) return;
 
-  const novaPrioridade = prompt("Editar prioridade (Alta, Média, Baixa):");
-  if (!novaPrioridade || !["Alta", "Média", "Baixa"].includes(novaPrioridade)) {
-    alert("Prioridade inválida.");
-    return;
-  }
+ 
 
   const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
   const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
