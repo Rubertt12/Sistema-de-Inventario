@@ -728,6 +728,43 @@ function fecharModalTodasManutencoes() {
 
 
 
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const hostname = params.get("hostname");
+  const usuario = params.get("usuario");
+  const descricao = params.get("descricao");
+  const etiqueta = params.get("etiqueta");
+  const setor = params.get("setor");
+
+  // Só continua se todos os campos forem válidos
+  if (!hostname || !usuario || !etiqueta || !setor) return;
+
+  // Pega do localStorage ou cria novo
+  let setores = JSON.parse(localStorage.getItem("setores")) || [];
+
+  // Procura setor
+  let setorExistente = setores.find(s => s.nome === setor);
+  if (!setorExistente) {
+    setorExistente = { nome: setor, maquinas: [] };
+    setores.push(setorExistente);
+  }
+
+  // Adiciona máquina
+  setorExistente.maquinas.push({
+    id: Date.now(),
+    hostname,
+    usuarioResponsavel: usuario,
+    descricao,
+    etiqueta,
+    chamado: []
+  });
+
+  localStorage.setItem("setores", JSON.stringify(setores));
+  alert(`Máquina ${etiqueta} adicionada ao setor ${setor}!`);
+};
+
+
   </script>
 
 <div id="modalTodasManutencoes" class="modal" style="display:none;">
@@ -760,6 +797,10 @@ function fecharModalTodasManutencoes() {
     <button onclick="fecharInfo()">Fechar</button>
   </div>
 </div>
+
+
+
+
 
 
 </body>

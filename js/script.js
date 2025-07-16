@@ -407,3 +407,49 @@ function salvarConfigBackground({ cor, imagem }) {
 
 
 
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const hostname = urlParams.get('hostname');
+  const usuario = urlParams.get('usuario');
+  const etiqueta = urlParams.get('etiqueta');
+  const setorNome = urlParams.get('setor');
+  const descricao = urlParams.get('descricao') || '';
+
+  if (!hostname || !setorNome || !etiqueta) return;
+
+  let setores = JSON.parse(localStorage.getItem('setores')) || [];
+
+  let setor = setores.find(s => s.nome === setorNome);
+
+  if (!setor) {
+    setor = {
+      nome: setorNome,
+      maquinas: []
+    };
+    setores.push(setor);
+  }
+
+  const maquinaExistente = setor.maquinas.find(m => m.etiqueta === etiqueta);
+  if (!maquinaExistente) {
+    const novaMaquina = {
+      id: Date.now(),
+      nome: hostname,
+      etiqueta: etiqueta,
+      modelo: descricao,
+      setor: setorNome,
+      usuarioResponsavel: usuario || '',
+      tipo: "PC",
+      chamado: []
+    };
+
+    setor.maquinas.push(novaMaquina);
+    console.log(`Máquina adicionada: ${hostname} no setor ${setorNome}.`);
+  } else {
+    console.log(`Máquina já existe: ${etiqueta} no setor ${setorNome}.`);
+  }
+
+  localStorage.setItem('setores', JSON.stringify(setores));
+
+  if (typeof renderSetores === 'function') renderSetores();
+});
