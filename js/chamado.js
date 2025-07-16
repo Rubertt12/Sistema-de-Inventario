@@ -170,48 +170,21 @@ function renderPaginacao(totalPaginas, maquina) {
     paginacao.appendChild(btnProximo);
   }
 }
+let paginaAtualPainel = 1;
+const manutencoesPorPaginaPainel = 5;
 
 function togglePainelManutencao() {
   const painel = document.getElementById("painelManutencao");
   const icone = document.getElementById("painelToggleIcon");
+
   painel.classList.toggle("recolhido");
-  icone.textContent = painel.classList.contains("recolhido") ? "▶" : "◀";
-}
-
-function abrirModalTodasManutencoes() {
-  const lista = document.getElementById("listaTodasManutencoes");
-  const modal = document.getElementById("modalTodasManutencoes");
-  lista.innerHTML = "";
-
-  let maquinas = [];
-  setores.forEach((setor, sIndex) => {
-    setor.maquinas.forEach((m, mIndex) => {
-      if (m.emManutencao) {
-        maquinas.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
-      }
-    });
-  });
-
-  if (maquinas.length === 0) {
-    lista.innerHTML = "<p>Nenhuma máquina em manutenção.</p>";
-  } else {
-    lista.innerHTML = maquinas.map(m => `
-      <div class="maquina-box">
-        <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
-        <small>Setor: ${m.setorNome}</small><br/>
-        <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
-      </div>
-    `).join('');
+  const conteudo = painel.querySelector(".painel-conteudo");
+  if (conteudo) {
+    conteudo.style.display = painel.classList.contains("recolhido") ? "none" : "block";
   }
 
-  modal.style.display = "flex";
+  icone.textContent = painel.classList.contains("recolhido") ? "▶" : "◀";
 }
-
-function fecharModalTodasManutencoes() {
-  const modal = document.getElementById("modalTodasManutencoes");
-  if (modal) modal.style.display = "none";
-}
-
 
 function renderPainelManutencao() {
   const painel = document.getElementById("painelManutencao");
@@ -226,32 +199,48 @@ function renderPainelManutencao() {
     });
   });
 
-  const maquinasVisiveis = maquinasEmManutencao.slice(0, 5);
+  if (maquinasEmManutencao.length === 0) {
+    painel.style.display = "none";
+    return;
+  }
+
+  painel.style.display = "block";
+  const estaRecolhido = painel.classList.contains("recolhido");
+
+  const totalPaginas = Math.ceil(maquinasEmManutencao.length / manutencoesPorPaginaPainel);
+  if (paginaAtualPainel > totalPaginas) paginaAtualPainel = totalPaginas;
+  if (paginaAtualPainel < 1) paginaAtualPainel = 1;
+
+  const inicio = (paginaAtualPainel - 1) * manutencoesPorPaginaPainel;
+  const fim = inicio + manutencoesPorPaginaPainel;
+  const maquinasVisiveis = maquinasEmManutencao.slice(inicio, fim);
 
   painel.innerHTML = `
     <div class="painel-header" onclick="togglePainelManutencao()">
-      🛠️ Máquinas em Manutenção <span id="painelToggleIcon">◀</span>
+      🛠️ Máquinas em Manutenção <span id="painelToggleIcon">${estaRecolhido ? "▶" : "◀"}</span>
     </div>
-    <div class="painel-conteudo">
-      ${maquinasEmManutencao.length === 0
-        ? '<p style="padding: 10px;">Nenhuma máquina em manutenção.</p>'
-        : maquinasVisiveis.map(m => `
-            <div class="maquina-box">
-              <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
-              <small>Setor: ${m.setorNome}</small><br/>
-              <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
-            </div>
-          `).join('') +
-          (maquinasEmManutencao.length > 5
-            ? `<div style="text-align:center; margin-top: 10px;">
-                 <button onclick="abrirModalTodasManutencoes()">Ver todas (${maquinasEmManutencao.length})</button>
-               </div>`
-            : '')
-      }
+    <div class="painel-conteudo" style="display: ${estaRecolhido ? "none" : "block"};">
+      ${maquinasVisiveis.map(m => `
+        <div class="maquina-box">
+          <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
+          <small>Setor: ${m.setorNome}</small><br/>
+          <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
+        </div>
+      `).join('')}
+      ${totalPaginas > 1 ? `
+        <div style="text-align:center; margin-top: 10px; font-size: 0.75rem;">
+  <button onclick="trocarPaginaPainel(-1)" ${paginaAtualPainel === 1 ? 'disabled' : ''} style="padding: 2px 6px; font-size: 0.75rem;">&lt;</button>
+  <span style="margin: 0 6px;">Página ${paginaAtualPainel} de ${totalPaginas}</span>
+  <button onclick="trocarPaginaPainel(1)" ${paginaAtualPainel === totalPaginas ? 'disabled' : ''} style="padding: 2px 6px; font-size: 0.75rem;">&gt;</button>
+</div>` : ''}
     </div>
   `;
 }
 
+function trocarPaginaPainel(direcao) {
+  paginaAtualPainel += direcao;
+  renderPainelManutencao();
+}
 
 function showInfo(setorIndex, maquinaIndex) {
   currentSetorIndex = setorIndex;
@@ -259,11 +248,9 @@ function showInfo(setorIndex, maquinaIndex) {
   const maquina = setores[setorIndex].maquinas[maquinaIndex];
 
   const modal = document.getElementById("infoModal");
-
-  // ✅ Garantir que fique à frente de qualquer outro modal
-  modal.style.zIndex = 1600; // ou outro maior que os demais modais
-
   modal.style.display = "flex";
+  modal.style.zIndex = "1600";
+  bringModalToFront("infoModal");
 
   const modalText = document.getElementById("modalText");
   modalText.innerHTML = `
@@ -277,10 +264,12 @@ function showInfo(setorIndex, maquinaIndex) {
 }
 
 function bringModalToFront(modalId) {
-  const modais = ["infoModal", "modalTodasManutencoes", "configModal"]; // Adicione todos que existem
+  const modais = ["infoModal", "modalTodasManutencoes", "configModal"];
   modais.forEach(id => {
     const m = document.getElementById(id);
-    if (m) m.style.zIndex = id === modalId ? "1600" : "1500";
+    if (m) {
+      m.style.zIndex = id === modalId ? "1600" : "1500";
+    }
   });
 }
 
@@ -293,6 +282,10 @@ function closeAllModalsExcept(modalId) {
     }
   });
 }
+
+// Fechamento inicial
 closeAllModalsExcept("infoModal");
 bringModalToFront("infoModal");
-fecharModalTodasManutencoes(); // Fecha o modal de manutenção antes de abrir o infoModal
+
+// Atualização em tempo real
+setInterval(renderPainelManutencao, 900);

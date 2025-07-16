@@ -738,6 +738,28 @@ function fecharModalTodasManutencoes() {
   </div>
 </div>
 
+<!-- Modal de todas manutenções -->
+<div id="modalTodasManutencoes" class="modal">
+  <div class="modal-content">
+    <h2>Máquinas em Manutenção</h2>
+    <div id="listaTodasManutencoes">
+      <div>
+        <strong>Impressora - Sem etiqueta</strong><br/>
+        <small>Setor: RH</small><br/>
+        <button onclick="abrirInfo()">Ver Detalhes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de detalhes -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <h2>Detalhes da Máquina</h2>
+    <div id="modalText"></div>
+    <button onclick="fecharInfo()">Fechar</button>
+  </div>
+</div>
 
 
 </body>
