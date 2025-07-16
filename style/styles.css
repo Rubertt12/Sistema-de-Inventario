@@ -761,103 +761,102 @@ fieldset.collapsed legend .arrow {
   transform: rotate(-90deg);
 }
 
-
-
 .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 26px;
-    cursor: pointer;
-    color: #7f8c8d;
-    font-weight: bold;
-    transition: color 0.3s ease;
-    margin-top: 50px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #ED9EF5; /* Rosa claro */
+  font-weight: bold;
+  transition: color 0.3s ease;
+  margin-top: 50px;
 }
 
 .close-btn:hover {
-    color: #6d0e03;
+  color: #295991; /* Azul escuro */
 }
 
 /* Barra de navegação fixada ao rolar */
 .navbar.scrolled {
-    background-color: #34495e;
+  background-color: #DED9C4; /* Bege claro */
 }
 
-/* Adicionando espaço extra devido à barra fixada */
+/* Espaço devido à navbar */
 body {
-    padding-top: 100px;
-    font-family: 'Poppins', sans-serif;
-     overflow-x: hidden;
+  padding-top: 100px;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  background-color: #F2BF4F; /* Amarelo como fundo de fundo */
 }
 
+/* Campo de texto */
 input[type="text"] {
-    padding: 12px;
-    font-size: 16px;
-    width: 100%;
-    max-width: 300px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    transition: all 0.3s ease;
-    background-color: #fff;
+  padding: 12px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 8px;
+  border: 1px solid #295991;
+  background-color: #fff;
+  color: #295991;
+  transition: all 0.3s ease;
 }
 
 input[type="text"]:focus {
-    outline: none;
-    border-color: #2b2a2a;
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(41, 128, 185, 0.3);
+  outline: none;
+  border-color: #ED9EF5;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(237, 158, 245, 0.3);
 }
 
 /* Botões */
 button {
-    padding: 12px 24px;
-    background:  #2b2a2a;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 10px;
-
+  padding: 12px 24px;
+  background: #295991; /* Azul escuro */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
 }
 
 button:hover {
-    background: linear-gradient(135deg, #3498db, #8ac8f7);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #ED9EF5, #F2BF4F); /* Rosa → Amarelo */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
-
 button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 /* Container de Setores */
 .setores-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 30px;
-    padding: 30px;
-    margin-top: 60px;
-    animation: fadeIn 0.5s ease-out;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 30px;
+  padding: 30px;
+  margin-top: 60px;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Animação de Fade-in para Setores */
+/* Animação de Fade-in */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Novo estilo para header do setor */
+/* Header do setor */
 .setor-header {
   display: flex;
   align-items: center;
@@ -865,6 +864,7 @@ button:disabled {
   gap: 1rem;
   margin-bottom: 20px;
 }
+
 /*continuar daqui*pra baixo/
 /* Título com comportamento responsivo */
 .setor-nome {
