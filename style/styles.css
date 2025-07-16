@@ -2087,127 +2087,34 @@ html, body {
 
 
 
-.footer-institucional {
-  background-color: #0a1f35;
-  color: white;
-  padding-top: 40px;
-  font-family: 'Poppins', sans-serif;
+
+
+
+html, body {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; /* para empurrar o footer para o final */
+}
+
+
+.footer-copy {
   width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  margin-left: calc(-50vw + 50%);
+  background-color: #08192a;
+  color: #aaa;
+  padding: 10px 0;
+  text-align: center;
+  border-top: 1px solid #1f3a56;
+  font-size: 0.85rem;
   box-sizing: border-box;
 }
 
-.footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 30px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
 
-.footer-bottom {
-  background-color: #08192b;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 14px;
-  width: 100%;
-  margin-top: 20px;
-}
-
-.footer-wrapper {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 0 5%;
-  max-width: 100%;
-}
-
-.footer-col {
-  flex: 1;
-  margin: 20px 0;
-  min-width: 250px;
-}
-
-.footer-logo {
-  width: 70px;
-  margin-bottom: 10px;
-}
-
-.logo-col h2 {
-  font-size: 1.4rem;
-  margin: 0;
-}
-
-.footer-subtitle {
-  font-size: 0.9rem;
-  color: #ccc;
-  margin-top: 5px;
-}
-
-.links-col h4,
-.contato-col h4 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-  color: #7cf7c9;
-}
-
-.links-col ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 10px 0;
-}
-
-.links-col ul li {
-  margin-bottom: 8px;
-}
-
-.links-col ul li a {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.links-col ul li a:hover {
-  text-decoration: underline;
-}
-
-.payment-icons img {
-  height: 32px;
-  margin: 8px 8px 0 0;
-}
-
-.social-icons a {
-  margin-right: 10px;
-  display: inline-block;
-  background-color: #1abc9c;
-  padding: 8px;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-.social-icons a:hover {
-  background-color: #16a085;
-}
-
-.social-icons img {
-  height: 18px;
-  filter: brightness(0) invert(1);
-}
-
-.footer-copy {
-  text-align: center;
-  border-top: 1px solid #1f3a56;
-  margin-top: 30px;
-  padding-top: 10px;
-  font-size: 0.85rem;
-  color: #aaa;
-  background-color: #08192a;
-}
 
 /* Responsivo */
 @media (max-width: 768px) {
