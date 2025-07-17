@@ -1,80 +1,70 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const fs = require('fs');
+const nodemailer = require('nodemailer');
 const path = require('path');
+const crypto = require('crypto');
 
 const app = express();
-const PORT = 3000;
-
-// Serve arquivos estáticos (index.html, dashboard.html, css, js, etc)
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(bodyParser.json());
+// Simulando "banco de dados" em memória
+const usuarios = {};
 
-app.use(session({
-  secret: 'segredo-super-secreto', // Mude para algo seguro
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // se for https, pode colocar true
-}));
-
-const usuariosFile = path.join(__dirname, 'usuarios.json');
-
-// Lê usuários do arquivo JSON ou cria padrão se não existir
-function lerUsuarios() {
-  if (!fs.existsSync(usuariosFile)) {
-    const admin = [{
-      nome: "admin",
-      senha: "L7QKP09r09d$",
-      perfil: "admin"
-    }];
-    fs.writeFileSync(usuariosFile, JSON.stringify(admin, null, 2));
-    return admin;
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'ruberttramires4@gmail.com',
+    pass: 'hrrlahxsriwfukxi'
   }
-  const data = fs.readFileSync(usuariosFile);
-  return JSON.parse(data);
-}
+});
 
-// Salva usuários no arquivo JSON
-function salvarUsuarios(usuarios) {
-  fs.writeFileSync(usuariosFile, JSON.stringify(usuarios, null, 2));
-}
-
-// Rota para login
-app.post('/login', (req, res) => {
-  const { nome, senha } = req.body;
-  const usuarios = lerUsuarios();
-  const user = usuarios.find(u => u.nome === nome && u.senha === senha);
-  if (!user) {
-    return res.status(401).json({ error: 'Usuário ou senha inválidos' });
+app.post('/cadastro', async (req, res) => {
+  const { nome, email, senha, perfil } = req.body;
+  if (!nome || !email || !senha || !perfil) {
+    return res.status(400).json({ mensagem: 'Todos os campos são obrigatórios!' });
   }
-  req.session.user = user;
-  res.json({ message: 'Login realizado com sucesso', user: { nome: user.nome, perfil: user.perfil } });
+
+  const token = crypto.randomBytes(16).toString('hex');
+
+  // Salva em "banco"
+  usuarios[token] = { nome, email, perfil, confirmado: false };
+
+  const link = `http://localhost:3000/confirmar?token=${token}`;
+
+  await transporter.sendMail({
+    from: '"Cadastro" <SEU_EMAIL@gmail.com>',
+    to: email,
+    subject: 'Confirme seu cadastro',
+    html: `
+      <h2>Olá, ${nome}!</h2>
+      <p>Você se cadastrou como <strong>${perfil}</strong>.</p>
+      <p>Para confirmar seu cadastro, clique no botão abaixo:</p>
+      <a href="${link}" style="
+        display: inline-block;
+        padding: 12px 24px;
+        background: #4f46e5;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+      ">Confirmar Cadastro</a>
+      <p>Ou copie e cole este link no navegador: <br>${link}</p>
+    `
+  });
+
+  res.json({ mensagem: 'Cadastro feito! Verifique seu e-mail para confirmar.' });
 });
 
-// Rota protegida do dashboard
-app.get('/dashboard', (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).send('Não autorizado. Faça login.');
+app.get('/confirmar', (req, res) => {
+  const { token } = req.query;
+
+  if (usuarios[token]) {
+    usuarios[token].confirmado = true;
+    res.redirect('/index.html'); // Redireciona para a tela inicial
+  } else {
+    res.status(400).send('<h1>Token inválido ou expirado!</h1>');
   }
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Rota para logout
-app.post('/logout', (req, res) => {
-  req.session.destroy();
-  res.json({ message: 'Logout efetuado' });
-});
-
-// Rota para checar se está logado (útil para frontend)
-app.get('/me', (req, res) => {
-  if (req.session.user) {
-    return res.json({ user: req.session.user });
-  }
-  res.status(401).json({ error: 'Não autenticado' });
-});
-
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
