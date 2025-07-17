@@ -33,6 +33,7 @@ app.post('/cadastro', (req, res) => {
 
   const linkConfirmacao = `https://sistema-de-inventario-s5yu.onrender.com/api/confirmar?usuario=${encodeURIComponent(nome)}&token=${token}`;
 
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
