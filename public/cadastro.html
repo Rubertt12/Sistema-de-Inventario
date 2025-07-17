@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f4f6fc;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -19,9 +19,14 @@
       background: white;
       padding: 40px 30px;
       border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
       max-width: 400px;
       width: 100%;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     h1 {
       color: #4f46e5;
@@ -36,6 +41,7 @@
       border-radius: 8px;
       border: 1.5px solid #ccc;
       font-size: 1rem;
+      transition: border 0.2s;
     }
     input:focus, select:focus {
       border-color: #4f46e5;
@@ -60,6 +66,10 @@
       margin-top: 20px;
       text-align: center;
       font-weight: 600;
+      color: #10b981;
+    }
+    #mensagem.erro {
+      color: #ef4444;
     }
   </style>
 </head>
@@ -82,20 +92,37 @@
 
   <script>
     const form = document.getElementById('cadastroForm');
+    const mensagemEl = document.getElementById('mensagem');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      mensagemEl.textContent = "Enviando...";
+      mensagemEl.classList.remove("erro");
+
       const dados = Object.fromEntries(new FormData(form).entries());
 
-      const res = await fetch('/cadastro', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
-      });
+      try {
+        const res = await fetch('/cadastro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dados)
+        });
 
-      const result = await res.json();
-      document.getElementById('mensagem').textContent = result.mensagem;
-      form.reset();
+        const result = await res.json();
+
+        if (result.ok) {
+          mensagemEl.textContent = "Cadastro enviado! Verifique seu e-mail para confirmar.";
+        } else {
+          mensagemEl.textContent = result.mensagem || "Erro no cadastro.";
+          mensagemEl.classList.add("erro");
+        }
+
+        form.reset();
+      } catch (error) {
+        mensagemEl.textContent = "Erro de conexão com o servidor.";
+        mensagemEl.classList.add("erro");
+      }
     });
   </script>
 </body>
