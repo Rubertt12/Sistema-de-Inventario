@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Confirmação</title>
+</head>
+<body>
+  <h2>Confirmação de Cadastro</h2>
+  <p id="status">Confirmando...</p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const nome = params.get("usuario");
+    const token = params.get("token");
+
+    async function confirmarCadastro() {
+      const res = await fetch(`/api/confirmar?usuario=${nome}&token=${token}`);
+      const data = await res.json();
+      document.getElementById("status").textContent = data.mensagem;
+
+      if (res.ok) {
+        setTimeout(() => {
+          window.location.href = "/index.html";
+        }, 3000);
+      }
+    }
+
+    confirmarCadastro();
+  </script>
+</body>
+</html>

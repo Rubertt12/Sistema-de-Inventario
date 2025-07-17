@@ -1,94 +1,83 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const cors = require('cors');
-const crypto = require('crypto');
 require('dotenv').config();
-
+const express = require("express");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(express.static("public"));
 app.use(express.json());
-app.use(express.static('public'));
 
+let pendentes = [];
 
-// Banco fake na memória (use banco real se quiser persistência)
-const usuarios = [];
+app.post("/api/cadastro", async (req, res) => {
+  const { nome, email, senha } = req.body;
 
-function gerarToken() {
-  return crypto.randomBytes(20).toString('hex');
-}
+  const token = crypto.randomBytes(32).toString("hex");
+  pendentes.push({ nome, email, senha, token });
 
-// Rota de cadastro
-app.post('/cadastro', (req, res) => {
-  const { nome, email, senha, perfil } = req.body;
-
-  if (usuarios.find(u => u.email === email)) {
-    return res.status(400).json({ mensagem: 'E-mail já cadastrado.' });
-  }
-
-  const token = gerarToken();
-
-  usuarios.push({ nome, email, senha, perfil, confirmado: false, token });
-
-  const linkConfirmacao = `https://sistema-de-inventario-s5yu.onrender.com/api/confirmar?usuario=${encodeURIComponent(nome)}&token=${token}`;
-
+  const link = `http://localhost:${PORT}/confirmacao.html?usuario=${encodeURIComponent(nome)}&token=${token}`;
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS
-    }
+      user: process.env.EMAIL,
+      pass: process.env.SENHA,
+    },
   });
 
   const mailOptions = {
-    from: process.env.GMAIL_USER,
+    from: process.env.EMAIL,
     to: email,
-    subject: 'Confirmação de Cadastro',
-    html: `
-      <h2>Olá, ${nome}!</h2>
-      <p>Obrigado por se cadastrar. Clique no botão abaixo para confirmar seu cadastro:</p>
-      <a href="${linkConfirmacao}" style="padding: 10px 20px; background: #4f46e5; color: white; text-decoration: none; border-radius: 6px;">Confirmar Cadastro</a>
-    `
+    subject: "Confirmação de Cadastro",
+    html: `<p>Olá, ${nome}! Clique para confirmar: <a href="${link}">Confirmar Cadastro</a></p>`,
   };
 
-  transporter.sendMail(mailOptions, (erro) => {
-    if (erro) {
-      console.error(erro);
-      return res.status(500).json({ mensagem: 'Erro ao enviar e-mail.' });
-    }
-
-    res.json({ mensagem: 'Cadastro realizado! Verifique seu e-mail para confirmar.' });
-  });
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ mensagem: "E-mail enviado! Verifique sua caixa de entrada." });
+  } catch (error) {
+    console.error("Erro ao enviar e-mail:", error);
+    res.status(500).json({ mensagem: "Erro ao enviar e-mail." });
+  }
 });
 
-// Rota de confirmação
-app.get('/api/confirmar', (req, res) => {
+app.get("/api/confirmar", (req, res) => {
   const { usuario, token } = req.query;
-  const user = usuarios.find(u => u.nome === usuario && u.token === token);
+  const index = pendentes.findIndex(u => u.nome === usuario && u.token === token);
 
-  if (!user) {
-    return res.status(400).json({ error: 'Link inválido ou expirado.' });
-  }
+  if (index === -1) return res.status(400).json({ mensagem: "Token inválido ou expirado." });
 
-  if (user.confirmado) {
-    return res.json({ message: 'Cadastro já confirmado.' });
-  }
+  const user = pendentes[index];
+  pendentes.splice(index, 1);
 
-  user.confirmado = true;
+  // Gera JS para salvar no localStorage
+  const script = `
+    (function(){
+      let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      usuarios.push({ nome: "${user.nome}", senha: "${user.senha}", perfil: "comum" });
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      sessionStorage.setItem("loggedUser", "${user.nome}");
+    })();
+  `;
 
-  res.json({
-    message: 'Cadastro confirmado com sucesso!',
-    senhaGerada: user.senha // ou gere uma nova senha se preferir
-  });
-});
-
-// Rota básica pra testar
-app.get('/', (req, res) => {
-  res.send('API rodando! 😎');
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head><title>Cadastro Confirmado</title></head>
+    <body>
+      <h2>Cadastro confirmado! Redirecionando...</h2>
+      <script>${script}</script>
+      <script>
+        setTimeout(() => {
+          window.location.href = "/dashboard.html";
+        }, 2000);
+      </script>
+    </body>
+    </html>
+  `);
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
