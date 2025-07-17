@@ -620,7 +620,7 @@ button:disabled {
   transition: all 0.3s ease;
   min-height: 220px;
   margin-top: 20px;
-  border: 2px solid #F2BF4F; /* Amarelo */
+  border: 2px solid #295991; /* azul */
 }
 
 .setor h2 {
@@ -1141,7 +1141,7 @@ element.style {
 }
 
 .box-switch {
-    background: linear-gradient(135deg, #2b2a2a, #1f1f1f);
+    background: #295991;
     border: 1px solid #3a3a3a;
     border-radius: 20px;
     padding: 20px 24px;
@@ -1201,7 +1201,7 @@ element.style {
 }
 
 input:checked + .slider {
-    background-color: #27ae60;
+    background-color: #ED9EF5;
 }
 
 input:checked + .slider:before {
