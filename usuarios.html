@@ -1,686 +1,436 @@
 <!DOCTYPE html>
-<html lang="pt-br" >
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Gestão de Usuários</title>
+  <title>Gestão de Usuários | Admin</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-* {
-  box-sizing: border-box;
-}
+    :root {
+      --primary: #295991;
+      --accent: #ED9EF5;
+      --bg-gradient: linear-gradient(135deg, #DED9C4 0%, #D1CCB8 100%);
+      --glass-bg: rgba(255, 255, 255, 0.95);
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #F2BF4F;
+      --text-main: #333;
+      --border-color: #e2e8f0;
+    }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #DED9C4;
-  margin: 0;
-  padding: 20px 15px;
-  color: #333;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-}
+    * { box-sizing: border-box; outline: none; }
 
-.container {
-  width: 100%;
-  max-width: 720px;
-  background: #fff;
-  padding: 25px 30px;
-  border-radius: 15px;
-  box-shadow: 0 8px 25px rgba(173, 114, 190, 0.2); /* Rosa claro sombra */
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-gradient);
+      margin: 0;
+      padding: 20px;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
 
-#btnVoltar {
-  background: transparent;
-  border: none;
-  color: #295991;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 8px 0;
-  margin-bottom: 20px;
-  align-self: flex-start;
-  transition: color 0.3s ease;
-}
-#btnVoltar:hover {
-  color: #ED9EF5;
-  text-decoration: underline;
-}
+    /* Layout Full Width */
+    .container {
+      width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
 
-h1 {
-  margin: 0 0 10px;
-  color: #295991;
-  font-weight: 700;
-  font-size: 2.2rem;
-  text-align: center;
-  word-break: break-word;
-}
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding-bottom: 15px;
+    }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+    #btnVoltar {
+      background: transparent;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #btnVoltar:hover { background: var(--primary); color: white; }
 
-label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #444;
-}
+    h1 { margin: 0; color: var(--primary); font-size: 1.8rem; font-weight: 700; }
 
-input[type="text"], input[type="password"], select {
-  padding: 12px 15px;
-  border: 1.8px solid #ED9EF5;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-}
+    /* Form Card - Grid Responsivo */
+    .form-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
 
-input:focus, select:focus {
-  border-color: #295991;
-  outline: none;
-}
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
 
-.senha-wrapper {
-  position: relative;
-  width: 100%;
-}
-.senha-wrapper input {
-  padding-right: 42px;
-}
-.toggle-olhinho-btn {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1.4rem;
-  color: #ED9EF5;
-  padding: 0;
-}
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
 
-.toggle-olhinho-btn:focus {
-  outline: 2px solid #ED9EF5;
-  outline-offset: 2px;
-}
+    label { font-weight: 600; font-size: 0.8rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
 
-button[type="submit"] {
-  background: #295991;
-  color: white;
-  padding: 14px 20px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(41, 89, 145, 0.3);
-  transition: background 0.3s ease, transform 0.2s ease;
-  width: 100%;
-  max-width: 300px;
-  align-self: center;
-}
+    input, select {
+      padding: 14px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
 
-button[type="submit"]:hover {
-  background: #1e3c68;
-  transform: translateY(-2px);
-}
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(41, 89, 145, 0.1); }
 
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 12px;
-  font-size: 0.95rem;
-  color: #444;
-}
+    .senha-container { display: flex; gap: 8px; }
+    
+    /* Botões de Ícones Clean */
+    .btn-icon-input {
+      background: #f8fafc;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-icon-input:hover { background: #f1f5f9; border-color: #cbd5e1; }
+    .btn-icon-input svg { width: 20px; height: 20px; stroke: #64748b; stroke-width: 2; fill: none; }
 
-th {
-  background: #ED9EF5;
-  color: #295991;
-  padding: 14px 15px;
-  text-align: left;
-  border-radius: 12px 12px 0 0;
-  user-select: none;
-}
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 20px;
+    }
 
-tbody tr {
-  background: #fafafa;
-  border-radius: 12px;
-  transition: background 0.3s ease;
-}
-tbody tr:hover {
-  background: #fbeeff;
-}
+    .btn-save {
+      background: var(--primary);
+      color: white;
+      padding: 14px 40px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .btn-save:hover { opacity: 0.9; transform: translateY(-1px); }
 
-td {
-  padding: 14px 15px;
-}
-td:first-child {
-  font-weight: 600;
-  color: #295991;
-  max-width: 150px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.actions-cell {
-  white-space: nowrap;
-  width: 130px;
-}
+    .btn-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 14px 25px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-button.edit-btn, button.delete-btn, button.view-pass-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  margin-right: 12px;
-  border-radius: 8px;
-  padding: 6px 10px;
-  color: #295991;
-  transition: background 0.3s ease;
-}
-button.edit-btn:hover {
-  background: #F2BF4F;
-}
-button.delete-btn:hover {
-  background: #fbb6b6;
-  color: #b91c1c;
-}
-button.view-pass-btn:hover {
-  background: #F2BF4F;
-}
+    /* Tabela Otimizada */
+    .table-container { width: 100%; margin-top: 10px; overflow-x: auto; }
+    
+    table { width: 100%; border-collapse: collapse; }
 
-/* Modais */
-#modalSenha, #modalMensagem, #modalConfirm {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  padding: 15px;
-}
+    th {
+      text-align: left;
+      padding: 18px;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #f1f5f9;
+    }
 
-.modal-content {
-  background: #fff;
-  padding: 25px 20px 30px;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-  text-align: center;
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: #2c2c2c;
-  animation: fadeInScale 0.3s ease;
-}
+    td { padding: 18px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
 
-.modal-content::before {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 12px;
-  color: #ED9EF5;
-  user-select: none;
-}
+    .badge-perfil {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: #ebf2fa;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
 
-#modalSenha .modal-content::before { content: "\1F512"; }
-#modalMensagem .modal-content::before { content: "\1F4A1"; }
-#modalConfirm .modal-content::before { content: "\2753"; }
+    .actions-cell { display: flex; gap: 8px; justify-content: flex-end; }
 
-.modal-content button {
-  background: #ED9EF5;
-  color: #295991;
-  padding: 12px 18px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 1rem;
-  margin: 10px 5px 0;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-  min-width: 100px;
-}
+    .action-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-color);
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .action-btn svg { width: 18px; height: 18px; stroke: #64748b; fill: none; stroke-width: 2; }
+    .action-btn:hover { border-color: var(--primary); background: #f0f7ff; }
+    .action-btn:hover svg { stroke: var(--primary); }
+    
+    .btn-del:hover { border-color: var(--danger); background: #fef2f2; }
+    .btn-del:hover svg { stroke: var(--danger); }
 
-#modalConfirm #btnSim {
-  background: #22c55e;
-}
-#modalConfirm #btnSim:hover {
-  background: #16a34a;
-}
-#modalConfirm #btnNao {
-  background: #ef4444;
-  color: white;
-}
-#modalConfirm #btnNao:hover {
-  background: #dc2626;
-}
+    /* Modais Clean */
+    .modal-overlay {
+      display:none; position:fixed; inset:0; 
+      background:rgba(15, 23, 42, 0.7); z-index:2000; 
+      align-items:center; justify-content:center; 
+      backdrop-filter: blur(5px); padding: 15px;
+    }
+    .modal-card {
+      background:white; padding:35px; border-radius:24px; 
+      text-align:center; max-width:400px; width:100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      animation: modalIn 0.3s ease-out;
+    }
+    @keyframes modalIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-.modal-content button:hover {
-  background: #d287df;
-  transform: translateY(-2px);
-}
+    #toast {
+      visibility: hidden; background: #1e293b; color: #fff;
+      padding: 12px 24px; border-radius: 12px; position: fixed;
+      z-index: 3000; bottom: 30px; left: 50%; transform: translateX(-50%);
+      font-size: 0.9rem; transition: all 0.3s;
+    }
+    #toast.show { visibility: visible; bottom: 40px; }
 
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-/* Responsivo */
-@media (max-width: 600px) {
-  body {
-    padding: 15px 10px;
-  }
-  .container {
-    padding: 20px 20px;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  button[type="submit"] {
-    max-width: 100%;
-  }
-
-  table, thead, tbody, th, td, tr {
-    display: block;
-    width: 100%;
-  }
-
-  thead tr {
-    display: none;
-  }
-
-  tbody tr {
-    margin-bottom: 15px;
-    border-radius: 12px;
-    background: #fff;
-    padding: 15px 15px 20px;
-  }
-
-  tbody tr:hover {
-    background: #fbeeff;
-  }
-
-  tbody td {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    font-size: 0.95rem;
-    border-bottom: 1px solid #eee;
-  }
-
-  tbody td:first-child {
-    font-weight: 700;
-    color: #295991;
-    max-width: none;
-    white-space: normal;
-    overflow: visible;
-    flex-grow: 1;
-    border-bottom: none;
-  }
-
-  .actions-cell {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    padding-top: 8px;
-  }
-
-  .actions-cell button {
-    font-size: 22px;
-    padding: 6px 10px;
-  }
-}
-
+    @media (max-width: 768px) {
+      .container { padding: 15px; border-radius: 0; }
+      .top-bar { flex-direction: column; gap: 15px; text-align: center; }
+      .actions-cell { justify-content: flex-start; }
+      th:nth-child(2), td:nth-child(2) { display: none; }
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <button id="btnVoltar" onclick="voltarDashboard()" aria-label="Voltar ao Dashboard">
-      ← Voltar ao Dashboard
-    </button>
+    <div class="top-bar">
+      <button id="btnVoltar" onclick="voltarDashboard()">
+        <svg style="width:18px;height:18px;stroke:currentColor" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Painel Principal
+      </button>
+      <h1>Gestão de Usuários</h1>
+      <div style="width: 140px;" class="hide-mobile"></div>
+    </div>
 
-    <h1>Gestão de Usuários</h1>
+    <div class="form-card">
+      <form id="userForm">
+        <input type="hidden" id="userIndex" value="-1" />
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="nome">Nome de Identificação</label>
+            <input type="text" id="nome" required placeholder="Ex: rubert.silva" />
+          </div>
+          <div class="form-group">
+            <label for="perfil">Nível de Acesso</label>
+            <select id="perfil" required>
+              <option value="" disabled selected>Escolha o perfil...</option>
+              <option value="admin">Administrador</option>
+              <option value="operador">Operador</option>
+              <option value="monitoramento">Monitoramento</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="senha">Senha de Acesso</label>
+            <div class="senha-container">
+              <input type="password" id="senha" style="flex-grow: 1;" required placeholder="••••••••" />
+              <button type="button" class="btn-icon-input" title="Gerar Senha Forte" onclick="gerarSenhaAuto()">
+                <svg viewBox="0 0 24 24"><path d="M19 11h-8v8h8v-8zM5 5h8v8H5V5z"></path></svg>
+              </button>
+              <button type="button" class="btn-icon-input" title="Visualizar" onclick="mostrarSenhaInputModal()">
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </button>
+            </div>
+          </div>
+        </div>
 
-    <form id="userForm">
-      <input type="hidden" id="userIndex" value="-1" />
-      
-      <label for="nome">Nome do Usuário:</label>
-      <input type="text" id="nome" required placeholder="Digite o nome" />
+        <div class="button-group">
+          <button type="button" id="btnCancelar" class="btn-cancel" style="display: none;" onclick="limparFormulario()">Cancelar</button>
+          <button type="submit" id="btnSalvar" class="btn-save">Salvar Usuário</button>
+        </div>
+      </form>
+    </div>
 
-      <label for="senha">Senha:</label>
-      <div class="senha-wrapper">
-        <input type="password" id="senha" required placeholder="Digite a senha" />
-        <button type="button" class="toggle-olhinho-btn" aria-label="Visualizar senha" onclick="mostrarSenhaInputModal()">👁️</button>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Perfil</th>
+            <th style="text-align: right;">Gerenciar</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="modalSenha" class="modal-overlay" onclick="fecharModalSenha()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <p style="font-size:0.75rem; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Credenciais de Acesso</p>
+      <h2 id="modalSenhaDesc" style="color:var(--primary); margin:0 0 30px; font-family: 'Courier New', monospace; font-size: 1.8rem; letter-spacing: 2px;"></h2>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button onclick="copiarSenhaModal()" class="btn-save" style="width:100%;">Copiar Senha</button>
+        <button onclick="fecharModalSenha()" class="btn-cancel" style="width:100%;">Fechar Visualização</button>
       </div>
-
-      <label for="perfil">Perfil / Permissão:</label>
-      <select id="perfil" required>
-        <option value="" disabled selected>Selecione um perfil</option>
-        <option value="admin">Administrador</option>
-        <option value="operador">Operador</option>
-        <option value="monitoramento">Monitoramento</option>
-      </select>
-
-      <button type="submit">Salvar Usuário</button>
-    </form>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Perfil</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="userTableBody">
-        <!-- Usuários listados aqui -->
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Modal para mostrar senha -->
-  <div id="modalSenha" role="dialog" aria-modal="true" aria-labelledby="modalSenhaLabel">
-    <div class="modal-content">
-      <div id="modalSenhaDesc" tabindex="0"></div>
-      <button class="copy-btn" onclick="copiarSenhaModal()">Copiar Senha</button>
-      <button onclick="fecharModalSenha()">Fechar</button>
     </div>
   </div>
 
-  <!-- Modal genérico para alertas -->
-  <div id="modalMensagem" role="alertdialog" aria-modal="true" aria-labelledby="modalMensagemTexto">
-    <div class="modal-content">
-      <div id="modalMensagemTexto" tabindex="0"></div>
-      <button id="modalMensagemBtnOk">OK</button>
-    </div>
-  </div>
-
-  <!-- Modal genérico para confirmação -->
-  <div id="modalConfirm" role="dialog" aria-modal="true" aria-labelledby="modalConfirmTexto">
-    <div class="modal-content">
-      <div id="modalConfirmTexto" tabindex="0"></div>
-      <button id="btnSim">Sim</button>
-      <button id="btnNao">Não</button>
-    </div>
-  </div>
+  <div id="toast"></div>
 
   <script>
- // Função para gerar senha aleatória segura
-function gerarSenhaAleatoria(tamanho = 12) {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
-  let senha = "";
-  for (let i = 0; i < tamanho; i++) {
-    senha += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return senha;
-}
-
-const userForm = document.getElementById('userForm');
-const nomeInput = document.getElementById('nome');
-const senhaInput = document.getElementById('senha');
-const perfilSelect = document.getElementById('perfil');
-const userTableBody = document.getElementById('userTableBody');
-const userIndexInput = document.getElementById('userIndex');
-
-const modalSenha = document.getElementById('modalSenha');
-const modalSenhaDesc = document.getElementById('modalSenhaDesc');
-
-const modalMensagem = document.getElementById('modalMensagem');
-const modalMensagemTexto = document.getElementById('modalMensagemTexto');
-const modalMensagemBtnOk = document.getElementById('modalMensagemBtnOk');
-
-const modalConfirm = document.getElementById('modalConfirm');
-const modalConfirmTexto = document.getElementById('modalConfirmTexto');
-const btnSim = document.getElementById('btnSim');
-const btnNao = document.getElementById('btnNao');
-
-let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-// Cria usuário superadmin apenas se ele não existir
-function inicializarUsuarios() {
-  const existeSuperAdmin = usuarios.some(u => u.nome === 'superadmin');
-  if (!existeSuperAdmin) {
-    usuarios.unshift({ nome: 'superadmin', senha: 'suP3r@dm1n!', perfil: 'admin' });
-    salvarUsuarios();
-  }
-  renderizarTabela();
-}
-
-function salvarUsuarios() {
-  localStorage.setItem('usuarios', JSON.stringify(usuarios));
-}
-
-function limparFormulario() {
-  userIndexInput.value = -1;
-  nomeInput.value = '';
-  senhaInput.value = '';
-  perfilSelect.value = '';
-}
-
-function renderizarTabela() {
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-  userTableBody.innerHTML = '';
-
-  usuarios.forEach((user, index) => {
-    if (user.nome === 'superadmin' && usuarioLogado?.perfil !== 'superadmin') return;
-
-    const tr = document.createElement('tr');
-
-    let botoes = '';
-    if (user.nome !== 'superadmin') {
-      botoes = `
-        <button class="edit-btn" title="Editar" onclick="editarUsuario(${index})">✏️</button>
-        <button class="view-pass-btn" title="Visualizar Senha" onclick="mostrarSenhaModal(${index})">👁️</button>
-        <button class="delete-btn" title="Excluir" onclick="excluirUsuario(${index})">🗑️</button>
-      `;
+    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    
+    function inicializar() {
+      if (!usuarios.some(u => u.nome === 'superadmin')) {
+        usuarios.unshift({ nome: 'superadmin', senha: 'suP3r@dm1n!', perfil: 'admin' });
+        salvar();
+      }
+      renderizarTabela();
     }
 
-    tr.innerHTML = `
-      <td title="${user.nome}">${user.nome}</td>
-      <td>${user.perfil}</td>
-      <td class="actions-cell">${botoes}</td>
-    `;
+    function salvar() { localStorage.setItem('usuarios', JSON.stringify(usuarios)); }
 
-    userTableBody.appendChild(tr);
-  });
-}
-
-function copiarSenhaModal() {
-  const textoCompleto = modalSenhaDesc.textContent;
-  const senha = textoCompleto.split(': ')[1] || '';
-
-  if (!senha) {
-    alert('Nenhuma senha encontrada para copiar.');
-    return;
-  }
-
-  navigator.clipboard.writeText(senha.trim())
-    .then(() => alert('Senha copiada para a área de transferência!'))
-    .catch(() => alert('Erro ao copiar senha.'));
-}
-
-function editarUsuario(index) {
-  const user = usuarios[index];
-  if (user.nome === 'superadmin') return;
-
-  userIndexInput.value = index;
-  nomeInput.value = user.nome;
-  senhaInput.value = user.senha;
-  perfilSelect.value = user.perfil;
-}
-
-async function excluirUsuario(index) {
-  const user = usuarios[index];
-  if (user.nome === 'superadmin') return;
-
-  const confirmar = await mostrarConfirmacao(`Excluir usuário "${user.nome}"?`);
-  if (confirmar) {
-    usuarios.splice(index, 1);
-    salvarUsuarios();
-    renderizarTabela();
-    limparFormulario();
-  }
-}
-
-userForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const nome = nomeInput.value.trim();
-  const senha = senhaInput.value.trim();
-  const perfil = perfilSelect.value;
-
-  if (!nome || !senha || !perfil) {
-    await mostrarAlerta('Preencha todos os campos!');
-    return;
-  }
-
-  if (nome.toLowerCase() === 'superadmin') {
-    await mostrarAlerta('Você não pode usar este nome.');
-    return;
-  }
-
-  const index = parseInt(userIndexInput.value);
-
-  if (index === -1) {
-    if (usuarios.some(u => u.nome.toLowerCase() === nome.toLowerCase())) {
-      await mostrarAlerta('Já existe um usuário com esse nome!');
-      return;
+    function limparFormulario() {
+      document.getElementById('userForm').reset();
+      document.getElementById('userIndex').value = "-1";
+      document.getElementById('btnSalvar').textContent = "Salvar Usuário";
+      document.getElementById('btnCancelar').style.display = "none";
     }
-    usuarios.push({ nome, senha, perfil });
-  } else {
-    if (usuarios[index].nome === 'superadmin') return;
-    usuarios[index] = { nome, senha, perfil };
-  }
 
-  salvarUsuarios();
-  renderizarTabela();
-  limparFormulario();
-});
+    function renderizarTabela() {
+      const body = document.getElementById('userTableBody');
+      const logado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      body.innerHTML = '';
 
-function mostrarSenhaModal(index) {
-  const user = usuarios[index];
-  if (user.nome === 'superadmin') return;
+      usuarios.forEach((user, index) => {
+        if (user.nome === 'superadmin' && logado?.perfil !== 'superadmin') return;
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span style="font-weight:600; color:var(--primary)">${user.nome}</span></td>
+          <td><span class="badge-perfil">${user.perfil}</span></td>
+          <td class="actions-cell">
+            <button class="action-btn" title="Editar" onclick="editarUsuario(${index})">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="action-btn" title="Ver Senha" onclick="mostrarSenhaModal(${index})">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+            <button class="action-btn btn-del" title="Excluir" onclick="excluirUsuario(${index})">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+            </button>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+    }
 
-  modalSenhaDesc.textContent = `Senha: ${user.senha}`;
-  modalSenha.style.display = 'flex';
-  modalSenhaDesc.focus();
-}
+    function gerarSenhaAuto() {
+      const c = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
+      let s = "";
+      for (let i = 0; i < 12; i++) s += c.charAt(Math.floor(Math.random() * c.length));
+      document.getElementById('senha').value = s;
+      showToast("Senha segura gerada!");
+    }
 
-function mostrarSenhaInputModal() {
-  const senhaAtual = senhaInput.value;
-  if (!senhaAtual) {
-    mostrarAlerta('Digite a senha para visualizar.');
-    return;
-  }
-  modalSenhaDesc.textContent = `Senha digitada: ${senhaAtual}`;
-  modalSenha.style.display = 'flex';
-  modalSenhaDesc.focus();
-}
+    function editarUsuario(index) {
+      const u = usuarios[index];
+      if (u.nome === 'superadmin') return;
+      document.getElementById('userIndex').value = index;
+      document.getElementById('nome').value = u.nome;
+      document.getElementById('senha').value = u.senha;
+      document.getElementById('perfil').value = u.perfil;
+      document.getElementById('btnSalvar').textContent = "Atualizar Cadastro";
+      document.getElementById('btnCancelar').style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-function fecharModalSenha() {
-  modalSenha.style.display = 'none';
-}
+    function excluirUsuario(index) {
+      if(confirm(`Confirmar exclusão de "${usuarios[index].nome}"?`)) {
+        usuarios.splice(index, 1);
+        salvar(); renderizarTabela();
+        showToast("Removido com sucesso.");
+      }
+    }
 
-function mostrarAlerta(msg, isSenha = false) {
-  return new Promise(resolve => {
-    modalMensagemTexto.textContent = msg;
-    modalMensagem.style.display = 'flex';
-    if (isSenha) modalMensagemBtnOk.focus();
+    document.getElementById('userForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const idx = parseInt(document.getElementById('userIndex').value);
+      const data = {
+        nome: document.getElementById('nome').value.trim(),
+        senha: document.getElementById('senha').value,
+        perfil: document.getElementById('perfil').value
+      };
 
-    modalMensagemBtnOk.onclick = () => {
-      modalMensagem.style.display = 'none';
-      resolve();
-    };
-  });
-}
+      if(idx === -1) {
+        if(usuarios.some(u => u.nome.toLowerCase() === data.nome.toLowerCase())) return alert("Nome já existe!");
+        usuarios.push(data);
+      } else {
+        usuarios[idx] = data;
+      }
 
-function mostrarConfirmacao(msg) {
-  return new Promise(resolve => {
-    modalConfirmTexto.textContent = msg;
-    modalConfirm.style.display = 'flex';
-    btnSim.focus();
+      salvar(); renderizarTabela(); limparFormulario();
+      showToast("Dados salvos com sucesso!");
+    });
 
-    btnSim.onclick = () => {
-      modalConfirm.style.display = 'none';
-      resolve(true);
-    };
-    btnNao.onclick = () => {
-      modalConfirm.style.display = 'none';
-      resolve(false);
-    };
-  });
-}
+    function mostrarSenhaModal(index) {
+      document.getElementById('modalSenhaDesc').textContent = usuarios[index].senha;
+      document.getElementById('modalSenha').style.display = 'flex';
+    }
 
-function voltarDashboard() {
-  window.location.href = 'dashboard.html';
-}
+    function mostrarSenhaInputModal() {
+      const s = document.getElementById('senha').value;
+      if(!s) return showToast("Digite uma senha primeiro!");
+      document.getElementById('modalSenhaDesc').textContent = s;
+      document.getElementById('modalSenha').style.display = 'flex';
+    }
 
+    function fecharModalSenha() { document.getElementById('modalSenha').style.display = 'none'; }
 
-function verificarLogin() {
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-  if (!usuarioLogado || !usuarioLogado.nome) {
-    alert('Você precisa estar logado para acessar esta página.');
-    window.location.href = 'index.html'; // Ajuste para o nome correto do seu arquivo de login
-  }
-}
+    function copiarSenhaModal() {
+      navigator.clipboard.writeText(document.getElementById('modalSenhaDesc').textContent);
+      showToast("Senha copiada!");
+      fecharModalSenha();
+    }
 
-// Chama a verificação na carga da página
-verificarLogin();
+    function showToast(m) {
+      const t = document.getElementById("toast");
+      t.textContent = m;
+      t.className = "show";
+      setTimeout(() => t.className = "", 3000);
+    }
 
-// Garante que, se o usuário usar o botão voltar do navegador, a checagem também será feita
-window.addEventListener('pageshow', (event) => {
-  if (event.persisted) {
-    verificarLogin();
-  }
-});
+    function voltarDashboard() { window.location.href = 'dashboard.html'; }
 
+    // Segurança
+    if (!localStorage.getItem('usuarioLogado')) window.location.href = 'index.html';
 
-function logout() {
-  localStorage.removeItem('usuarioLogado');
-  window.location.href = 'index.html'; // vai pro login de novo
-}
-
-function tentarLogin(nomeDigitado, senhaDigitada) {
-  let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  garantirSuperAdmin();  // Garante superadmin sempre antes da validação
-
-  // Recarrega lista atualizada após garantir superadmin
-  usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  const usuario = usuarios.find(u => u.nome.toLowerCase() === nomeDigitado.toLowerCase() && u.senha === senhaDigitada);
-  if (usuario) {
-    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-    // Redireciona ou faz o que precisa no login
-  } else {
-    alert('Usuário ou senha incorretos!');
-  }
-}
-
-
-
-
-window.editarUsuario = editarUsuario;
-window.excluirUsuario = excluirUsuario;
-window.mostrarSenhaModal = mostrarSenhaModal;
-window.mostrarSenhaInputModal = mostrarSenhaInputModal;
-window.fecharModalSenha = fecharModalSenha;
-window.copiarSenhaModal = copiarSenhaModal;
-window.voltarDashboard = voltarDashboard;
-
-inicializarUsuarios();
-
-  </script> 
-</body> 
+    inicializar();
+  </script>
+</body>
 </html>

@@ -265,7 +265,7 @@ function renderSetores(termoBusca = null) {
     let indicesParaMostrar = setoresFiltradosIndices ?? setores.map((_, i) => i);
 
     if (indicesParaMostrar.length === 0) {
-        container.innerHTML = '<p style="font-style: italic; color: #666;">Nenhum setor ou máquina encontrado.</p>';
+       container.innerHTML = '<p style="font-style: italic; color: #666; text-align: center; width: 50%; margin-top: 20px;">Nenhum setor ou máquina encontrado.</p>';
         document.getElementById('setoresPaginacao')?.remove(); // Remove paginação se não houver setores
         return;
     }

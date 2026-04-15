@@ -2,35 +2,56 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Login | Cadastro</title>
+  <title>Acesso ao Sistema</title>
   <link rel="stylesheet" href="/style/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<!-- Favicons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
-  <link rel="icon" href="/img/icon-png.png" type="image/x-icon" />
-  <link rel="apple-touch-icon" href="/img/icon-png.png" />
-  <link rel="icon" sizes="192x192" href="/img/icon-png.png" />
 </head>
 <body>
-<div class="login-container">
-  <div class="logo-container">
-    <img src="/img/icon-png.png" alt="Logo da Empresa" />
+
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loader-wrapper">
+      <img src="/img/icon-png.png" alt="Logo" class="loader-logo">
+      <div class="spinner"></div>
+    </div>
+    
+    <div class="loading-content">
+      <p id="loadingText">Iniciando sistema...</p>
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="container">
-    <div class="tabs">
-      <button id="tabLogin" class="active">Login</button>
-      <!-- <button id="tabCadastro">Cadastro</button> -->
+  <div class="login-card" id="loginCard">
+    <div class="logo-area">
+      <img src="/img/icon-png.png" alt="Logo" />
     </div>
 
-   <form id="formLogin" class="form active">
-  <input type="text" id="loginUsuario" placeholder="Usuário" required>
-  <input type="password" id="loginSenha" placeholder="Digite sua senha" required>
-  <button type="submit">Entrar</button>
-  <p class="msg" id="loginMsg"></p>
-</form>
+    <form id="formLogin">
+      <div class="input-group">
+        <label>Usuário</label>
+        <input type="text" id="loginUsuario" placeholder="Digite seu usuário" required>
+      </div>
 
+      <div class="input-group">
+        <label>Senha</label>
+        <input type="password" id="loginSenha" placeholder="Digite sua senha" required>
+      </div>
+
+      <div class="options-row">
+        <label class="checkbox-container">
+          <input type="checkbox" id="rememberMe">
+          <span class="checkmark"></span>
+          Lembrar meu acesso
+        </label>
+      </div>
+
+      <button type="submit" class="btn-entrar">Aceder ao Painel</button>
+      <p class="msg" id="loginMsg"></p>
+    </form>
+  </div>
 
   <script src="/js/index.js"></script>
 </body>
