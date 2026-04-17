@@ -207,16 +207,15 @@ h3 {
 /* Coluna esquerda: foto e botão */
 .modal-left {
   flex: 1;
-  min-width: 280px;
-  max-width: 320px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center;    /* Centraliza horizontalmente */
+  justify-content: center; /* Centraliza verticalmente se houver espaço */
   gap: 20px;
-  padding: 12px 0;
-  box-sizing: border-box;
+  padding: 20px 0;
+  width: 100%;            /* Garante que use a largura disponível */
+  margin: 0 auto;         /* Centralização extra */
 }
-
 /* Foto do perfil */
 .profile-picture-section img {
   width: 140px;
@@ -227,6 +226,7 @@ h3 {
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
   transition: transform 0.3s ease;
   cursor: pointer;
+  
 }
 
 .profile-picture-section img:hover {
@@ -236,6 +236,7 @@ h3 {
 /* Input file escondido */
 .profile-picture-section input {
   display: none;
+ 
 }
 
 /* Botão alterar foto */

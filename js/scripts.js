@@ -282,7 +282,41 @@ function proximaPagina() {
     renderSetores();
   }
 }
+function openConfigModal() {
+  document.getElementById("configModal").style.display = "flex";
+}
 
+function closeConfigModal() {
+  document.getElementById("configModal").style.display = "none";
+}
+
+/* FOTO PERFIL */
+function changeProfilePicture(event) {
+  const file = event.target.files[0];
+  if (file) {
+    document.getElementById("profilePic").src = URL.createObjectURL(file);
+  }
+}
+
+/* BACKGROUND URL */
+function applyBgUrl() {
+  const url = document.getElementById("bgImageUrl").value;
+  document.body.style.backgroundImage = `url(${url})`;
+}
+
+/* BACKGROUND UPLOAD */
+function applyBgUpload() {
+  const file = document.getElementById("bgImageUpload").files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    document.body.style.backgroundImage = `url(${url})`;
+  }
+}
+
+/* TOGGLE LAYOUT */
+function toggleLayout() {
+  document.body.classList.toggle("alt-layout");
+}
 
 window.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -330,3 +364,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (typeof renderSetores === 'function') renderSetores();
 });
+
+
+function closeConfigModal() {
+    const modal = document.getElementById('configModal');
+    
+    // Se você usa a classe .show para mostrar
+    modal.classList.remove('show');
+    
+    // Se você usa o atributo hidden
+    modal.setAttribute('hidden', true);
+    
+    // Garantia extra: força o display none
+    modal.style.display = 'none';
+}
+
+// Opcional: Fechar ao clicar fora do modal
+window.onclick = function(event) {
+    const modal = document.getElementById('configModal');
+    if (event.target == modal) {
+        closeConfigModal();
+    }
+}
