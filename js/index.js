@@ -69,29 +69,18 @@
     const adminMenu = document.getElementById('adminMenu');
     const addSetor = document.getElementById('addSetorBtn');
     const deleteAll = document.querySelector('.excluir-tudo-btn');
-    const canOperate = role === 'admin' || role === 'operador';
+    const canOperate = role === 'admin' || role === 'operador' || role == null;
 
     if (adminMenu) adminMenu.style.display = role === 'admin' ? 'block' : 'none';
     if (addSetor) addSetor.style.display = canOperate ? '' : 'none';
     if (deleteAll) deleteAll.style.display = role === 'admin' ? '' : 'none';
   };
 
-  function removeDuplicateIds(id) {
-    const nodes = Array.from(document.querySelectorAll(`#${CSS.escape(id)}`));
-    nodes.slice(1).forEach(node => node.remove());
-  }
-
   function cleanupLegacyMarkup() {
     if (!isDashboard) return;
-
-    ['infoModal', 'modalTodasManutencoes'].forEach(removeDuplicateIds);
-
     const configModal = document.getElementById('configModal');
     const saveButton = document.querySelector('.save-btn');
-    if (configModal && saveButton && !configModal.contains(saveButton)) {
-      configModal.appendChild(saveButton);
-    }
-
+    if (configModal && saveButton && !configModal.contains(saveButton)) configModal.appendChild(saveButton);
     window.verificarPermissoes();
   }
 
@@ -105,9 +94,11 @@
   }
 
   const load = src => new Promise((resolve, reject) => {
+    if (document.querySelector(`script[data-rrn-src="${src}"]`)) return resolve();
     const script = document.createElement('script');
     script.src = src;
     script.async = false;
+    script.dataset.rrnSrc = src;
     script.onload = resolve;
     script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
     document.head.appendChild(script);
@@ -116,6 +107,7 @@
   (async () => {
     if (isDashboard) {
       await load('/js/dashboard-ui.js');
+      await load('/js/maintenance-panel.js');
       await load('/js/asset-history.js');
       await load('/js/trash-v2.js');
       await load('/js/backup-v3.js');
