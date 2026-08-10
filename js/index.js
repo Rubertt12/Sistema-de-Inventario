@@ -131,6 +131,7 @@
       await load('/js/reports-v2.js');
       await load('/js/profile-picture-v2.js');
       await load('/js/production-stability.js');
+      await load('/js/icons-v2.js');
       await load('/js/dashboard-tabs.js');
     }
 
@@ -149,6 +150,7 @@
       window.verificarPermissoes?.();
       window.RRN_UI?.updateOverview?.();
       window.RRN_TABS?.renderHome?.();
+      window.RRN_ICONS?.decorateStatic?.();
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
