@@ -32,7 +32,6 @@
     };
   }
 
-  // Executa antes dos scripts inline legados do dashboard.
   ensureDashboardStyle();
   guardLegacyCredentials();
 
@@ -46,6 +45,10 @@
   });
 
   (async () => {
+    if (isDashboard) {
+      await load('/js/dashboard-ui.js');
+    }
+
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
 
