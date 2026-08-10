@@ -33,12 +33,19 @@
 
   function parseDate(value) {
     if (!value) return null;
-    const direct = new Date(value);
-    if (!Number.isNaN(direct.getTime())) return direct;
-    const match = String(value).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (!match) return null;
-    const parsed = new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]));
-    return Number.isNaN(parsed.getTime()) ? null : parsed;
+    const raw = String(value).trim();
+    let match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (match) {
+      const parsed = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+    match = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (match) {
+      const parsed = new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]));
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+    const direct = new Date(raw);
+    return Number.isNaN(direct.getTime()) ? null : direct;
   }
 
   function daysUntil(value) {
