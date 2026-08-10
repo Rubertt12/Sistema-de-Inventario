@@ -1,6 +1,41 @@
 (() => {
   'use strict';
 
+  const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
+  const legacyCredentialKeys = new Set(['usuarios', 'users', 'rememberedUser', 'rememberedPass', 'loggedUser']);
+
+  function ensureDashboardStyle() {
+    if (!isDashboard || document.querySelector('link[data-rrn-enterprise]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/style/enterprise.css';
+    link.dataset.rrnEnterprise = '1';
+    document.head.appendChild(link);
+  }
+
+  function guardLegacyCredentials() {
+    if (!isDashboard || window.__RRN_LEGACY_CREDENTIAL_GUARD__) return;
+    window.__RRN_LEGACY_CREDENTIAL_GUARD__ = true;
+
+    legacyCredentialKeys.forEach(key => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      if (this === localStorage && legacyCredentialKeys.has(String(key))) {
+        console.warn(`RRN Manager: armazenamento legado de credencial bloqueado (${key}).`);
+        return;
+      }
+      return originalSetItem.call(this, key, value);
+    };
+  }
+
+  // Executa antes dos scripts inline legados do dashboard.
+  ensureDashboardStyle();
+  guardLegacyCredentials();
+
   const load = src => new Promise((resolve, reject) => {
     const script = document.createElement('script');
     script.src = src;
@@ -19,7 +54,7 @@
       return;
     }
 
-    if (/dashboard\.html$/i.test(location.pathname) || document.getElementById('setoresContainer')) {
+    if (isDashboard) {
       await load('/js/tenant-runtime.js');
     }
   })().catch(error => {
