@@ -11,6 +11,10 @@
     })();
   }
 
+  function isDemo() {
+    return Boolean(window.RRN_PREVIEW_DEMO || window.RRN_SESSION?.demo);
+  }
+
   function ensurePanel() {
     if (panel && document.body.contains(panel)) return panel;
     const right = document.querySelector('#configModal .modal-right');
@@ -62,6 +66,10 @@
     checking = true;
     setState('loading', 'Verificando', 'Consultando a configuração atual do Supabase e as tabelas relacionais...');
     try {
+      if (isDemo()) {
+        setState('ready', 'Preview Demo', 'Fluxo liberado em modo demonstração. Inventário, usuários, auditoria e migração podem ser testados localmente; nenhuma alteração é enviada a um banco real.');
+        return;
+      }
       if (!window.RRN_DB) {
         setState('offline', 'Não configurado', 'Supabase ainda não está conectado neste ambiente. O inventário local continua funcionando normalmente.');
         return;
@@ -83,6 +91,27 @@
 
   async function migrate() {
     if (role() !== 'admin') return;
+
+    if (isDemo()) {
+      const setores = (() => {
+        try { return JSON.parse(localStorage.getItem('setores') || '[]'); }
+        catch { return []; }
+      })();
+      const assets = setores.reduce((total, setor) => total + (Array.isArray(setor.maquinas) ? setor.maquinas.length : 0), 0);
+      const ok = confirm('Simular a migração do inventário atual para o banco relacional? Nenhum dado sairá deste navegador.');
+      if (!ok) return;
+      const button = ensurePanel()?.querySelector('[data-migrate]');
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Simulando migração...';
+      }
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setState('ready', 'Migração simulada', `Procedimento concluído no preview: ${setores.length} setor(es) e ${assets} ativo(s) seriam enviados às tabelas relacionais. Nenhum banco real foi alterado.`);
+      if (button) button.textContent = '👥 Migrar inventário legado';
+      refreshRole();
+      return;
+    }
+
     const ok = confirm('Migrar o inventário atual para as tabelas relacionais? A operação foi criada para evitar duplicações por legacy_key.');
     if (!ok) return;
 
