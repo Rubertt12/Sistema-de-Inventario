@@ -168,9 +168,11 @@
     if (userName && !document.querySelector('.rrn-tenant-pill')) {
       const pill = document.createElement('span');
       pill.className = 'rrn-tenant-pill';
-      pill.textContent = profile.tenants?.name || 'Workspace';
       userName.after(pill);
     }
+
+    const pill = document.querySelector('.rrn-tenant-pill');
+    if (pill) pill.textContent = profile.tenants?.name || 'Workspace';
 
     const modal = document.getElementById('configModal');
     if (modal) {
@@ -183,17 +185,21 @@
         title.after(subtitle);
       }
       const left = modal.querySelector('.modal-left');
-      if (left && !left.querySelector('.rrn-workspace-card')) {
-        const card = document.createElement('div');
-        card.className = 'rrn-workspace-card';
+      if (left) {
+        let card = left.querySelector('.rrn-workspace-card');
+        if (!card) {
+          card = document.createElement('div');
+          card.className = 'rrn-workspace-card';
+          left.appendChild(card);
+        }
         card.innerHTML = `<span>Workspace ativo</span><strong>${escapeHtml(profile.tenants?.name || 'Workspace')}</strong><small>${escapeHtml(profile.role)} · dados isolados por tenant</small>`;
-        left.appendChild(card);
       }
       const save = document.querySelector('.save-btn');
       if (save && save.parentElement !== modal) modal.appendChild(save);
       if (save) save.textContent = 'Concluir';
     }
 
+    window.RRN_UI?.updateOverview?.();
     enforceRoleUi();
     setTimeout(enforceRoleUi, 250);
   }
@@ -224,10 +230,14 @@
     saveCompat(profile);
     window.RRN_SESSION = Object.freeze({
       userId: profile.user_id,
+      name: profile.name || profile.email || 'Usuário',
+      email: profile.email || '',
       tenantId: profile.tenant_id,
       tenantName: profile.tenants?.name || 'Workspace',
       role: profile.role
     });
+
+    window.RRN_SECURE_LOGOUT = secureLogout;
 
     if (await hydrate()) return;
     const finish = () => {
