@@ -105,6 +105,11 @@
   });
 
   (async () => {
+    // No preview da branch, habilita uma sessão Admin e dados locais completos de demonstração.
+    // O módulo ignora produção e só atua no hostname de preview autorizado/local.
+    await load('/js/preview-demo.js');
+    window.verificarPermissoes?.();
+
     if (isDashboard) {
       await load('/js/dashboard-ui.js');
       await load('/js/maintenance-panel.js');
@@ -121,6 +126,7 @@
 
     if (document.getElementById('formLogin')) {
       await load('/js/auth-v2.js');
+      window.RRN_PREVIEW?.seed?.(false);
       return;
     }
 
@@ -128,6 +134,8 @@
       await load('/js/tenant-runtime.js');
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
+      window.verificarPermissoes?.();
+      window.RRN_UI?.updateOverview?.();
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
