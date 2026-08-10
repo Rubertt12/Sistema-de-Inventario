@@ -4,9 +4,10 @@
   const cfg = window.RRN_SUPABASE || {};
   if (!window.supabase?.createClient || !/^https:\/\/.+\.supabase\.co$/i.test(cfg.url || '')) return;
 
-  const client = window.supabase.createClient(cfg.url, cfg.anonKey, {
+  const client = window.RRN_SUPABASE_CLIENT || window.supabase.createClient(cfg.url, cfg.anonKey, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
+  window.RRN_SUPABASE_CLIENT = client;
 
   const syncKeys = new Set(['setores','chamados','asset_history']);
   const legacyCredentialKeys = ['usuarios','users','rememberedUser','rememberedPass','loggedUser'];
