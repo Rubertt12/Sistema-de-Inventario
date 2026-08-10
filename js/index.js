@@ -16,6 +16,7 @@
   function ensureDashboardStyles() {
     addStylesheet('/style/enterprise.css', 'data-rrn-enterprise');
     addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
+    addStylesheet('/style/dashboard-tabs.css', 'data-rrn-dashboard-tabs');
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
     addStylesheet('/style/trash.css', 'data-rrn-trash');
@@ -130,6 +131,7 @@
       await load('/js/reports-v2.js');
       await load('/js/profile-picture-v2.js');
       await load('/js/production-stability.js');
+      await load('/js/dashboard-tabs.js');
     }
 
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
@@ -146,6 +148,7 @@
       await load('/js/backend-status.js');
       window.verificarPermissoes?.();
       window.RRN_UI?.updateOverview?.();
+      window.RRN_TABS?.renderHome?.();
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
