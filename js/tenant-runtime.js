@@ -9,9 +9,10 @@
   });
 
   const syncKeys = new Set(['setores','chamados']);
+  const legacyCredentialKeys = ['usuarios','users','rememberedUser','rememberedPass','loggedUser'];
   let profile = null;
-  let originalSetItem = Storage.prototype.setItem;
-  let originalRemoveItem = Storage.prototype.removeItem;
+  const originalSetItem = Storage.prototype.setItem;
+  const originalRemoveItem = Storage.prototype.removeItem;
   let syncTimer = null;
 
   function addStyle() {
@@ -21,6 +22,20 @@
     link.href = '/style/enterprise.css';
     link.dataset.rrnEnterprise = '1';
     document.head.appendChild(link);
+  }
+
+  function purgeLegacyCredentials() {
+    legacyCredentialKeys.forEach(key => {
+      originalRemoveItem.call(localStorage, key);
+      originalRemoveItem.call(sessionStorage, key);
+    });
+
+    const staleUserKeys = [];
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (key && /^user_/i.test(key)) staleUserKeys.push(key);
+    }
+    staleUserKeys.forEach(key => originalRemoveItem.call(localStorage, key));
   }
 
   async function getProfile(userId) {
@@ -118,6 +133,35 @@
     return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  function setDisplay(selector, visible, display = '') {
+    document.querySelectorAll(selector).forEach(element => {
+      element.style.display = visible ? display : 'none';
+    });
+  }
+
+  function enforceRoleUi() {
+    const role = profile?.role || 'monitoramento';
+    document.body.dataset.rrnRole = role;
+
+    const canOperate = role === 'admin' || role === 'operador';
+    const isAdmin = role === 'admin';
+
+    setDisplay('#addSetorBtn', canOperate, 'inline-block');
+    setDisplay('.operador-only', canOperate, '');
+    setDisplay('.admin-only', isAdmin, '');
+    setDisplay('#adminMenu', isAdmin, 'block');
+
+    const deleteAll = document.querySelector('.excluir-tudo-btn');
+    if (deleteAll) deleteAll.style.display = isAdmin ? '' : 'none';
+
+    if (role === 'monitoramento') {
+      ['addSetor','confirmarAddSetor','confirmarAddMaquina','saveObservation','markForMaintenance','releaseMachine','confirmarTransferencia']
+        .forEach(name => {
+          if (typeof window[name] === 'function') window[name] = () => undefined;
+        });
+    }
+  }
+
   function enhanceUi() {
     const userName = document.getElementById('userName');
     if (userName) userName.textContent = profile.name || profile.email || 'Usuário';
@@ -149,6 +193,9 @@
       if (save && save.parentElement !== modal) modal.appendChild(save);
       if (save) save.textContent = 'Concluir';
     }
+
+    enforceRoleUi();
+    setTimeout(enforceRoleUi, 250);
   }
 
   async function secureLogout() {
@@ -156,12 +203,15 @@
     try { await client.auth.signOut(); } catch {}
     for (const key of syncKeys) originalRemoveItem.call(localStorage, key);
     originalRemoveItem.call(localStorage, 'usuarioLogado');
+    purgeLegacyCredentials();
     sessionStorage.removeItem('rrn_hydrated_tenant');
     location.replace('index.html');
   }
 
   async function boot() {
     addStyle();
+    purgeLegacyCredentials();
+
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user) {
       originalRemoveItem.call(localStorage, 'usuarioLogado');
