@@ -4,13 +4,18 @@
   const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
   const legacyCredentialKeys = new Set(['usuarios', 'users', 'rememberedUser', 'rememberedPass', 'loggedUser']);
 
-  function ensureDashboardStyle() {
-    if (!isDashboard || document.querySelector('link[data-rrn-enterprise]')) return;
+  function addStylesheet(href, marker) {
+    if (!isDashboard || document.querySelector(`link[${marker}]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '/style/enterprise.css';
-    link.dataset.rrnEnterprise = '1';
+    link.href = href;
+    link.setAttribute(marker, '1');
     document.head.appendChild(link);
+  }
+
+  function ensureDashboardStyles() {
+    addStylesheet('/style/enterprise.css', 'data-rrn-enterprise');
+    addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
   }
 
   function guardLegacyCredentials() {
@@ -32,7 +37,7 @@
     };
   }
 
-  ensureDashboardStyle();
+  ensureDashboardStyles();
   guardLegacyCredentials();
 
   const load = src => new Promise((resolve, reject) => {
