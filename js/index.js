@@ -105,8 +105,6 @@
   });
 
   (async () => {
-    // Carrega a configuração antes do modo local/preview para que ele só assuma
-    // a URL de produção quando o Supabase ainda não estiver configurado.
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
 
     await load('/js/preview-demo.js');
@@ -120,6 +118,8 @@
       await load('/js/dashboard-ui.js');
       await load('/js/maintenance-panel.js');
       await load('/js/scanner.js');
+      await load('/js/transfer-v2.js');
+      await load('/js/machine-details-v2.js');
       await load('/js/asset-history.js');
       await load('/js/dashboard-hotfix.js');
       await load('/js/equipment-list-performance.js');
