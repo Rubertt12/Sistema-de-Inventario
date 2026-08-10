@@ -1,129 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Cadastro de Usuário</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta http-equiv="refresh" content="0; url=index.html?mode=register" />
+  <title>RRN Manager | Cadastro</title>
+  <link rel="icon" href="./img/icon-png.png" type="image/png" />
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: white;
-      padding: 40px 30px;
-      border-radius: 16px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-      max-width: 400px;
-      width: 100%;
-      animation: fadeIn 0.6s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    h1 {
-      color: #4f46e5;
-      font-size: 1.8rem;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-    input, select {
-      width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      border: 1.5px solid #ccc;
-      font-size: 1rem;
-      transition: border 0.2s;
-    }
-    input:focus, select:focus {
-      border-color: #4f46e5;
-      outline: none;
-    }
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #4f46e5;
-      color: white;
-      font-weight: 600;
-      font-size: 1rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #4338ca;
-    }
-    #mensagem {
-      margin-top: 20px;
-      text-align: center;
-      font-weight: 600;
-      color: #10b981;
-    }
-    #mensagem.erro {
-      color: #ef4444;
-    }
+    body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Poppins,Arial,sans-serif;color:#295991;background:#DED9C4}.card{width:min(420px,calc(100% - 40px));padding:28px;border:2px solid #295991;border-radius:18px;text-align:center;background:rgba(255,255,255,.45);box-shadow:0 12px 30px rgba(41,89,145,.14)}img{width:64px}a{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:10px;color:#fff;background:#295991;text-decoration:none;font-weight:700}a:hover{color:#295991;background:#ED9EF5}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Cadastro</h1>
-    <form id="cadastroForm">
-      <input type="text" name="nome" placeholder="Seu nome" required>
-      <input type="email" name="email" placeholder="Seu e-mail" required>
-      <input type="password" name="senha" placeholder="Sua senha" required>
-      <select name="perfil" required>
-        <option value="">Selecione o perfil</option>
-        <option value="admin">Administrador</option>
-        <option value="usuario">Usuário</option>
-      </select>
-      <button type="submit">Cadastrar</button>
-    </form>
-    <p id="mensagem"></p>
-  </div>
-
-  <script>
-    const form = document.getElementById('cadastroForm');
-    const mensagemEl = document.getElementById('mensagem');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      mensagemEl.textContent = "Enviando...";
-      mensagemEl.classList.remove("erro");
-
-      const dados = Object.fromEntries(new FormData(form).entries());
-
-      try {
-        const res = await fetch('/cadastro', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dados)
-        });
-
-        const result = await res.json();
-
-        if (result.ok) {
-          mensagemEl.textContent = "Cadastro enviado! Verifique seu e-mail para confirmar.";
-        } else {
-          mensagemEl.textContent = result.mensagem || "Erro no cadastro.";
-          mensagemEl.classList.add("erro");
-        }
-
-        form.reset();
-      } catch (error) {
-        mensagemEl.textContent = "Erro de conexão com o servidor.";
-        mensagemEl.classList.add("erro");
-      }
-    });
-  </script>
+  <main class="card">
+    <img src="./img/icon-png.png" alt="RRN Manager" />
+    <h1>Cadastro do RRN Manager</h1>
+    <p>O cadastro agora é feito pelo acesso seguro com organização ou código de convite.</p>
+    <a href="index.html?mode=register">Ir para criar conta</a>
+  </main>
+  <script>location.replace('index.html?mode=register');</script>
 </body>
 </html>

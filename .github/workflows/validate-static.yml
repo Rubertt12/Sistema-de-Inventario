@@ -1,0 +1,44 @@
+name: Validate RRN Manager frontend
+
+on:
+  push:
+    branches:
+      - agent/multi-tenant-professional-ui
+  pull_request:
+
+jobs:
+  javascript-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            js/auth-v2.js
+            js/index.js
+            js/script.js
+            js/tenant-runtime.js
+            js/usuarios.js
+            js/dashboard-ui.js
+            js/asset-history.js
+            js/backup-v3.js
+            js/backend-v2.js
+            js/backend-status.js
+            js/trash-v2.js
+            js/insights.js
+            js/reports-v2.js
+          )
+
+          for file in "${files[@]}"; do
+            echo "Checking $file"
+            node --check "$file"
+          done

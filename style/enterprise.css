@@ -1,0 +1,505 @@
+:root {
+  --rrn-blue: #295991;
+  --rrn-lilac: #ED9EF5;
+  --rrn-yellow: #F2BF4F;
+  --rrn-beige: #DED9C4;
+  --rrn-ink: #26374f;
+  --rrn-border: rgba(41, 89, 145, 0.22);
+  --rrn-shadow: 0 12px 30px rgba(41, 89, 145, 0.13);
+}
+
+/*
+ * Complemento visual do RRN Manager.
+ * O styles.css original continua sendo a base da identidade do dashboard.
+ */
+html,
+body {
+  font-family: 'Poppins', Inter, system-ui, sans-serif;
+}
+
+.rrn-tenant-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding: 5px 9px;
+  border: 1px solid rgba(41, 89, 145, 0.26);
+  border-radius: 999px;
+  color: var(--rrn-blue);
+  background: rgba(242, 191, 79, 0.72);
+  font-size: 0.68rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.rrn-tenant-pill::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+/* =========================================
+   SETORES — preserva a interação original
+   ========================================= */
+#setoresContainer {
+  align-items: stretch;
+}
+
+#setoresContainer .rrn-setor-card {
+  overflow: hidden;
+  border: 2px solid rgba(41, 89, 145, 0.34) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 22px rgba(41, 89, 145, 0.10) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#setoresContainer .rrn-setor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 13px 30px rgba(41, 89, 145, 0.16) !important;
+}
+
+.rrn-setor-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(41, 89, 145, 0.15);
+}
+
+.rrn-setor-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rrn-setor-icon {
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(41, 89, 145, 0.18);
+  border-radius: 12px;
+  background: rgba(242, 191, 79, 0.42);
+  font-size: 1.2rem;
+}
+
+.rrn-setor-title h2 {
+  margin: 0 !important;
+  color: var(--rrn-blue) !important;
+  font-size: 1.12rem !important;
+  line-height: 1.25;
+  text-align: left !important;
+  word-break: break-word;
+}
+
+.rrn-setor-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 5px;
+  color: rgba(41, 89, 145, 0.72);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.rrn-maintenance-count,
+.rrn-all-ok {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+.rrn-maintenance-count {
+  color: #9b2c2c;
+  background: rgba(255, 107, 107, 0.17);
+}
+
+.rrn-all-ok {
+  color: #236b3d;
+  background: rgba(72, 187, 120, 0.14);
+}
+
+.rrn-setor-admin {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 7px;
+}
+
+.rrn-icon-btn {
+  display: inline-grid !important;
+  place-items: center;
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(41, 89, 145, 0.20) !important;
+  border-radius: 10px !important;
+  color: var(--rrn-blue) !important;
+  background: rgba(255, 255, 255, 0.52) !important;
+  box-shadow: none !important;
+}
+
+.rrn-icon-btn:hover {
+  background: var(--rrn-yellow) !important;
+}
+
+.rrn-icon-btn.danger:hover {
+  color: #9b2c2c !important;
+  background: rgba(255, 107, 107, 0.19) !important;
+}
+
+.rrn-setor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 14px 0 2px;
+}
+
+.rrn-btn {
+  width: auto !important;
+  min-height: 36px;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  border-radius: 9px !important;
+  font-family: inherit;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rrn-btn:hover {
+  transform: translateY(-1px);
+}
+
+.rrn-btn-primary {
+  border: 1px solid var(--rrn-blue) !important;
+  color: #fff !important;
+  background: var(--rrn-blue) !important;
+  box-shadow: 0 4px 10px rgba(41, 89, 145, 0.16) !important;
+}
+
+.rrn-btn-primary:hover {
+  border-color: var(--rrn-lilac) !important;
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-lilac) !important;
+}
+
+.rrn-btn-secondary {
+  border: 1px solid rgba(41, 89, 145, 0.25) !important;
+  color: var(--rrn-blue) !important;
+  background: rgba(255, 255, 255, 0.48) !important;
+  box-shadow: none !important;
+}
+
+.rrn-btn-secondary:hover {
+  background: var(--rrn-yellow) !important;
+}
+
+.rrn-machines-list {
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.rrn-machine-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  margin: 0 !important;
+  padding: 11px 12px !important;
+  border: 1px solid rgba(41, 89, 145, 0.20) !important;
+  border-left: 4px solid rgba(41, 89, 145, 0.40) !important;
+  border-radius: 11px !important;
+  background: rgba(255, 255, 255, 0.50) !important;
+  cursor: grab;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+}
+
+.rrn-machine-item:hover {
+  transform: translateX(2px);
+  background: rgba(255, 255, 255, 0.70) !important;
+  box-shadow: 0 5px 14px rgba(41, 89, 145, 0.10);
+}
+
+.rrn-machine-item.maintenance {
+  border-left-color: #e65f5f !important;
+  background: rgba(255, 107, 107, 0.10) !important;
+}
+
+.rrn-machine-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(237, 158, 245, 0.24);
+  font-size: 1.12rem;
+}
+
+.rrn-machine-main {
+  min-width: 0;
+}
+
+.rrn-machine-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.rrn-machine-title-row strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--rrn-blue);
+  font-size: 0.84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rrn-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 0.60rem;
+  font-weight: 700;
+}
+
+.rrn-status.online {
+  color: #236b3d;
+  background: rgba(72, 187, 120, 0.15);
+}
+
+.rrn-status.maintenance {
+  color: #9b2c2c;
+  background: rgba(255, 107, 107, 0.18);
+}
+
+.rrn-machine-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  margin-top: 4px;
+  color: rgba(38, 55, 79, 0.70);
+  font-size: 0.68rem;
+}
+
+.rrn-machine-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rrn-btn-info {
+  border: 1px solid rgba(41, 89, 145, 0.24) !important;
+  color: var(--rrn-blue) !important;
+  background: rgba(242, 191, 79, 0.45) !important;
+  box-shadow: none !important;
+}
+
+.rrn-btn-danger {
+  border: 1px solid rgba(190, 58, 58, 0.20) !important;
+  color: #9b2c2c !important;
+  background: rgba(255, 107, 107, 0.10) !important;
+  box-shadow: none !important;
+}
+
+.rrn-btn-danger:hover {
+  background: rgba(255, 107, 107, 0.22) !important;
+}
+
+.rrn-sector-empty,
+.rrn-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 22px;
+  border: 1px dashed rgba(41, 89, 145, 0.28);
+  border-radius: 12px;
+  color: rgba(41, 89, 145, 0.78);
+  background: rgba(255, 255, 255, 0.26);
+  text-align: left;
+}
+
+.rrn-sector-empty strong,
+.rrn-sector-empty small,
+.rrn-empty-state strong,
+.rrn-empty-state small {
+  display: block;
+}
+
+.rrn-sector-empty small,
+.rrn-empty-state small {
+  margin-top: 3px;
+  opacity: 0.72;
+}
+
+.rrn-empty-state {
+  width: min(560px, 100%);
+  margin: 34px auto;
+}
+
+/* ================================
+   CONFIGURAÇÕES — mesma identidade
+   ================================ */
+#configModal.rrn-settings {
+  border-color: var(--rrn-blue) !important;
+  background: var(--rrn-beige) !important;
+  box-shadow: 0 24px 70px rgba(41, 89, 145, 0.28) !important;
+}
+
+#configModal.rrn-settings .modal-title {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-yellow) !important;
+}
+
+#configModal.rrn-settings .rrn-settings-subtitle {
+  margin: 0 auto 14px;
+  max-width: 600px;
+  color: rgba(41, 89, 145, 0.78);
+  text-align: center;
+  font-size: 0.80rem;
+  line-height: 1.5;
+}
+
+#configModal.rrn-settings .modal-left,
+#configModal.rrn-settings .modal-right {
+  border-radius: 14px;
+}
+
+#configModal.rrn-settings .modal-left {
+  padding: 18px !important;
+  border: 1px solid rgba(41, 89, 145, 0.18);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+#configModal.rrn-settings .modal-right {
+  padding: 14px !important;
+}
+
+#configModal.rrn-settings .profile-picture-section img {
+  border-color: var(--rrn-yellow) !important;
+}
+
+#configModal.rrn-settings .upload-btn {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-lilac) !important;
+}
+
+#configModal.rrn-settings .upload-btn:hover {
+  background: var(--rrn-yellow) !important;
+}
+
+.rrn-workspace-card {
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px 14px;
+  border: 1px solid rgba(41, 89, 145, 0.25);
+  border-radius: 12px;
+  color: var(--rrn-blue);
+  background: rgba(242, 191, 79, 0.36);
+}
+
+.rrn-workspace-card span,
+.rrn-workspace-card strong,
+.rrn-workspace-card small {
+  display: block;
+}
+
+.rrn-workspace-card span {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rrn-workspace-card strong {
+  margin-top: 4px;
+  font-size: 0.92rem;
+}
+
+.rrn-workspace-card small {
+  margin-top: 3px;
+  opacity: 0.72;
+  font-size: 0.70rem;
+}
+
+#configModal.rrn-settings .box-bg-selector {
+  border: 1px solid rgba(41, 89, 145, 0.18) !important;
+  background: rgba(255, 255, 255, 0.38) !important;
+  box-shadow: none !important;
+}
+
+#configModal.rrn-settings .modal-right > button,
+#configModal.rrn-settings .box-bg-selector button {
+  border: none !important;
+  color: #fff !important;
+  background: var(--rrn-blue) !important;
+  box-shadow: 0 3px 8px rgba(41, 89, 145, 0.18) !important;
+}
+
+#configModal.rrn-settings .modal-right > button:hover,
+#configModal.rrn-settings .box-bg-selector button:hover {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-lilac) !important;
+}
+
+#configModal.rrn-settings .save-btn {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-yellow) !important;
+  font-weight: 700 !important;
+}
+
+#configModal.rrn-settings .save-btn:hover {
+  color: #fff !important;
+  background: var(--rrn-blue) !important;
+}
+
+body[data-rrn-role='monitoramento'] .operador-only,
+body[data-rrn-role='monitoramento'] .admin-only {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .rrn-tenant-pill {
+    margin-left: 0;
+  }
+
+  .rrn-machine-item {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .rrn-machine-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .rrn-machine-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .rrn-setor-header {
+    align-items: flex-start !important;
+  }
+
+  .rrn-setor-toolbar .rrn-btn {
+    flex: 1 1 170px;
+  }
+
+  #configModal.rrn-settings .rrn-settings-subtitle {
+    text-align: left;
+  }
+}

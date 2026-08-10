@@ -1,455 +1,353 @@
-﻿// ======= TOGGLE MENU =======
+﻿// Utilitários globais do dashboard. Autenticação e tenant ficam em auth-v2.js / tenant-runtime.js.
+
 function toggleMenu() {
-  document.querySelector('.nav-links').classList.toggle('active');
+  document.querySelector('.nav-links')?.classList.toggle('active');
 }
 
-// Toggle do menu do usuário (abre e fecha)
-function toggleUserMenu() {
+function toggleUserMenu(event) {
+  if (event) event.stopPropagation();
   const dropdown = document.getElementById('userDropdown');
-  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  if (!dropdown) return;
+  const aberto = !dropdown.hidden && dropdown.style.display !== 'none';
+  dropdown.hidden = aberto;
+  dropdown.style.display = aberto ? 'none' : 'block';
 }
 
-// Fecha menu do usuário ao clicar fora
-document.addEventListener('click', function(event) {
-  const userMenu = document.querySelector('.user-menu');
+document.addEventListener('click', event => {
+  const menu = document.querySelector('.user-menu');
   const dropdown = document.getElementById('userDropdown');
-  if (dropdown.style.display === 'block' && !userMenu.contains(event.target)) {
-    dropdown.style.display = 'none';
-  }
+  if (!menu || !dropdown || menu.contains(event.target)) return;
+  dropdown.hidden = true;
+  dropdown.style.display = 'none';
 });
 
-// ======= AUTENTICAÇÃO =======
-function toggleForms() {
-  document.getElementById("loginContainer").classList.toggle("hidden");
-  document.getElementById("registerContainer").classList.toggle("hidden");
-}
-
-function register() {
-  const email = document.getElementById("registerEmail").value.trim();
-  const user = document.getElementById("registerUser").value.trim();
-  const pass = document.getElementById("registerPass").value;
-  const phone = document.getElementById("registerPhone").value.trim();
-
-  if (!email || !user || !pass || !phone) {
-    alert("Preenche todos os campos, tchê!");
-    return;
-  }
-
-  if (localStorage.getItem(`user_${user}`)) {
-    alert("Usuário já existe! Escolhe outro nome.");
-    return;
-  }
-
-  const userData = { email, user, pass, phone };
-  localStorage.setItem(`user_${user}`, JSON.stringify(userData));
-  alert("Cadastro feito com sucesso! Agora entra ali no login.");
-
-  clearRegisterFields();
-  toggleForms();
-}
-
-function clearRegisterFields() {
-  document.getElementById("registerEmail").value = "";
-  document.getElementById("registerUser").value = "";
-  document.getElementById("registerPass").value = "";
-  document.getElementById("registerPhone").value = "";
-}
-
-function login() {
-  const loginInput = document.getElementById("loginUser").value.trim();
-  const password = document.getElementById("loginPass").value;
-  const code = document.getElementById("login2FA").value.trim();
-
-  if (!loginInput || !password) {
-    alert("Preenche usuário e senha, vivente!");
-    return;
-  }
-
-  const storedData = localStorage.getItem(`user_${loginInput}`);
-  if (!storedData) {
-    alert("Usuário não encontrado.");
-    return;
-  }
-
-  const userData = JSON.parse(storedData);
-
-  if (userData.pass !== password) {
-    alert("Senha incorreta!");
-    return;
-  }
-
-  if (code) {
-    alert(`Login com 2FA validado! Bem-vindo, ${userData.user}!`);
-  } else {
-    alert(`Login realizado sem 2FA. Bem-vindo, ${userData.user}!`);
-  }
-
-  sessionStorage.setItem("loggedUser", userData.user);
-  window.location.href = "dashboard.html";
-}
-
-// ======= LOGOUT =======
-function logout(button) {
-  if (button.classList.contains('animate')) return;
-
-  if (!button.querySelector('span')) {
-    const parts = button.innerHTML.split('🚪');
-    button.innerHTML = `${parts[0]}<span>🚪</span>`;
-  }
-
-  button.classList.add('animate');
-
-  setTimeout(() => {
-    console.log('Tchau, piazito! 👋');
-    sessionStorage.removeItem('loggedUser');
-    window.location.href = 'index.html';
-  }, 700);
-}
-
-// ======= MODAL DE CONFIGURAÇÕES =======
 function openConfigModal() {
-  document.getElementById('configModal').style.display = 'block';
+  const modal = document.getElementById('configModal');
+  if (!modal) return;
+  modal.removeAttribute('hidden');
+  modal.style.display = 'flex';
   const dropdown = document.getElementById('userDropdown');
-  if (dropdown) dropdown.style.display = 'none';
+  if (dropdown) {
+    dropdown.hidden = true;
+    dropdown.style.display = 'none';
+  }
 }
 
 function closeConfigModal() {
   const modal = document.getElementById('configModal');
-  if (modal) modal.style.display = 'none';
+  if (!modal) return;
+  modal.style.display = 'none';
 }
 
-// ======= ALTERAÇÃO DE FOTO DE PERFIL =======
+window.addEventListener('click', event => {
+  const modal = document.getElementById('configModal');
+  if (event.target === modal) closeConfigModal();
+});
+
 function changeProfilePicture(event) {
-  const file = event.target.files[0];
+  const file = event.target.files?.[0];
   if (!file) return;
+  if (!file.type.startsWith('image/')) return alert('Selecione uma imagem válida.');
+  if (file.size > 2 * 1024 * 1024) return alert('A imagem deve ter no máximo 2 MB.');
 
   const reader = new FileReader();
-
-  reader.onload = function (e) {
-    const base64Image = e.target.result;
-
-    // Atualiza a imagem no perfil
-    const imgElement = document.getElementById("profilePic");
-    imgElement.src = base64Image;
-
-    // Salva no localStorage
-    localStorage.setItem("userProfileImage", base64Image);
+  reader.onload = e => {
+    const value = e.target.result;
+    const profile = document.getElementById('profilePic');
+    const avatar = document.getElementById('userAvatar');
+    if (profile) profile.src = value;
+    if (avatar) avatar.src = value;
+    localStorage.setItem('userProfileImage', value);
   };
-
   reader.readAsDataURL(file);
 }
 
-
-window.addEventListener("DOMContentLoaded", function () {
-  const savedImage = localStorage.getItem("userProfileImage");
+document.addEventListener('DOMContentLoaded', () => {
+  const savedImage = localStorage.getItem('userProfileImage');
   if (savedImage) {
-    document.getElementById("profilePic").src = savedImage;
-    document.getElementById("userAvatar").src = savedImage;
+    const profile = document.getElementById('profilePic');
+    const avatar = document.getElementById('userAvatar');
+    if (profile) profile.src = savedImage;
+    if (avatar) avatar.src = savedImage;
   }
 });
 
-// ======= INICIALIZAÇÃO =======
-window.onload = () => {
-  document.activeElement.blur();
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-  const user = sessionStorage.getItem('loggedUser') || 'Usuário';
-  const userNameElem = document.getElementById('userName');
-  if (userNameElem) userNameElem.textContent = user;
-});
-
-
-function realizarLogin() {
-  const nome = document.getElementById("nome").value;
-  const senha = document.getElementById("senha").value;
-
-  const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-  const user = usuarios.find(u => u.nome === nome && u.senha === senha);
-
-  if (user) {
-    localStorage.setItem("usuarioLogado", JSON.stringify(user));
-    window.location.href = "dashboard.html"; // ou onde estiver seu painel
-  } else {
-    alert("Usuário ou senha inválidos");
-  }
-}
-
-
-window.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("usuarioLogado"));
-  if (user && user.nome) {
-    document.getElementById("userName").textContent = user.nome;
-  }
-});
 function exportarBackupJSON() {
   const dados = {
-    setores: setores,
-    chamados: JSON.parse(localStorage.getItem('chamados')) || []
+    versao: 2,
+    exportadoEm: new Date().toISOString(),
+    tenant: window.RRN_SESSION?.tenantId || null,
+    setores: typeof setores !== 'undefined' ? setores : JSON.parse(localStorage.getItem('setores') || '[]'),
+    chamados: JSON.parse(localStorage.getItem('chamados') || '[]')
   };
-  const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'backup-inventario.json';
-  a.click();
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `backup-inventario-${new Date().toISOString().slice(0,10)}.json`;
+  anchor.click();
   URL.revokeObjectURL(url);
 }
 
-
-
 function importarBackupJSON(event) {
-  const file = event.target.files[0];
-  if (!file) return alert("Selecione um arquivo JSON válido.");
-
+  const file = event.target.files?.[0];
+  if (!file) return;
   const reader = new FileReader();
-  reader.onload = function (e) {
+  reader.onload = e => {
     try {
       const dados = JSON.parse(e.target.result);
-      if (!dados.setores || !Array.isArray(dados.setores)) throw "Formato inválido";
-
+      if (!Array.isArray(dados.setores)) throw new Error('O arquivo não contém uma lista válida de setores.');
       localStorage.setItem('setores', JSON.stringify(dados.setores));
-      localStorage.setItem('chamados', JSON.stringify(dados.chamados || []));
-
-      alert("Backup restaurado com sucesso!");
-      window.location.reload();
-    } catch (err) {
-      alert("Erro ao importar backup: " + err);
+      localStorage.setItem('chamados', JSON.stringify(Array.isArray(dados.chamados) ? dados.chamados : []));
+      alert('Backup restaurado com sucesso.');
+      location.reload();
+    } catch (error) {
+      alert(`Não foi possível importar o backup: ${error.message}`);
+    } finally {
+      event.target.value = '';
     }
   };
   reader.readAsText(file);
 }
 
-
 function toggleChecklist(legendElement) {
-  const fieldset = legendElement.parentElement;
-  fieldset.classList.toggle('collapsed');
-}
-
-
-// Após validar o login com sucesso
-localStorage.setItem('usuarioLogado', JSON.stringify(user));
-window.location.href = "dashboard.html"; // redireciona para o dashboard
-
-
-
-
-// Controle do modal
-const userModal = document.getElementById('userModal');
-const openUserModalBtn = document.getElementById('openUserModalBtn');
-const closeUserModalBtn = document.getElementById('closeUserModalBtn');
-
-openUserModalBtn.addEventListener('click', () => {
-  userModal.classList.add('show');
-  loadUsersTable();
-});
-
-closeUserModalBtn.addEventListener('click', () => {
-  userModal.classList.remove('show');
-});
-
-window.addEventListener('click', e => {
-  if (e.target === userModal) userModal.classList.remove('show');
-});
-
-// Função para salvar usuários no localStorage
-function getUsers() {
-  const users = localStorage.getItem('users');
-  return users ? JSON.parse(users) : [];
-}
-
-function saveUsers(users) {
-  localStorage.setItem('users', JSON.stringify(users));
-}
-
-// Formulário
-const userForm = document.getElementById('userForm');
-userForm.addEventListener('submit', e => {
-  e.preventDefault();
-
-  const name = userForm.userName.value.trim();
-  const email = userForm.userEmail.value.trim().toLowerCase();
-  const password = userForm.userPassword.value;
-  const profile = userForm.userProfile.value;
-
-  if (!name || !email || !password || !profile) {
-    alert('Preencha todos os campos corretamente!');
-    return;
-  }
-
-  // Validação simples email
-  if (!email.match(/^\S+@\S+\.\S+$/)) {
-    alert('Email inválido!');
-    return;
-  }
-
-  if (password.length < 6) {
-    alert('A senha deve ter no mínimo 6 caracteres!');
-    return;
-  }
-
-  let users = getUsers();
-
-  // Verifica se email já existe
-  if (users.find(u => u.email === email)) {
-    alert('Este email já está cadastrado!');
-    return;
-  }
-
-  users.push({ id: Date.now(), name, email, password, profile });
-  saveUsers(users);
-
-  alert('Usuário cadastrado com sucesso!');
-
-  userForm.reset();
-  loadUsersTable();
-});
-
-// Listagem usuários
-function loadUsersTable() {
-  const tbody = document.querySelector('#usersTable tbody');
-  const users = getUsers();
-  tbody.innerHTML = '';
-
-  if (users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum usuário cadastrado.</td></tr>';
-    return;
-  }
-
-  users.forEach(user => {
-    const tr = document.createElement('tr');
-
-    tr.innerHTML = `
-      <td>${user.name}</td>
-      <td>${user.email}</td>
-      <td>${user.profile.charAt(0).toUpperCase() + user.profile.slice(1)}</td>
-      <td>
-        <button class="delete-btn" data-id="${user.id}" style="background-color:#e74c3c; padding: 4px 8px; border-radius:6px; color:#fff; font-weight:bold; cursor:pointer;">Excluir</button>
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-
-  // Adiciona evento para exclusão
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      const id = Number(e.target.getAttribute('data-id'));
-      if (confirm('Tem certeza que deseja excluir este usuário?')) {
-        deleteUser(id);
-      }
-    });
-  });
-}
-
-function deleteUser(id) {
-  let users = getUsers();
-  users = users.filter(u => u.id !== id);
-  saveUsers(users);
-  loadUsersTable();
-}
-
-
-function verificarPermissao() {
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-  if (usuarioLogado && usuarioLogado.permissao === 'admin') {
-    document.getElementById('adminMenu').style.display = 'block';
-  }
-}
-
-verificarPermissao();
-
-
-let usuarios = [
-  {
-    nome: "admin",
-    senha: "Yugioh22@",
-    permissao: "admin"
-  },
-  {
-    nome: "João",
-    senha: "abc",
-    permissao: "editor"
-  }
-];
-localStorage.setItem('usuarios', JSON.stringify(usuarios));
-
-
-function loginUsuario(nome, senha) {
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-  const usuario = usuarios.find(u => u.nome === nome && u.senha === senha);
-
-  if (usuario) {
-    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-    location.href = 'dashboard.html';
-  } else {
-    alert('Usuário ou senha inválidos!');
-  }
+  legendElement?.parentElement?.classList.toggle('collapsed');
 }
 
 function abrirPaginaUsuarios() {
-  window.location.href = 'usuarios.html'; // Ou o caminho correto do seu arquivo
+  location.href = 'usuarios.html';
 }
 
-
-const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-const nomeUsuario = usuario ? usuario.nome : "guest";
-
-// Função para salvar configuração do usuário
-function salvarConfigBackground({ cor, imagem }) {
-  const config = {
-    cor: cor || null,
-    imagem: imagem || null
-  };
-  localStorage.setItem(`dashboardBgConfig_${nomeUsuario}`, JSON.stringify(config));
+function salvarConfigBackground({ cor = null, imagem = null } = {}) {
+  const tenant = window.RRN_SESSION?.tenantId || 'local';
+  localStorage.setItem(`dashboardBgConfig_${tenant}`, JSON.stringify({ cor, imagem }));
 }
 
+// Logout de contingência. tenant-runtime.js substitui esta função quando a sessão Supabase estiver pronta.
+function logout() {
+  localStorage.removeItem('usuarioLogado');
+  location.href = 'index.html';
+}
 
-
-window.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-
-  const hostname = urlParams.get('hostname');
-  const usuario = urlParams.get('usuario');
-  const etiqueta = urlParams.get('etiqueta');
-  const setorNome = urlParams.get('setor');
-  const descricao = urlParams.get('descricao') || '';
-
+// Compatibilidade com links externos que adicionam um equipamento via query string.
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  const hostname = params.get('hostname');
+  const usuario = params.get('usuario');
+  const etiqueta = params.get('etiqueta');
+  const setorNome = params.get('setor');
+  const descricao = params.get('descricao') || '';
   if (!hostname || !setorNome || !etiqueta) return;
 
-  let setores = JSON.parse(localStorage.getItem('setores')) || [];
-
-  let setor = setores.find(s => s.nome === setorNome);
-
+  const lista = JSON.parse(localStorage.getItem('setores') || '[]');
+  let setor = lista.find(item => item.nome === setorNome);
   if (!setor) {
-    setor = {
-      nome: setorNome,
-      maquinas: []
-    };
-    setores.push(setor);
+    setor = { nome: setorNome, maquinas: [] };
+    lista.push(setor);
   }
-
-  const maquinaExistente = setor.maquinas.find(m => m.etiqueta === etiqueta);
-  if (!maquinaExistente) {
-    const novaMaquina = {
+  if (!Array.isArray(setor.maquinas)) setor.maquinas = [];
+  if (!setor.maquinas.some(item => item.etiqueta === etiqueta)) {
+    setor.maquinas.push({
       id: Date.now(),
       nome: hostname,
-      etiqueta: etiqueta,
+      etiqueta,
       modelo: descricao,
       setor: setorNome,
       usuarioResponsavel: usuario || '',
-      tipo: "PC",
+      tipo: 'PC',
       chamado: []
-    };
-
-    setor.maquinas.push(novaMaquina);
-    console.log(`Máquina adicionada: ${hostname} no setor ${setorNome}.`);
-  } else {
-    console.log(`Máquina já existe: ${etiqueta} no setor ${setorNome}.`);
+    });
+    localStorage.setItem('setores', JSON.stringify(lista));
   }
+});
 
-  localStorage.setItem('setores', JSON.stringify(setores));
+// ====================================================================
+// Experiência visual Setor -> Equipamentos
+// Mantém as funções e os dados legados, alterando somente a renderização.
+// ====================================================================
 
-  if (typeof renderSetores === 'function') renderSetores();
+function rrnEscapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+}
+
+function rrnEquipmentIcon(tipo) {
+  const value = String(tipo || '').toLowerCase();
+  if (value.includes('notebook')) return '💻';
+  if (value.includes('monitor')) return '🖥️';
+  if (value.includes('impress')) return '🖨️';
+  if (value.includes('workstation')) return '🧰';
+  return '🖥️';
+}
+
+function rrnRoleCanOperate() {
+  const sessionRole = window.RRN_SESSION?.role;
+  if (sessionRole) return sessionRole !== 'monitoramento';
+  try {
+    return JSON.parse(localStorage.getItem('usuarioLogado') || '{}').perfil !== 'monitoramento';
+  } catch {
+    return true;
+  }
+}
+
+function rrnInstallSectorRenderer() {
+  if (typeof setores === 'undefined' || typeof setoresVisiveis === 'undefined') return false;
+  if (window.__RRN_SECTOR_RENDERER_V2__) return true;
+
+  window.__RRN_SECTOR_RENDERER_V2__ = true;
+
+  window.renderSetores = function renderSetoresRRN(termoBusca = null) {
+    const container = document.getElementById('setoresContainer');
+    if (!container) return;
+
+    const termo = String(termoBusca || '').trim().toLowerCase();
+    const listaSetores = Array.isArray(setores) ? setores : [];
+    const indicesBase = setoresFiltradosIndices ?? listaSetores.map((_, index) => index);
+    const indicesParaMostrar = indicesBase.filter(index => {
+      const setor = listaSetores[index];
+      if (!setor) return false;
+      if (!termo) return true;
+      if (String(setor.nome || '').toLowerCase().includes(termo)) return true;
+      return (setor.maquinas || []).some(maquina => [
+        maquina.nome,
+        maquina.tipo,
+        maquina.etiqueta,
+        maquina.usuarioResponsavel
+      ].some(value => String(value || '').toLowerCase().includes(termo)));
+    });
+
+    container.innerHTML = '';
+
+    if (!indicesParaMostrar.length) {
+      container.innerHTML = `
+        <div class="rrn-empty-state">
+          <span>🔎</span>
+          <strong>Nenhum setor ou equipamento encontrado</strong>
+          <small>Tente outro termo de pesquisa ou crie um novo setor.</small>
+        </div>`;
+      document.getElementById('setoresPaginacao')?.remove();
+      return;
+    }
+
+    const porPagina = typeof setoresPorPagina === 'number' && setoresPorPagina > 0 ? setoresPorPagina : 10;
+    const totalPaginas = Math.max(1, Math.ceil(indicesParaMostrar.length / porPagina));
+    if (typeof paginaSetoresAtual !== 'number' || paginaSetoresAtual < 1) paginaSetoresAtual = 1;
+    if (paginaSetoresAtual > totalPaginas) paginaSetoresAtual = totalPaginas;
+
+    const inicio = (paginaSetoresAtual - 1) * porPagina;
+    const indicesPaginados = indicesParaMostrar.slice(inicio, inicio + porPagina);
+    const podeOperar = rrnRoleCanOperate();
+
+    indicesPaginados.forEach(setorIndex => {
+      const setor = listaSetores[setorIndex];
+      if (!setor) return;
+      if (!Array.isArray(setor.maquinas)) setor.maquinas = [];
+
+      const setorMatch = termo && String(setor.nome || '').toLowerCase().includes(termo);
+      const maquinasFiltradas = termo && !setorMatch
+        ? setor.maquinas.filter(maquina => [
+            maquina.nome,
+            maquina.tipo,
+            maquina.etiqueta,
+            maquina.usuarioResponsavel
+          ].some(value => String(value || '').toLowerCase().includes(termo)))
+        : setor.maquinas;
+
+      const emManutencao = setor.maquinas.filter(maquina => maquina.emManutencao).length;
+      const aberto = Boolean(setoresVisiveis[setorIndex]) || Boolean(termo);
+      const card = document.createElement('section');
+      card.className = 'setor rrn-setor-card';
+      card.dataset.setorIndex = String(setorIndex);
+      card.ondragover = event => event.preventDefault();
+      card.ondrop = event => typeof dropMachine === 'function' && dropMachine(event, setorIndex);
+
+      const itens = maquinasFiltradas.map(maquina => {
+        const maquinaIndex = setor.maquinas.indexOf(maquina);
+        const statusClass = maquina.emManutencao ? 'maintenance' : 'online';
+        const statusLabel = maquina.emManutencao ? 'Em manutenção' : 'Operando';
+        const usuario = maquina.usuarioResponsavel
+          ? `<span class="rrn-machine-user">👤 ${rrnEscapeHtml(maquina.usuarioResponsavel)}</span>`
+          : '';
+        const etiqueta = maquina.etiqueta
+          ? `<span class="rrn-machine-tag">🏷️ ${rrnEscapeHtml(maquina.etiqueta)}</span>`
+          : '';
+
+        return `
+          <article class="rrn-machine-item ${statusClass}" draggable="${podeOperar ? 'true' : 'false'}"
+            ${podeOperar ? `ondragstart="dragStart(event, ${setorIndex}, ${maquinaIndex})"` : ''}>
+            <div class="rrn-machine-icon" aria-hidden="true">${rrnEquipmentIcon(maquina.tipo)}</div>
+            <div class="rrn-machine-main">
+              <div class="rrn-machine-title-row">
+                <strong>${rrnEscapeHtml(maquina.nome || 'Equipamento sem nome')}</strong>
+                <span class="rrn-status ${statusClass}">${statusLabel}</span>
+              </div>
+              <div class="rrn-machine-meta">
+                <span>${rrnEscapeHtml(maquina.tipo || 'Equipamento')}</span>
+                ${etiqueta}
+                ${usuario}
+              </div>
+            </div>
+            <div class="rrn-machine-actions">
+              <button type="button" class="rrn-btn rrn-btn-info" onclick="showInfo(${setorIndex}, ${maquinaIndex})">Info</button>
+              ${podeOperar ? `<button type="button" class="rrn-btn rrn-btn-danger operador-only" onclick="removeMaquina(${setorIndex}, ${maquinaIndex})">Excluir</button>` : ''}
+            </div>
+          </article>`;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="setor-header rrn-setor-header">
+          <div class="rrn-setor-title">
+            <span class="rrn-setor-icon" aria-hidden="true">🏢</span>
+            <div>
+              <h2>${rrnEscapeHtml(setor.nome || 'Setor sem nome')}</h2>
+              <div class="rrn-setor-summary">
+                <span>${setor.maquinas.length} ${setor.maquinas.length === 1 ? 'equipamento' : 'equipamentos'}</span>
+                ${emManutencao ? `<span class="rrn-maintenance-count">${emManutencao} em manutenção</span>` : '<span class="rrn-all-ok">Tudo operando</span>'}
+              </div>
+            </div>
+          </div>
+          ${podeOperar ? `
+          <div class="rrn-setor-admin operador-only">
+            <button type="button" class="rrn-icon-btn" onclick="editSetorName(${setorIndex})" title="Renomear setor">✏️</button>
+            <button type="button" class="rrn-icon-btn danger" onclick="removeSetor(${setorIndex})" title="Excluir setor">🗑️</button>
+          </div>` : ''}
+        </div>
+
+        <div class="rrn-setor-toolbar">
+          ${podeOperar ? `<button type="button" class="rrn-btn rrn-btn-primary operador-only" onclick="abrirModalMaquina(${setorIndex})">＋ Adicionar equipamento</button>` : ''}
+          <button type="button" class="rrn-btn rrn-btn-secondary" onclick="toggleMachines(${setorIndex})">
+            ${aberto ? 'Ocultar equipamentos' : `Mostrar equipamentos (${setor.maquinas.length})`}
+          </button>
+        </div>
+
+        <div id="maquinas-${setorIndex}" class="rrn-machines-list" style="display:${aberto ? 'grid' : 'none'}">
+          ${itens || `
+            <div class="rrn-sector-empty">
+              <span>📦</span>
+              <div><strong>Este setor ainda está vazio</strong><small>${podeOperar ? 'Use “Adicionar equipamento” para começar.' : 'Nenhum equipamento cadastrado neste setor.'}</small></div>
+            </div>`}
+        </div>`;
+
+      container.appendChild(card);
+    });
+
+    if (typeof renderizarPaginacaoSetores === 'function') {
+      renderizarPaginacaoSetores(totalPaginas);
+    }
+  };
+
+  return true;
+}
+
+// Instala depois que todos os scripts legados já declararam suas funções.
+window.addEventListener('load', () => {
+  if (!rrnInstallSectorRenderer()) return;
+  setTimeout(() => {
+    if (typeof window.renderSetores === 'function') window.renderSetores();
+  }, 80);
 });

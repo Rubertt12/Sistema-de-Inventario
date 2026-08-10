@@ -1,436 +1,73 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Gestão de Usuários | Admin</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-    :root {
-      --primary: #295991;
-      --accent: #ED9EF5;
-      --bg-gradient: linear-gradient(135deg, #DED9C4 0%, #D1CCB8 100%);
-      --glass-bg: rgba(255, 255, 255, 0.95);
-      --danger: #ef4444;
-      --success: #22c55e;
-      --warning: #F2BF4F;
-      --text-main: #333;
-      --border-color: #e2e8f0;
-    }
-
-    * { box-sizing: border-box; outline: none; }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg-gradient);
-      margin: 0;
-      padding: 20px;
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-    }
-
-    /* Layout Full Width */
-    .container {
-      width: 100%;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      padding-bottom: 15px;
-    }
-
-    #btnVoltar {
-      background: transparent;
-      border: 1.5px solid var(--primary);
-      color: var(--primary);
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    #btnVoltar:hover { background: var(--primary); color: white; }
-
-    h1 { margin: 0; color: var(--primary); font-size: 1.8rem; font-weight: 700; }
-
-    /* Form Card - Grid Responsivo */
-    .form-card {
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      border: 1px solid rgba(0,0,0,0.03);
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .form-group { display: flex; flex-direction: column; gap: 8px; }
-
-    label { font-weight: 600; font-size: 0.8rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    input, select {
-      padding: 14px;
-      border: 1.5px solid var(--border-color);
-      border-radius: 12px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      transition: all 0.3s;
-    }
-
-    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(41, 89, 145, 0.1); }
-
-    .senha-container { display: flex; gap: 8px; }
-    
-    /* Botões de Ícones Clean */
-    .btn-icon-input {
-      background: #f8fafc;
-      border: 1.5px solid var(--border-color);
-      border-radius: 12px;
-      padding: 0 15px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-    .btn-icon-input:hover { background: #f1f5f9; border-color: #cbd5e1; }
-    .btn-icon-input svg { width: 20px; height: 20px; stroke: #64748b; stroke-width: 2; fill: none; }
-
-    .button-group {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .btn-save {
-      background: var(--primary);
-      color: white;
-      padding: 14px 40px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-    .btn-save:hover { opacity: 0.9; transform: translateY(-1px); }
-
-    .btn-cancel {
-      background: #f1f5f9;
-      color: #64748b;
-      padding: 14px 25px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* Tabela Otimizada */
-    .table-container { width: 100%; margin-top: 10px; overflow-x: auto; }
-    
-    table { width: 100%; border-collapse: collapse; }
-
-    th {
-      text-align: left;
-      padding: 18px;
-      background: #f8fafc;
-      color: #64748b;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-bottom: 2px solid #f1f5f9;
-    }
-
-    td { padding: 18px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
-
-    .badge-perfil {
-      padding: 5px 12px;
-      border-radius: 8px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: #ebf2fa;
-      color: var(--primary);
-      text-transform: uppercase;
-    }
-
-    .actions-cell { display: flex; gap: 8px; justify-content: flex-end; }
-
-    .action-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      border: 1.5px solid var(--border-color);
-      background: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-    .action-btn svg { width: 18px; height: 18px; stroke: #64748b; fill: none; stroke-width: 2; }
-    .action-btn:hover { border-color: var(--primary); background: #f0f7ff; }
-    .action-btn:hover svg { stroke: var(--primary); }
-    
-    .btn-del:hover { border-color: var(--danger); background: #fef2f2; }
-    .btn-del:hover svg { stroke: var(--danger); }
-
-    /* Modais Clean */
-    .modal-overlay {
-      display:none; position:fixed; inset:0; 
-      background:rgba(15, 23, 42, 0.7); z-index:2000; 
-      align-items:center; justify-content:center; 
-      backdrop-filter: blur(5px); padding: 15px;
-    }
-    .modal-card {
-      background:white; padding:35px; border-radius:24px; 
-      text-align:center; max-width:400px; width:100%;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-      animation: modalIn 0.3s ease-out;
-    }
-    @keyframes modalIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    #toast {
-      visibility: hidden; background: #1e293b; color: #fff;
-      padding: 12px 24px; border-radius: 12px; position: fixed;
-      z-index: 3000; bottom: 30px; left: 50%; transform: translateX(-50%);
-      font-size: 0.9rem; transition: all 0.3s;
-    }
-    #toast.show { visibility: visible; bottom: 40px; }
-
-    @media (max-width: 768px) {
-      .container { padding: 15px; border-radius: 0; }
-      .top-bar { flex-direction: column; gap: 15px; text-align: center; }
-      .actions-cell { justify-content: flex-start; }
-      th:nth-child(2), td:nth-child(2) { display: none; }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RRN Manager | Gestão de usuários</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style/admin.css" />
+  <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
 <body>
-
-  <div class="container">
-    <div class="top-bar">
-      <button id="btnVoltar" onclick="voltarDashboard()">
-        <svg style="width:18px;height:18px;stroke:currentColor" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Painel Principal
-      </button>
-      <h1>Gestão de Usuários</h1>
-      <div style="width: 140px;" class="hide-mobile"></div>
+  <header class="topbar">
+    <div class="brand">
+      <img src="/img/icon-png.png" alt="RRN Manager" />
+      <div><strong>RRN Manager</strong><span>Administração do workspace</span></div>
     </div>
+    <button class="btn-secondary" onclick="location.href='dashboard.html'">Voltar ao painel</button>
+  </header>
 
-    <div class="form-card">
-      <form id="userForm">
-        <input type="hidden" id="userIndex" value="-1" />
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="nome">Nome de Identificação</label>
-            <input type="text" id="nome" required placeholder="Ex: rubert.silva" />
-          </div>
-          <div class="form-group">
-            <label for="perfil">Nível de Acesso</label>
-            <select id="perfil" required>
-              <option value="" disabled selected>Escolha o perfil...</option>
-              <option value="admin">Administrador</option>
-              <option value="operador">Operador</option>
-              <option value="monitoramento">Monitoramento</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="senha">Senha de Acesso</label>
-            <div class="senha-container">
-              <input type="password" id="senha" style="flex-grow: 1;" required placeholder="••••••••" />
-              <button type="button" class="btn-icon-input" title="Gerar Senha Forte" onclick="gerarSenhaAuto()">
-                <svg viewBox="0 0 24 24"><path d="M19 11h-8v8h8v-8zM5 5h8v8H5V5z"></path></svg>
-              </button>
-              <button type="button" class="btn-icon-input" title="Visualizar" onclick="mostrarSenhaInputModal()">
-                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="button-group">
-          <button type="button" id="btnCancelar" class="btn-cancel" style="display: none;" onclick="limparFormulario()">Cancelar</button>
-          <button type="submit" id="btnSalvar" class="btn-save">Salvar Usuário</button>
-        </div>
-      </form>
-    </div>
-
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Usuário</th>
-            <th>Perfil</th>
-            <th style="text-align: right;">Gerenciar</th>
-          </tr>
-        </thead>
-        <tbody id="userTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div id="modalSenha" class="modal-overlay" onclick="fecharModalSenha()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <p style="font-size:0.75rem; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Credenciais de Acesso</p>
-      <h2 id="modalSenhaDesc" style="color:var(--primary); margin:0 0 30px; font-family: 'Courier New', monospace; font-size: 1.8rem; letter-spacing: 2px;"></h2>
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <button onclick="copiarSenhaModal()" class="btn-save" style="width:100%;">Copiar Senha</button>
-        <button onclick="fecharModalSenha()" class="btn-cancel" style="width:100%;">Fechar Visualização</button>
+  <main class="page-shell">
+    <section class="page-heading">
+      <div>
+        <span class="eyebrow">Administração</span>
+        <h1>Usuários e acessos</h1>
+        <p>Convide pessoas, altere perfis e controle quem pode acessar os dados do tenant.</p>
       </div>
-    </div>
-  </div>
+      <div class="tenant-card">
+        <span>Workspace</span>
+        <strong id="tenantName">Carregando...</strong>
+        <small id="currentAdmin">Validando sessão</small>
+      </div>
+    </section>
 
-  <div id="toast"></div>
+    <div id="pageNotice" class="notice" hidden></div>
 
-  <script>
-    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    
-    function inicializar() {
-      if (!usuarios.some(u => u.nome === 'superadmin')) {
-        usuarios.unshift({ nome: 'superadmin', senha: 'suP3r@dm1n!', perfil: 'admin' });
-        salvar();
-      }
-      renderizarTabela();
-    }
+    <section class="panel">
+      <div class="panel-heading">
+        <span class="eyebrow">Convites</span>
+        <h2>Convidar novo membro</h2>
+        <p>O usuário define a própria senha. Você só escolhe o perfil e gera um código temporário.</p>
+      </div>
+      <form id="inviteForm" class="invite-form">
+        <label class="field"><span>E-mail</span><input type="email" id="inviteEmail" placeholder="pessoa@empresa.com" required /></label>
+        <label class="field"><span>Perfil</span><select id="inviteRole"><option value="operador">Operador</option><option value="monitoramento">Monitoramento</option><option value="admin">Administrador</option></select></label>
+        <label class="field"><span>Validade</span><select id="inviteDays"><option value="1">1 dia</option><option value="3">3 dias</option><option value="7" selected>7 dias</option><option value="14">14 dias</option></select></label>
+        <button type="submit" class="btn-primary" id="inviteButton">Gerar convite</button>
+      </form>
+      <div id="inviteResult" class="invite-result" hidden>
+        <div><span>Código de convite</span><strong id="inviteCode"></strong><small>Este código aparece uma única vez. Envie-o por um canal seguro.</small></div>
+        <button type="button" class="btn-secondary" id="copyInviteButton">Copiar código</button>
+      </div>
+    </section>
 
-    function salvar() { localStorage.setItem('usuarios', JSON.stringify(usuarios)); }
+    <section class="panel">
+      <div class="panel-heading inline-heading"><div><span class="eyebrow">Membros</span><h2>Usuários do workspace</h2></div><span class="counter" id="memberCount">0 usuários</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Usuário</th><th>Perfil</th><th>Status</th><th>Cadastro</th><th class="align-right">Ações</th></tr></thead><tbody id="membersBody"></tbody></table></div>
+    </section>
 
-    function limparFormulario() {
-      document.getElementById('userForm').reset();
-      document.getElementById('userIndex').value = "-1";
-      document.getElementById('btnSalvar').textContent = "Salvar Usuário";
-      document.getElementById('btnCancelar').style.display = "none";
-    }
+    <section class="panel">
+      <div class="panel-heading inline-heading"><div><span class="eyebrow">Pendentes</span><h2>Convites recentes</h2></div><button type="button" class="btn-ghost" id="refreshButton">Atualizar</button></div>
+      <div class="table-wrap"><table><thead><tr><th>E-mail</th><th>Perfil</th><th>Expira em</th><th>Status</th></tr></thead><tbody id="invitesBody"></tbody></table></div>
+    </section>
+  </main>
 
-    function renderizarTabela() {
-      const body = document.getElementById('userTableBody');
-      const logado = JSON.parse(localStorage.getItem('usuarioLogado'));
-      body.innerHTML = '';
-
-      usuarios.forEach((user, index) => {
-        if (user.nome === 'superadmin' && logado?.perfil !== 'superadmin') return;
-        
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><span style="font-weight:600; color:var(--primary)">${user.nome}</span></td>
-          <td><span class="badge-perfil">${user.perfil}</span></td>
-          <td class="actions-cell">
-            <button class="action-btn" title="Editar" onclick="editarUsuario(${index})">
-              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </button>
-            <button class="action-btn" title="Ver Senha" onclick="mostrarSenhaModal(${index})">
-              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            </button>
-            <button class="action-btn btn-del" title="Excluir" onclick="excluirUsuario(${index})">
-              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
-            </button>
-          </td>
-        `;
-        body.appendChild(tr);
-      });
-    }
-
-    function gerarSenhaAuto() {
-      const c = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
-      let s = "";
-      for (let i = 0; i < 12; i++) s += c.charAt(Math.floor(Math.random() * c.length));
-      document.getElementById('senha').value = s;
-      showToast("Senha segura gerada!");
-    }
-
-    function editarUsuario(index) {
-      const u = usuarios[index];
-      if (u.nome === 'superadmin') return;
-      document.getElementById('userIndex').value = index;
-      document.getElementById('nome').value = u.nome;
-      document.getElementById('senha').value = u.senha;
-      document.getElementById('perfil').value = u.perfil;
-      document.getElementById('btnSalvar').textContent = "Atualizar Cadastro";
-      document.getElementById('btnCancelar').style.display = "block";
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function excluirUsuario(index) {
-      if(confirm(`Confirmar exclusão de "${usuarios[index].nome}"?`)) {
-        usuarios.splice(index, 1);
-        salvar(); renderizarTabela();
-        showToast("Removido com sucesso.");
-      }
-    }
-
-    document.getElementById('userForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const idx = parseInt(document.getElementById('userIndex').value);
-      const data = {
-        nome: document.getElementById('nome').value.trim(),
-        senha: document.getElementById('senha').value,
-        perfil: document.getElementById('perfil').value
-      };
-
-      if(idx === -1) {
-        if(usuarios.some(u => u.nome.toLowerCase() === data.nome.toLowerCase())) return alert("Nome já existe!");
-        usuarios.push(data);
-      } else {
-        usuarios[idx] = data;
-      }
-
-      salvar(); renderizarTabela(); limparFormulario();
-      showToast("Dados salvos com sucesso!");
-    });
-
-    function mostrarSenhaModal(index) {
-      document.getElementById('modalSenhaDesc').textContent = usuarios[index].senha;
-      document.getElementById('modalSenha').style.display = 'flex';
-    }
-
-    function mostrarSenhaInputModal() {
-      const s = document.getElementById('senha').value;
-      if(!s) return showToast("Digite uma senha primeiro!");
-      document.getElementById('modalSenhaDesc').textContent = s;
-      document.getElementById('modalSenha').style.display = 'flex';
-    }
-
-    function fecharModalSenha() { document.getElementById('modalSenha').style.display = 'none'; }
-
-    function copiarSenhaModal() {
-      navigator.clipboard.writeText(document.getElementById('modalSenhaDesc').textContent);
-      showToast("Senha copiada!");
-      fecharModalSenha();
-    }
-
-    function showToast(m) {
-      const t = document.getElementById("toast");
-      t.textContent = m;
-      t.className = "show";
-      setTimeout(() => t.className = "", 3000);
-    }
-
-    function voltarDashboard() { window.location.href = 'dashboard.html'; }
-
-    // Segurança
-    if (!localStorage.getItem('usuarioLogado')) window.location.href = 'index.html';
-
-    inicializar();
-  </script>
+  <div id="toast" class="toast" hidden></div>
+  <script src="/js/supabase-config.js"></script>
+  <script src="/js/preview-demo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/usuarios.js"></script>
 </body>
 </html>

@@ -1,293 +1,280 @@
-// Novo sistema de chamados com edição, reinterações, exclusão, edição, busca e feedback visual + painel de manutenção recolhível
+// RRN Manager — chamados e detalhes do equipamento.
+// Mantém compatibilidade com dados antigos que usavam `chamado` e novos que usam `chamados`.
 
 let paginaAtual = 1;
 const chamadosPorPagina = 3;
 let currentSetorIndex = null;
 let currentMaquinaIndex = null;
 
+function rrnChamadoEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+
+function rrnGetMachine() {
+  if (currentSetorIndex == null || currentMaquinaIndex == null) return null;
+  return setores?.[currentSetorIndex]?.maquinas?.[currentMaquinaIndex] || null;
+}
+
+function rrnTickets(machine) {
+  if (!machine) return [];
+  let tickets = Array.isArray(machine.chamados)
+    ? machine.chamados
+    : (Array.isArray(machine.chamado) ? machine.chamado : []);
+  machine.chamados = tickets;
+  machine.chamado = tickets;
+  return tickets;
+}
+
+function rrnPersistTickets(machine) {
+  if (!machine) return;
+  machine.chamado = machine.chamados = rrnTickets(machine);
+  if (typeof saveSetoresAndMachines === 'function') saveSetoresAndMachines();
+  else localStorage.setItem('setores', JSON.stringify(setores || []));
+  window.RRN_UI?.updateOverview?.();
+  if (typeof window.renderPainelManutencao === 'function') window.renderPainelManutencao();
+}
+
+function rrnFormatDate(value) {
+  if (!value) return '';
+  const parsed = new Date(value);
+  if (!Number.isNaN(parsed.getTime())) return parsed.toLocaleString('pt-BR');
+  return String(value);
+}
+
+function rrnMachineDetails(machine) {
+  const fields = [
+    ['Tipo de equipamento', machine.tipo],
+    ['Número de série / nome', machine.nome],
+    ['Etiqueta', machine.etiqueta],
+    ['Usuário responsável', machine.usuarioResponsavel],
+    ['Fabricante', machine.fabricante],
+    ['Modelo', machine.modelo],
+    ['Localização', machine.localizacao],
+    ['Situação patrimonial', machine.situacaoPatrimonial],
+    ['Data da compra', machine.dataCompra],
+    ['Garantia até', machine.garantiaAte]
+  ].filter(([, value]) => value != null && String(value).trim() !== '');
+
+  const rows = fields.map(([label, value]) => `
+    <div class="rrn-info-row"><strong>${rrnChamadoEscape(label)}:</strong> ${rrnChamadoEscape(value)}</div>`).join('');
+
+  const notes = machine.observacoesAtivo
+    ? `<div class="rrn-info-row"><strong>Observações do ativo:</strong><br>${rrnChamadoEscape(machine.observacoesAtivo)}</div>`
+    : '';
+
+  return `${rows || '<div class="rrn-info-row">Sem dados complementares.</div>'}${notes}`;
+}
+
+function rrnUpdateMaintenanceActions(machine) {
+  const maintenance = document.getElementById('maintenanceBtn');
+  const release = document.getElementById('releaseBtn');
+  if (maintenance) maintenance.style.display = machine?.emManutencao ? 'none' : '';
+  if (release) release.style.display = machine?.emManutencao ? '' : 'none';
+
+  const message = document.getElementById('maintenanceMessage');
+  if (message) message.style.display = machine?.emManutencao ? 'block' : 'none';
+}
+
 function showInfo(setorIndex, maquinaIndex) {
+  const machine = setores?.[setorIndex]?.maquinas?.[maquinaIndex];
+  if (!machine) return;
+
   currentSetorIndex = setorIndex;
   currentMaquinaIndex = maquinaIndex;
-  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+  paginaAtual = 1;
 
-  fecharModalTodasManutencoes(); // ✅ Fecha o modal anterior
-  bringModalToFront("infoModal"); // ✅ Traz o novo modal à frente
+  // Compatibilidade com as funções de manutenção que ainda vivem em setores.js.
+  try { maquinaAtivaSetor = setorIndex; } catch {}
+  try { maquinaAtivaIndex = maquinaIndex; } catch {}
 
-  const modal = document.getElementById("infoModal");
-  modal.style.display = "flex";
+  if (typeof window.fecharModalTodasManutencoes === 'function') window.fecharModalTodasManutencoes();
+  bringModalToFront('infoModal');
 
-  const modalText = document.getElementById("modalText");
-  modalText.innerHTML = `
-    <strong>Tipo de Equipamento:</strong> ${maquina.tipo || 'N/A'}<br>
-    ${maquina.tipo === 'máquina' ? `<strong>Tipo da Máquina:</strong> ${maquina.tipoMaquina || 'N/A'}<br><strong>Número de Série:</strong> ${maquina.numeroSerie || 'N/A'}<br><strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
-    ${maquina.tipo === 'monitor' ? `<strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
-  `;
+  const modal = document.getElementById('infoModal');
+  const modalText = document.getElementById('modalText');
+  if (!modal || !modalText) return;
 
-  renderChamados(maquina);
-  renderPainelManutencao();
+  modalText.innerHTML = rrnMachineDetails(machine);
+  modal.style.display = 'flex';
+  modal.removeAttribute('aria-hidden');
+  rrnUpdateMaintenanceActions(machine);
+  renderChamados(machine);
 }
-
-
 
 function closeModal() {
-  document.getElementById("infoModal").style.display = "none";
+  const modal = document.getElementById('infoModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  currentSetorIndex = null;
+  currentMaquinaIndex = null;
 }
 
-function renderChamados(maquina) {
-  const lista = document.getElementById("observationsUl");
-  const paginacao = document.getElementById("pagination");
+function renderChamados(machine = rrnGetMachine()) {
+  const list = document.getElementById('observationsUl');
+  const pagination = document.getElementById('pagination');
+  if (!list || !pagination || !machine) return;
 
-  if (!maquina.chamados) maquina.chamados = [];
+  const tickets = rrnTickets(machine);
+  const ordered = tickets
+    .map((ticket, originalIndex) => ({ ticket, originalIndex }))
+    .sort((a, b) => new Date(b.ticket?.data || 0) - new Date(a.ticket?.data || 0));
 
-  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
+  const totalPages = Math.max(1, Math.ceil(ordered.length / chamadosPorPagina));
+  paginaAtual = Math.min(Math.max(1, paginaAtual), totalPages);
+  const start = (paginaAtual - 1) * chamadosPorPagina;
+  const visible = ordered.slice(start, start + chamadosPorPagina);
 
-  const totalPaginas = Math.ceil(chamadosOrdenados.length / chamadosPorPagina);
-
-  const inicio = (paginaAtual - 1) * chamadosPorPagina;
-  const chamadosVisiveis = chamadosOrdenados.slice(inicio, inicio + chamadosPorPagina);
-
-  lista.innerHTML = chamadosVisiveis.map((chamado, i) => `
-    <li style="margin-bottom: 10px; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
-      
-      <strong>Chamado:</strong> ${chamado.texto} - Prioridade: 
-      ${(chamado.interacoes || []).map((i, idx) => `
-        <div style="margin-top: 6px; border-left: 2px solid #aaa; padding-left: 10px;">
-          <strong>Interação ${idx + 1}:</strong> ${i.texto}<br>
-          <small>${formatarData(i.data)}</small>
-
+  list.innerHTML = visible.length ? visible.map(({ ticket, originalIndex }) => {
+    const interactions = Array.isArray(ticket?.interacoes) ? ticket.interacoes : [];
+    return `
+      <li class="rrn-ticket-item" style="margin-bottom:10px;border:1px solid #ccc;padding:10px;border-radius:8px;">
+        <div><strong>Chamado:</strong> ${rrnChamadoEscape(ticket?.texto || '')}</div>
+        <div><strong>Prioridade:</strong> ${rrnChamadoEscape(ticket?.prioridade || 'Não informada')}</div>
+        <small>${rrnChamadoEscape(rrnFormatDate(ticket?.data))}</small>
+        ${interactions.map((interaction, index) => `
+          <div style="margin-top:6px;border-left:2px solid #aaa;padding-left:10px;">
+            <strong>Interação ${index + 1}:</strong> ${rrnChamadoEscape(interaction?.texto || '')}<br>
+            <small>${rrnChamadoEscape(rrnFormatDate(interaction?.data))}</small>
+          </div>`).join('')}
+        <div style="margin-top:8px;">
+          <button type="button" onclick="abrirInteracao(${originalIndex})">➕ Interagir</button>
+          <button type="button" onclick="editarChamado(${originalIndex})">✏️ Editar</button>
+          <button type="button" class="excluir-chamado operador-only" onclick="excluirChamado(${originalIndex})">🗑️ Excluir</button>
+          <div id="interacao-${originalIndex}" style="display:none;margin-top:6px;">
+            <textarea id="textoInteracao-${originalIndex}" rows="3" style="width:100%;"></textarea>
+            <button type="button" onclick="salvarInteracao(${originalIndex})">💾 Salvar Interação</button>
+          </div>
         </div>
-      `).join('')}
-      <div style="margin-top: 8px;">
-        <button onclick="abrirInteracao(${inicio + i})">➕ Interagir</button>
-        <button onclick="editarChamado(${inicio + i})">✏️ Editar</button>
-        <button onclick="excluirChamado(${inicio + i})">🗑️ Excluir</button>
-        <div id="interacao-${inicio + i}" style="display:none; margin-top:6px;">
-          <textarea id="textoInteracao-${inicio + i}" rows="3" style="width:100%;"></textarea>
-          <button onclick="salvarInteracao(${inicio + i})">💾 Salvar Interação</button>
-        </div>
-      </div>
-    </li>
-  `).join('');
+      </li>`;
+  }).join('') : '<li style="padding:10px;">Nenhum chamado registrado.</li>';
 
-  renderPaginacao(totalPaginas, maquina);
+  renderPaginacao(totalPages, machine);
 }
 
-function abrirInteracao(index) {
-  document.getElementById(`interacao-${index}`).style.display = "block";
-}
+function renderPaginacao(totalPages, machine = rrnGetMachine()) {
+  const pagination = document.getElementById('pagination');
+  if (!pagination) return;
+  pagination.innerHTML = '';
+  if (totalPages <= 1) return;
 
-function salvarInteracao(index) {
-  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
-  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
-  const chamado = chamadosOrdenados[index];
-  const texto = document.getElementById(`textoInteracao-${index}`).value.trim();
-  if (!texto) return alert("Digite a interação.");
+  const previous = document.createElement('button');
+  previous.type = 'button';
+  previous.textContent = 'Anterior';
+  previous.disabled = paginaAtual <= 1;
+  previous.onclick = () => {
+    paginaAtual -= 1;
+    renderChamados(machine);
+  };
 
-  const dataAtual = new Date().toLocaleString('pt-BR');
-  if (!chamado.interacoes) chamado.interacoes = [];
-  chamado.interacoes.push({ texto, data: dataAtual });
+  const label = document.createElement('span');
+  label.textContent = ` Página ${paginaAtual} de ${totalPages} `;
 
-  saveSetoresAndMachines();
-  alert("Interação salva com sucesso!");
-  renderChamados(maquina);
-}
+  const next = document.createElement('button');
+  next.type = 'button';
+  next.textContent = 'Próximo';
+  next.disabled = paginaAtual >= totalPages;
+  next.onclick = () => {
+    paginaAtual += 1;
+    renderChamados(machine);
+  };
 
-function editarChamado(index) {
-  const novoTexto = prompt("Editar observação do chamado:");
-  if (!novoTexto) return;
-
- 
-
-  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
-  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
-  chamadosOrdenados[index].texto = novoTexto;
-  chamadosOrdenados[index].prioridade = novaPrioridade;
-
-  saveSetoresAndMachines();
-  alert("Chamado editado com sucesso!");
-  renderChamados(maquina);
-}
-
-function excluirChamado(index) {
-  if (!confirm("Tem certeza que deseja excluir este chamado?")) return;
-
-  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
-  const chamadosOrdenados = [...maquina.chamados].sort((a, b) => new Date(b.data) - new Date(a.data));
-  chamadosOrdenados.splice(index, 1);
-  maquina.chamados = chamadosOrdenados;
-
-  saveSetoresAndMachines();
-  alert("Chamado excluído com sucesso!");
-  renderChamados(maquina);
+  pagination.append(previous, label, next);
 }
 
 function saveObservation() {
-  const observacao = document.getElementById("observacao").value.trim();
-  const prioridade = document.getElementById("priority").value;
+  const machine = rrnGetMachine();
+  const text = document.getElementById('observacao')?.value.trim();
+  const priority = document.getElementById('priority')?.value || 'Baixa';
+  if (!machine) return alert('Selecione um equipamento.');
+  if (!text) return alert('A observação não pode estar vazia.');
 
-  if (!observacao) return alert("A observação não pode estar vazia.");
-
-  const maquina = setores[currentSetorIndex].maquinas[currentMaquinaIndex];
-  if (!maquina.chamados) maquina.chamados = [];
-
-  maquina.chamados.push({
-    texto: observacao,
-    prioridade,
-    data: new Date().toLocaleString('pt-BR'),
+  const tickets = rrnTickets(machine);
+  tickets.push({
+    texto: text,
+    prioridade: priority,
+    data: new Date().toISOString(),
     interacoes: []
   });
 
-  document.getElementById("observacao").value = "";
-  saveSetoresAndMachines();
-  alert("Chamado registrado com sucesso!");
-  renderChamados(maquina);
+  const field = document.getElementById('observacao');
+  if (field) field.value = '';
+  rrnPersistTickets(machine);
+  paginaAtual = 1;
+  renderChamados(machine);
 }
 
-function renderPaginacao(totalPaginas, maquina) {
-  const paginacao = document.getElementById("pagination");
-  paginacao.innerHTML = "";
-  if (totalPaginas <= 1) return;
-
-  if (paginaAtual > 1) {
-    const btnAnterior = document.createElement("button");
-    btnAnterior.textContent = "Anterior";
-    btnAnterior.onclick = () => {
-      paginaAtual--;
-      renderChamados(maquina);
-    };
-    paginacao.appendChild(btnAnterior);
-  }
-
-  if (paginaAtual < totalPaginas) {
-    const btnProximo = document.createElement("button");
-    btnProximo.textContent = "Próximo";
-    btnProximo.onclick = () => {
-      paginaAtual++;
-      renderChamados(maquina);
-    };
-    paginacao.appendChild(btnProximo);
-  }
-}
-let paginaAtualPainel = 1;
-const manutencoesPorPaginaPainel = 5;
-
-function togglePainelManutencao() {
-  const painel = document.getElementById("painelManutencao");
-  const icone = document.getElementById("painelToggleIcon");
-
-  painel.classList.toggle("recolhido");
-  const conteudo = painel.querySelector(".painel-conteudo");
-  if (conteudo) {
-    conteudo.style.display = painel.classList.contains("recolhido") ? "none" : "block";
-  }
-
-  icone.textContent = painel.classList.contains("recolhido") ? "▶" : "◀";
+function abrirInteracao(index) {
+  const container = document.getElementById(`interacao-${index}`);
+  if (container) container.style.display = container.style.display === 'block' ? 'none' : 'block';
 }
 
-function renderPainelManutencao() {
-  const painel = document.getElementById("painelManutencao");
-  if (!painel) return;
+function salvarInteracao(index) {
+  const machine = rrnGetMachine();
+  if (!machine) return;
+  const tickets = rrnTickets(machine);
+  const ticket = tickets[index];
+  const input = document.getElementById(`textoInteracao-${index}`);
+  const text = input?.value.trim();
+  if (!ticket || !text) return alert('Digite a interação.');
 
-  let maquinasEmManutencao = [];
-  setores.forEach((setor, sIndex) => {
-    setor.maquinas.forEach((m, mIndex) => {
-      if (m.emManutencao) {
-        maquinasEmManutencao.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
-      }
-    });
-  });
-
-  if (maquinasEmManutencao.length === 0) {
-    painel.style.display = "none";
-    return;
-  }
-
-  painel.style.display = "block";
-  const estaRecolhido = painel.classList.contains("recolhido");
-
-  const totalPaginas = Math.ceil(maquinasEmManutencao.length / manutencoesPorPaginaPainel);
-  if (paginaAtualPainel > totalPaginas) paginaAtualPainel = totalPaginas;
-  if (paginaAtualPainel < 1) paginaAtualPainel = 1;
-
-  const inicio = (paginaAtualPainel - 1) * manutencoesPorPaginaPainel;
-  const fim = inicio + manutencoesPorPaginaPainel;
-  const maquinasVisiveis = maquinasEmManutencao.slice(inicio, fim);
-
-  painel.innerHTML = `
-    <div class="painel-header" onclick="togglePainelManutencao()">
-      🛠️ Máquinas em Manutenção <span id="painelToggleIcon">${estaRecolhido ? "▶" : "◀"}</span>
-    </div>
-    <div class="painel-conteudo" style="display: ${estaRecolhido ? "none" : "block"};">
-      ${maquinasVisiveis.map(m => `
-        <div class="maquina-box">
-          <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
-          <small>Setor: ${m.setorNome}</small><br/>
-          <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
-        </div>
-      `).join('')}
-      ${totalPaginas > 1 ? `
-  <div style="text-align:center; margin-top: 10px; font-size: 0.75rem; color: #ccc;">
-    <button onclick="trocarPaginaPainel(-1)" ${paginaAtualPainel === 1 ? 'disabled' : ''}
-      style="padding: 3px 8px; font-size: 0.7rem; background: #0d2b45; color: #fff; border: 1px solid #1f3a56; border-radius: 4px; cursor: pointer; margin-right: 6px;"
-    >&lt;</button>
-    <span style="margin: 0 6px;">Página ${paginaAtualPainel} de ${totalPaginas}</span>
-    <button onclick="trocarPaginaPainel(1)" ${paginaAtualPainel === totalPaginas ? 'disabled' : ''}
-      style="padding: 3px 8px; font-size: 0.7rem; background: #0d2b45; color: #fff; border: 1px solid #1f3a56; border-radius: 4px; cursor: pointer; margin-left: 6px;"
-    >&gt;</button>
-  </div>` : ''}
-    </div>
-  `;
+  if (!Array.isArray(ticket.interacoes)) ticket.interacoes = [];
+  ticket.interacoes.push({ texto: text, data: new Date().toISOString() });
+  if (input) input.value = '';
+  rrnPersistTickets(machine);
+  renderChamados(machine);
 }
 
-function trocarPaginaPainel(direcao) {
-  paginaAtualPainel += direcao;
-  renderPainelManutencao();
+function editarChamado(index) {
+  const machine = rrnGetMachine();
+  if (!machine) return;
+  const ticket = rrnTickets(machine)[index];
+  if (!ticket) return;
+
+  const text = prompt('Editar observação do chamado:', ticket.texto || '');
+  if (text == null || !text.trim()) return;
+  const priority = prompt('Prioridade (Baixa, Média ou Alta):', ticket.prioridade || 'Baixa');
+  if (priority == null) return;
+  const normalizedPriority = ['Baixa', 'Média', 'Alta'].includes(priority.trim()) ? priority.trim() : ticket.prioridade || 'Baixa';
+
+  ticket.texto = text.trim();
+  ticket.prioridade = normalizedPriority;
+  ticket.atualizadoEm = new Date().toISOString();
+  rrnPersistTickets(machine);
+  renderChamados(machine);
 }
 
-function showInfo(setorIndex, maquinaIndex) {
-  currentSetorIndex = setorIndex;
-  currentMaquinaIndex = maquinaIndex;
-  const maquina = setores[setorIndex].maquinas[maquinaIndex];
+function excluirChamado(index) {
+  const machine = rrnGetMachine();
+  if (!machine) return;
+  const tickets = rrnTickets(machine);
+  if (!tickets[index]) return;
+  if (!confirm('Tem certeza que deseja excluir este chamado?')) return;
 
-  const modal = document.getElementById("infoModal");
-  modal.style.display = "flex";
-  modal.style.zIndex = "1600";
-  bringModalToFront("infoModal");
-
-  const modalText = document.getElementById("modalText");
-  modalText.innerHTML = `
-    <strong>Tipo de Equipamento:</strong> ${maquina.tipo || 'N/A'}<br>
-    ${maquina.tipo === 'máquina' ? `<strong>Tipo da Máquina:</strong> ${maquina.tipoMaquina || 'N/A'}<br><strong>Número de Série:</strong> ${maquina.numeroSerie || 'N/A'}<br><strong>Etiqueta:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
-    ${maquina.tipo === 'monitor' ? `<strong>Etiqueta do Monitor:</strong> ${maquina.etiqueta || 'Sem etiqueta'}<br>` : ''}
-  `;
-
-  renderChamados(maquina);
-  renderPainelManutencao();
+  tickets.splice(index, 1);
+  rrnPersistTickets(machine);
+  renderChamados(machine);
 }
 
 function bringModalToFront(modalId) {
-  const modais = ["infoModal", "modalTodasManutencoes", "configModal"];
-  modais.forEach(id => {
-    const m = document.getElementById(id);
-    if (m) {
-      m.style.zIndex = id === modalId ? "1600" : "1500";
-    }
+  ['infoModal', 'modalTodasManutencoes', 'configModal'].forEach(id => {
+    const modal = document.getElementById(id);
+    if (modal) modal.style.zIndex = id === modalId ? '1600' : '1500';
   });
 }
 
 function closeAllModalsExcept(modalId) {
-  const modais = ["infoModal", "modalTodasManutencoes", "configModal"];
-  modais.forEach(id => {
-    if (id !== modalId) {
-      const modal = document.getElementById(id);
-      if (modal) modal.style.display = "none";
-    }
+  ['infoModal', 'modalTodasManutencoes', 'configModal'].forEach(id => {
+    if (id === modalId) return;
+    const modal = document.getElementById(id);
+    if (modal) modal.style.display = 'none';
   });
 }
 
-// Fechamento inicial
-closeAllModalsExcept("infoModal");
-bringModalToFront("infoModal");
-
-// Atualização em tempo real
-setInterval(renderPainelManutencao, 900);
+window.addEventListener('click', event => {
+  const modal = document.getElementById('infoModal');
+  if (event.target === modal) closeModal();
+});

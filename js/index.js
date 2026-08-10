@@ -1,87 +1,153 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('formLogin');
-    const userField = document.getElementById('loginUsuario');
-    const passField = document.getElementById('loginSenha');
-    const rememberMe = document.getElementById('rememberMe');
-    const loginMsg = document.getElementById('loginMsg');
+(() => {
+  'use strict';
 
-    // 1. Recuperar dados salvos (Lembrar-me)
-    if (localStorage.getItem('rememberedUser')) {
-        userField.value = localStorage.getItem('rememberedUser');
-        passField.value = localStorage.getItem('rememberedPass');
-        rememberMe.checked = true;
+  const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
+  const legacyCredentialKeys = new Set(['usuarios', 'users', 'rememberedUser', 'rememberedPass', 'loggedUser']);
+
+  function addStylesheet(href, marker) {
+    if (!isDashboard || document.querySelector(`link[${marker}]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.setAttribute(marker, '1');
+    document.head.appendChild(link);
+  }
+
+  function ensureDashboardStyles() {
+    addStylesheet('/style/enterprise.css', 'data-rrn-enterprise');
+    addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
+    addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
+    addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
+    addStylesheet('/style/trash.css', 'data-rrn-trash');
+    addStylesheet('/style/insights.css', 'data-rrn-insights');
+  }
+
+  function containsPlaintextPassword(value) {
+    try {
+      const parsed = JSON.parse(value);
+      return Boolean(parsed && typeof parsed === 'object' && ('senha' in parsed || 'password' in parsed));
+    } catch {
+      return false;
+    }
+  }
+
+  function guardLegacyCredentials() {
+    if (!isDashboard || window.__RRN_LEGACY_CREDENTIAL_GUARD__) return;
+    window.__RRN_LEGACY_CREDENTIAL_GUARD__ = true;
+
+    legacyCredentialKeys.forEach(key => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      const normalizedKey = String(key);
+      if (this === localStorage && legacyCredentialKeys.has(normalizedKey)) {
+        console.warn(`RRN Manager: armazenamento legado de credencial bloqueado (${normalizedKey}).`);
+        return;
+      }
+      if (this === localStorage && normalizedKey === 'usuarioLogado' && containsPlaintextPassword(value)) {
+        console.warn('RRN Manager: tentativa de armazenar senha no usuarioLogado foi bloqueada.');
+        return;
+      }
+      return originalSetItem.call(this, key, value);
+    };
+  }
+
+  function currentRole() {
+    if (window.RRN_SESSION?.role) return window.RRN_SESSION.role;
+    try {
+      return JSON.parse(localStorage.getItem('usuarioLogado') || '{}').perfil || null;
+    } catch {
+      return null;
+    }
+  }
+
+  window.verificarPermissoes = function verificarPermissoes() {
+    const role = currentRole();
+    const adminMenu = document.getElementById('adminMenu');
+    const addSetor = document.getElementById('addSetorBtn');
+    const deleteAll = document.querySelector('.excluir-tudo-btn');
+    const canOperate = role === 'admin' || role === 'operador' || role == null;
+
+    if (adminMenu) adminMenu.style.display = role === 'admin' ? 'block' : 'none';
+    if (addSetor) addSetor.style.display = canOperate ? '' : 'none';
+    if (deleteAll) deleteAll.style.display = role === 'admin' ? '' : 'none';
+  };
+
+  function cleanupLegacyMarkup() {
+    if (!isDashboard) return;
+    const configModal = document.getElementById('configModal');
+    const saveButton = document.querySelector('.save-btn');
+    if (configModal && saveButton && !configModal.contains(saveButton)) configModal.appendChild(saveButton);
+    window.verificarPermissoes();
+  }
+
+  ensureDashboardStyles();
+  guardLegacyCredentials();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', cleanupLegacyMarkup, { once: true });
+  } else {
+    cleanupLegacyMarkup();
+  }
+
+  const load = src => new Promise((resolve, reject) => {
+    if (document.querySelector(`script[data-rrn-src="${src}"]`)) return resolve();
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.dataset.rrnSrc = src;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
+    document.head.appendChild(script);
+  });
+
+  (async () => {
+    // Carrega a configuração antes do modo local/preview para que ele só assuma
+    // a URL de produção quando o Supabase ainda não estiver configurado.
+    if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
+
+    await load('/js/preview-demo.js');
+    window.verificarPermissoes?.();
+    if (isDashboard && window.RRN_PREVIEW_DEMO) {
+      window.loadSetoresAndMachines?.();
+      window.renderSetores?.();
     }
 
-    // 2. Evento de Login
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const nome = userField.value.trim();
-        const senha = passField.value;
-        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    if (isDashboard) {
+      await load('/js/dashboard-ui.js');
+      await load('/js/maintenance-panel.js');
+      await load('/js/scanner.js');
+      await load('/js/asset-history.js');
+      await load('/js/trash-v2.js');
+      await load('/js/backup-v3.js');
+      await load('/js/insights.js');
+      await load('/js/reports-v2.js');
+    }
 
-        // Procura o usuário (Case Insensitive para o nome)
-        const user = usuarios.find(u => 
-            u.nome.toLowerCase() === nome.toLowerCase() && u.senha === senha
-        );
+    if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
 
-        if (user) {
-            // Lógica do Checkbox "Lembrar-me"
-            if (rememberMe.checked) {
-                localStorage.setItem('rememberedUser', nome);
-                localStorage.setItem('rememberedPass', senha);
-            } else {
-                localStorage.removeItem('rememberedUser');
-                localStorage.removeItem('rememberedPass');
-            }
+    if (document.getElementById('formLogin')) {
+      await load('/js/auth-v2.js');
+      window.RRN_PREVIEW?.seed?.(false);
+      return;
+    }
 
-            // Salva o usuário na sessão atual
-            localStorage.setItem('usuarioLogado', JSON.stringify(user));
-
-            // --- INICIAR CARREGAMENTO DE 50 SEGUNDOS ---
-            
-            // Esconde o card e mostra o overlay
-            document.getElementById('loginCard').style.display = 'none';
-            document.getElementById('loadingOverlay').style.display = 'flex';
-
-            const bar = document.getElementById('progressBar');
-            const txt = document.getElementById('loadingText');
-
-            // Definição dos passos (texto e percentagem)
-            const steps = [
-                { p: 10, t: "Autenticando credenciais..." },
-                { p: 25, t: "Estabelecendo conexão segura..." },
-                { p: 45, t: "Carregando módulos de segurança..." },
-                { p: 65, t: "Sincronizando base de dados..." },
-                { p: 85, t: "Preparando seu painel..." },
-                { p: 100, t: "Concluído! A entrar..." }
-            ];
-
-            const tempoTotal = 15000; // 20 segundos
-            const intervalo = tempoTotal / steps.length;
-
-            // Distribui as mensagens ao longo dos 50s
-            steps.forEach((step, index) => {
-                setTimeout(() => {
-                    if (bar) bar.style.width = step.p + "%";
-                    if (txt) txt.textContent = step.t;
-                }, index * intervalo);
-            });
-
-            // Redirecionamento final após 50 segundos
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, tempoTotal);
-
-        } else {
-            // Erro de login
-            loginMsg.textContent = "Acesso negado. Verifique os seus dados.";
-            loginMsg.style.color = "red";
-            
-            // Limpa a mensagem após 3 segundos
-            setTimeout(() => {
-                loginMsg.textContent = "";
-            }, 3000);
-        }
-    });
-});
+    if (isDashboard) {
+      await load('/js/tenant-runtime.js');
+      await load('/js/backend-v2.js');
+      await load('/js/backend-status.js');
+      window.verificarPermissoes?.();
+      window.RRN_UI?.updateOverview?.();
+    }
+  })().catch(error => {
+    console.error('Falha ao inicializar o RRN Manager:', error);
+    const notice = document.getElementById('backendNotice');
+    if (notice) {
+      notice.hidden = false;
+      notice.textContent = error.message || 'Falha ao iniciar o backend.';
+    }
+  });
+})();
