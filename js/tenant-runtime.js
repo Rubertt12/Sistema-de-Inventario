@@ -8,7 +8,7 @@
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
 
-  const syncKeys = new Set(['setores','chamados']);
+  const syncKeys = new Set(['setores','chamados','asset_history']);
   const legacyCredentialKeys = ['usuarios','users','rememberedUser','rememberedPass','loggedUser'];
   let profile = null;
   const originalSetItem = Storage.prototype.setItem;
@@ -63,7 +63,7 @@
   }
 
   function getPayload() {
-    const payload = { version: 1 };
+    const payload = { version: 2 };
     for (const key of syncKeys) {
       const raw = localStorage.getItem(key);
       if (raw == null) continue;
@@ -231,6 +231,7 @@
     window.RRN_SESSION = Object.freeze({
       userId: profile.user_id,
       name: profile.name || profile.email || 'Usuário',
+      userName: profile.name || profile.email || 'Usuário',
       email: profile.email || '',
       tenantId: profile.tenant_id,
       tenantName: profile.tenants?.name || 'Workspace',
