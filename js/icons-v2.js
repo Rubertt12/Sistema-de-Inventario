@@ -62,6 +62,15 @@
   }
 
   const rules = [
+    ['.rrn-app-tab[data-app-tab="dashboard"]', 'dashboard'],
+    ['.rrn-app-tab[data-app-tab="inventory"]', 'inventory'],
+    ['[data-home-action="inventory"]', 'inventory'],
+    ['[data-home-action="add"]', 'plus'],
+    ['[data-home-action="transfer"]', 'transfer'],
+    ['.rrn-kpi:nth-child(1) .rrn-kpi-icon', 'monitor'],
+    ['.rrn-kpi:nth-child(2) .rrn-kpi-icon', 'building'],
+    ['.rrn-kpi:nth-child(3) .rrn-kpi-icon', 'wrench'],
+    ['.rrn-kpi:nth-child(4) .rrn-kpi-icon', 'shield'],
     ['#addSetorBtn', 'plus'],
     ['button[onclick*="abrirModalTransferencia"]', 'transfer'],
     ['button[onclick*="openConfigModal"]', 'settings'],
@@ -84,12 +93,11 @@
   function boot() {
     decorateStatic();
     const observer = new MutationObserver(records => {
+      let changed = false;
       for (const record of records) {
-        for (const node of record.addedNodes) {
-          if (!(node instanceof Element)) continue;
-          decorateStatic(node.matches?.('button,label') ? node.parentElement || node : node);
-        }
+        if (record.addedNodes.length) { changed = true; break; }
       }
+      if (changed) decorateStatic();
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
