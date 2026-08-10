@@ -18,6 +18,15 @@
     addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
   }
 
+  function containsPlaintextPassword(value) {
+    try {
+      const parsed = JSON.parse(value);
+      return Boolean(parsed && typeof parsed === 'object' && ('senha' in parsed || 'password' in parsed));
+    } catch {
+      return false;
+    }
+  }
+
   function guardLegacyCredentials() {
     if (!isDashboard || window.__RRN_LEGACY_CREDENTIAL_GUARD__) return;
     window.__RRN_LEGACY_CREDENTIAL_GUARD__ = true;
@@ -29,16 +38,69 @@
 
     const originalSetItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function(key, value) {
-      if (this === localStorage && legacyCredentialKeys.has(String(key))) {
-        console.warn(`RRN Manager: armazenamento legado de credencial bloqueado (${key}).`);
+      const normalizedKey = String(key);
+      if (this === localStorage && legacyCredentialKeys.has(normalizedKey)) {
+        console.warn(`RRN Manager: armazenamento legado de credencial bloqueado (${normalizedKey}).`);
+        return;
+      }
+      if (this === localStorage && normalizedKey === 'usuarioLogado' && containsPlaintextPassword(value)) {
+        console.warn('RRN Manager: tentativa de armazenar senha no usuarioLogado foi bloqueada.');
         return;
       }
       return originalSetItem.call(this, key, value);
     };
   }
 
+  function currentRole() {
+    if (window.RRN_SESSION?.role) return window.RRN_SESSION.role;
+    try {
+      return JSON.parse(localStorage.getItem('usuarioLogado') || '{}').perfil || null;
+    } catch {
+      return null;
+    }
+  }
+
+  window.verificarPermissoes = function verificarPermissoes() {
+    const role = currentRole();
+    const adminMenu = document.getElementById('adminMenu');
+    const addSetor = document.getElementById('addSetorBtn');
+    const deleteAll = document.querySelector('.excluir-tudo-btn');
+    const canOperate = role === 'admin' || role === 'operador';
+
+    if (adminMenu) adminMenu.style.display = role === 'admin' ? 'block' : 'none';
+    if (addSetor) addSetor.style.display = canOperate ? '' : 'none';
+    if (deleteAll) deleteAll.style.display = role === 'admin' ? '' : 'none';
+  };
+
+  function removeDuplicateIds(id) {
+    const nodes = Array.from(document.querySelectorAll(`#${CSS.escape(id)}`));
+    nodes.slice(1).forEach(node => node.remove());
+  }
+
+  function cleanupLegacyMarkup() {
+    if (!isDashboard) return;
+
+    // O HTML antigo possuía cópias extras destes modais. Mantemos a primeira,
+    // que é a versão funcional utilizada pelos scripts do inventário.
+    ['infoModal', 'modalTodasManutencoes'].forEach(removeDuplicateIds);
+
+    const configModal = document.getElementById('configModal');
+    const saveButton = document.querySelector('.save-btn');
+    if (configModal && saveButton && !configModal.contains(saveButton)) {
+      configModal.appendChild(saveButton);
+    }
+
+    window.verificarPermissoes();
+  }
+
   ensureDashboardStyles();
   guardLegacyCredentials();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', cleanupLegacyMarkup, { once: true });
+  } else {
+    cleanupLegacyMarkup();
+  }
 
   const load = src => new Promise((resolve, reject) => {
     const script = document.createElement('script');
