@@ -109,6 +109,10 @@
     // O módulo ignora produção e só atua no hostname de preview autorizado/local.
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
+    if (isDashboard && window.RRN_PREVIEW_DEMO) {
+      window.loadSetoresAndMachines?.();
+      window.renderSetores?.();
+    }
 
     if (isDashboard) {
       await load('/js/dashboard-ui.js');
