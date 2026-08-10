@@ -3,11 +3,7 @@
 
   function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, char => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[char]));
   }
 
@@ -71,9 +67,10 @@
   function settingsWorkspaceContent() {
     let local = {};
     try { local = JSON.parse(localStorage.getItem('usuarioLogado') || '{}'); } catch {}
-    const tenantName = window.RRN_SESSION?.tenantName || local.tenant || 'Workspace local';
-    const role = window.RRN_SESSION?.role || local.perfil || 'Acesso local';
-    return { tenantName, role };
+    return {
+      tenantName: window.RRN_SESSION?.tenantName || local.tenant || 'Workspace local',
+      role: window.RRN_SESSION?.role || local.perfil || 'Acesso local'
+    };
   }
 
   function tenantId() {
@@ -99,10 +96,26 @@
   }
 
   function saveAppearance(next) {
-    const current = readAppearance();
-    const value = { ...current, ...next };
+    const value = { ...readAppearance(), ...next };
     localStorage.setItem(appearanceKey(), JSON.stringify(value));
     return value;
+  }
+
+  function applyLayout(mode = 'grid') {
+    const container = document.getElementById('setoresContainer');
+    if (!container) return;
+    const normalized = mode === 'list' ? 'list' : 'grid';
+    container.classList.toggle('list-view', normalized === 'list');
+    container.classList.toggle('grid-view', normalized === 'grid');
+    const toggle = document.getElementById('layoutToggle');
+    if (toggle) toggle.checked = normalized === 'list';
+  }
+
+  function toggleLayout() {
+    const toggle = document.getElementById('layoutToggle');
+    const mode = toggle?.checked ? 'list' : 'grid';
+    const config = saveAppearance({ layout: mode });
+    applyLayout(config.layout);
   }
 
   function applyAppearance(config = readAppearance()) {
@@ -118,6 +131,7 @@
 
     const picker = document.getElementById('bgColorPicker');
     if (picker && config.cor) picker.value = config.cor;
+    applyLayout(config.layout || 'grid');
   }
 
   function migrateLegacyAppearance() {
@@ -128,7 +142,8 @@
 
     saveAppearance({
       imagem: legacyImage || null,
-      cor: legacyImage ? null : legacyColor
+      cor: legacyImage ? null : legacyColor,
+      layout: 'grid'
     });
   }
 
@@ -141,19 +156,15 @@
 
     if (picker && !picker.dataset.rrnBound) {
       picker.dataset.rrnBound = '1';
-      picker.addEventListener('input', event => {
-        const config = saveAppearance({ cor: event.target.value, imagem: null });
-        applyAppearance(config);
-      });
+      picker.addEventListener('input', event => applyAppearance(saveAppearance({ cor: event.target.value, imagem: null })));
     }
 
     if (applyUrl && !applyUrl.dataset.rrnBound) {
       applyUrl.dataset.rrnBound = '1';
       applyUrl.addEventListener('click', () => {
         const url = urlInput?.value.trim();
-        if (!url) return;
-        const config = saveAppearance({ imagem: url, cor: null });
-        applyAppearance(config);
+        if (!url) return alert('Digite uma URL de imagem.');
+        applyAppearance(saveAppearance({ imagem: url, cor: null }));
       });
     }
 
@@ -161,11 +172,10 @@
       applyUpload.dataset.rrnBound = '1';
       applyUpload.addEventListener('click', () => {
         const file = uploadInput.files?.[0];
-        if (!file || !file.type.startsWith('image/')) return;
+        if (!file || !file.type.startsWith('image/')) return alert('Selecione uma imagem válida.');
         const reader = new FileReader();
         reader.onload = event => {
-          const config = saveAppearance({ imagem: event.target.result, cor: null });
-          applyAppearance(config);
+          applyAppearance(saveAppearance({ imagem: event.target.result, cor: null }));
           if (urlInput) urlInput.value = '';
         };
         reader.readAsDataURL(file);
@@ -176,7 +186,6 @@
   function enhanceSettings() {
     const modal = document.getElementById('configModal');
     if (!modal) return;
-
     modal.classList.add('rrn-settings');
 
     const title = modal.querySelector('.modal-title');
@@ -196,21 +205,17 @@
         left.appendChild(workspace);
       }
       const data = settingsWorkspaceContent();
-      workspace.innerHTML = `
-        <span>Workspace ativo</span>
-        <strong>${escapeHtml(data.tenantName)}</strong>
-        <small>${escapeHtml(data.role)} · contexto atual do inventário</small>`;
+      workspace.innerHTML = `<span>Workspace ativo</span><strong>${escapeHtml(data.tenantName)}</strong><small>${escapeHtml(data.role)} · contexto atual do inventário</small>`;
     }
 
     const right = modal.querySelector('.modal-right');
     if (right) {
       right.classList.add('rrn-settings-content');
       right.querySelectorAll(':scope > h3').forEach(heading => heading.classList.add('rrn-settings-label'));
-      const background = right.querySelector('.box-bg-selector');
-      if (background) background.classList.add('rrn-appearance-card');
+      right.querySelector('.box-bg-selector')?.classList.add('rrn-appearance-card');
     }
 
-    const save = document.querySelector('.save-btn');
+    const save = modal.querySelector('.save-btn') || document.querySelector('.save-btn');
     if (save) {
       save.textContent = 'Concluir';
       save.classList.add('rrn-settings-save');
@@ -235,20 +240,15 @@
     normalizeActionClasses();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
-  } else {
-    boot();
-  }
+  window.toggleLayout = toggleLayout;
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
 
   window.addEventListener('load', () => {
     enhanceSettings();
     updateOverview();
   });
 
-  window.RRN_UI = Object.freeze({
-    updateOverview,
-    enhanceSettings,
-    applyAppearance
-  });
+  window.RRN_UI = Object.freeze({ updateOverview, enhanceSettings, applyAppearance, applyLayout });
 })();
