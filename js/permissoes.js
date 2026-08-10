@@ -1,101 +1,52 @@
-// js/permissoes.js
+// Helper de permissões para páginas que ainda importam este módulo.
+// Não cria usuários, não grava senha e não concede perfil administrativo.
+
+function readCompatUser() {
+  try {
+    return JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
+  } catch {
+    return null;
+  }
+}
+
+function currentRole() {
+  return window.RRN_SESSION?.role || readCompatUser()?.perfil || null;
+}
 
 export function verificarPermissoes() {
-  const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-  const adminMenu = document.getElementById("adminMenu");
+  const role = currentRole();
+  const adminMenu = document.getElementById('adminMenu');
+  const canOperate = role === 'admin' || role === 'operador';
+  const isAdmin = role === 'admin';
 
-  if (!usuario || !adminMenu) return;
+  if (adminMenu) adminMenu.style.display = isAdmin ? 'block' : 'none';
 
-  // Mostrar botão para admin e editor (se quiser só admin, tire o editor)
-  if (usuario.perfil === "admin" || usuario.perfil === "") {
-    adminMenu.style.display = "block";
-  } else {
-    adminMenu.style.display = "none";
-  }
-}
-
-
-localStorage.setItem("usuarioLogado", JSON.stringify({ nome: "AdmRubertt", perfil: "admin" }));
-function abrirPaginaUsuarios() {
-  window.location.href = 'usuarios.html'; // Ou o caminho correto do seu arquivo
-}
-
-
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-
-    if (!usuarioLogado) {
-      alert("Você precisa estar logado!");
-      window.location.href = 'index.html';
-      return;
-    }
-
-    // Mostra o menu somente se o usuário for admin ou editor
-    if (usuarioLogado.perfil === 'admin' || usuarioLogado.perfil === 'editor') {
-      document.getElementById("adminMenu").style.display = "block";
-    }
+  document.querySelectorAll('.admin-only').forEach(element => {
+    element.style.display = isAdmin ? '' : 'none';
   });
 
-  function abrirPaginaUsuarios() {
-    window.location.href = 'usuarios.html';
-  }
+  document.querySelectorAll('.operador-only').forEach(element => {
+    element.style.display = canOperate ? '' : 'none';
+  });
 
-
-  function verificarLogin() {
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-  if (!usuarioLogado || !usuarioLogado.nome) {
-    alert('Você precisa estar logado para acessar esta página.');
-    window.location.href = 'login.html'; // Ajuste para o nome correto do seu arquivo de login
-  }
+  return { role, canOperate, isAdmin };
 }
 
-// Chama a verificação na carga da página
-verificarLogin();
+export function abrirPaginaUsuarios() {
+  if (currentRole() !== 'admin') return false;
+  location.href = 'usuarios.html';
+  return true;
+}
 
-// Garante que, se o usuário usar o botão voltar do navegador, a checagem também será feita
-window.addEventListener('pageshow', (event) => {
-  if (event.persisted) {
-    verificarLogin();
+export async function logout() {
+  if (typeof window.RRN_SECURE_LOGOUT === 'function') {
+    await window.RRN_SECURE_LOGOUT();
+    return;
   }
-});
-
-
-function logout() {
   localStorage.removeItem('usuarioLogado');
-  window.location.href = 'index.html'; // vai pro login de novo
+  location.replace('index.html');
 }
 
-
-
-let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-// Função para garantir superadmin
-function garantirSuperAdmin() {
-  const existeSuperAdmin = usuarios.some(u => u.nome === 'superadmin');
-  if (!existeSuperAdmin) {
-    usuarios.unshift({ nome: 'superadmin', senha: 'suP3r@dm1n!', perfil: 'admin' });
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-  }
-}
-
-// Chama antes de validar login
-garantirSuperAdmin();
-
-// Depois faça a validação com a lista 'usuarios' já atualizada
-function tentarLogin(nomeDigitado, senhaDigitada) {
-  let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  garantirSuperAdmin();  // Garante superadmin sempre antes da validação
-
-  // Recarrega lista atualizada após garantir superadmin
-  usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  const usuario = usuarios.find(u => u.nome.toLowerCase() === nomeDigitado.toLowerCase() && u.senha === senhaDigitada);
-  if (usuario) {
-    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-    // Redireciona ou faz o que precisa no login
-  } else {
-    alert('Usuário ou senha incorretos!');
-  }
+if (typeof window !== 'undefined') {
+  window.verificarPermissoesV2 = verificarPermissoes;
 }
