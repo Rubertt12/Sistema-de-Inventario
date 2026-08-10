@@ -1,4 +1,4 @@
 window.RRN_SUPABASE = Object.freeze({
-  url: 'https://SEU-PROJETO.supabase.co',
-  anonKey: 'SUA_CHAVE_ANON_PUBLICA'
+  url: 'https://tvfiicmwkddpswgbjyok.supabase.co',
+  anonKey: 'sb_publishable_eSgCaCymJo0c2MIuPN1_fw_9bnI-pN9'
 });
