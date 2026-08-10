@@ -121,6 +121,7 @@
       await load('/js/maintenance-panel.js');
       await load('/js/scanner.js');
       await load('/js/asset-history.js');
+      await load('/js/dashboard-hotfix.js');
       await load('/js/trash-v2.js');
       await load('/js/backup-v3.js');
       await load('/js/insights.js');
