@@ -39,6 +39,12 @@ create table if not exists public.tenant_inventory_state (
   updated_at timestamptz not null default now()
 );
 
+-- Permissões de tabela. O RLS abaixo continua sendo a barreira de segurança.
+grant select on public.tenants to authenticated;
+grant select, update on public.profiles to authenticated;
+grant select, insert, update, delete on public.tenant_invitations to authenticated;
+grant select, insert, update, delete on public.tenant_inventory_state to authenticated;
+
 create or replace function public.current_tenant_id()
 returns uuid language sql stable security definer set search_path=public as $$
   select tenant_id from public.profiles where user_id=auth.uid() and status='active' limit 1;
