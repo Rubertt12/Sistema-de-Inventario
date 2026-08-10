@@ -1,823 +1,309 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Inventário de Setores</title>
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  
-  <!-- Seu CSS -->
-  <link rel="stylesheet" href="./style/styles.css" />
-  
-  <!-- Favicons -->
-  <link rel="icon" href="./img/icon-png.png" type="image/png" />
-  <link rel="icon" href="./img/icon-png.png" type="image/x-icon" />
-  <link rel="apple-touch-icon" href="./img/icon-png.png" />
-  <link rel="icon" sizes="192x192" href="./img/icon-png.png" />
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RRN Manager · Inventário de Setores</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style/styles.css">
+
+  <link rel="icon" href="./img/icon-png.png" type="image/png">
+  <link rel="apple-touch-icon" href="./img/icon-png.png">
 </head>
+<body>
+  <h3 class="dashboard-actions">
+    <button id="addSetorBtn" class="operador-only" type="button" onclick="addSetor()">Adicionar Setor ➕</button>
+    <button class="operador-only" type="button" onclick="abrirModalTransferencia()">🔄 Transferir Máquinas</button>
+    <div id="painelManutencao" class="recolhido" aria-live="polite"></div>
+  </h3>
 
+  <header class="navbar">
+    <h1>
+      <img src="./img/icon-png.png" alt="" class="navbar-icon">
+      RRN Manager
+    </h1>
 
+    <button class="menu-toggle" type="button" onclick="toggleMenu()" aria-label="Abrir menu">☰</button>
 
-<body onload="verificarPermissoes()">
-  
-  <body>
-    
-    <h3>
-      <button id="addSetorBtn" class="operador-only" onclick="addSetor()">Adicionar Setor ➕</button>
-      
-      <button onclick="abrirModalTransferencia()">🔄 Transferir Máquinas</button>
-      <div id="painelManutencao" class="recolhido"></div>
-    </h3>
-    <header class="navbar">
-      <h1>
-        <img src="./img/icon-png.png" alt="Ícone" class="navbar-icon" /> RRN Manager
-      </h1>
-      
-      <!-- Botão do Menu Hamburguer -->
-      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-      
-      <!-- Navegação -->
-      <nav class="nav-links">
-        <!-- Filtro de pesquisa -->
-        <input
-        type="text"
+    <nav class="nav-links" aria-label="Navegação principal">
+      <input
+        type="search"
         id="searchInput"
         onkeyup="filterMachines()"
         placeholder="Pesquisar máquinas..."
         aria-label="Pesquisar máquinas"
-        autocomplete="off"
-        />
-        
-        
-        <!-- Menu do usuário -->
-        <div class="user-menu" onclick="toggleUserMenu(event)">
-          <img src="./img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar" />
-          <span id="userName">Usuário</span>
-          
-          <div class="user-dropdown" id="userDropdown" hidden>
-            <button onclick="openConfigModal()">⚙️ Configurações</button>
-            
-           
-            
-            <div id="adminMenu" style="display: none;">
-              <button onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
-            </div>
-            
-            <button onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
-              🧨 Excluir os Setores
-            </button>
-            
-    <button class="logout-btn" onclick="logout(this)">
-      <span>🚪 Logout</span>
-    </button>
-  </div>
-</div>
+        autocomplete="off">
 
+      <div class="user-menu" onclick="toggleUserMenu(event)">
+        <img src="./img/avatar.webp" alt="Avatar do usuário" class="user-avatar" id="userAvatar">
+        <span id="userName">Usuário</span>
 
-</header>
+        <div class="user-dropdown" id="userDropdown" hidden>
+          <button type="button" onclick="openConfigModal()">⚙️ Configurações</button>
 
+          <div id="adminMenu" style="display:none;">
+            <button type="button" onclick="abrirPaginaUsuarios()">👥 Gestão de Usuários</button>
+          </div>
 
+          <button type="button" onclick="excluirTodosSetores()" class="excluir-tudo-btn admin-only">
+            🧨 Excluir os Setores
+          </button>
 
-
-
-
-<!-- Modal de Adicionar Setor -->
-<div id="modalSetor" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="fecharModalSetor()" aria-label="Fechar">&times;</span>
-    <h2>Adicionar Setor</h2>
-    <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor" />
-    <button onclick="confirmarAddSetor()">Adicionar</button>
-  </div>
-</div>
-
-
-
-
-<!-- Container dos setores -->
-<main id="setoresContainer" class="list-view">
-  <!-- Setores e máquinas serão inseridos dinamicamente aqui -->
-</main>
-<div id="paginacaoSetores" style="text-align: center; margin-top: 10px;"></div>
-  
-<!-- MODAL: Informações da Máquina -->
-<!-- Modal de Informações da Máquina -->
-<div id="infoModal" class="modal">
-  <div class="modal-content">
-    <button class="close-btn" onclick="closeModal()" aria-label="Fechar">&times;</button>
-    <h2>Informações da Máquina</h2>
-    <p id="modalText"></p>
-    
-    
-    
-    
-    
-    
-    <!-- ...restante do conteúdo do modal -->
-    
-    
-    <section id="maintenanceSection">
-      <h3>Chamado (Observação)</h3>
-      <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
-      
-      <fieldset style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;">
-        <legend style="cursor: pointer; user-select: none;" onclick="toggleChecklist(this)">
-          <strong>Checklist de Manutenção Preventiva</strong> 
-          <span class="arrow" style="float: right;">▼</span>
-        </legend>
-        <div class="checklist-content">
-          <label><input type="checkbox" name="checklist" value="funciona" /> Equipamento funcionando normalmente</label><br />
-          <label><input type="checkbox" name="checklist" value="ligaReinicia" /> Liga e reinicia sem erros</label><br />
-          <label><input type="checkbox" name="checklist" value="semBarulho" /> Sem barulhos estranhos</label><br />
-          <label><input type="checkbox" name="checklist" value="temperaturaNormal" /> Temperatura normal (ao toque)</label><br />
-          <label><input type="checkbox" name="checklist" value="equipamentoLimpo" /> Equipamento limpo (sem poeira visível)</label><br />
+          <button class="logout-btn" type="button" onclick="logout(this)">
+            <span>🚪 Logout</span>
+          </button>
         </div>
-      </fieldset>
-      
-      
-      <label for="priority" style="margin-top: 10px; display: block;">Prioridade:</label>
-      <select id="priority">
-        <option value="Baixa">Baixa</option>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="setoresContainer" class="list-view" aria-live="polite">
+      <!-- Setores e equipamentos são renderizados via JavaScript. -->
+    </section>
+    <div id="paginacaoSetores" style="text-align:center;margin-top:10px;"></div>
+  </main>
+
+  <!-- Adicionar setor -->
+  <div id="modalSetor" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-btn" type="button" onclick="fecharModalSetor()" aria-label="Fechar">&times;</button>
+      <h2>Adicionar Setor</h2>
+      <label for="inputSetorNome">Nome do setor</label>
+      <input type="text" id="inputSetorNome" placeholder="Digite o nome do setor">
+      <button type="button" onclick="confirmarAddSetor()">Adicionar</button>
+    </div>
+  </div>
+
+  <!-- Informações, chamados e manutenção do equipamento -->
+  <div id="infoModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-btn" type="button" onclick="closeModal()" aria-label="Fechar">&times;</button>
+      <h2>Informações da Máquina</h2>
+      <div id="modalText"></div>
+
+      <section id="maintenanceSection">
+        <h3>Chamado (Observação)</h3>
+        <textarea id="observacao" placeholder="Adicione um chamado para manutenção..." rows="4"></textarea>
+
+        <fieldset style="margin-top:10px;border:1px solid #ccc;padding:10px;">
+          <legend style="cursor:pointer;user-select:none;" onclick="toggleChecklist(this)">
+            <strong>Checklist de Manutenção Preventiva</strong>
+            <span class="arrow" style="float:right;">▼</span>
+          </legend>
+          <div class="checklist-content">
+            <label><input type="checkbox" name="checklist" value="funciona"> Equipamento funcionando normalmente</label><br>
+            <label><input type="checkbox" name="checklist" value="ligaReinicia"> Liga e reinicia sem erros</label><br>
+            <label><input type="checkbox" name="checklist" value="semBarulho"> Sem barulhos estranhos</label><br>
+            <label><input type="checkbox" name="checklist" value="temperaturaNormal"> Temperatura normal (ao toque)</label><br>
+            <label><input type="checkbox" name="checklist" value="equipamentoLimpo"> Equipamento limpo (sem poeira visível)</label><br>
+          </div>
+        </fieldset>
+
+        <label for="priority" style="margin-top:10px;display:block;">Prioridade:</label>
+        <select id="priority">
+          <option value="Baixa">Baixa</option>
           <option value="Média">Média</option>
           <option value="Alta">Alta</option>
         </select>
-        
-        <button style="margin-top: 10px;" onclick="saveObservation()">Salvar Chamado</button>
-      </section>
-      
-      <section id="observationsList" style="margin-top: 20px;">
-        <h3>Chamados Anteriores</h3>
-        <ul
-        id="observationsUl"
-        style="max-height: 250px; overflow-y: auto; list-style: none; padding-left: 0;"
-        
-        >
-      <div id="pagination"></div></ul>
-        
 
+        <button type="button" style="margin-top:10px;" onclick="saveObservation()">Salvar Chamado</button>
       </section>
-      
-      <div
-      id="maintenanceMessage"
-      style="display: none; margin-top: 15px; color: rgb(221, 212, 212); font-weight: bold;border-radius: 10px;"
-      >
-      <p>A máquina foi marcada para manutenção.</p>
-    </div>
-    
-    <!-- Botões de ação -->
-    <div class="modal-actions" style="margin-top: 20px;">
-      <button id="maintenanceBtn" onclick="markForMaintenance()">Manutenção</button>
-        <button id="releaseBtn" onclick="releaseMachine()" style="display: none;">Liberar</button>
-        <button id="close-btn" onclick="closeModal()"> Fechar</button>
-        
+
+      <section id="observationsList" style="margin-top:20px;">
+        <h3>Chamados Anteriores</h3>
+        <ul id="observationsUl" style="max-height:250px;overflow-y:auto;list-style:none;padding-left:0;"></ul>
+        <div id="pagination"></div>
+      </section>
+
+      <div id="maintenanceMessage" style="display:none;margin-top:15px;color:rgb(221,212,212);font-weight:bold;border-radius:10px;">
+        <p>A máquina foi marcada para manutenção.</p>
       </div>
-     
+
+      <div class="modal-actions" style="margin-top:20px;">
+        <button id="maintenanceBtn" type="button" onclick="markForMaintenance()">Manutenção</button>
+        <button id="releaseBtn" type="button" onclick="releaseMachine()" style="display:none;">Liberar</button>
+        <button id="close-btn" type="button" onclick="closeModal()">Fechar</button>
+      </div>
     </div>
   </div>
 
+  <!-- Configurações -->
+  <div id="configModal" class="config-modal" hidden>
+    <button class="close-btn" type="button" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
+    <h2 class="modal-title">Configurações</h2>
 
-  
-  
-  <div id="configModal" class="config-modal">
-  <button class="close-btn" onclick="closeConfigModal()" aria-label="Fechar">&times;</button>
-  
-  <h2 class="modal-title">Configurações</h2>
-  
-  <div class="modal-left">
-    <!-- Trocar foto do perfil -->
-    <div class="profile-picture-section">
-      <img src="./img/avatar.webp" alt="Foto de Perfil" id="profilePic" />
-      
-      <input
-        type="file"
-        id="profilePicInput"
-        accept="image/*"
-        onchange="changeProfilePicture(event)"
-        />
+    <div class="modal-left">
+      <div class="profile-picture-section">
+        <img src="./img/avatar.webp" alt="Foto de Perfil" id="profilePic">
+        <input type="file" id="profilePicInput" accept="image/*" onchange="changeProfilePicture(event)">
       </div>
       <label for="profilePicInput" class="upload-btn">Alterar Foto</label>
     </div>
 
+    <div class="modal-right">
+      <h3>DADOS JSON</h3>
+      <button type="button" onclick="exportarBackupJSON()">📤 Exportar Backup (JSON)</button>
+      <button type="button" onclick="document.getElementById('jsonInput').click()">📥 Importar Backup (JSON)</button>
+      <input type="file" id="jsonInput" accept=".json" onchange="importarBackupJSON(event)" style="display:none;">
 
-    
-  
-  <div class="modal-right">
-    <h3>DADOS JSON</h3>
-    <button onclick="exportarBackupJSON()">📤 Exportar Backup (JSON)</button>
-    <button onclick="document.getElementById('jsonInput').click()">📥 Importar Backup (JSON)</button>
-    <input type="file" id="jsonInput" accept=".json" onchange="importarBackupJSON(event)" style="display:none;" />
-    
-    <h3>DADOS CSV</h3>
-    <button onclick="importFromCSVButton()">Importar CSV</button>
-    <button onclick="exportToCSV()">Exportar para CSV</button>
-    <input type="file" id="csvInput" accept=".csv" style="display: none;" onchange="importFromCSV(event)">
-    
-    <div class="box-bg-selector" style="margin-top: 20px; padding: 20px; border-radius: 12px; background: #f9f9f9; box-shadow: 0 4px 12px rgb(0 0 0 / 0.1); max-width: 700px;">
-      <h3 style="margin-top: px; font-weight: 600; font-size: 1.25rem; color: #333;">Alterar Fundo da Dashboard</h3>
-      <div class="box-switch">
-                  <h3>Alterar Layout</h3>
-                  <label class="switch">
-                    <input type="checkbox" id="layoutToggle" onchange="toggleLayout()" />
-                    <span class="slider"></span>
-                  </label>
-                  <!-- Seletor de cor para background -->
-                  
-                </div>
-      
-      <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
-        <!-- Input URL da imagem -->
-        <input
-        type="text"
-        id="bgImageUrl"
-        placeholder="Coloque URL da imagem"
-        style="flex: 1 1 250px; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #ccc; font-size: 1rem; transition: border-color 0.3s;"
-        onfocus="this.style.borderColor='#007bff'"
-        onblur="this.style.borderColor='#ccc'"
-        />
-        <button
-        id="applyBgImageUrlBtn"
-        style="padding: 10px 18px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; box-shadow: 0 2px 6px rgb(0 123 255 / 0.5); transition: background 0.3s;"
-        onmouseover="this.style.background='#0056b3'"
-        onmouseout="this.style.background='#007bff'"
-        >
-        Aplicar URL
-      </button>
-      
-      <!-- Input Upload local -->
-      <label for="bgImageUpload" style="cursor: pointer; background: #e9ecef; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 1rem; box-shadow: inset 0 2px 5px rgb(0 0 0 / 0.1); user-select: none;">
-        📁 Upload Imagem
-      </label>
-    <input type="file" id="bgImageUpload" accept="image/*" style="display: none;" />
-    <button
-      id="applyBgUploadBtn"
-      style="padding: 10px 18px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; box-shadow: 0 2px 6px rgb(40 167 69 / 0.5); transition: background 0.3s;"
-      onmouseover="this.style.background='#1e7e34'"
-      onmouseout="this.style.background='#28a745'"
-    >
-      Aplicar Upload
-    </button>
-    
-    <!-- Seletor de cor -->
-    <input
-      type="color"
-      id="bgColorPicker"
-      title="Escolha a cor do background"
-      style="width: 48px; height: 48px; border-radius: 12px; border: 2px solid #ccc; cursor: pointer; transition: border-color 0.3s;"
-      onmouseover="this.style.borderColor='#007bff'"
-      onmouseout="this.style.borderColor='#ccc'"
-      />
+      <h3>DADOS CSV</h3>
+      <button type="button" onclick="importFromCSVButton()">Importar CSV</button>
+      <button type="button" onclick="exportToCSV()">Exportar para CSV</button>
+      <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="importFromCSV(event)">
+
+      <div class="box-bg-selector" style="margin-top:20px;padding:20px;border-radius:12px;background:#f9f9f9;box-shadow:0 4px 12px rgb(0 0 0 / .1);max-width:700px;">
+        <h3 style="font-weight:600;font-size:1.25rem;color:#333;">Alterar Fundo da Dashboard</h3>
+
+        <div class="box-switch">
+          <h3>Alterar Layout</h3>
+          <label class="switch">
+            <input type="checkbox" id="layoutToggle" onchange="toggleLayout()">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
+          <input
+            type="text"
+            id="bgImageUrl"
+            placeholder="Coloque URL da imagem"
+            style="flex:1 1 250px;padding:10px 14px;border-radius:8px;border:1.5px solid #ccc;font-size:1rem;">
+
+          <button id="applyBgImageUrlBtn" type="button">Aplicar URL</button>
+
+          <label for="bgImageUpload" style="cursor:pointer;background:#e9ecef;padding:10px 18px;border-radius:8px;font-weight:600;font-size:1rem;user-select:none;">
+            📁 Upload Imagem
+          </label>
+          <input type="file" id="bgImageUpload" accept="image/*" style="display:none;">
+          <button id="applyBgUploadBtn" type="button">Aplicar Upload</button>
+
+          <input type="color" id="bgColorPicker" title="Escolha a cor do background" style="width:48px;height:48px;border-radius:12px;border:2px solid #ccc;cursor:pointer;">
+        </div>
+      </div>
+    </div>
+
+    <button class="save-btn" type="button" onclick="closeConfigModal()">Salvar Configurações</button>
   </div>
 
-  
-</div>
+  <!-- Adicionar equipamento -->
+  <div id="modalMaquina" class="modal" style="display:none;">
+    <div class="modal-content">
+      <button class="close-btn" type="button" onclick="fecharModalMaquina()" aria-label="Fechar">&times;</button>
+      <h2>Adicionar Equipamento</h2>
 
-</div>
-<button class="save-btn" onclick="closeConfigModal()">Salvar Configurações</button>
-  </div>
- <!-- Modal Adicionar Máquina/Monitor -->
-<div id="modalMaquina" class="modal" style="display: none;">
-  <div class="modal-content">
-    <h2>Adicionar Equipamento</h2>
-
-    <label for="tipoEquipamento">Tipo:</label>
-    <select id="tipoEquipamento" onchange="trocarCampos()">
-      <option value="">Selecione</option>
-      <option value="máquina">Máquina</option>
-      <option value="monitor">Monitor</option>
-      <option value="printer">Impressora</option>
-    </select>
-
-    <!-- Campos para Máquina -->
-    <div id="camposMaquina" style="display: none; margin-top: 10px;">
-      <label for="tipoMaquina">Tipo de Máquina:</label>
-      <select id="tipoMaquina">
+      <label for="tipoEquipamento">Tipo:</label>
+      <select id="tipoEquipamento" onchange="trocarCampos()">
         <option value="">Selecione</option>
-        <option value="Desktop">Desktop</option>
-        <option value="Notebook">Notebook</option>
-        <option value="Workstation">Workstation</option>
+        <option value="máquina">Máquina</option>
+        <option value="monitor">Monitor</option>
+        <option value="printer">Impressora</option>
       </select>
 
-      <label for="usuarioResponsavel" style="margin-top: 10px;">Usuário:</label><br>
-      <input type="text" id="usuarioResponsavel" placeholder="Ex: João Silva" /><br>
+      <div id="camposMaquina" style="display:none;margin-top:10px;">
+        <label for="tipoMaquina">Tipo de Máquina:</label>
+        <select id="tipoMaquina">
+          <option value="">Selecione</option>
+          <option value="Desktop">Desktop</option>
+          <option value="Notebook">Notebook</option>
+          <option value="Workstation">Workstation</option>
+        </select>
 
-      <label for="nomeMaquina" style="margin-top: 10px;">Número de Série:</label><br>
-      <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC" /><br>
+        <label for="usuarioResponsavel" style="margin-top:10px;">Usuário:</label><br>
+        <input type="text" id="usuarioResponsavel" placeholder="Ex: João Silva"><br>
 
-      <label for="etiquetaMaquina" style="margin-top: 10px;">Etiqueta:</label><br>
-      <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001" />
+        <label for="nomeMaquina" style="margin-top:10px;">Número de Série:</label><br>
+        <input type="text" id="nomeMaquina" placeholder="Ex: 12345ABC"><br>
 
-      <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
-    </div>
+        <label for="etiquetaMaquina" style="margin-top:10px;">Etiqueta:</label><br>
+        <input type="text" id="etiquetaMaquina" placeholder="Ex: TI-001">
 
-    <!-- Campos para Monitor -->
-    <div id="camposMonitor" style="display: none; margin-top: 10px;">
-      <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
-      <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123" />
-      <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
-    </div>
-
-    <!-- Campos para Impressora -->
-  <div id="camposPrinter" style="display: none; margin-top: 10px;">
-  
-
-  <label for="nomeImpressora">Nome da Impressora:</label><br>
-  <input type="text" id="nomeImpressora" placeholder="Ex: HP LaserJet 123"><br>
-
-  <label for="etiquetaImpressora">Etiqueta:</label><br>
-  <input type="text" id="etiquetaImpressora" placeholder="Ex: IMP-001"><br>
-
-  <button onclick="abrirScanner()">📷 Ler QR/Barra</button>
-</div>
-
-    <!-- Botões -->
-    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-      <button onclick="fecharModalMaquina()">Cancelar</button>
-      <button onclick="confirmarAddMaquina()">Adicionar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Scanner Modal -->
-<div id="modalScanner"
-     style="display: none; position: fixed; top: 0; left: 0; width: 100%;
-            height: 100%; background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center; align-items: center; z-index: 1000;">
-  <div style="background: white; padding: 20px; border-radius: 10px;">
-    <h3>Escaneie o QR Code ou Código de Barras</h3>
-    <div id="reader" style="width: 300px;"></div>
-    <button onclick="fecharScanner()" style="margin-top: 10px;">Fechar</button>
-  </div>
-</div>
-
-
-<div id="modalTransferencia" class="modal-transferencia">
-  <div class="modal-transferencia-content">
-    <span class="close" onclick="fecharModalTransferencia()">&times;</span>
-    <h2>Transferência de Máquinas</h2>
-
-    <div class="pesquisa-transferencia">
-      <input type="text" id="buscaSetorOrigem" placeholder="Buscar Setor de Origem" oninput="buscarSetorOrigem()" />
-      <input type="text" id="buscaSetorDestino" placeholder="Buscar Setor de Destino" oninput="buscarSetorDestino()" />
-    </div>
-
-    <div class="caixas-transferencia">
-      <div id="setorOrigemBox" class="box-setor">
-        <h3>Setor de Origem</h3>
-        <div id="listaOrigem" class="lista-maquinas"></div>
+        <button type="button" onclick="abrirScanner()">📷 Ler QR/Barra</button>
       </div>
 
-      <div id="setorDestinoBox" class="box-setor" ondragover="event.preventDefault()" ondrop="soltarMaquina(event)">
-        <h3>Setor de Destino</h3>
-        <div id="listaDestino" class="lista-destino"></div>
+      <div id="camposMonitor" style="display:none;margin-top:10px;">
+        <label for="etiquetaMonitor">Etiqueta do Monitor:</label>
+        <input type="text" id="etiquetaMonitor" placeholder="Ex: MON-123">
+        <button type="button" onclick="abrirScanner()">📷 Ler QR/Barra</button>
+      </div>
+
+      <div id="camposPrinter" style="display:none;margin-top:10px;">
+        <label for="nomeImpressora">Nome da Impressora:</label><br>
+        <input type="text" id="nomeImpressora" placeholder="Ex: HP LaserJet 123"><br>
+
+        <label for="etiquetaImpressora">Etiqueta:</label><br>
+        <input type="text" id="etiquetaImpressora" placeholder="Ex: IMP-001"><br>
+
+        <button type="button" onclick="abrirScanner()">📷 Ler QR/Barra</button>
+      </div>
+
+      <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
+        <button type="button" onclick="fecharModalMaquina()">Cancelar</button>
+        <button type="button" onclick="confirmarAddMaquina()">Adicionar</button>
       </div>
     </div>
-
-    <div id="infoTransferencia" class="info-transferencia"></div>
-    <button onclick="confirmarTransferencia()" class="btn-confirmar">Confirmar Transferência</button>
   </div>
-</div>
 
-
-
-<!-- Modal de Informações da Máquina -->
-<div id="infoModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div id="modalText"></div>
-
-    <!-- ✅ Local onde os chamados serão renderizados -->
-    <h3>Chamados Registrados</h3>
-    <ul id="observationsUl"></ul>
-    <div id="pagination"></div>
+  <!-- Scanner -->
+  <div id="modalScanner" style="display:none;position:fixed;inset:0;background-color:rgba(0,0,0,.8);justify-content:center;align-items:center;z-index:1000;">
+    <div style="background:white;padding:20px;border-radius:10px;">
+      <h3>Escaneie o QR Code ou Código de Barras</h3>
+      <div id="reader" style="width:300px;"></div>
+      <button type="button" onclick="fecharScanner()" style="margin-top:10px;">Fechar</button>
+    </div>
   </div>
-</div>
 
+  <!-- Transferência -->
+  <div id="modalTransferencia" class="modal-transferencia">
+    <div class="modal-transferencia-content">
+      <button class="close" type="button" onclick="fecharModalTransferencia()" aria-label="Fechar">&times;</button>
+      <h2>Transferência de Máquinas</h2>
 
+      <div class="pesquisa-transferencia">
+        <input type="text" id="buscaSetorOrigem" placeholder="Buscar Setor de Origem" oninput="buscarSetorOrigem()">
+        <input type="text" id="buscaSetorDestino" placeholder="Buscar Setor de Destino" oninput="buscarSetorDestino()">
+      </div>
 
+      <div class="caixas-transferencia">
+        <div id="setorOrigemBox" class="box-setor">
+          <h3>Setor de Origem</h3>
+          <div id="listaOrigem" class="lista-maquinas"></div>
+        </div>
 
+        <div id="setorDestinoBox" class="box-setor" ondragover="event.preventDefault()" ondrop="soltarMaquina(event)">
+          <h3>Setor de Destino</h3>
+          <div id="listaDestino" class="lista-destino"></div>
+        </div>
+      </div>
 
-  
-  <!-- Scripts externos -->
+      <div id="infoTransferencia" class="info-transferencia"></div>
+      <button type="button" onclick="confirmarTransferencia()" class="btn-confirmar">Confirmar Transferência</button>
+    </div>
+  </div>
+
+  <!-- Todas as manutenções -->
+  <div id="modalTodasManutencoes" class="modal" style="display:none;">
+    <div class="modal-content" style="max-height:80vh;overflow-y:auto;">
+      <button class="close-btn" type="button" onclick="fecharModalTodasManutencoes()" aria-label="Fechar">&times;</button>
+      <h2>Máquinas em Manutenção</h2>
+      <div id="listaTodasManutencoes"></div>
+    </div>
+  </div>
+
+  <!-- Bibliotecas externas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
-  
-  
-  <!-- Seus scripts JS -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+  <!-- Núcleo legado preservado durante a migração -->
   <script src="/js/chamado.js"></script>
   <script src="/js/setores.js"></script>
   <script src="/js/main.js"></script>
-  <script src="/js/index.js"></script>
   <script src="/js/csv.js"></script>
   <script src="/js/script.js"></script>
 
-
-
-  <script>
-   const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-
-  if (!usuario) {
-    alert("Acesso negado! Faça login primeiro.");
-    window.location.href = "index.html";
-  } else {
-    document.getElementById("userName").textContent = usuario.nome;
-    const perfil = usuario.perfil;
-
-if (perfil === "monitoramento" || perfil === "admin") {
-  // Bloqueios para visualizador e admin
-  document.getElementById("addSetorBtn").style.display = "none";
-  document.querySelector(".excluir-tudo-btn").style.display = "none";
- 
-  // resto do código...
-    if (perfil === "admin") {
-    const alterarLayoutBox = document.querySelector('.box-switch');
-    if (alterarLayoutBox) alterarLayoutBox.style.display = 'none';
-  }
-}
-
-
-
-    if (perfil === "monitoramento") {
-      // Remove botões de ação do menu
-      document.getElementById("addSetorBtn").style.display = "none";
-      document.querySelector(".excluir-tudo-btn").style.display = "none";
-
-      // Bloqueia funções de alteração
-      window.addSetor = () => {};
-      window.confirmarAddSetor = () => {};
-      window.confirmarAddMaquina = () => {};
-      window.abrirScanner = () => {};
-      window.saveObservation = () => {};
-      window.markForMaintenance = () => {};
-      window.releaseMachine = () => {};
-
-      // Remove botão de salvar chamado no modal
-      const btnSalvar = document.querySelector('#observacao + select + button');
-      if (btnSalvar) btnSalvar.remove();
-
-      // Remove botões de ação no modal (se existirem)
-      const btnManutencao = document.getElementById("maintenanceBtn");
-      const btnLiberar = document.getElementById("releaseBtn");
-      const btnFechar = document.getElementById("close-btn");
-
-      if (btnManutencao) btnManutencao.remove();
-      if (btnLiberar) btnLiberar.remove();
-
-      // Impede exclusão de chamados
-      const observer = new MutationObserver(() => {
-        const botoesExcluir = document.querySelectorAll(".excluir-chamado");
-        botoesExcluir.forEach(btn => btn.remove());
-      });
-      observer.observe(document.getElementById("observationsUl"), { childList: true, subtree: true });
-    }
-
-    if (perfil === "operador") {
-      
-      
-    }
-  }
-
-
-  
-
-  function logout() {
-    localStorage.removeItem("usuarioLogado");
-    window.location.href = "index.html";
-  }
-
-
-
-</script>
-  
-<script type="module">
-    function verificarPermissoes() {
-      const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-      const adminMenu = document.getElementById("adminMenu");
-      if (!usuario || !adminMenu) return;
-
-      if (usuario.perfil === "admin" || usuario.perfil === "") {
-        adminMenu.style.display = "block";
-      } else {
-        adminMenu.style.display = "none";
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
-      if (!usuarioLogado) {
-        alert("Você precisa estar logado!");
-        window.location.href = "index.html";
-        return;
-      }
-      verificarPermissoes();
-
-     
-    });
-
-
-   const bgColorPicker = document.getElementById('bgColorPicker');
-  const bgImageUrlInput = document.getElementById('bgImageUrl');
-  const applyBgImageUrlBtn = document.getElementById('applyBgImageUrlBtn');
-  const bgImageUploadInput = document.getElementById('bgImageUpload');
-  const applyBgUploadBtn = document.getElementById('applyBgUploadBtn');
-
-  // Aplica cor no background e limpa imagem
-  bgColorPicker.addEventListener('input', (e) => {
-    const corEscolhida = e.target.value;
-    document.body.style.backgroundColor = corEscolhida;
-    document.body.style.backgroundImage = 'none';
-    localStorage.setItem('dashboardBgColor', corEscolhida);
-    localStorage.removeItem('dashboardBgImage');
-  });
-
-  // Aplica imagem via URL
-  applyBgImageUrlBtn.addEventListener('click', () => {
-    const url = bgImageUrlInput.value.trim();
-    if (!url) {
-      alert('Digite a URL da imagem!');
-      return;
-    }
-    document.body.style.backgroundImage = `url('${url}')`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.backgroundPosition = 'center center';
-
-    localStorage.setItem('dashboardBgImage', url);
-    localStorage.removeItem('dashboardBgColor');
-  });
-
-  // Aplica imagem via upload local
-  applyBgUploadBtn.addEventListener('click', () => {
-    const file = bgImageUploadInput.files[0];
-    if (!file) {
-      alert('Selecione uma imagem para upload!');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      document.body.style.backgroundImage = `url('${e.target.result}')`;
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundRepeat = 'no-repeat';
-      document.body.style.backgroundPosition = 'center center';
-
-      localStorage.setItem('dashboardBgImage', e.target.result);
-      localStorage.removeItem('dashboardBgColor');
-      // Limpa campo URL para evitar confusão
-      bgImageUrlInput.value = '';
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Ao carregar a página, aplica fundo salvo
-  window.addEventListener('DOMContentLoaded', () => {
-    const imgSalva = localStorage.getItem('dashboardBgImage');
-    const corSalva = localStorage.getItem('dashboardBgColor');
-
-    if (imgSalva) {
-      document.body.style.backgroundImage = `url('${imgSalva}')`;
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundRepeat = 'no-repeat';
-      document.body.style.backgroundPosition = 'center center';
-      bgImageUrlInput.value = ''; // Limpa campo URL para evitar confusão
-    } else if (corSalva) {
-      document.body.style.backgroundColor = corSalva;
-      document.body.style.backgroundImage = 'none';
-      bgColorPicker.value = corSalva;
-    }
-  });
-
-function verificarLogin() {
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-  if (!usuarioLogado || !usuarioLogado.nome) {
-    alert('Você precisa estar logado para acessar esta página.');
-    window.location.href = 'index.html'; // Ajuste para o nome correto do seu arquivo de login
-  }
-}
-
-// Chama a verificação na carga da página
-verificarLogin();
-
-// Garante que, se o usuário usar o botão voltar do navegador, a checagem também será feita
-window.addEventListener('pageshow', (event) => {
-  if (event.persisted) {
-    verificarLogin();
-  }
-});
-
-let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-// Função para garantir superadmin
-function garantirSuperAdmin() {
-  const existeSuperAdmin = usuarios.some(u => u.nome === 'superadmin');
-  if (!existeSuperAdmin) {
-    usuarios.unshift({ nome: 'superadmin', senha: 'suP3r@dm1n!', perfil: 'admin' });
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-  }
-}
-
-// Chama antes de validar login
-garantirSuperAdmin();
-
-// Depois faça a validação com a lista 'usuarios' já atualizada
-
-function tentarLogin(nomeDigitado, senhaDigitada) {
-  let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  garantirSuperAdmin();  // Garante superadmin sempre antes da validação
-
-  // Recarrega lista atualizada após garantir superadmin
-  usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-  const usuario = usuarios.find(u => u.nome.toLowerCase() === nomeDigitado.toLowerCase() && u.senha === senhaDigitada);
-  if (usuario) {
-    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-    // Redireciona ou faz o que precisa no login
-  } else {
-    alert('Usuário ou senha incorretos!');
-  }
-}
-
-
-
-
-
-  document.addEventListener("DOMContentLoaded", () => {
-  const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
-  if (!usuarioLogado) {
-    alert("Você precisa estar logado!");
-    window.location.href = "index.html";
-    return;
-  }
-  verificarPermissoes();
-  renderPainelManutencao(); // 👈 Adicione isto
-});
-
-
-
-function renderPainelManutencao() {
-  const painel = document.getElementById("painelManutencao");
-  if (!painel) return;
-
-  let maquinasEmManutencao = [];
-  setores.forEach((setor, sIndex) => {
-    setor.maquinas.forEach((m, mIndex) => {
-      if (m.emManutencao) {
-        maquinasEmManutencao.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
-      }
-    });
-  });
-
-  const maquinasVisiveis = maquinasEmManutencao.slice(0, 5);
-
-  painel.innerHTML = `
-    <div class="painel-header" onclick="togglePainelManutencao()">
-      🛠️ Máquinas em Manutenção <span id="painelToggleIcon">◀</span>
-    </div>
-    <div class="painel-conteudo">
-      ${maquinasEmManutencao.length === 0
-        ? '<p style="padding: 10px;">Nenhuma máquina em manutenção.</p>'
-        : maquinasVisiveis.map(m => `
-            <div class="maquina-box">
-              <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
-              <small>Setor: ${m.setorNome}</small><br/>
-              <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
-            </div>
-          `).join('') +
-          (maquinasEmManutencao.length > 5
-            ? `<div style="text-align:center; margin-top: 10px;">
-                 <button onclick="abrirModalTodasManutencoes()">Ver todas (${maquinasEmManutencao.length})</button>
-               </div>`
-            : '')
-      }
-    </div>
-  `;
-}
-
-function abrirModalTodasManutencoes() {
-  const lista = document.getElementById("listaTodasManutencoes");
-  const modal = document.getElementById("modalTodasManutencoes");
-  lista.innerHTML = "";
-
-  let maquinas = [];
-  setores.forEach((setor, sIndex) => {
-    setor.maquinas.forEach((m, mIndex) => {
-      if (m.emManutencao) {
-        maquinas.push({ ...m, setorNome: setor.nome, sIndex, mIndex });
-      }
-    });
-  });
-
-  if (maquinas.length === 0) {
-    lista.innerHTML = "<p>Nenhuma máquina em manutenção.</p>";
-  } else {
-    lista.innerHTML = maquinas.map(m => `
-      <div class="maquina-box">
-        <strong>${m.tipo} - ${m.etiqueta || 'Sem etiqueta'}</strong><br/>
-        <small>Setor: ${m.setorNome}</small><br/>
-        <button onclick="showInfo(${m.sIndex}, ${m.mIndex})">🔍 Ver Detalhes</button>
-      </div>
-    `).join('');
-  }
-
-  modal.style.display = "flex";
-}
-
-function fecharModalTodasManutencoes() {
-  document.getElementById("modalTodasManutencoes").style.display = "none";
-}
-
-
-
-window.onload = () => {
-  const params = new URLSearchParams(window.location.search);
-
-  const hostname = params.get("hostname");
-  const usuario = params.get("usuario");
-  const descricao = params.get("descricao");
-  const etiqueta = params.get("etiqueta");
-  const setor = params.get("setor");
-
-  // Só continua se todos os campos forem válidos
-  if (!hostname || !usuario || !etiqueta || !setor) return;
-
-  // Pega do localStorage ou cria novo
-  let setores = JSON.parse(localStorage.getItem("setores")) || [];
-
-  // Procura setor
-  let setorExistente = setores.find(s => s.nome === setor);
-  if (!setorExistente) {
-    setorExistente = { nome: setor, maquinas: [] };
-    setores.push(setorExistente);
-  }
-
-  // Adiciona máquina
-  setorExistente.maquinas.push({
-    id: Date.now(),
-    hostname,
-    usuarioResponsavel: usuario,
-    descricao,
-    etiqueta,
-    chamado: []
-  });
-
-  localStorage.setItem("setores", JSON.stringify(setores));
-  alert(`Máquina ${etiqueta} adicionada ao setor ${setor}!`);
-};
-
-
-  </script>
-
-<div id="modalTodasManutencoes" class="modal" style="display:none;">
-  <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
-    <button class="close-btn" onclick="fecharModalTodasManutencoes()">×</button>
-    <h2>Máquinas em Manutenção</h2>
-    <div id="listaTodasManutencoes"></div>
-  </div>
-</div>
-
-<!-- Modal de todas manutenções -->
-<div id="modalTodasManutencoes" class="modal">
-  <div class="modal-content">
-    <h2>Máquinas em Manutenção</h2>
-    <div id="listaTodasManutencoes">
-      <div>
-        <strong>Impressora - Sem etiqueta</strong><br/>
-        <small>Setor: RH</small><br/>
-        <button onclick="abrirInfo()">Ver Detalhes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de detalhes -->
-<div id="infoModal" class="modal">
-  <div class="modal-content">
-    <h2>Detalhes da Máquina</h2>
-    <div id="modalText"></div>
-    <button onclick="fecharInfo()">Fechar</button>
-  </div>
-</div>
-
-
-
-
-
-
+  <!-- Bootstrap seguro, UI profissional, tenant e backend v2 -->
+  <script src="/js/index.js"></script>
 </body>
-
-
-
-
-   
-
-  <!-- <footer class="footer-copy">
-    © 2025 Inventário de Setores. Todos os direitos reservados.
-  </footer> -->
-
-
-
-
 </html>
