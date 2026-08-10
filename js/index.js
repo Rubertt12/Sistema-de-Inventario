@@ -105,8 +105,10 @@
   });
 
   (async () => {
-    // No preview da branch, habilita uma sessão Admin e dados locais completos de demonstração.
-    // O módulo ignora produção e só atua no hostname de preview autorizado/local.
+    // Carrega a configuração antes do modo local/preview para que ele só assuma
+    // a URL de produção quando o Supabase ainda não estiver configurado.
+    if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
+
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
     if (isDashboard && window.RRN_PREVIEW_DEMO) {
@@ -125,7 +127,6 @@
       await load('/js/reports-v2.js');
     }
 
-    if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
 
     if (document.getElementById('formLogin')) {
