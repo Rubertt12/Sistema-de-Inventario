@@ -127,6 +127,7 @@
 
     if (isDashboard) {
       await load('/js/tenant-runtime.js');
+      await load('/js/backend-v2.js');
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
