@@ -81,8 +81,6 @@
   function cleanupLegacyMarkup() {
     if (!isDashboard) return;
 
-    // O HTML antigo possuía cópias extras destes modais. Mantemos a primeira,
-    // que é a versão funcional utilizada pelos scripts do inventário.
     ['infoModal', 'modalTodasManutencoes'].forEach(removeDuplicateIds);
 
     const configModal = document.getElementById('configModal');
@@ -94,8 +92,6 @@
     window.verificarPermissoes();
   }
 
-  // Este guard é carregado antes do bloco inline legado do dashboard.
-  // Assim, mesmo antes da remoção física desse bloco, credenciais antigas não voltam a ser persistidas.
   ensureDashboardStyles();
   guardLegacyCredentials();
 
@@ -118,6 +114,7 @@
     if (isDashboard) {
       await load('/js/dashboard-ui.js');
       await load('/js/asset-history.js');
+      await load('/js/backup-v3.js');
     }
 
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
