@@ -2,7 +2,15 @@
   'use strict';
 
   const cfg = window.RRN_SUPABASE || {};
-  if (!window.supabase?.createClient || !/^https:\/\/.+\.supabase\.co$/i.test(cfg.url || '')) return;
+  const configured = /^https:\/\/.+\.supabase\.co$/i.test(cfg.url || '')
+    && Boolean(cfg.anonKey)
+    && !String(cfg.url).includes('SEU-PROJETO')
+    && !String(cfg.anonKey).includes('SUA_CHAVE');
+
+  // O runtime multi-tenant só pode assumir a navegação quando existe um
+  // Supabase real configurado. Em preview/fallback local, preview-demo.js
+  // mantém a sessão local e este módulo deve permanecer totalmente inativo.
+  if (window.RRN_PREVIEW_DEMO || !configured || !window.supabase?.createClient) return;
 
   const client = window.RRN_SUPABASE_CLIENT || window.supabase.createClient(cfg.url, cfg.anonKey, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
@@ -240,6 +248,7 @@
     });
 
     window.RRN_SECURE_LOGOUT = secureLogout;
+    window.dispatchEvent(new CustomEvent('rrn:session-ready', { detail: window.RRN_SESSION }));
 
     if (await hydrate()) return;
     const finish = () => {
