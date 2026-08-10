@@ -9,7 +9,7 @@
   });
   window.RRN_SUPABASE_CLIENT = client;
 
-  const syncKeys = new Set(['setores','chamados','asset_history']);
+  const syncKeys = new Set(['setores','chamados','asset_history','asset_trash']);
   const legacyCredentialKeys = ['usuarios','users','rememberedUser','rememberedPass','loggedUser'];
   let profile = null;
   const originalSetItem = Storage.prototype.setItem;
