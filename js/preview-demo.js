@@ -3,23 +3,30 @@
 
   const host = location.hostname.toLowerCase();
   const params = new URLSearchParams(location.search);
-  const isVercelPreview = host.endsWith('.vercel.app') && host.includes('sistema-de-inventario-git-agent-multi-');
+  const cfg = window.RRN_SUPABASE || {};
+  const supabaseConfigured = /^https:\/\/.+\.supabase\.co$/i.test(cfg.url || '')
+    && Boolean(cfg.anonKey)
+    && !String(cfg.url).includes('SEU-PROJETO')
+    && !String(cfg.anonKey).includes('SUA_CHAVE');
+  const isVercelHost = host.endsWith('.vercel.app');
+  const isVercelPreview = isVercelHost && host.includes('sistema-de-inventario-git-agent-multi-');
   const isLocal = host === 'localhost' || host === '127.0.0.1';
   const requested = params.get('demo') === '1';
-  const enabled = isVercelPreview || ((isVercelPreview || isLocal) && requested);
+  const productionFallback = isVercelHost && !isVercelPreview && !supabaseConfigured;
+  const enabled = isVercelPreview || isLocal || requested || productionFallback;
   if (!enabled) return;
 
   const DEMO_USER = {
     id: 'preview-admin',
-    nome: 'Admin Preview',
-    name: 'Admin Preview',
+    nome: productionFallback ? 'Admin Local' : 'Admin Preview',
+    name: productionFallback ? 'Admin Local' : 'Admin Preview',
     email: 'admin@preview.rrn',
     perfil: 'admin',
     role: 'admin',
     tenant_id: 'preview-tenant',
-    tenant: 'RRN Preview',
+    tenant: productionFallback ? 'RRN Produção Local' : 'RRN Preview',
     tenantId: 'preview-tenant',
-    tenantName: 'RRN Preview',
+    tenantName: productionFallback ? 'RRN Produção Local' : 'RRN Preview',
     demo: true
   };
 
@@ -129,7 +136,7 @@
   ];
 
   const DEMO_MEMBERS = [
-    { user_id: 'preview-admin', name: 'Admin Preview', email: 'admin@preview.rrn', role: 'admin', status: 'active', created_at: '2026-08-01T12:00:00Z' },
+    { user_id: 'preview-admin', name: DEMO_USER.nome, email: 'admin@preview.rrn', role: 'admin', status: 'active', created_at: '2026-08-01T12:00:00Z' },
     { user_id: 'preview-operator', name: 'Operador Demo', email: 'operador@preview.rrn', role: 'operador', status: 'active', created_at: '2026-08-03T14:30:00Z' },
     { user_id: 'preview-monitor', name: 'Monitoramento Demo', email: 'monitoramento@preview.rrn', role: 'monitoramento', status: 'active', created_at: '2026-08-04T10:15:00Z' }
   ];
@@ -185,8 +192,8 @@
         {
           id: 'preview-history-2',
           timestamp: new Date(Date.now() - 5 * 86400000).toISOString(),
-          actorId: 'preview-admin',
-          actorName: 'Admin Preview',
+          actorId: DEMO_USER.id,
+          actorName: DEMO_USER.nome,
           actorRole: 'admin',
           tenantId: 'preview-tenant',
           entityType: 'asset',
@@ -246,7 +253,7 @@
     bar.id = 'rrnPreviewBar';
     bar.setAttribute('role', 'status');
     bar.innerHTML = `
-      <div><strong>PREVIEW COMPLETO</strong><span>Admin de demonstração · dados ficam somente neste navegador</span></div>
+      <div><strong>${productionFallback ? 'MODO LOCAL COMPLETO' : 'PREVIEW COMPLETO'}</strong><span>${productionFallback ? 'Produção publicada · Supabase ainda não conectado · dados ficam neste navegador' : 'Admin de demonstração · dados ficam somente neste navegador'}</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button type="button" data-users>Gestão de usuários</button>
         <button type="button" data-reset>Reiniciar demonstração</button>
@@ -275,9 +282,9 @@
     const box = document.createElement('section');
     box.id = 'rrnPreviewEntry';
     box.innerHTML = `
-      <strong>Preview completo disponível</strong>
-      <small>Entre como Administrador de demonstração para testar inventário, manutenção, histórico, lixeira, relatórios, configurações e usuários.</small>
-      <button type="button">Acessar preview completo</button>`;
+      <strong>${productionFallback ? 'Sistema completo disponível em modo local' : 'Preview completo disponível'}</strong>
+      <small>${productionFallback ? 'O sistema está publicado em produção. Enquanto o Supabase não estiver configurado, inventário, manutenção, histórico, lixeira, relatórios, configurações e usuários funcionam localmente neste navegador.' : 'Entre como Administrador de demonstração para testar inventário, manutenção, histórico, lixeira, relatórios, configurações e usuários.'}</small>
+      <button type="button">${productionFallback ? 'Acessar sistema completo' : 'Acessar preview completo'}</button>`;
     Object.assign(box.style, {
       marginTop:'16px', padding:'14px', borderRadius:'12px', background:'rgba(242,191,79,.18)',
       border:'1px solid rgba(242,191,79,.65)', display:'grid', gap:'8px'
@@ -297,7 +304,9 @@
     const notice = document.getElementById('backendNotice');
     if (notice) {
       notice.hidden = false;
-      notice.textContent = 'Preview em modo demonstração. O acesso completo abaixo funciona localmente; Supabase ainda não está conectado.';
+      notice.textContent = productionFallback
+        ? 'Produção publicada em modo local completo. Supabase ainda não está conectado; os dados permanecem neste navegador.'
+        : 'Preview em modo demonstração. O acesso completo abaixo funciona localmente; Supabase ainda não está conectado.';
     }
   }
 
@@ -354,7 +363,7 @@
       user.role = normalized;
       writeJson('rrn_demo_members', membersNow);
       renderDemoMembers();
-      toast('Perfil alterado no preview.');
+      toast('Perfil alterado no modo local.');
     }));
 
     body.querySelectorAll('[data-demo-status]').forEach(button => button.addEventListener('click', () => {
@@ -364,7 +373,7 @@
       user.status = user.status === 'active' ? 'inactive' : 'active';
       writeJson('rrn_demo_members', membersNow);
       renderDemoMembers();
-      toast('Status alterado no preview.');
+      toast('Status alterado no modo local.');
     }));
   }
 
@@ -390,10 +399,12 @@
     const notice = document.getElementById('pageNotice');
     if (notice) {
       notice.hidden = false;
-      notice.textContent = 'Modo Preview: gestão de usuários simulada localmente. Nenhum e-mail é enviado e nenhum usuário real é criado.';
+      notice.textContent = productionFallback
+        ? 'Modo local de produção: gestão de usuários simulada neste navegador. Nenhum e-mail é enviado e nenhum usuário real é criado até o Supabase ser conectado.'
+        : 'Modo Preview: gestão de usuários simulada localmente. Nenhum e-mail é enviado e nenhum usuário real é criado.';
     }
-    document.getElementById('tenantName').textContent = 'RRN Preview';
-    document.getElementById('currentAdmin').textContent = 'Admin Preview · administrador de demonstração';
+    document.getElementById('tenantName').textContent = DEMO_USER.tenant;
+    document.getElementById('currentAdmin').textContent = `${DEMO_USER.nome} · administrador local`;
     renderDemoMembers();
     renderDemoInvites();
 
@@ -418,7 +429,7 @@
         document.getElementById('inviteResult').hidden = false;
         form.reset();
         renderDemoInvites();
-        toast('Convite simulado criado.');
+        toast('Convite local criado.');
       }, true);
     }
 
@@ -440,13 +451,13 @@
         event.stopImmediatePropagation();
         renderDemoMembers();
         renderDemoInvites();
-        toast('Dados de demonstração atualizados.');
+        toast('Dados locais atualizados.');
       }, true);
     }
   }
 
   window.RRN_PREVIEW_DEMO = true;
-  window.RRN_PREVIEW = Object.freeze({ enabled: true, seed, reset, demoUser: DEMO_USER });
+  window.RRN_PREVIEW = Object.freeze({ enabled: true, productionFallback, seed, reset, demoUser: DEMO_USER });
   seed(false);
 
   function boot() {
