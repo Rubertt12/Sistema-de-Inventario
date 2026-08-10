@@ -8,6 +8,7 @@
     && !String(cfg.anonKey).includes('SUA_CHAVE');
 
   const authRedirectUrl = `${location.origin}/index.html`;
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const setMessage = (el, text = '', type = '') => {
     if (!el) return;
@@ -52,8 +53,15 @@
     });
   });
 
-  const requestedMode = new URLSearchParams(location.search).get('mode');
+  const params = new URLSearchParams(location.search);
+  const requestedMode = params.get('mode');
   if (requestedMode === 'register') switchTab('register');
+  const inviteFromUrl = params.get('invite');
+  if (inviteFromUrl) {
+    switchTab('register');
+    const field = document.getElementById('registerInvite');
+    if (field) field.value = inviteFromUrl;
+  }
 
   if (!configured || !window.supabase?.createClient) {
     const notice = document.getElementById('backendNotice');
@@ -72,15 +80,24 @@
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
 
-  async function getProfile(userId) {
-    const { data, error } = await client
-      .from('profiles')
-      .select('user_id,tenant_id,name,email,role,status,tenants(name,slug)')
-      .eq('user_id', userId)
-      .single();
-    if (error) throw error;
-    if (!data || data.status !== 'active') throw new Error('Seu acesso está inativo.');
-    return data;
+  async function getProfile(userId, attempts = 6) {
+    let lastError = null;
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      const { data, error } = await client
+        .from('profiles')
+        .select('user_id,tenant_id,name,email,role,status,tenants(name,slug)')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (!error && data) {
+        if (data.status !== 'active') throw new Error('Seu acesso está inativo.');
+        return data;
+      }
+
+      lastError = error || new Error('Perfil ainda não disponível.');
+      if (attempt < attempts - 1) await sleep(220 * (attempt + 1));
+    }
+    throw lastError || new Error('Não foi possível carregar seu perfil.');
   }
 
   function saveCompat(profile) {
@@ -102,6 +119,7 @@
     const password = document.getElementById('loginSenha')?.value || '';
 
     if (!email || !password) return setMessage(msg, 'Informe e-mail e senha.', 'error');
+    setMessage(msg);
     setBusy(button, true, 'Autenticando...');
 
     try {
@@ -112,6 +130,7 @@
       sessionStorage.removeItem('rrn_hydrated_tenant');
       location.replace('dashboard.html');
     } catch (error) {
+      if (/acesso está inativo/i.test(error.message || '')) await client.auth.signOut().catch(() => undefined);
       setMessage(msg, /Invalid login credentials/i.test(error.message || '')
         ? 'E-mail ou senha inválidos.'
         : (error.message || 'Não foi possível entrar.'), 'error');
@@ -135,6 +154,7 @@
     if (!organization && !invite) return setMessage(msg, 'Informe a organização ou um código de convite.', 'error');
     if (!accepted) return setMessage(msg, 'Confirme que você está autorizado a criar ou ingressar no workspace.', 'error');
 
+    setMessage(msg);
     setBusy(button, true, 'Criando acesso...');
     try {
       const { data, error } = await client.auth.signUp({
@@ -155,8 +175,10 @@
       }
 
       document.getElementById('formRegister')?.reset();
-      setMessage(msg, 'Cadastro criado. Confirme seu e-mail e depois faça login.', 'success');
+      const loginEmail = document.getElementById('loginEmail');
+      if (loginEmail) loginEmail.value = email;
       switchTab('login');
+      setMessage(document.getElementById('loginMsg'), 'Cadastro criado. Confirme seu e-mail e depois entre com sua senha.', 'success');
     } catch (error) {
       setMessage(msg, error.message || 'Não foi possível criar o acesso.', 'error');
     } finally {
@@ -171,6 +193,7 @@
       saveCompat(profile);
       location.replace('dashboard.html');
     } catch (error) {
+      if (/acesso está inativo/i.test(error.message || '')) await client.auth.signOut().catch(() => undefined);
       console.warn(error);
     }
   });
