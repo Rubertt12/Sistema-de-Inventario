@@ -76,6 +76,103 @@
     return { tenantName, role };
   }
 
+  function tenantId() {
+    if (window.RRN_SESSION?.tenantId) return window.RRN_SESSION.tenantId;
+    try {
+      return JSON.parse(localStorage.getItem('usuarioLogado') || '{}').tenant_id || 'local';
+    } catch {
+      return 'local';
+    }
+  }
+
+  function appearanceKey() {
+    return `dashboardBgConfig_${tenantId()}`;
+  }
+
+  function readAppearance() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(appearanceKey()) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveAppearance(next) {
+    const current = readAppearance();
+    const value = { ...current, ...next };
+    localStorage.setItem(appearanceKey(), JSON.stringify(value));
+    return value;
+  }
+
+  function applyAppearance(config = readAppearance()) {
+    if (config.imagem) {
+      document.body.style.backgroundImage = `url('${config.imagem}')`;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundPosition = 'center center';
+    } else {
+      document.body.style.backgroundImage = 'none';
+      if (config.cor) document.body.style.backgroundColor = config.cor;
+    }
+
+    const picker = document.getElementById('bgColorPicker');
+    if (picker && config.cor) picker.value = config.cor;
+  }
+
+  function migrateLegacyAppearance() {
+    if (localStorage.getItem(appearanceKey())) return;
+    const legacyImage = localStorage.getItem('dashboardBgImage');
+    const legacyColor = localStorage.getItem('dashboardBgColor');
+    if (!legacyImage && !legacyColor) return;
+
+    saveAppearance({
+      imagem: legacyImage || null,
+      cor: legacyImage ? null : legacyColor
+    });
+  }
+
+  function bindAppearanceControls() {
+    const picker = document.getElementById('bgColorPicker');
+    const urlInput = document.getElementById('bgImageUrl');
+    const applyUrl = document.getElementById('applyBgImageUrlBtn');
+    const uploadInput = document.getElementById('bgImageUpload');
+    const applyUpload = document.getElementById('applyBgUploadBtn');
+
+    if (picker && !picker.dataset.rrnBound) {
+      picker.dataset.rrnBound = '1';
+      picker.addEventListener('input', event => {
+        const config = saveAppearance({ cor: event.target.value, imagem: null });
+        applyAppearance(config);
+      });
+    }
+
+    if (applyUrl && !applyUrl.dataset.rrnBound) {
+      applyUrl.dataset.rrnBound = '1';
+      applyUrl.addEventListener('click', () => {
+        const url = urlInput?.value.trim();
+        if (!url) return;
+        const config = saveAppearance({ imagem: url, cor: null });
+        applyAppearance(config);
+      });
+    }
+
+    if (applyUpload && uploadInput && !applyUpload.dataset.rrnBound) {
+      applyUpload.dataset.rrnBound = '1';
+      applyUpload.addEventListener('click', () => {
+        const file = uploadInput.files?.[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = event => {
+          const config = saveAppearance({ imagem: event.target.result, cor: null });
+          applyAppearance(config);
+          if (urlInput) urlInput.value = '';
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  }
+
   function enhanceSettings() {
     const modal = document.getElementById('configModal');
     if (!modal) return;
@@ -119,6 +216,10 @@
       save.classList.add('rrn-settings-save');
       if (save.parentElement !== modal) modal.appendChild(save);
     }
+
+    migrateLegacyAppearance();
+    bindAppearanceControls();
+    applyAppearance();
   }
 
   function normalizeActionClasses() {
@@ -147,6 +248,7 @@
 
   window.RRN_UI = Object.freeze({
     updateOverview,
-    enhanceSettings
+    enhanceSettings,
+    applyAppearance
   });
 })();
