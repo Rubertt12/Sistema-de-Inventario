@@ -123,6 +123,7 @@
     if (root instanceof Element && root.matches('.rrn-machine-icon')) candidates.push(root);
     root.querySelectorAll?.('.rrn-machine-icon').forEach(el => candidates.push(el));
     candidates.forEach(el => {
+      if (el.dataset.rrnSvgIcon) return;
       const text = el.textContent || '';
       const icon = text.includes('💻') ? 'laptop'
         : text.includes('🖨') ? 'printer'
@@ -134,7 +135,7 @@
 
   function decorateToggle() {
     const toggle = document.getElementById('painelToggleIcon');
-    if (!toggle) return;
+    if (!toggle || toggle.dataset.rrnSvgIcon) return;
     const text = toggle.textContent || '';
     decorate(toggle, text.includes('◀') ? 'chevronLeft' : 'chevronRight');
   }
