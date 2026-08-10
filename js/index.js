@@ -16,6 +16,7 @@
   function ensureDashboardStyles() {
     addStylesheet('/style/enterprise.css', 'data-rrn-enterprise');
     addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
+    addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
   }
 
   function containsPlaintextPassword(value) {
@@ -116,6 +117,7 @@
   (async () => {
     if (isDashboard) {
       await load('/js/dashboard-ui.js');
+      await load('/js/asset-history.js');
     }
 
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
