@@ -36,12 +36,13 @@
   function exportBackup() {
     downloadJson({
       product: 'RRN Manager',
-      version: 3,
+      version: 4,
       exportedAt: new Date().toISOString(),
       tenantId: currentTenant(),
       setores: inventoryData(),
       chamados: safeParse('chamados', []),
-      asset_history: safeParse('asset_history', [])
+      asset_history: safeParse('asset_history', []),
+      asset_trash: safeParse('asset_trash', [])
     });
   }
 
@@ -67,8 +68,9 @@
         localStorage.setItem('setores', JSON.stringify(data.setores));
         localStorage.setItem('chamados', JSON.stringify(Array.isArray(data.chamados) ? data.chamados : []));
         localStorage.setItem('asset_history', JSON.stringify(Array.isArray(data.asset_history) ? data.asset_history : []));
+        localStorage.setItem('asset_trash', JSON.stringify(Array.isArray(data.asset_trash) ? data.asset_trash : []));
 
-        alert('Backup restaurado com setores, equipamentos, chamados e histórico de alterações.');
+        alert('Backup restaurado com setores, equipamentos, chamados, histórico e lixeira.');
         location.reload();
       } catch (error) {
         if (!/cancelada/i.test(error.message || '')) alert(`Não foi possível importar o backup: ${error.message}`);
