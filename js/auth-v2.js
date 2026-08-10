@@ -7,18 +7,6 @@
     && !String(cfg.url).includes('SEU-PROJETO')
     && !String(cfg.anonKey).includes('SUA_CHAVE');
 
-  if (!configured || !window.supabase?.createClient) {
-    const notice = document.getElementById('backendNotice');
-    if (notice) notice.hidden = false;
-    document.getElementById('loginButton')?.setAttribute('disabled','disabled');
-    document.getElementById('registerButton')?.setAttribute('disabled','disabled');
-    return;
-  }
-
-  const client = window.supabase.createClient(cfg.url, cfg.anonKey, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-  });
-
   const setMessage = (el, text = '', type = '') => {
     if (!el) return;
     el.textContent = text;
@@ -32,6 +20,50 @@
     button.disabled = state;
     button.textContent = state ? text : button.dataset.originalText;
   };
+
+  function switchTab(target) {
+    const login = target === 'login';
+    document.getElementById('formLogin')?.classList.toggle('active', login);
+    document.getElementById('formRegister')?.classList.toggle('active', !login);
+    document.getElementById('tabLogin')?.classList.toggle('active', login);
+    document.getElementById('tabRegister')?.classList.toggle('active', !login);
+    document.getElementById('tabLogin')?.setAttribute('aria-selected', String(login));
+    document.getElementById('tabRegister')?.setAttribute('aria-selected', String(!login));
+    const title = document.getElementById('authTitle');
+    const subtitle = document.getElementById('authSubtitle');
+    if (title) title.textContent = login ? 'Acessar workspace' : 'Criar acesso';
+    if (subtitle) subtitle.textContent = login
+      ? 'Entre com seu e-mail corporativo e senha.'
+      : 'Crie uma organização ou ingresse usando um convite.';
+  }
+
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.target));
+  });
+
+  document.querySelectorAll('[data-toggle-password]').forEach(button => {
+    button.addEventListener('click', () => {
+      const input = document.getElementById(button.dataset.togglePassword);
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+      button.textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
+    });
+  });
+
+  const requestedMode = new URLSearchParams(location.search).get('mode');
+  if (requestedMode === 'register') switchTab('register');
+
+  if (!configured || !window.supabase?.createClient) {
+    const notice = document.getElementById('backendNotice');
+    if (notice) notice.hidden = false;
+    document.getElementById('loginButton')?.setAttribute('disabled','disabled');
+    document.getElementById('registerButton')?.setAttribute('disabled','disabled');
+    return;
+  }
+
+  const client = window.supabase.createClient(cfg.url, cfg.anonKey, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
 
   async function getProfile(userId) {
     const { data, error } = await client
@@ -54,33 +86,6 @@
       tenant: profile.tenants?.name || 'Workspace'
     }));
   }
-
-  function switchTab(target) {
-    const login = target === 'login';
-    document.getElementById('formLogin')?.classList.toggle('active', login);
-    document.getElementById('formRegister')?.classList.toggle('active', !login);
-    document.getElementById('tabLogin')?.classList.toggle('active', login);
-    document.getElementById('tabRegister')?.classList.toggle('active', !login);
-    const title = document.getElementById('authTitle');
-    const subtitle = document.getElementById('authSubtitle');
-    if (title) title.textContent = login ? 'Acessar workspace' : 'Criar acesso';
-    if (subtitle) subtitle.textContent = login
-      ? 'Entre com seu e-mail corporativo e senha.'
-      : 'Crie uma organização ou ingresse usando um convite.';
-  }
-
-  document.querySelectorAll('.auth-tab').forEach(tab => {
-    tab.addEventListener('click', () => switchTab(tab.dataset.target));
-  });
-
-  document.querySelectorAll('[data-toggle-password]').forEach(button => {
-    button.addEventListener('click', () => {
-      const input = document.getElementById(button.dataset.togglePassword);
-      if (!input) return;
-      input.type = input.type === 'password' ? 'text' : 'password';
-      button.textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
-    });
-  });
 
   document.getElementById('formLogin')?.addEventListener('submit', async event => {
     event.preventDefault();
