@@ -7,6 +7,8 @@
     && !String(cfg.url).includes('SEU-PROJETO')
     && !String(cfg.anonKey).includes('SUA_CHAVE');
 
+  const authRedirectUrl = `${location.origin}/index.html`;
+
   const setMessage = (el, text = '', type = '') => {
     if (!el) return;
     el.textContent = text;
@@ -138,7 +140,10 @@
       const { data, error } = await client.auth.signUp({
         email,
         password,
-        options: { data: { name, organization_name: organization || '', invite_code: invite || '' } }
+        options: {
+          emailRedirectTo: authRedirectUrl,
+          data: { name, organization_name: organization || '', invite_code: invite || '' }
+        }
       });
       if (error) throw error;
 
