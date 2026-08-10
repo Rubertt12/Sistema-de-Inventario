@@ -160,3 +160,194 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('setores', JSON.stringify(lista));
   }
 });
+
+// ====================================================================
+// Experiência visual Setor -> Equipamentos
+// Mantém as funções e os dados legados, alterando somente a renderização.
+// ====================================================================
+
+function rrnEscapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+}
+
+function rrnEquipmentIcon(tipo) {
+  const value = String(tipo || '').toLowerCase();
+  if (value.includes('notebook')) return '💻';
+  if (value.includes('monitor')) return '🖥️';
+  if (value.includes('impress')) return '🖨️';
+  if (value.includes('workstation')) return '🧰';
+  return '🖥️';
+}
+
+function rrnRoleCanOperate() {
+  const sessionRole = window.RRN_SESSION?.role;
+  if (sessionRole) return sessionRole !== 'monitoramento';
+  try {
+    return JSON.parse(localStorage.getItem('usuarioLogado') || '{}').perfil !== 'monitoramento';
+  } catch {
+    return true;
+  }
+}
+
+function rrnInstallSectorRenderer() {
+  if (typeof setores === 'undefined' || typeof setoresVisiveis === 'undefined') return false;
+  if (window.__RRN_SECTOR_RENDERER_V2__) return true;
+
+  window.__RRN_SECTOR_RENDERER_V2__ = true;
+
+  window.renderSetores = function renderSetoresRRN(termoBusca = null) {
+    const container = document.getElementById('setoresContainer');
+    if (!container) return;
+
+    const termo = String(termoBusca || '').trim().toLowerCase();
+    const listaSetores = Array.isArray(setores) ? setores : [];
+    const indicesBase = setoresFiltradosIndices ?? listaSetores.map((_, index) => index);
+    const indicesParaMostrar = indicesBase.filter(index => {
+      const setor = listaSetores[index];
+      if (!setor) return false;
+      if (!termo) return true;
+      if (String(setor.nome || '').toLowerCase().includes(termo)) return true;
+      return (setor.maquinas || []).some(maquina => [
+        maquina.nome,
+        maquina.tipo,
+        maquina.etiqueta,
+        maquina.usuarioResponsavel
+      ].some(value => String(value || '').toLowerCase().includes(termo)));
+    });
+
+    container.innerHTML = '';
+
+    if (!indicesParaMostrar.length) {
+      container.innerHTML = `
+        <div class="rrn-empty-state">
+          <span>🔎</span>
+          <strong>Nenhum setor ou equipamento encontrado</strong>
+          <small>Tente outro termo de pesquisa ou crie um novo setor.</small>
+        </div>`;
+      document.getElementById('setoresPaginacao')?.remove();
+      return;
+    }
+
+    const porPagina = typeof setoresPorPagina === 'number' && setoresPorPagina > 0 ? setoresPorPagina : 10;
+    const totalPaginas = Math.max(1, Math.ceil(indicesParaMostrar.length / porPagina));
+    if (typeof paginaSetoresAtual !== 'number' || paginaSetoresAtual < 1) paginaSetoresAtual = 1;
+    if (paginaSetoresAtual > totalPaginas) paginaSetoresAtual = totalPaginas;
+
+    const inicio = (paginaSetoresAtual - 1) * porPagina;
+    const indicesPaginados = indicesParaMostrar.slice(inicio, inicio + porPagina);
+    const podeOperar = rrnRoleCanOperate();
+
+    indicesPaginados.forEach(setorIndex => {
+      const setor = listaSetores[setorIndex];
+      if (!setor) return;
+      if (!Array.isArray(setor.maquinas)) setor.maquinas = [];
+
+      const setorMatch = termo && String(setor.nome || '').toLowerCase().includes(termo);
+      const maquinasFiltradas = termo && !setorMatch
+        ? setor.maquinas.filter(maquina => [
+            maquina.nome,
+            maquina.tipo,
+            maquina.etiqueta,
+            maquina.usuarioResponsavel
+          ].some(value => String(value || '').toLowerCase().includes(termo)))
+        : setor.maquinas;
+
+      const emManutencao = setor.maquinas.filter(maquina => maquina.emManutencao).length;
+      const aberto = Boolean(setoresVisiveis[setorIndex]) || Boolean(termo);
+      const card = document.createElement('section');
+      card.className = 'setor rrn-setor-card';
+      card.dataset.setorIndex = String(setorIndex);
+      card.ondragover = event => event.preventDefault();
+      card.ondrop = event => typeof dropMachine === 'function' && dropMachine(event, setorIndex);
+
+      const itens = maquinasFiltradas.map(maquina => {
+        const maquinaIndex = setor.maquinas.indexOf(maquina);
+        const statusClass = maquina.emManutencao ? 'maintenance' : 'online';
+        const statusLabel = maquina.emManutencao ? 'Em manutenção' : 'Operando';
+        const usuario = maquina.usuarioResponsavel
+          ? `<span class="rrn-machine-user">👤 ${rrnEscapeHtml(maquina.usuarioResponsavel)}</span>`
+          : '';
+        const etiqueta = maquina.etiqueta
+          ? `<span class="rrn-machine-tag">🏷️ ${rrnEscapeHtml(maquina.etiqueta)}</span>`
+          : '';
+
+        return `
+          <article class="rrn-machine-item ${statusClass}" draggable="${podeOperar ? 'true' : 'false'}"
+            ${podeOperar ? `ondragstart="dragStart(event, ${setorIndex}, ${maquinaIndex})"` : ''}>
+            <div class="rrn-machine-icon" aria-hidden="true">${rrnEquipmentIcon(maquina.tipo)}</div>
+            <div class="rrn-machine-main">
+              <div class="rrn-machine-title-row">
+                <strong>${rrnEscapeHtml(maquina.nome || 'Equipamento sem nome')}</strong>
+                <span class="rrn-status ${statusClass}">${statusLabel}</span>
+              </div>
+              <div class="rrn-machine-meta">
+                <span>${rrnEscapeHtml(maquina.tipo || 'Equipamento')}</span>
+                ${etiqueta}
+                ${usuario}
+              </div>
+            </div>
+            <div class="rrn-machine-actions">
+              <button type="button" class="rrn-btn rrn-btn-info" onclick="showInfo(${setorIndex}, ${maquinaIndex})">Info</button>
+              ${podeOperar ? `<button type="button" class="rrn-btn rrn-btn-danger operador-only" onclick="removeMaquina(${setorIndex}, ${maquinaIndex})">Excluir</button>` : ''}
+            </div>
+          </article>`;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="setor-header rrn-setor-header">
+          <div class="rrn-setor-title">
+            <span class="rrn-setor-icon" aria-hidden="true">🏢</span>
+            <div>
+              <h2>${rrnEscapeHtml(setor.nome || 'Setor sem nome')}</h2>
+              <div class="rrn-setor-summary">
+                <span>${setor.maquinas.length} ${setor.maquinas.length === 1 ? 'equipamento' : 'equipamentos'}</span>
+                ${emManutencao ? `<span class="rrn-maintenance-count">${emManutencao} em manutenção</span>` : '<span class="rrn-all-ok">Tudo operando</span>'}
+              </div>
+            </div>
+          </div>
+          ${podeOperar ? `
+          <div class="rrn-setor-admin operador-only">
+            <button type="button" class="rrn-icon-btn" onclick="editSetorName(${setorIndex})" title="Renomear setor">✏️</button>
+            <button type="button" class="rrn-icon-btn danger" onclick="removeSetor(${setorIndex})" title="Excluir setor">🗑️</button>
+          </div>` : ''}
+        </div>
+
+        <div class="rrn-setor-toolbar">
+          ${podeOperar ? `<button type="button" class="rrn-btn rrn-btn-primary operador-only" onclick="abrirModalMaquina(${setorIndex})">＋ Adicionar equipamento</button>` : ''}
+          <button type="button" class="rrn-btn rrn-btn-secondary" onclick="toggleMachines(${setorIndex})">
+            ${aberto ? 'Ocultar equipamentos' : `Mostrar equipamentos (${setor.maquinas.length})`}
+          </button>
+        </div>
+
+        <div id="maquinas-${setorIndex}" class="rrn-machines-list" style="display:${aberto ? 'grid' : 'none'}">
+          ${itens || `
+            <div class="rrn-sector-empty">
+              <span>📦</span>
+              <div><strong>Este setor ainda está vazio</strong><small>${podeOperar ? 'Use “Adicionar equipamento” para começar.' : 'Nenhum equipamento cadastrado neste setor.'}</small></div>
+            </div>`}
+        </div>`;
+
+      container.appendChild(card);
+    });
+
+    if (typeof renderizarPaginacaoSetores === 'function') {
+      renderizarPaginacaoSetores(totalPaginas);
+    }
+  };
+
+  return true;
+}
+
+// Instala depois que todos os scripts legados já declararam suas funções.
+window.addEventListener('load', () => {
+  if (!rrnInstallSectorRenderer()) return;
+  setTimeout(() => {
+    if (typeof window.renderSetores === 'function') window.renderSetores();
+  }, 80);
+});
