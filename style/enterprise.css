@@ -1,1 +1,219 @@
-:root{--rrn-navy:#11254b;--rrn-blue:#3167d8;--rrn-bg:#f4f7fb;--rrn-surface:#fff;--rrn-border:#dfe7f1;--rrn-text:#172033;--rrn-muted:#67748a;--rrn-shadow:0 18px 48px rgba(20,38,70,.12)}html,body{font-family:Inter,Poppins,system-ui,sans-serif!important;color:var(--rrn-text)}body{background-color:var(--rrn-bg)!important;background-attachment:fixed}.navbar{min-height:72px;padding:0 24px!important;border-bottom:1px solid #dfe7f1;background:rgba(255,255,255,.95)!important;box-shadow:0 8px 28px rgba(15,23,42,.06)!important;backdrop-filter:blur(16px)}.navbar h1{display:flex;align-items:center;gap:10px;color:var(--rrn-navy)!important;font-weight:700!important;letter-spacing:-.03em}.navbar-icon{border-radius:10px}.nav-links input[type=text]{min-height:42px;border:1px solid var(--rrn-border)!important;border-radius:11px!important;padding:0 14px!important;background:#f8fafc!important;color:var(--rrn-text)!important;box-shadow:none!important}.nav-links input[type=text]:focus{outline:0;border-color:var(--rrn-blue)!important;box-shadow:0 0 0 4px rgba(49,103,216,.1)!important}.user-menu{border-radius:12px;padding:7px 10px}.user-menu:hover{background:#f3f6fb}.user-avatar{border:2px solid #e3eaf4!important;box-shadow:none!important}.user-dropdown{min-width:230px;padding:8px!important;border:1px solid var(--rrn-border)!important;border-radius:14px!important;background:#fff!important;box-shadow:var(--rrn-shadow)!important}.user-dropdown button{width:100%;border:0!important;border-radius:10px!important;padding:10px 12px!important;text-align:left;color:#334155!important;background:transparent!important;box-shadow:none!important}.user-dropdown button:hover{background:#f1f5f9!important}.rrn-tenant-pill{display:inline-flex;align-items:center;gap:7px;margin-left:10px;padding:5px 9px;border:1px solid #dce6f3;border-radius:999px;color:#4d5d75;background:#f7f9fc;font-size:.7rem;font-weight:700;vertical-align:middle}.rrn-tenant-pill:before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e}#setoresContainer{padding:24px!important;gap:18px!important}#setoresContainer .setor,.setor-card,.machine-card,.maquina-box{border:1px solid var(--rrn-border)!important;border-radius:16px!important;background:rgba(255,255,255,.97)!important;box-shadow:0 8px 24px rgba(15,23,42,.06)!important}.modal-content,.modal-transferencia-content{border:1px solid var(--rrn-border)!important;border-radius:18px!important;background:#fff!important;box-shadow:var(--rrn-shadow)!important}#configModal.rrn-settings{position:fixed!important;inset:0!important;z-index:9999!important;width:100%!important;height:100%!important;max-width:none!important;padding:28px!important;background:rgba(15,23,42,.56)!important;backdrop-filter:blur(8px);overflow:auto!important;grid-template-columns:minmax(230px,300px) minmax(430px,680px);grid-template-rows:auto auto 1fr auto;column-gap:22px;row-gap:14px;align-items:center!important;justify-content:center!important}#configModal.rrn-settings[style*="display: flex"],#configModal.rrn-settings[style*="display:flex"]{display:grid!important}#configModal.rrn-settings:before{content:"";position:absolute;left:50%;top:50%;width:min(1050px,calc(100vw - 48px));height:min(760px,calc(100vh - 48px));transform:translate(-50%,-50%);border:1px solid var(--rrn-border);border-radius:24px;background:#f8fafc;box-shadow:0 26px 90px rgba(15,23,42,.3)}#configModal.rrn-settings>*{position:relative;z-index:2}#configModal.rrn-settings .modal-title{grid-column:1/-1;width:min(990px,calc(100vw - 90px));margin:0 auto!important;color:var(--rrn-navy)!important;font-size:1.55rem!important;letter-spacing:-.03em}#configModal.rrn-settings .rrn-settings-subtitle{grid-column:1/-1;width:min(990px,calc(100vw - 90px));margin:-8px auto 4px;color:var(--rrn-muted);font-size:.82rem}#configModal.rrn-settings .modal-left{grid-column:1;grid-row:3;width:100%!important;max-width:none!important;min-width:0!important;align-self:stretch;justify-content:flex-start!important;padding:22px!important;border:1px solid var(--rrn-border);border-radius:17px;background:#fff}#configModal.rrn-settings .profile-picture-section img{width:112px!important;height:112px!important;border:4px solid #eef3f9!important;box-shadow:none!important}#configModal.rrn-settings .upload-btn{border:1px solid #dce5f0!important;border-radius:10px!important;padding:9px 13px!important;color:#34445d!important;background:#f8fafc!important;font-size:.78rem!important;font-weight:700!important}.rrn-workspace-card{width:100%;padding:14px;border:1px solid #e3eaf3;border-radius:13px;background:#f8fafc}.rrn-workspace-card span,.rrn-workspace-card strong,.rrn-workspace-card small{display:block}.rrn-workspace-card span{color:var(--rrn-muted);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.rrn-workspace-card strong{margin-top:5px;color:var(--rrn-navy);font-size:.92rem}.rrn-workspace-card small{margin-top:4px;color:var(--rrn-muted);font-size:.72rem}#configModal.rrn-settings .modal-right{grid-column:2;grid-row:3;width:100%!important;max-height:min(570px,calc(100vh - 190px));overflow:auto;padding:22px!important;border:1px solid var(--rrn-border);border-radius:17px;background:#fff}#configModal.rrn-settings .modal-right>h3{margin:4px 0 10px!important;color:var(--rrn-muted)!important;font-size:.7rem!important;letter-spacing:.1em;text-transform:uppercase}#configModal.rrn-settings .modal-right>button,#configModal.rrn-settings .box-bg-selector button{margin:0 6px 8px 0!important;padding:9px 12px!important;border:1px solid #dce5f0!important;color:#30425f!important;background:#f8fafc!important;box-shadow:none!important;font-size:.78rem!important;font-weight:700!important}#configModal.rrn-settings .box-bg-selector{max-width:none!important;margin-top:18px!important;padding:18px!important;border:1px solid #e3eaf3!important;border-radius:14px!important;background:#fbfcfe!important;box-shadow:none!important}#configModal.rrn-settings input[type=text]{min-height:42px;border:1px solid #d8e2ee!important;border-radius:10px!important;box-shadow:none!important}#configModal.rrn-settings .save-btn{grid-column:1/-1;grid-row:4;justify-self:end;width:auto!important;margin:0!important;padding:10px 18px!important;border:0!important;border-radius:10px!important;color:#fff!important;background:var(--rrn-navy)!important;box-shadow:0 8px 18px rgba(17,37,75,.18)!important;font-weight:700!important}@media(max-width:850px){#configModal.rrn-settings{padding:26px!important;grid-template-columns:1fr;grid-template-rows:auto auto auto 1fr auto}#configModal.rrn-settings:before{width:calc(100vw - 22px);height:calc(100vh - 22px)}#configModal.rrn-settings .modal-title,#configModal.rrn-settings .rrn-settings-subtitle{width:100%}#configModal.rrn-settings .modal-left{grid-column:1;grid-row:3}#configModal.rrn-settings .modal-right{grid-column:1;grid-row:4;max-height:46vh}#configModal.rrn-settings .save-btn{grid-column:1;grid-row:5}}
+:root {
+  --rrn-blue: #295991;
+  --rrn-lilac: #ED9EF5;
+  --rrn-yellow: #F2BF4F;
+  --rrn-beige: #DED9C4;
+  --rrn-ink: #26374f;
+  --rrn-border: rgba(41, 89, 145, 0.22);
+  --rrn-shadow: 0 12px 30px rgba(41, 89, 145, 0.13);
+}
+
+/*
+ * Esta folha NÃO substitui a identidade do dashboard original.
+ * Ela apenas refina componentes e adiciona os elementos multi-tenant.
+ */
+
+html,
+body {
+  font-family: 'Poppins', Inter, system-ui, sans-serif;
+}
+
+/* Mantém o navbar, fundo, cartões e comportamento de setores do styles.css original. */
+
+.rrn-tenant-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding: 5px 9px;
+  border: 1px solid rgba(41, 89, 145, 0.26);
+  border-radius: 999px;
+  color: var(--rrn-blue);
+  background: rgba(242, 191, 79, 0.72);
+  font-size: 0.68rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.rrn-tenant-pill::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+/* Refinamento sutil dos setores sem trocar a linguagem visual original. */
+#setoresContainer .setor {
+  border-color: rgba(41, 89, 145, 0.34) !important;
+  box-shadow: 0 8px 22px rgba(41, 89, 145, 0.10) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#setoresContainer .setor:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(41, 89, 145, 0.15) !important;
+}
+
+#setoresContainer .setor-header {
+  border-bottom-color: rgba(41, 89, 145, 0.16) !important;
+}
+
+#setoresContainer .setor-header h2 {
+  color: var(--rrn-blue) !important;
+}
+
+/* Máquinas continuam aparecendo DENTRO de cada setor. */
+#setoresContainer [id^='maquinas-'] > div {
+  margin: 8px 4px !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(41, 89, 145, 0.20) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.45);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+#setoresContainer [id^='maquinas-'] > div:hover {
+  transform: translateX(2px);
+  box-shadow: 0 5px 14px rgba(41, 89, 145, 0.10);
+}
+
+/* Botões dos setores preservam as cores da marca. */
+#setoresContainer .setor > button,
+#setoresContainer .setor-header button {
+  border-radius: 9px !important;
+  font-weight: 600 !important;
+}
+
+/* ================================
+   CONFIGURAÇÕES — mesma identidade
+   ================================ */
+
+#configModal.rrn-settings {
+  border-color: var(--rrn-blue) !important;
+  background: var(--rrn-beige) !important;
+  box-shadow: 0 24px 70px rgba(41, 89, 145, 0.28) !important;
+}
+
+#configModal.rrn-settings .modal-title {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-yellow) !important;
+}
+
+#configModal.rrn-settings .rrn-settings-subtitle {
+  margin: 0 auto 14px;
+  max-width: 600px;
+  color: rgba(41, 89, 145, 0.78);
+  text-align: center;
+  font-size: 0.80rem;
+  line-height: 1.5;
+}
+
+#configModal.rrn-settings .modal-left,
+#configModal.rrn-settings .modal-right {
+  border-radius: 14px;
+}
+
+#configModal.rrn-settings .modal-left {
+  padding: 18px !important;
+  border: 1px solid rgba(41, 89, 145, 0.18);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+#configModal.rrn-settings .modal-right {
+  padding: 14px !important;
+}
+
+#configModal.rrn-settings .profile-picture-section img {
+  border-color: var(--rrn-yellow) !important;
+}
+
+#configModal.rrn-settings .upload-btn {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-lilac) !important;
+}
+
+#configModal.rrn-settings .upload-btn:hover {
+  background: var(--rrn-yellow) !important;
+}
+
+.rrn-workspace-card {
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px 14px;
+  border: 1px solid rgba(41, 89, 145, 0.25);
+  border-radius: 12px;
+  color: var(--rrn-blue);
+  background: rgba(242, 191, 79, 0.36);
+}
+
+.rrn-workspace-card span,
+.rrn-workspace-card strong,
+.rrn-workspace-card small {
+  display: block;
+}
+
+.rrn-workspace-card span {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rrn-workspace-card strong {
+  margin-top: 4px;
+  font-size: 0.92rem;
+}
+
+.rrn-workspace-card small {
+  margin-top: 3px;
+  opacity: 0.72;
+  font-size: 0.70rem;
+}
+
+#configModal.rrn-settings .box-bg-selector {
+  border: 1px solid rgba(41, 89, 145, 0.18) !important;
+  background: rgba(255, 255, 255, 0.38) !important;
+  box-shadow: none !important;
+}
+
+#configModal.rrn-settings .modal-right > button,
+#configModal.rrn-settings .box-bg-selector button {
+  border: none !important;
+  color: #fff !important;
+  background: var(--rrn-blue) !important;
+  box-shadow: 0 3px 8px rgba(41, 89, 145, 0.18) !important;
+}
+
+#configModal.rrn-settings .modal-right > button:hover,
+#configModal.rrn-settings .box-bg-selector button:hover {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-lilac) !important;
+}
+
+#configModal.rrn-settings .save-btn {
+  color: var(--rrn-blue) !important;
+  background: var(--rrn-yellow) !important;
+  font-weight: 700 !important;
+}
+
+#configModal.rrn-settings .save-btn:hover {
+  color: #fff !important;
+  background: var(--rrn-blue) !important;
+}
+
+/* Perfis de acesso: visualização não ganha controles de alteração. */
+body[data-rrn-role='monitoramento'] .operador-only,
+body[data-rrn-role='monitoramento'] .admin-only {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .rrn-tenant-pill {
+    margin-left: 0;
+  }
+
+  #configModal.rrn-settings .rrn-settings-subtitle {
+    text-align: left;
+  }
+}
