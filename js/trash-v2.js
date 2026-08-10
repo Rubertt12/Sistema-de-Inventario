@@ -284,8 +284,12 @@
 
   function decorateDeleteButtons() {
     document.querySelectorAll('.rrn-machine-actions .rrn-btn-danger').forEach(button => {
-      button.textContent = 'Lixeira';
-      button.title = 'Mover equipamento para a lixeira';
+      // Idempotente: o observer escuta childList. Reescrever textContent em toda
+      // callback criava uma nova mutação e prendia a thread do navegador em loop.
+      if (button.dataset.rrnTrashDecorated === '1') return;
+      button.dataset.rrnTrashDecorated = '1';
+      if (button.textContent !== 'Lixeira') button.textContent = 'Lixeira';
+      if (button.title !== 'Mover equipamento para a lixeira') button.title = 'Mover equipamento para a lixeira';
     });
   }
 
