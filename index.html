@@ -1,58 +1,147 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Acesso ao Sistema</title>
-  <link rel="stylesheet" href="/style/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RRN Manager | Acesso</title>
+  <meta name="description" content="Acesso seguro ao RRN Manager" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style/style.css" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
 <body>
+  <main class="auth-shell">
+    <section class="brand-panel" aria-label="Apresentação">
+      <div class="brand-mark">
+        <img src="/img/icon-png.png" alt="RRN Manager" />
+        <span>RRN Manager</span>
+      </div>
 
-  <div id="loadingOverlay" class="loading-overlay">
-    <div class="loader-wrapper">
-      <img src="/img/icon-png.png" alt="Logo" class="loader-logo">
+      <div class="brand-copy">
+        <span class="eyebrow">Gestão de ativos e inventário</span>
+        <h1>Inventário organizado, acesso seguro e dados separados por empresa.</h1>
+        <p>Uma base única para setores, equipamentos, manutenção, usuários e operação diária — agora preparada para múltiplos tenants.</p>
+      </div>
+
+      <div class="security-note">
+        <span class="security-dot"></span>
+        <div>
+          <strong>Autenticação real</strong>
+          <small>Senhas deixam de ser armazenadas no navegador.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-card" id="authCard">
+        <div class="mobile-brand">
+          <img src="/img/icon-png.png" alt="RRN Manager" />
+          <span>RRN Manager</span>
+        </div>
+
+        <header class="auth-header">
+          <span class="eyebrow">Área segura</span>
+          <h2 id="authTitle">Acessar workspace</h2>
+          <p id="authSubtitle">Entre com seu e-mail corporativo e senha.</p>
+        </header>
+
+        <div id="backendNotice" class="notice notice-warning" hidden>
+          O backend ainda não foi configurado. Preencha <code>js/supabase-config.js</code> antes de usar esta versão.
+        </div>
+
+        <div class="auth-tabs" role="tablist" aria-label="Acesso e cadastro">
+          <button type="button" class="auth-tab active" id="tabLogin" data-target="login" role="tab" aria-selected="true">Entrar</button>
+          <button type="button" class="auth-tab" id="tabRegister" data-target="register" role="tab" aria-selected="false">Criar conta</button>
+        </div>
+
+        <form id="formLogin" class="auth-form active" novalidate>
+          <label class="field">
+            <span>E-mail</span>
+            <input type="email" id="loginEmail" placeholder="nome@empresa.com" autocomplete="email" required />
+          </label>
+
+          <label class="field">
+            <span>Senha</span>
+            <div class="password-field">
+              <input type="password" id="loginSenha" placeholder="Sua senha" autocomplete="current-password" required />
+              <button type="button" class="password-toggle" data-toggle-password="loginSenha" aria-label="Mostrar ou ocultar senha">Mostrar</button>
+            </div>
+          </label>
+
+          <button type="submit" class="btn-primary" id="loginButton">
+            <span>Entrar no sistema</span>
+          </button>
+          <p class="form-message" id="loginMsg" role="status"></p>
+        </form>
+
+        <form id="formRegister" class="auth-form" novalidate>
+          <div class="form-grid two-columns">
+            <label class="field">
+              <span>Seu nome</span>
+              <input type="text" id="registerName" placeholder="Nome completo" autocomplete="name" required />
+            </label>
+
+            <label class="field">
+              <span>E-mail</span>
+              <input type="email" id="registerEmail" placeholder="nome@empresa.com" autocomplete="email" required />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Senha</span>
+            <div class="password-field">
+              <input type="password" id="registerPassword" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" minlength="8" required />
+              <button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Mostrar ou ocultar senha">Mostrar</button>
+            </div>
+          </label>
+
+          <div class="divider"><span>Escolha uma forma de entrada</span></div>
+
+          <label class="field">
+            <span>Nome da organização</span>
+            <input type="text" id="registerOrganization" placeholder="Ex.: Empresa ABC" />
+            <small>Use este campo para criar um novo tenant. O primeiro usuário será administrador.</small>
+          </label>
+
+          <label class="field">
+            <span>Código de convite</span>
+            <input type="text" id="registerInvite" placeholder="Cole aqui se você recebeu um convite" autocomplete="off" />
+            <small>Se houver código de convite, o tenant do convite será utilizado e o nome da organização será ignorado.</small>
+          </label>
+
+          <label class="terms-check">
+            <input type="checkbox" id="acceptTerms" required />
+            <span>Confirmo que estou autorizado a criar ou ingressar neste workspace.</span>
+          </label>
+
+          <button type="submit" class="btn-primary" id="registerButton">
+            <span>Criar acesso</span>
+          </button>
+          <p class="form-message" id="registerMsg" role="status"></p>
+        </form>
+
+        <footer class="auth-footer">
+          <span>RRN Manager</span>
+          <span class="footer-separator">•</span>
+          <span>Multi-tenant</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <div id="appLoading" class="app-loading" hidden>
+    <div class="loading-card">
+      <img src="/img/icon-png.png" alt="" />
       <div class="spinner"></div>
-    </div>
-    
-    <div class="loading-content">
-      <p id="loadingText">Iniciando sistema...</p>
-      <div class="progress-bar-container">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
+      <strong id="loadingText">Validando acesso...</strong>
+      <small>Carregando seu workspace com segurança.</small>
     </div>
   </div>
 
-  <div class="login-card" id="loginCard">
-    <div class="logo-area">
-      <img src="/img/icon-png.png" alt="Logo" />
-    </div>
-
-    <form id="formLogin">
-      <div class="input-group">
-        <label>Usuário</label>
-        <input type="text" id="loginUsuario" placeholder="Digite seu usuário" required>
-      </div>
-
-      <div class="input-group">
-        <label>Senha</label>
-        <input type="password" id="loginSenha" placeholder="Digite sua senha" required>
-      </div>
-
-      <div class="options-row">
-        <label class="checkbox-container">
-          <input type="checkbox" id="rememberMe">
-          <span class="checkmark"></span>
-          Lembrar meu acesso
-        </label>
-      </div>
-
-      <button type="submit" class="btn-entrar">Aceder ao Painel</button>
-      <p class="msg" id="loginMsg"></p>
-    </form>
-  </div>
-
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/index.js"></script>
 </body>
 </html>
