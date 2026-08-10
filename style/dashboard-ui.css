@@ -100,6 +100,58 @@
   background: #ED9EF5 !important;
 }
 
+/* Pesquisa principal — visual consistente com a identidade RRN Manager. */
+#searchInput {
+  width: clamp(220px, 28vw, 360px) !important;
+  min-width: 0;
+  height: 42px;
+  margin: 0 !important;
+  padding: 0 42px 0 42px !important;
+  border: 1.5px solid rgba(41, 89, 145, 0.34) !important;
+  border-radius: 12px !important;
+  outline: none;
+  color: #26374f !important;
+  background-color: rgba(255, 255, 255, 0.82) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23295991' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 14px center;
+  background-size: 18px 18px;
+  box-shadow: 0 4px 13px rgba(41, 89, 145, 0.08) !important;
+  font: 500 0.84rem/1 'Poppins', sans-serif !important;
+  transition: width .18s ease, border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+#searchInput::placeholder {
+  color: rgba(38, 55, 79, 0.55);
+  opacity: 1;
+}
+
+#searchInput:hover {
+  border-color: rgba(41, 89, 145, 0.58) !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
+}
+
+#searchInput:focus {
+  width: clamp(250px, 32vw, 410px) !important;
+  border-color: #295991 !important;
+  background-color: #fff !important;
+  box-shadow: 0 0 0 4px rgba(237, 158, 245, 0.24), 0 7px 18px rgba(41, 89, 145, 0.12) !important;
+}
+
+#searchInput::-webkit-search-cancel-button {
+  width: 18px;
+  height: 18px;
+  margin-right: -27px;
+  cursor: pointer;
+  opacity: .68;
+}
+
+#searchInput::-webkit-search-cancel-button:hover {
+  opacity: 1;
+}
+
 #configModal.rrn-settings .rrn-settings-content {
   gap: 14px !important;
 }
@@ -120,6 +172,13 @@
   border-radius: 10px !important;
 }
 
+@media (max-width: 900px) {
+  #searchInput,
+  #searchInput:focus {
+    width: min(100%, 420px) !important;
+  }
+}
+
 @media (max-width: 780px) {
   .rrn-dashboard-overview {
     align-items: stretch;
@@ -129,6 +188,13 @@
 
   .rrn-overview-stats {
     width: 100%;
+  }
+
+  .nav-links #searchInput,
+  .nav-links #searchInput:focus {
+    width: calc(100% - 28px) !important;
+    max-width: none !important;
+    margin: 0 14px !important;
   }
 }
 
