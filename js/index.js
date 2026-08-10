@@ -127,6 +127,7 @@
       await load('/js/backup-v3.js');
       await load('/js/insights.js');
       await load('/js/reports-v2.js');
+      await load('/js/production-stability.js');
     }
 
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
