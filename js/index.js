@@ -17,6 +17,7 @@
     addStylesheet('/style/enterprise.css', 'data-rrn-enterprise');
     addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
+    addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
   }
 
   function containsPlaintextPassword(value) {
@@ -128,6 +129,7 @@
     if (isDashboard) {
       await load('/js/tenant-runtime.js');
       await load('/js/backend-v2.js');
+      await load('/js/backend-status.js');
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
