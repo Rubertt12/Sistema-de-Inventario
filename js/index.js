@@ -93,6 +93,8 @@
     window.verificarPermissoes();
   }
 
+  // Este guard é carregado antes do bloco inline legado do dashboard.
+  // Assim, mesmo antes da remoção física desse bloco, credenciais antigas não voltam a ser persistidas.
   ensureDashboardStyles();
   guardLegacyCredentials();
 
