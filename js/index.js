@@ -18,6 +18,7 @@
     addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
+    addStylesheet('/style/trash.css', 'data-rrn-trash');
   }
 
   function containsPlaintextPassword(value) {
@@ -115,6 +116,7 @@
     if (isDashboard) {
       await load('/js/dashboard-ui.js');
       await load('/js/asset-history.js');
+      await load('/js/trash-v2.js');
       await load('/js/backup-v3.js');
     }
 
