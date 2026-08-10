@@ -55,7 +55,12 @@
 
   if (!configured || !window.supabase?.createClient) {
     const notice = document.getElementById('backendNotice');
-    if (notice) notice.hidden = false;
+    if (notice) {
+      notice.hidden = false;
+      notice.textContent = window.RRN_PREVIEW_DEMO
+        ? 'Preview completo ativo: use o botão de demonstração para acessar todas as telas. Login e cadastro reais aguardam a conexão com o Supabase.'
+        : 'O backend ainda não foi configurado. Preencha js/supabase-config.js antes de usar login e cadastro reais.';
+    }
     document.getElementById('loginButton')?.setAttribute('disabled','disabled');
     document.getElementById('registerButton')?.setAttribute('disabled','disabled');
     return;
