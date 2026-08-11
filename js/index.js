@@ -117,6 +117,7 @@
     }
 
     if (isDashboard) {
+      await load('/js/icons-v2.js');
       await load('/js/dashboard-ui.js');
       await load('/js/maintenance-panel.js');
       await load('/js/scanner.js');
@@ -132,7 +133,6 @@
       await load('/js/reports-v2.js');
       await load('/js/profile-picture-v2.js');
       await load('/js/production-stability.js');
-      await load('/js/icons-v2.js');
       await load('/js/grid-machine-details.js');
       await load('/js/user-asset-linking.js');
       await load('/js/dashboard-tabs.js');
