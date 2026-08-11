@@ -33,3 +33,28 @@ body.rrn-tab-dashboard .dashboard-actions,body.rrn-tab-dashboard>main{display:no
 body.rrn-tab-inventory .rrn-dashboard-home{display:none!important}
 @media(max-width:930px){.rrn-home-hero{grid-template-columns:1fr}.rrn-home-actions{justify-content:flex-start}.rrn-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rrn-home-grid{grid-template-columns:1fr}.rrn-app-tabs{order:2;width:100%;justify-content:center}.rrn-app-tab{flex:1}.navbar .nav-links{flex-wrap:wrap}}
 @media(max-width:560px){.rrn-dashboard-home{width:100%;margin-top:18px}.rrn-home-hero{padding:18px}.rrn-kpi-grid{grid-template-columns:1fr 1fr;gap:8px}.rrn-kpi{padding:13px}.rrn-kpi strong{font-size:1.4rem}.rrn-home-panel{padding:14px}.rrn-type-row{grid-template-columns:92px 1fr 28px}}
+
+/* Visão Geral ampla — usa a largura real da página em desktop. */
+@media(min-width:931px){
+  .rrn-dashboard-home{
+    width:calc(100% - clamp(36px,4vw,72px));
+    max-width:none;
+    margin:22px clamp(18px,2vw,36px) 28px;
+  }
+  .rrn-home-hero{
+    grid-template-columns:minmax(0,1.7fr) minmax(320px,.55fr);
+    padding:24px 28px;
+  }
+  .rrn-home-hero p{max-width:920px}
+  .rrn-kpi-grid{gap:14px}
+  .rrn-kpi{padding:18px 20px}
+  .rrn-home-grid{grid-template-columns:minmax(0,1.28fr) minmax(340px,.72fr);gap:16px}
+  .rrn-home-grid.rrn-secondary-grid{grid-template-columns:minmax(340px,.72fr) minmax(0,1.28fr)}
+  .rrn-home-panel{padding:20px 22px}
+}
+
+@media(min-width:1500px){
+  .rrn-dashboard-home{width:calc(100% - 64px);margin-left:32px;margin-right:32px}
+  .rrn-kpi-grid{gap:16px}
+  .rrn-home-grid{gap:18px}
+}
