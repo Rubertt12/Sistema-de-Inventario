@@ -118,6 +118,7 @@
 
     if (isDashboard) {
       await load('/js/icons-v2.js');
+      await load('/js/icon-mutation-bridge.js');
       await load('/js/dashboard-ui.js');
       await load('/js/maintenance-panel.js');
       await load('/js/scanner.js');
