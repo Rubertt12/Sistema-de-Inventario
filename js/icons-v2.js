@@ -16,6 +16,7 @@
     shield: ['M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6z','m9 12 2 2 4-4'],
     plus: ['M12 5v14','M5 12h14'],
     transfer: ['M7 7h12','m15 4 4 3-4 3','M17 17H5','m9 20-4-3 4-3'],
+    refresh: ['M20 7v5h-5','M4 17v-5h5','M6.1 8a7 7 0 0 1 11.8-2L20 9','M4 15l2.1 3A7 7 0 0 0 18 16'],
     settings: ['M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z','M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.57V20.3h-3V20.2a1.7 1.7 0 0 0-1.04-1.57 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 15a1.7 1.7 0 0 0-1.57-1.04H5.3v-3h.1A1.7 1.7 0 0 0 7 9.92a1.7 1.7 0 0 0-.34-1.88L6.6 8l2.12-2.12.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.7 4.7v-.1h3v.1a1.7 1.7 0 0 0 1.04 1.57 1.7 1.7 0 0 0 1.88-.34l.06-.06L19.8 8l-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.97 11h.13v3h-.1A1.7 1.7 0 0 0 19.4 15z'],
     users: ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2','M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z','M22 21v-2a4 4 0 0 0-3-3.87','M16 3.13a4 4 0 0 1 0 7.75'],
     user: ['M20 21a8 8 0 0 0-16 0','M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'],
@@ -25,6 +26,7 @@
     logout: ['M10 17l5-5-5-5','M15 12H3','M21 19V5a2 2 0 0 0-2-2h-6'],
     download: ['M12 3v12','m7 10 5 5 5-5','M5 21h14'],
     upload: ['M12 21V9','m17 14-5-5-5 5','M5 3h14'],
+    save: ['M5 3h12l2 2v16H5z','M8 3v6h8V3','M8 21v-7h8v7'],
     folder: ['M3 6h7l2 2h9v11H3z'],
     box: ['M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z','M4.5 7.5 12 12l7.5-4.5','M12 12v9'],
     scan: ['M4 7V4h3','M17 4h3v3','M20 17v3h-3','M7 20H4v-3','M8 8h8v8H8z'],
@@ -36,9 +38,29 @@
     alert: ['M12 9v4','M12 17h.01','M10.3 3.7 2-1.2 2 1.2 7.1 12.4A2 2 0 0 1 19.7 19H4.3a2 2 0 0 1-1.7-2.9z'],
     check: ['M20 6 9 17l-5-5'],
     calendar: ['M6 2v4','M18 2v4','M3 9h18','M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2z'],
+    ticket: ['M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z','M9 9h6','M9 15h6'],
+    receipt: ['M6 3h12v18l-3-2-3 2-3-2-3 2z','M9 8h6','M9 12h6','M9 16h4'],
     chevronLeft: ['m15 18-6-6 6-6'],
     chevronRight: ['m9 18 6-6-6-6']
   };
+
+  const legacyIconMap = [
+    ['🛠️', 'wrench'], ['🛠', 'wrench'], ['🔧', 'wrench'],
+    ['🎫', 'ticket'], ['🎟️', 'ticket'], ['🎟', 'ticket'],
+    ['🏢', 'building'],
+    ['🗑️', 'trash'], ['🗑', 'trash'], ['🧨', 'trash'],
+    ['🔎', 'search'], ['🔍', 'search'],
+    ['📦', 'box'],
+    ['💻', 'laptop'], ['🖥️', 'monitor'], ['🖥', 'monitor'], ['🖨️', 'printer'], ['🖨', 'printer'], ['🧰', 'workstation'],
+    ['👥', 'users'], ['👤', 'user'],
+    ['🏷️', 'tag'], ['🏷', 'tag'], ['✏️', 'edit'], ['✏', 'edit'], ['✎', 'edit'],
+    ['📊', 'chart'], ['📈', 'chart'], ['📉', 'chart'],
+    ['📤', 'download'], ['📥', 'upload'], ['📁', 'folder'],
+    ['📷', 'scan'], ['📸', 'scan'], ['⚙️', 'settings'], ['⚙', 'settings'], ['🚪', 'logout'],
+    ['⚠️', 'alert'], ['⚠', 'alert'], ['✅', 'check'], ['✔️', 'check'], ['✔', 'check'], ['✓', 'check'],
+    ['🧾', 'receipt'], ['💾', 'save'], ['🔄', 'refresh'], ['📅', 'calendar'], ['🗓️', 'calendar'], ['⏰', 'clock'], ['⏱️', 'clock'],
+    ['➕', 'plus'], ['＋', 'plus'], ['↔', 'transfer']
+  ];
 
   function make(name, size = 18) {
     const svg = document.createElementNS(NS, 'svg');
@@ -60,19 +82,29 @@
     return svg;
   }
 
+  const decorationChars = '[\\s\\u2190-\\u21FF\\u25A0-\\u27BF\\u{1F300}-\\u{1FAFF}\\uFE0F\\u200D＋⇄↔]';
+
   function cleanLabel(value) {
     return String(value || '')
-      .replace(/^[\s\u2190-\u21FF\u25A0-\u27BF\u{1F300}-\u{1FAFF}\uFE0F\u200D＋⇄↔]+/u, '')
+      .replace(new RegExp(`^${decorationChars}+`, 'u'), '')
+      .replace(new RegExp(`${decorationChars}+$`, 'u'), '')
       .replace(/\s+/g, ' ')
       .trim();
   }
 
   function decorate(element, name) {
-    if (!element || element.dataset.rrnSvgIcon === name) return;
+    if (!element) return;
+    if (element.dataset.rrnSvgIcon === name && element.querySelector(':scope > .rrn-icon')) return;
     const label = cleanLabel(element.textContent);
     element.replaceChildren(make(name), document.createTextNode(label ? ` ${label}` : ''));
     element.dataset.rrnSvgIcon = name;
     element.classList.add('rrn-icon-control');
+  }
+
+  function legacyIconFor(value) {
+    const text = String(value || '').trimStart();
+    const match = legacyIconMap.find(([token]) => text.startsWith(token));
+    return match?.[1] || null;
   }
 
   const rules = [
@@ -97,18 +129,26 @@
     ['button[onclick*="exportToCSV"]', 'download'],
     ['label[for="bgImageUpload"]', 'folder'],
     ['button[onclick*="abrirScanner"]', 'scan'],
+    ['button[onclick*="saveObservation"]', 'save'],
+    ['button[onclick*="markForMaintenance"]', 'wrench'],
+    ['button[onclick*="releaseMachine"]', 'check'],
     ['.menu-toggle', 'menu'],
     ['.rrn-setor-icon', 'building'],
     ['.rrn-machine-user', 'user'],
     ['.rrn-machine-tag', 'tag'],
     ['.rrn-empty-state > span:first-child', 'search'],
     ['.rrn-sector-empty > span:first-child', 'box'],
+    ['.rrn-trash-empty > span:first-child', 'trash'],
+    ['[data-rrn-trash-button]', 'trash'],
+    ['.rrn-trash-delete', 'trash'],
+    ['.rrn-trash-restore', 'refresh'],
     ['.rrn-setor-admin button[onclick*="editSetorName"]', 'edit'],
     ['.rrn-setor-admin button[onclick*="removeSetor"]', 'trash'],
     ['.rrn-inline-edit', 'edit'],
     ['[data-maintenance-open]', 'search'],
     ['[data-maintenance-modal-open]', 'search'],
-    ['#painelManutencao .painel-header > span:first-child', 'wrench']
+    ['#painelManutencao .painel-header > span:first-child', 'wrench'],
+    ['.rrn-insights-toggle > div > span:first-child', 'chart']
   ];
 
   function decorateDataIcons(root = document) {
@@ -123,7 +163,7 @@
     if (root instanceof Element && root.matches('.rrn-machine-icon')) candidates.push(root);
     root.querySelectorAll?.('.rrn-machine-icon').forEach(el => candidates.push(el));
     candidates.forEach(el => {
-      if (el.dataset.rrnSvgIcon) return;
+      if (el.dataset.rrnSvgIcon && el.querySelector(':scope > .rrn-icon')) return;
       const text = el.textContent || '';
       const icon = text.includes('💻') ? 'laptop'
         : text.includes('🖨') ? 'printer'
@@ -133,9 +173,30 @@
     });
   }
 
+  function decorateLegacyEmoji(root = document) {
+    const selector = [
+      'button:not(.rrn-transfer-choice)',
+      '.rrn-history-icon',
+      '.rrn-trash-empty > span:first-child',
+      '.rrn-insights-toggle > div > span:first-child',
+      '.rrn-empty-state > span:first-child',
+      '.rrn-sector-empty > span:first-child',
+      '#painelManutencao .painel-header > span:first-child',
+      'label[for="bgImageUpload"]'
+    ].join(',');
+    const candidates = [];
+    if (root instanceof Element && root.matches(selector)) candidates.push(root);
+    root.querySelectorAll?.(selector).forEach(el => candidates.push(el));
+    candidates.forEach(el => {
+      if (el.dataset.rrnIcon || el.querySelector(':scope > .rrn-icon')) return;
+      const icon = legacyIconFor(el.textContent);
+      if (icon) decorate(el, icon);
+    });
+  }
+
   function decorateToggle() {
     const toggle = document.getElementById('painelToggleIcon');
-    if (!toggle || toggle.dataset.rrnSvgIcon) return;
+    if (!toggle || (toggle.dataset.rrnSvgIcon && toggle.querySelector(':scope > .rrn-icon'))) return;
     const text = toggle.textContent || '';
     decorate(toggle, text.includes('◀') ? 'chevronLeft' : 'chevronRight');
   }
@@ -147,6 +208,7 @@
     });
     decorateDataIcons(root);
     decorateMachineIcons(root);
+    decorateLegacyEmoji(root);
     decorateToggle();
   }
 
@@ -169,5 +231,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 
-  window.RRN_ICONS = Object.freeze({ make, decorate, decorateStatic });
+  window.RRN_ICONS = Object.freeze({ make, decorate, decorateStatic, legacyIconFor });
 })();
