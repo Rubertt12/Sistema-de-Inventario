@@ -135,6 +135,7 @@
       await load('/js/profile-picture-v2.js');
       await load('/js/production-stability.js');
       await load('/js/grid-machine-details.js');
+      await load('/js/compact-grid-actions.js');
       await load('/js/user-asset-linking.js');
       await load('/js/dashboard-tabs.js');
     }
@@ -156,6 +157,7 @@
       window.RRN_TABS?.renderHome?.();
       window.RRN_ICONS?.decorateStatic?.();
       window.RRN_GRID_DETAILS?.enhanceAll?.();
+      window.RRN_COMPACT_ACTIONS?.enhance?.();
       window.RRN_USER_ASSETS?.refreshCards?.();
     }
   })().catch(error => {
