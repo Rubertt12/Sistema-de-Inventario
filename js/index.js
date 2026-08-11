@@ -135,6 +135,7 @@
       await load('/js/grid-machine-details.js');
       await load('/js/compact-grid-actions.js');
       await load('/js/user-asset-linking.js');
+      await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
     }
 
@@ -157,6 +158,7 @@
       window.RRN_GRID_DETAILS?.enhanceAll?.();
       window.RRN_COMPACT_ACTIONS?.enhance?.();
       window.RRN_USER_ASSETS?.refreshCards?.();
+      window.RRN_RESPONSIBLE_AUTOCOMPLETE?.refresh?.();
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
