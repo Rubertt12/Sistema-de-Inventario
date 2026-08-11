@@ -134,6 +134,7 @@
       await load('/js/production-stability.js');
       await load('/js/icons-v2.js');
       await load('/js/grid-machine-details.js');
+      await load('/js/user-asset-linking.js');
       await load('/js/dashboard-tabs.js');
     }
 
@@ -154,6 +155,7 @@
       window.RRN_TABS?.renderHome?.();
       window.RRN_ICONS?.decorateStatic?.();
       window.RRN_GRID_DETAILS?.enhanceAll?.();
+      window.RRN_USER_ASSETS?.refreshCards?.();
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
