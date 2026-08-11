@@ -58,6 +58,16 @@
     return counts;
   }
 
+  function categoryLabel(category) {
+    return ({
+      computers: 'Computadores',
+      monitors: 'Monitores',
+      printers: 'Impressoras',
+      others: 'Outros',
+      all: 'Todos os equipamentos'
+    })[category] || 'Equipamentos';
+  }
+
   function equipmentIcon(type) {
     const value = normalize(type);
     if (value.includes('monitor')) return 'monitor';
@@ -77,6 +87,21 @@
   function categoryButtons(sectorIndex, assets, selected, searching) {
     if (!assets.length || searching) return '';
 
+    if (selected) {
+      return `
+        <div class="rrn-category-backbar">
+          <div class="rrn-category-current">
+            <small>Visualizando</small>
+            <strong>${escapeHtml(categoryLabel(selected))}</strong>
+          </div>
+          <button type="button" class="rrn-btn rrn-btn-secondary rrn-category-back-btn"
+            onclick="RRN_SECTOR_CATEGORIES.back(${sectorIndex})">
+            <span aria-hidden="true">←</span>
+            Voltar às categorias
+          </button>
+        </div>`;
+    }
+
     const counts = categoryCounts(assets);
     const options = [
       ['computers', 'Computadores', counts.computers],
@@ -95,10 +120,10 @@
         <div class="rrn-sector-categories" role="tablist" aria-label="Tipos de equipamento do setor">
           ${options.map(([key, label, count]) => `
             <button type="button"
-              class="rrn-sector-category${selected === key ? ' is-active' : ''}"
+              class="rrn-sector-category"
               data-category="${key}"
               role="tab"
-              aria-selected="${selected === key ? 'true' : 'false'}"
+              aria-selected="false"
               onclick="RRN_SECTOR_CATEGORIES.select(${sectorIndex}, '${key}')">
               <span>${label}</span><strong>${count}</strong>
             </button>`).join('')}
@@ -247,7 +272,7 @@
         } else if (isOpen && !searching && sector.maquinas.length > 0 && !selected) {
           emptyHtml = `<div class="rrn-category-empty"><strong>Selecione uma categoria acima</strong><small>Os equipamentos só serão exibidos depois que você escolher o tipo.</small></div>`;
         } else if (isOpen && matchingAssets.length === 0) {
-          emptyHtml = `<div class="rrn-category-empty"><strong>Nenhum equipamento nesta categoria</strong><small>Escolha outro tipo de equipamento.</small></div>`;
+          emptyHtml = `<div class="rrn-category-empty"><strong>Nenhum equipamento nesta categoria</strong><small>Volte às categorias e escolha outro tipo de equipamento.</small></div>`;
         }
 
         const loadMoreHtml = isOpen && remaining > 0
@@ -333,10 +358,12 @@
       .rrn-sector-category{display:inline-flex;align-items:center;justify-content:space-between;gap:9px;min-height:35px;padding:7px 10px;border:1px solid rgba(41,89,145,.16);border-radius:9px;background:#fff;color:#40516a;font:inherit;font-size:.67rem;font-weight:750;cursor:pointer;transition:.16s ease}
       .rrn-sector-category:hover{border-color:rgba(41,89,145,.34);background:rgba(41,89,145,.045)}
       .rrn-sector-category strong{display:grid;min-width:21px;height:21px;place-items:center;padding:0 5px;border-radius:999px;background:rgba(41,89,145,.08);color:var(--rrn-blue,#295991);font-size:.59rem}
-      .rrn-sector-category.is-active{border-color:var(--rrn-blue,#295991);background:rgba(41,89,145,.08);color:var(--rrn-blue,#295991)}
+      .rrn-category-backbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 4px;padding:10px 12px;border:1px solid rgba(41,89,145,.14);border-radius:11px;background:rgba(41,89,145,.045)}
+      .rrn-category-current{display:flex;align-items:baseline;gap:7px;min-width:0}.rrn-category-current small{color:#768194;font-size:.61rem;font-weight:650}.rrn-category-current strong{color:var(--rrn-blue,#295991);font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .rrn-category-back-btn{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
       .rrn-category-empty{grid-column:1/-1;padding:24px 16px;border:1px dashed rgba(41,89,145,.18);border-radius:12px;text-align:center;background:rgba(255,255,255,.36)}
       .rrn-category-empty strong,.rrn-category-empty small{display:block}.rrn-category-empty strong{color:var(--rrn-blue,#295991);font-size:.75rem}.rrn-category-empty small{margin-top:4px;color:#768194;font-size:.64rem}
-      @media(max-width:620px){.rrn-sector-category-copy{display:block}.rrn-sector-category-copy small{display:block;margin-top:3px}.rrn-sector-categories{display:grid;grid-template-columns:1fr 1fr}.rrn-sector-category{width:100%}}
+      @media(max-width:620px){.rrn-sector-category-copy{display:block}.rrn-sector-category-copy small{display:block;margin-top:3px}.rrn-sector-categories{display:grid;grid-template-columns:1fr 1fr}.rrn-sector-category{width:100%}.rrn-category-backbar{align-items:stretch;flex-direction:column}.rrn-category-back-btn{justify-content:center;width:100%}}
       @media(max-width:390px){.rrn-sector-categories{grid-template-columns:1fr}}
     `;
     document.head.appendChild(style);
@@ -345,6 +372,13 @@
   function select(sectorIndex, category) {
     selectedBySector.set(Number(sectorIndex), category);
     resetVisibleCount(Number(sectorIndex));
+    window.renderSetores?.();
+  }
+
+  function back(sectorIndex) {
+    const index = Number(sectorIndex);
+    selectedBySector.delete(index);
+    resetVisibleCount(index);
     window.renderSetores?.();
   }
 
@@ -372,7 +406,7 @@
     }, 150);
   }
 
-  window.RRN_SECTOR_CATEGORIES = Object.freeze({ select, loadMore, categoryFor });
+  window.RRN_SECTOR_CATEGORIES = Object.freeze({ select, back, loadMore, categoryFor });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
