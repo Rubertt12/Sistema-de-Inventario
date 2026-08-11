@@ -42,9 +42,10 @@
     return { label: 'Operando', className: 'online' };
   }
 
-  function createFact(icon, label, value, emptyLabel = 'Não informado') {
+  function createFact(icon, label, value, emptyLabel = 'Não informado', key = '') {
     const item = document.createElement('div');
     item.className = 'rrn-machine-fact';
+    if (key) item.dataset.fact = key;
 
     const iconWrap = document.createElement('span');
     iconWrap.className = 'rrn-machine-fact-icon';
@@ -115,13 +116,15 @@
     const warranty = firstValue(asset, ['garantiaAte', 'garantia', 'dataGarantia']);
 
     details.append(
-      createFact('tag', 'Patrimônio', patrimony, 'Sem etiqueta'),
-      createFact('user', 'Responsável', user, 'Sem responsável'),
-      createFact('building', 'Localização', location, 'Sem localização'),
-      createFact('monitor', 'Serial / Service Tag', serial, 'Usar identificação acima')
+      createFact('tag', 'Patrimônio', patrimony, 'Sem etiqueta', 'patrimony'),
+      createFact('user', 'Responsável', user, 'Sem responsável', 'responsible'),
+      createFact('building', 'Localização', location, 'Sem localização', 'location')
     );
 
-    if (warranty) details.append(createFact('calendar', 'Garantia até', warranty));
+    // Campos complementares só aparecem quando realmente têm conteúdo.
+    // Evita caixas vazias/fallbacks que deixam o grid alto e visualmente pesado.
+    if (serial) details.append(createFact('monitor', 'Serial / Service Tag', serial, '', 'serial'));
+    if (warranty) details.append(createFact('calendar', 'Garantia até', warranty, '', 'warranty'));
 
     main.appendChild(details);
 
