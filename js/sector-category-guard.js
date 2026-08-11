@@ -5,6 +5,7 @@
   window.__RRN_SECTOR_CATEGORY_GUARD__ = true;
 
   const activeBySector = new Map();
+  const choiceModeBySector = new Set();
   const labels = {
     computers: 'Computadores',
     monitors: 'Monitores',
@@ -71,6 +72,30 @@
     return match ? Number(match[1]) : null;
   }
 
+  function hideAllCards(sectorIndex) {
+    const list = document.getElementById(`maquinas-${sectorIndex}`);
+    if (!list) return;
+
+    list.querySelectorAll('.rrn-machine-item').forEach(card => {
+      card.style.display = 'none';
+      card.dataset.rrnCategoryGuardHidden = '1';
+    });
+  }
+
+  function restoreCategoryChooser(sectorIndex) {
+    const card = document.querySelector(`.rrn-setor-card[data-setor-index="${sectorIndex}"]`);
+    if (!card) return;
+
+    card.querySelector('.rrn-category-backbar')?.remove();
+    hideAllCards(sectorIndex);
+
+    const shell = card.querySelector(`[data-sector-category-shell="${sectorIndex}"]`);
+    if (shell) {
+      shell.style.removeProperty('display');
+      shell.hidden = false;
+    }
+  }
+
   function ensureBackButton(sectorIndex, category) {
     const card = document.querySelector(`.rrn-setor-card[data-setor-index="${sectorIndex}"]`);
     if (!card || !category || category === 'search') return;
@@ -101,23 +126,36 @@
         if (!button.classList.contains('rrn-category-back-guard')) return;
         event.preventDefault();
         event.stopPropagation();
-        activeBySector.delete(Number(sectorIndex));
-        window.RRN_SECTOR_CATEGORIES?.back?.(Number(sectorIndex));
+
+        const index = Number(sectorIndex);
+        activeBySector.delete(index);
+        choiceModeBySector.add(index);
+        window.RRN_SECTOR_CATEGORIES?.back?.(index);
+        [0, 40, 140, 300].forEach(delay => {
+          setTimeout(() => restoreCategoryChooser(index), delay);
+        });
       });
     }
   }
 
   function enforceSector(sectorIndex) {
-    const category = activeBySector.get(Number(sectorIndex));
+    const index = Number(sectorIndex);
+
+    if (choiceModeBySector.has(index)) {
+      restoreCategoryChooser(index);
+      return;
+    }
+
+    const category = activeBySector.get(index);
     if (!category || category === 'search') return;
 
-    ensureBackButton(Number(sectorIndex), category);
+    ensureBackButton(index, category);
     if (category === 'all') return;
 
-    const sector = inventory()[Number(sectorIndex)];
+    const sector = inventory()[index];
     if (!sector || !Array.isArray(sector.maquinas)) return;
 
-    const list = document.getElementById(`maquinas-${sectorIndex}`);
+    const list = document.getElementById(`maquinas-${index}`);
     if (!list) return;
 
     list.querySelectorAll('.rrn-machine-item').forEach(card => {
@@ -138,7 +176,8 @@
   }
 
   function enforceAll() {
-    activeBySector.forEach((_, sectorIndex) => enforceSector(sectorIndex));
+    const sectors = new Set([...activeBySector.keys(), ...choiceModeBySector.values()]);
+    sectors.forEach(sectorIndex => enforceSector(sectorIndex));
   }
 
   function scheduleEnforce(sectorIndex) {
@@ -154,6 +193,7 @@
       const sectorIndex = Number(shell?.dataset?.sectorCategoryShell);
       const category = categoryButton.dataset.category;
       if (Number.isInteger(sectorIndex) && category) {
+        choiceModeBySector.delete(sectorIndex);
         activeBySector.set(sectorIndex, category);
         scheduleEnforce(sectorIndex);
       }
@@ -164,7 +204,13 @@
     if (backButton && !backButton.classList.contains('rrn-category-back-guard')) {
       const card = backButton.closest('.rrn-setor-card');
       const sectorIndex = Number(card?.dataset?.setorIndex);
-      if (Number.isInteger(sectorIndex)) activeBySector.delete(sectorIndex);
+      if (Number.isInteger(sectorIndex)) {
+        activeBySector.delete(sectorIndex);
+        choiceModeBySector.add(sectorIndex);
+        [0, 40, 140, 300].forEach(delay => {
+          setTimeout(() => restoreCategoryChooser(sectorIndex), delay);
+        });
+      }
     }
   }, true);
 
@@ -211,7 +257,12 @@
     }, 100);
   }
 
-  window.RRN_SECTOR_CATEGORY_GUARD = Object.freeze({ strictCategory, enforceSector, enforceAll });
+  window.RRN_SECTOR_CATEGORY_GUARD = Object.freeze({
+    strictCategory,
+    enforceSector,
+    enforceAll,
+    restoreCategoryChooser
+  });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
