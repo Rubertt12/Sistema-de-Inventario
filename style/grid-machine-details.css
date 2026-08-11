@@ -1,21 +1,56 @@
 :root{--rrn-blue:#295991;--rrn-pink:#ED9EF5;--rrn-yellow:#F2BF4F;--rrn-beige:#DED9C4;--rrn-ink:#26374f;--rrn-muted:#6c7889}
 
-/* Informações adicionais aparecem principalmente no modo grid. */
-#setoresContainer.grid-view .rrn-machines-list{
-  grid-template-columns:repeat(auto-fit,minmax(285px,1fr));
-  align-items:stretch;
+/*
+ * Grid de inventário — prioriza legibilidade em desktop.
+ * Os setores mantêm altura natural e deixam de ser espremidos em colunas estreitas.
+ */
+#setoresContainer.grid-view{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(440px,1fr))!important;
+  align-items:start!important;
+  gap:18px!important;
 }
 
+#setoresContainer.grid-view .rrn-setor-card{
+  align-self:start!important;
+  min-width:0;
+  height:auto!important;
+  padding:18px!important;
+}
+
+/* Ações do setor lado a lado quando existe largura útil. */
+#setoresContainer.grid-view .rrn-setor-toolbar{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px!important;
+  margin-top:14px!important;
+}
+
+#setoresContainer.grid-view .rrn-setor-toolbar .rrn-btn{
+  width:100%!important;
+  min-width:0!important;
+  justify-content:center;
+}
+
+#setoresContainer.grid-view .rrn-machines-list{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  align-items:start!important;
+  gap:10px!important;
+  margin-top:14px!important;
+}
+
+/* Card do equipamento: sem altura artificial e com hierarquia mais limpa. */
 #setoresContainer.grid-view .rrn-machine-item{
-  grid-template-columns:50px minmax(0,1fr);
+  grid-template-columns:46px minmax(0,1fr);
   align-content:start;
   align-items:start;
-  gap:12px;
-  min-height:226px;
-  padding:14px!important;
+  gap:11px 12px;
+  min-height:0!important;
+  padding:13px!important;
   border-left-width:1px!important;
-  border-top:4px solid rgba(41,89,145,.42)!important;
-  border-radius:14px!important;
+  border-top:3px solid rgba(41,89,145,.42)!important;
+  border-radius:13px!important;
 }
 
 #setoresContainer.grid-view .rrn-machine-item:hover{
@@ -28,29 +63,37 @@
 #setoresContainer.grid-view .rrn-machine-item.inactive{border-top-color:#9aa4b2!important;opacity:.86}
 
 #setoresContainer.grid-view .rrn-machine-icon{
-  width:50px;
-  height:50px;
-  border-radius:13px;
-  background:linear-gradient(145deg,rgba(237,158,245,.24),rgba(242,191,79,.18));
+  width:46px;
+  height:46px;
+  border-radius:12px;
+  background:linear-gradient(145deg,rgba(237,158,245,.22),rgba(242,191,79,.16));
+}
+
+#setoresContainer.grid-view .rrn-machine-main{
+  min-width:0;
 }
 
 #setoresContainer.grid-view .rrn-machine-title-row{
+  display:flex;
   align-items:flex-start;
   justify-content:space-between;
-  gap:8px;
+  flex-wrap:wrap;
+  gap:6px 9px;
 }
 
 #setoresContainer.grid-view .rrn-machine-title-row strong{
-  flex:1 1 145px;
-  font-size:.9rem;
-  line-height:1.35;
+  flex:1 1 170px;
+  min-width:0;
+  color:var(--rrn-ink);
+  font-size:.88rem;
+  line-height:1.3;
   white-space:normal;
   overflow-wrap:anywhere;
 }
 
 #setoresContainer.grid-view .rrn-status{
   flex:0 0 auto;
-  margin-top:1px;
+  margin-top:0;
 }
 
 .rrn-status.stock{color:#77540b;background:rgba(242,191,79,.24)}
@@ -59,18 +102,14 @@
 
 .rrn-machine-product-line{
   margin-top:4px;
-  color:rgba(38,55,79,.72);
-  font-size:.68rem;
+  color:rgba(38,55,79,.68);
+  font-size:.67rem;
   font-weight:600;
   line-height:1.4;
 }
 
+/* No grid, o bloco legado repete tipo/usuário/patrimônio. Os dados enriquecidos abaixo já cobrem isso. */
 #setoresContainer.grid-view .rrn-machine-meta{
-  margin-top:6px;
-}
-
-#setoresContainer.grid-view .rrn-machine-meta .rrn-machine-tag,
-#setoresContainer.grid-view .rrn-machine-meta .rrn-machine-user{
   display:none!important;
 }
 
@@ -78,42 +117,57 @@
   display:none;
 }
 
+/*
+ * Em vez de várias "caixinhas" soltas, os dados formam um único painel compacto.
+ * Isso reduz muito a altura e melhora o alinhamento visual entre equipamentos.
+ */
 #setoresContainer.grid-view .rrn-machine-grid-details{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:7px;
-  margin-top:11px;
+  margin-top:10px;
+  overflow:hidden;
+  border:1px solid rgba(41,89,145,.12);
+  border-radius:10px;
+  background:rgba(255,255,255,.28);
 }
 
-.rrn-machine-fact{
+#setoresContainer.grid-view .rrn-machine-fact{
   min-width:0;
   display:grid;
-  grid-template-columns:25px minmax(0,1fr);
+  grid-template-columns:23px minmax(0,1fr);
   align-items:center;
   gap:7px;
-  padding:8px;
-  border:1px solid rgba(41,89,145,.11);
-  border-radius:9px;
-  background:rgba(255,255,255,.38);
+  min-height:48px;
+  padding:7px 9px;
+  border:0;
+  border-right:1px solid rgba(41,89,145,.09);
+  border-bottom:1px solid rgba(41,89,145,.09);
+  border-radius:0;
+  background:transparent;
 }
 
-.rrn-machine-fact.is-empty{
-  background:rgba(222,217,196,.25);
+#setoresContainer.grid-view .rrn-machine-fact:nth-child(even){border-right:0}
+#setoresContainer.grid-view .rrn-machine-fact:last-child:nth-child(odd){grid-column:1/-1;border-right:0}
+#setoresContainer.grid-view .rrn-machine-fact:nth-last-child(-n+2){border-bottom-color:transparent}
+#setoresContainer.grid-view .rrn-machine-fact:last-child{border-bottom:0}
+
+#setoresContainer.grid-view .rrn-machine-fact.is-empty{
+  background:rgba(222,217,196,.16);
 }
 
 .rrn-machine-fact-icon{
   display:grid!important;
-  width:25px;
-  height:25px;
+  width:23px;
+  height:23px;
   place-items:center;
-  border-radius:7px;
+  border-radius:6px;
   color:var(--rrn-blue);
-  background:rgba(41,89,145,.08);
+  background:rgba(41,89,145,.07);
 }
 
 .rrn-machine-fact-icon .rrn-icon{
-  width:14px;
-  height:14px;
+  width:13px;
+  height:13px;
 }
 
 .rrn-machine-fact small,
@@ -123,10 +177,11 @@
 }
 
 .rrn-machine-fact small{
-  color:rgba(38,55,79,.55);
-  font-size:.56rem;
+  color:rgba(38,55,79,.50);
+  font-size:.53rem;
   font-weight:700;
-  letter-spacing:.02em;
+  letter-spacing:.025em;
+  line-height:1.2;
   text-transform:uppercase;
 }
 
@@ -134,9 +189,9 @@
   margin-top:2px;
   overflow:hidden;
   color:var(--rrn-ink);
-  font-size:.65rem;
+  font-size:.64rem;
   font-weight:700;
-  line-height:1.3;
+  line-height:1.32;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
@@ -146,17 +201,33 @@
   font-weight:600;
 }
 
+/* Badge de ativos relacionados não deve empurrar demais a linha do responsável. */
+#setoresContainer.grid-view .rrn-user-assets-badge{
+  margin-top:3px;
+  padding:1px 6px;
+  font-size:.52rem;
+}
+
+/* Rodapé de ações com três botões alinhados e mesma largura. */
 #setoresContainer.grid-view .rrn-machine-actions{
   grid-column:1/-1;
-  justify-content:flex-end;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;
+  gap:6px;
   width:100%;
-  margin-top:auto;
-  padding-top:10px;
-  border-top:1px solid rgba(41,89,145,.10);
+  margin-top:0;
+  padding-top:9px;
+  border-top:1px solid rgba(41,89,145,.09);
 }
 
 #setoresContainer.grid-view .rrn-machine-actions .rrn-btn{
-  min-width:92px;
+  width:100%!important;
+  min-width:0!important;
+  min-height:34px!important;
+  padding:7px 8px!important;
+  justify-content:center;
+  font-size:.68rem!important;
 }
 
 #setoresContainer.grid-view .rrn-equipment-load-more,
@@ -175,13 +246,29 @@
   display:none!important;
 }
 
-@media(max-width:720px){
-  #setoresContainer.grid-view .rrn-machines-list{grid-template-columns:1fr}
-  #setoresContainer.grid-view .rrn-machine-item{min-height:0}
+/* Em telas intermediárias, uma coluna de setores é preferível a cards apertados. */
+@media(max-width:940px){
+  #setoresContainer.grid-view{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:620px){
+  #setoresContainer.grid-view .rrn-setor-card{padding:14px!important}
+  #setoresContainer.grid-view .rrn-setor-toolbar{grid-template-columns:1fr}
+  #setoresContainer.grid-view .rrn-machine-grid-details{grid-template-columns:1fr}
+  #setoresContainer.grid-view .rrn-machine-fact,
+  #setoresContainer.grid-view .rrn-machine-fact:nth-child(even),
+  #setoresContainer.grid-view .rrn-machine-fact:last-child:nth-child(odd){
+    grid-column:1/-1;
+    border-right:0;
+    border-bottom:1px solid rgba(41,89,145,.09);
+  }
+  #setoresContainer.grid-view .rrn-machine-fact:last-child{border-bottom:0}
 }
 
 @media(max-width:430px){
-  #setoresContainer.grid-view .rrn-machine-grid-details{grid-template-columns:1fr}
-  #setoresContainer.grid-view .rrn-machine-actions{justify-content:stretch}
-  #setoresContainer.grid-view .rrn-machine-actions .rrn-btn{flex:1 1 0;min-width:0}
+  #setoresContainer.grid-view .rrn-machine-item{grid-template-columns:40px minmax(0,1fr);padding:11px!important}
+  #setoresContainer.grid-view .rrn-machine-icon{width:40px;height:40px}
+  #setoresContainer.grid-view .rrn-machine-actions{grid-template-columns:1fr}
 }
