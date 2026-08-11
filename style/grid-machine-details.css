@@ -1,0 +1,187 @@
+:root{--rrn-blue:#295991;--rrn-pink:#ED9EF5;--rrn-yellow:#F2BF4F;--rrn-beige:#DED9C4;--rrn-ink:#26374f;--rrn-muted:#6c7889}
+
+/* Informações adicionais aparecem principalmente no modo grid. */
+#setoresContainer.grid-view .rrn-machines-list{
+  grid-template-columns:repeat(auto-fit,minmax(285px,1fr));
+  align-items:stretch;
+}
+
+#setoresContainer.grid-view .rrn-machine-item{
+  grid-template-columns:50px minmax(0,1fr);
+  align-content:start;
+  align-items:start;
+  gap:12px;
+  min-height:226px;
+  padding:14px!important;
+  border-left-width:1px!important;
+  border-top:4px solid rgba(41,89,145,.42)!important;
+  border-radius:14px!important;
+}
+
+#setoresContainer.grid-view .rrn-machine-item:hover{
+  transform:translateY(-2px);
+}
+
+#setoresContainer.grid-view .rrn-machine-item.maintenance{border-top-color:#e65f5f!important}
+#setoresContainer.grid-view .rrn-machine-item.stock{border-top-color:var(--rrn-yellow)!important}
+#setoresContainer.grid-view .rrn-machine-item.loan{border-top-color:var(--rrn-pink)!important}
+#setoresContainer.grid-view .rrn-machine-item.inactive{border-top-color:#9aa4b2!important;opacity:.86}
+
+#setoresContainer.grid-view .rrn-machine-icon{
+  width:50px;
+  height:50px;
+  border-radius:13px;
+  background:linear-gradient(145deg,rgba(237,158,245,.24),rgba(242,191,79,.18));
+}
+
+#setoresContainer.grid-view .rrn-machine-title-row{
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+}
+
+#setoresContainer.grid-view .rrn-machine-title-row strong{
+  flex:1 1 145px;
+  font-size:.9rem;
+  line-height:1.35;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+
+#setoresContainer.grid-view .rrn-status{
+  flex:0 0 auto;
+  margin-top:1px;
+}
+
+.rrn-status.stock{color:#77540b;background:rgba(242,191,79,.24)}
+.rrn-status.loan{color:#7a397e;background:rgba(237,158,245,.22)}
+.rrn-status.inactive{color:#586273;background:rgba(148,163,184,.18)}
+
+.rrn-machine-product-line{
+  margin-top:4px;
+  color:rgba(38,55,79,.72);
+  font-size:.68rem;
+  font-weight:600;
+  line-height:1.4;
+}
+
+#setoresContainer.grid-view .rrn-machine-meta{
+  margin-top:6px;
+}
+
+#setoresContainer.grid-view .rrn-machine-meta .rrn-machine-tag,
+#setoresContainer.grid-view .rrn-machine-meta .rrn-machine-user{
+  display:none!important;
+}
+
+.rrn-machine-grid-details{
+  display:none;
+}
+
+#setoresContainer.grid-view .rrn-machine-grid-details{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:11px;
+}
+
+.rrn-machine-fact{
+  min-width:0;
+  display:grid;
+  grid-template-columns:25px minmax(0,1fr);
+  align-items:center;
+  gap:7px;
+  padding:8px;
+  border:1px solid rgba(41,89,145,.11);
+  border-radius:9px;
+  background:rgba(255,255,255,.38);
+}
+
+.rrn-machine-fact.is-empty{
+  background:rgba(222,217,196,.25);
+}
+
+.rrn-machine-fact-icon{
+  display:grid!important;
+  width:25px;
+  height:25px;
+  place-items:center;
+  border-radius:7px;
+  color:var(--rrn-blue);
+  background:rgba(41,89,145,.08);
+}
+
+.rrn-machine-fact-icon .rrn-icon{
+  width:14px;
+  height:14px;
+}
+
+.rrn-machine-fact small,
+.rrn-machine-fact strong{
+  display:block;
+  min-width:0;
+}
+
+.rrn-machine-fact small{
+  color:rgba(38,55,79,.55);
+  font-size:.56rem;
+  font-weight:700;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+
+.rrn-machine-fact strong{
+  margin-top:2px;
+  overflow:hidden;
+  color:var(--rrn-ink);
+  font-size:.65rem;
+  font-weight:700;
+  line-height:1.3;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.rrn-machine-fact.is-empty strong{
+  color:rgba(38,55,79,.48);
+  font-weight:600;
+}
+
+#setoresContainer.grid-view .rrn-machine-actions{
+  grid-column:1/-1;
+  justify-content:flex-end;
+  width:100%;
+  margin-top:auto;
+  padding-top:10px;
+  border-top:1px solid rgba(41,89,145,.10);
+}
+
+#setoresContainer.grid-view .rrn-machine-actions .rrn-btn{
+  min-width:92px;
+}
+
+#setoresContainer.grid-view .rrn-equipment-load-more,
+#setoresContainer.grid-view .rrn-sector-empty{
+  grid-column:1/-1;
+}
+
+/* Lista continua enxuta. */
+#setoresContainer.list-view .rrn-machine-product-line{
+  display:inline;
+  margin:0 0 0 8px;
+  font-size:.64rem;
+}
+
+#setoresContainer.list-view .rrn-machine-grid-details{
+  display:none!important;
+}
+
+@media(max-width:720px){
+  #setoresContainer.grid-view .rrn-machines-list{grid-template-columns:1fr}
+  #setoresContainer.grid-view .rrn-machine-item{min-height:0}
+}
+
+@media(max-width:430px){
+  #setoresContainer.grid-view .rrn-machine-grid-details{grid-template-columns:1fr}
+  #setoresContainer.grid-view .rrn-machine-actions{justify-content:stretch}
+  #setoresContainer.grid-view .rrn-machine-actions .rrn-btn{flex:1 1 0;min-width:0}
+}
