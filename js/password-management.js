@@ -15,6 +15,71 @@
     return window.RRN_SUPABASE_CLIENT;
   }
 
+  function injectUI() {
+    if (!document.getElementById('changePasswordMenuButton')) {
+      const dropdown = document.getElementById('userDropdown');
+      const configButton = dropdown?.querySelector('button');
+      if (dropdown) {
+        const button = document.createElement('button');
+        button.id = 'changePasswordMenuButton';
+        button.type = 'button';
+        button.dataset.rrnIcon = 'lock';
+        button.textContent = 'Alterar senha';
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          open();
+        });
+        configButton?.insertAdjacentElement('afterend', button);
+      }
+    }
+
+    if (!document.getElementById('passwordChangeModal')) {
+      const modal = document.createElement('div');
+      modal.id = 'passwordChangeModal';
+      modal.className = 'rrn-password-modal';
+      modal.hidden = true;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.innerHTML = `
+        <div class="rrn-password-card" role="dialog" aria-modal="true" aria-labelledby="passwordChangeTitle">
+          <button type="button" class="rrn-password-close" aria-label="Fechar">&times;</button>
+          <div class="rrn-password-head">
+            <span class="rrn-password-icon" data-rrn-icon="lock"></span>
+            <div><h2 id="passwordChangeTitle">Alterar senha</h2><p>Confirme sua senha atual e defina uma nova senha.</p></div>
+          </div>
+          <form id="passwordChangeForm" novalidate>
+            <label>Senha atual<div class="rrn-password-field"><input id="currentPassword" type="password" autocomplete="current-password" required><button type="button" data-password-target="currentPassword">Mostrar</button></div></label>
+            <label>Nova senha<div class="rrn-password-field"><input id="newPassword" type="password" autocomplete="new-password" minlength="8" required><button type="button" data-password-target="newPassword">Mostrar</button></div></label>
+            <label>Confirmar nova senha<div class="rrn-password-field"><input id="confirmNewPassword" type="password" autocomplete="new-password" minlength="8" required><button type="button" data-password-target="confirmNewPassword">Mostrar</button></div></label>
+            <small class="rrn-password-hint">Use pelo menos 8 caracteres.</small>
+            <p id="passwordChangeMsg" class="rrn-password-message" role="status"></p>
+            <div class="rrn-password-actions"><button type="button" class="rrn-password-cancel">Cancelar</button><button type="submit" id="passwordChangeButton" class="rrn-password-save">Alterar senha</button></div>
+          </form>
+        </div>`;
+      document.body.appendChild(modal);
+    }
+
+    if (!document.getElementById('rrnPasswordManagementStyles')) {
+      const style = document.createElement('style');
+      style.id = 'rrnPasswordManagementStyles';
+      style.textContent = `
+        .rrn-password-modal{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;padding:20px;background:rgba(17,29,46,.48);backdrop-filter:blur(5px)}
+        .rrn-password-modal[hidden]{display:none!important}.rrn-password-card{position:relative;width:min(480px,100%);padding:24px;border:1px solid rgba(41,89,145,.16);border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(17,29,46,.22);color:#26374f}
+        .rrn-password-close{position:absolute;right:15px;top:13px;width:34px;height:34px;border:0;border-radius:9px;background:rgba(41,89,145,.07);color:#295991;font-size:1.35rem;cursor:pointer}
+        .rrn-password-head{display:flex;align-items:flex-start;gap:12px;padding-right:34px;margin-bottom:20px}.rrn-password-icon{display:grid;width:42px;height:42px;place-items:center;border-radius:12px;background:rgba(41,89,145,.09);color:#295991}.rrn-password-icon .rrn-icon{width:20px;height:20px}
+        .rrn-password-head h2{margin:0;color:#295991;font-size:1.2rem}.rrn-password-head p{margin:5px 0 0;color:#6c7889;font-size:.75rem;line-height:1.45}
+        #passwordChangeForm{display:flex;flex-direction:column;gap:13px}#passwordChangeForm label{display:flex;flex-direction:column;gap:6px;color:#41526a;font-size:.72rem;font-weight:700}
+        .rrn-password-field{display:grid;grid-template-columns:1fr auto;overflow:hidden;border:1px solid rgba(41,89,145,.22);border-radius:10px;background:#fff}.rrn-password-field:focus-within{border-color:#295991;box-shadow:0 0 0 3px rgba(41,89,145,.08)}
+        .rrn-password-field input{min-width:0;height:42px;padding:0 12px;border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important}.rrn-password-field button{padding:0 11px;border:0;background:transparent;color:#295991;font-size:.65rem;font-weight:800;cursor:pointer}
+        .rrn-password-hint{margin-top:-5px;color:#7a8494;font-size:.62rem}.rrn-password-message{min-height:18px;margin:0;font-size:.68rem}.rrn-password-message.error{color:#a62b2b}.rrn-password-message.success{color:#247046}
+        .rrn-password-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:3px}.rrn-password-actions button{min-height:39px;padding:9px 14px;border-radius:9px;font:inherit;font-size:.7rem;font-weight:800;cursor:pointer}.rrn-password-cancel{border:1px solid rgba(41,89,145,.18);background:#fff;color:#295991}.rrn-password-save{border:1px solid #295991;background:#295991;color:#fff}.rrn-password-save:disabled{opacity:.6;cursor:wait}
+        @media(max-width:520px){.rrn-password-card{padding:20px 16px}.rrn-password-actions{display:grid;grid-template-columns:1fr 1fr}.rrn-password-actions button{width:100%}}
+      `;
+      document.head.appendChild(style);
+    }
+
+    window.RRN_ICONS?.decorateStatic?.();
+  }
+
   function setMessage(text = '', type = '') {
     const el = document.getElementById('passwordChangeMsg');
     if (!el) return;
@@ -24,6 +89,7 @@
   }
 
   function open() {
+    injectUI();
     const modal = document.getElementById('passwordChangeModal');
     if (!modal) return;
     document.getElementById('userDropdown')?.setAttribute('hidden', '');
@@ -53,7 +119,7 @@
     const confirmPassword = document.getElementById('confirmNewPassword')?.value || '';
     const button = document.getElementById('passwordChangeButton');
 
-    if (currentPassword.length < 1) return setMessage('Informe sua senha atual.', 'error');
+    if (!currentPassword) return setMessage('Informe sua senha atual.', 'error');
     if (newPassword.length < 8) return setMessage('A nova senha deve ter pelo menos 8 caracteres.', 'error');
     if (newPassword !== confirmPassword) return setMessage('A confirmação da nova senha não confere.', 'error');
     if (currentPassword === newPassword) return setMessage('Escolha uma senha diferente da atual.', 'error');
@@ -64,45 +130,52 @@
     setMessage();
 
     try {
-      const { error } = await supabaseClient.auth.updateUser({
-        password: newPassword,
-        currentPassword
-      });
+      const { error } = await supabaseClient.auth.updateUser({ password: newPassword, currentPassword });
       if (error) throw error;
       document.getElementById('passwordChangeForm')?.reset();
       setMessage('Senha alterada com sucesso.', 'success');
-      setTimeout(close, 900);
+      setTimeout(close, 1000);
     } catch (error) {
       const message = String(error?.message || '');
-      setMessage(
-        /password|credential|invalid/i.test(message)
-          ? 'Não foi possível alterar a senha. Confira a senha atual e tente novamente.'
-          : (message || 'Não foi possível alterar a senha.'),
-        'error'
-      );
+      setMessage(/password|credential|invalid/i.test(message)
+        ? 'Não foi possível alterar a senha. Confira a senha atual e tente novamente.'
+        : (message || 'Não foi possível alterar a senha.'), 'error');
     } finally {
       button.disabled = false;
       button.textContent = button.dataset.originalText || 'Alterar senha';
     }
   }
 
-  function togglePassword(event) {
-    const button = event.currentTarget;
-    const id = button.dataset.passwordTarget;
-    const input = document.getElementById(id);
-    if (!input) return;
-    input.type = input.type === 'password' ? 'text' : 'password';
-    button.textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
+  function bind() {
+    const form = document.getElementById('passwordChangeForm');
+    if (form && form.dataset.bound !== '1') {
+      form.dataset.bound = '1';
+      form.addEventListener('submit', submit);
+    }
+    document.querySelectorAll('[data-password-target]').forEach(button => {
+      if (button.dataset.bound === '1') return;
+      button.dataset.bound = '1';
+      button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.passwordTarget);
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+        button.textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
+      });
+    });
+    const closeButton = document.querySelector('.rrn-password-close');
+    if (closeButton && closeButton.dataset.bound !== '1') { closeButton.dataset.bound = '1'; closeButton.addEventListener('click', close); }
+    const cancelButton = document.querySelector('.rrn-password-cancel');
+    if (cancelButton && cancelButton.dataset.bound !== '1') { cancelButton.dataset.bound = '1'; cancelButton.addEventListener('click', close); }
+    const modal = document.getElementById('passwordChangeModal');
+    if (modal && modal.dataset.bound !== '1') {
+      modal.dataset.bound = '1';
+      modal.addEventListener('click', event => { if (event.target === modal) close(); });
+    }
   }
 
   function boot() {
-    document.getElementById('passwordChangeForm')?.addEventListener('submit', submit);
-    document.querySelectorAll('[data-password-target]').forEach(button => {
-      button.addEventListener('click', togglePassword);
-    });
-    document.getElementById('passwordChangeModal')?.addEventListener('click', event => {
-      if (event.target.id === 'passwordChangeModal') close();
-    });
+    injectUI();
+    bind();
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !document.getElementById('passwordChangeModal')?.hidden) close();
     });
