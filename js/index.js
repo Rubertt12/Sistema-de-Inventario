@@ -17,6 +17,7 @@
     addStylesheet('/style/enterprise.css', 'data-rrn-enterprise');
     addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
     addStylesheet('/style/dashboard-tabs.css', 'data-rrn-dashboard-tabs');
+    addStylesheet('/style/grid-machine-details.css', 'data-rrn-grid-machine-details');
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
     addStylesheet('/style/trash.css', 'data-rrn-trash');
@@ -132,6 +133,7 @@
       await load('/js/profile-picture-v2.js');
       await load('/js/production-stability.js');
       await load('/js/icons-v2.js');
+      await load('/js/grid-machine-details.js');
       await load('/js/dashboard-tabs.js');
     }
 
@@ -151,6 +153,7 @@
       window.RRN_UI?.updateOverview?.();
       window.RRN_TABS?.renderHome?.();
       window.RRN_ICONS?.decorateStatic?.();
+      window.RRN_GRID_DETAILS?.enhanceAll?.();
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
