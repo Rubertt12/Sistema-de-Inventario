@@ -6,6 +6,7 @@
 
   const DATALIST_ID = 'rrnResponsibleSuggestions';
   const MAX_NAMES = 300;
+  let lastListSignature = '';
 
   const clean = value => String(value ?? '').trim().replace(/\s+/g, ' ');
   const normalize = value => clean(value)
@@ -74,7 +75,6 @@
   }
 
   function allNames() {
-    // Nomes digitados recentemente primeiro; os já existentes no inventário completam a lista.
     return uniqueNames([...savedNames(), ...inventoryNames()]).slice(0, MAX_NAMES);
   }
 
@@ -97,18 +97,25 @@
     if (list) return list;
     list = document.createElement('datalist');
     list.id = DATALIST_ID;
+    list.dataset.rrnAutocompleteList = '1';
     document.body.appendChild(list);
     return list;
   }
 
   function refreshList() {
+    const names = allNames();
+    const signature = names.join('\u0001');
+    if (signature === lastListSignature && document.getElementById(DATALIST_ID)) return;
+
     const list = ensureList();
     const fragment = document.createDocumentFragment();
-    allNames().forEach(name => {
+    names.forEach(name => {
       const option = document.createElement('option');
       option.value = name;
       fragment.appendChild(option);
     });
+
+    lastListSignature = signature;
     list.replaceChildren(fragment);
   }
 
@@ -131,14 +138,8 @@
     if (!['text', 'search', ''].includes(input.type)) return false;
     if (input.id === 'searchInput' || input.closest('.rrn-transfer-dialog')) return false;
 
-    const direct = [
-      input.id,
-      input.name,
-      input.placeholder,
-      input.getAttribute('aria-label'),
-      input.dataset?.field
-    ].filter(Boolean).join(' ');
-
+    const direct = [input.id, input.name, input.placeholder, input.getAttribute('aria-label'), input.dataset?.field]
+      .filter(Boolean).join(' ');
     const context = `${direct} ${labelText(input)}`;
     const normalized = normalize(context);
 
@@ -163,12 +164,13 @@
   }
 
   function scan(root = document) {
-    refreshList();
+    if (root instanceof Element && (root.id === DATALIST_ID || root.closest?.(`#${DATALIST_ID}`))) return;
     if (root instanceof HTMLInputElement) attach(root);
     root.querySelectorAll?.('input').forEach(attach);
   }
 
   function boot() {
+    refreshList();
     scan();
 
     document.addEventListener('focusin', event => {
@@ -177,8 +179,11 @@
 
     const observer = new MutationObserver(records => {
       for (const record of records) {
+        if (record.target instanceof Element && (record.target.id === DATALIST_ID || record.target.closest?.(`#${DATALIST_ID}`))) continue;
         record.addedNodes.forEach(node => {
-          if (node instanceof Element) scan(node);
+          if (!(node instanceof Element)) return;
+          if (node.id === DATALIST_ID || node.closest?.(`#${DATALIST_ID}`)) return;
+          scan(node);
         });
       }
     });
@@ -195,6 +200,6 @@
   window.RRN_RESPONSIBLE_AUTOCOMPLETE = Object.freeze({
     remember,
     names: allNames,
-    refresh: () => scan()
+    refresh: () => { refreshList(); scan(); }
   });
 })();
