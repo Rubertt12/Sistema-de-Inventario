@@ -21,7 +21,6 @@
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
     addStylesheet('/style/trash.css', 'data-rrn-trash');
-    addStylesheet('/style/insights.css', 'data-rrn-insights');
   }
 
   function containsPlaintextPassword(value) {
@@ -130,7 +129,6 @@
       await load('/js/trash-v2.js');
       await load('/js/trash-audit-bridge.js');
       await load('/js/backup-v3.js');
-      await load('/js/insights.js');
       await load('/js/reports-v2.js');
       await load('/js/profile-picture-v2.js');
       await load('/js/production-stability.js');
