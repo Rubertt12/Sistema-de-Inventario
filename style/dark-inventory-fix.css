@@ -15,17 +15,10 @@
 :root[data-theme="dark"] #setoresContainer .rrn-machine-fact,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-actions,
 :root[data-theme="dark"] #setoresContainer .rrn-sector-empty,
-:root[data-theme="dark"] #setoresContainer .rrn-equipment-load-more{
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-}
-
+:root[data-theme="dark"] #setoresContainer .rrn-equipment-load-more{color:var(--rrn-text)!important;border-color:var(--rrn-border)!important}
 :root[data-theme="dark"] #setoresContainer .rrn-setor-card,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-item,
-:root[data-theme="dark"] #setoresContainer .rrn-machine-grid-details{
-  background:var(--rrn-surface)!important;
-}
-
+:root[data-theme="dark"] #setoresContainer .rrn-machine-grid-details{background:var(--rrn-surface)!important}
 :root[data-theme="dark"] #setoresContainer .rrn-machine-title-row strong,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-fact strong,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-product-line,
@@ -34,90 +27,44 @@
 :root[data-theme="dark"] #setoresContainer .rrn-setor-card h3,
 :root[data-theme="dark"] #setoresContainer .rrn-setor-card strong,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-item strong,
-:root[data-theme="dark"] #setoresContainer .rrn-machine-item span:not(.rrn-status):not(.badge):not(.chip):not(.pill){
-  color:var(--rrn-text)!important;
-}
-
+:root[data-theme="dark"] #setoresContainer .rrn-machine-item span:not(.rrn-status):not(.badge):not(.chip):not(.pill){color:var(--rrn-text)!important}
 :root[data-theme="dark"] #setoresContainer .rrn-machine-fact small,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-item small,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-meta,
-:root[data-theme="dark"] #setoresContainer .rrn-machine-product-line{
-  color:var(--rrn-muted)!important;
-}
-
-:root[data-theme="dark"] #setoresContainer .rrn-machine-fact-icon{
-  color:var(--rrn-primary)!important;
-  background:color-mix(in srgb,var(--rrn-primary) 12%,transparent)!important;
-}
-
+:root[data-theme="dark"] #setoresContainer .rrn-machine-product-line{color:var(--rrn-muted)!important}
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact-icon{color:var(--rrn-primary)!important;background:color-mix(in srgb,var(--rrn-primary) 12%,transparent)!important}
 :root[data-theme="dark"] #setoresContainer .rrn-machine-grid-details,
 :root[data-theme="dark"] #setoresContainer .rrn-machine-fact,
-:root[data-theme="dark"] #setoresContainer .rrn-machine-actions{
-  border-color:var(--rrn-border)!important;
-}
-
-:root[data-theme="dark"] #setoresContainer .rrn-machine-fact.is-empty{
-  background:var(--rrn-surface-soft)!important;
-}
-:root[data-theme="dark"] #setoresContainer .rrn-machine-fact.is-empty strong{
-  color:var(--rrn-muted)!important;
-}
-
+:root[data-theme="dark"] #setoresContainer .rrn-machine-actions{border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact.is-empty{background:var(--rrn-surface-soft)!important}
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact.is-empty strong{color:var(--rrn-muted)!important}
 :root[data-theme="dark"] .rrn-btn,
 :root[data-theme="dark"] .rrn-icon-btn,
 :root[data-theme="dark"] .rrn-action-btn,
 :root[data-theme="dark"] .machine-action,
 :root[data-theme="dark"] .equipment-action,
 :root[data-theme="dark"] .transfer-action,
-:root[data-theme="dark"] .history-action{
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-}
-
+:root[data-theme="dark"] .history-action{color:var(--rrn-text)!important;border-color:var(--rrn-border)!important}
 :root[data-theme="dark"] .rrn-btn:not(.primary):not(.danger),
 :root[data-theme="dark"] .rrn-icon-btn,
-:root[data-theme="dark"] .rrn-action-btn{
-  background:var(--rrn-surface-2)!important;
-}
-
+:root[data-theme="dark"] .rrn-action-btn{background:var(--rrn-surface-2)!important}
 :root[data-theme="dark"] .rrn-btn:hover,
 :root[data-theme="dark"] .rrn-icon-btn:hover,
-:root[data-theme="dark"] .rrn-action-btn:hover{
-  background:var(--rrn-surface-soft)!important;
-  color:var(--rrn-heading)!important;
-}
-
+:root[data-theme="dark"] .rrn-action-btn:hover{background:var(--rrn-surface-soft)!important;color:var(--rrn-heading)!important}
 :root[data-theme="dark"] .rrn-user-assets-badge,
 :root[data-theme="dark"] .user-assets-badge,
-:root[data-theme="dark"] .related-assets-badge{
-  color:var(--rrn-heading)!important;
-  background:color-mix(in srgb,var(--rrn-secondary) 15%,transparent)!important;
-  border-color:color-mix(in srgb,var(--rrn-secondary) 30%,transparent)!important;
-}
-
+:root[data-theme="dark"] .related-assets-badge{color:var(--rrn-heading)!important;background:color-mix(in srgb,var(--rrn-secondary) 15%,transparent)!important;border-color:color-mix(in srgb,var(--rrn-secondary) 30%,transparent)!important}
 :root[data-theme="dark"] .modal-content [style*="color:#295991"],
 :root[data-theme="dark"] .modal-content [style*="color: #295991"],
 :root[data-theme="dark"] #setoresContainer [style*="color:#295991"],
 :root[data-theme="dark"] #setoresContainer [style*="color: #295991"],
 :root[data-theme="dark"] #setoresContainer [style*="color:#163A4D"],
-:root[data-theme="dark"] #setoresContainer [style*="color: #163A4D"]{
-  color:var(--rrn-text)!important;
-}
-
+:root[data-theme="dark"] #setoresContainer [style*="color: #163A4D"]{color:var(--rrn-text)!important}
 :root[data-theme="dark"] .modal-content [style*="background:#fff"],
 :root[data-theme="dark"] .modal-content [style*="background: #fff"],
 :root[data-theme="dark"] #setoresContainer [style*="background:#fff"],
-:root[data-theme="dark"] #setoresContainer [style*="background: #fff"]{
-  background:var(--rrn-surface)!important;
-}
-
-/* Inventory overview and empty states still inherited legacy blue in dark mode. */
-:root[data-theme="dark"] .rrn-dashboard-overview{
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--rrn-secondary) 12%,var(--rrn-surface)),color-mix(in srgb,var(--rrn-accent) 8%,var(--rrn-surface)))!important;
-  box-shadow:none!important;
-}
+:root[data-theme="dark"] #setoresContainer [style*="background: #fff"]{background:var(--rrn-surface)!important}
+:root[data-theme="dark"] .rrn-dashboard-overview{color:var(--rrn-text)!important;border-color:var(--rrn-border)!important;background:linear-gradient(135deg,color-mix(in srgb,var(--rrn-secondary) 12%,var(--rrn-surface)),color-mix(in srgb,var(--rrn-accent) 8%,var(--rrn-surface)))!important;box-shadow:none!important}
 :root[data-theme="dark"] .rrn-overview-copy>span{color:var(--rrn-secondary)!important}
 :root[data-theme="dark"] .rrn-overview-copy>strong{color:var(--rrn-heading)!important}
 :root[data-theme="dark"] .rrn-overview-copy>small{color:var(--rrn-muted)!important}
@@ -127,13 +74,37 @@
 :root[data-theme="dark"] .rrn-sector-empty,
 :root[data-theme="dark"] .empty-state,
 :root[data-theme="dark"] #setoresContainer .empty-state,
-:root[data-theme="dark"] #setoresContainer [class*="empty"]{
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-}
+:root[data-theme="dark"] #setoresContainer [class*="empty"]{color:var(--rrn-text)!important;border-color:var(--rrn-border)!important}
 :root[data-theme="dark"] .rrn-sector-empty strong,
 :root[data-theme="dark"] .empty-state strong,
 :root[data-theme="dark"] #setoresContainer [class*="empty"] strong{color:var(--rrn-heading)!important}
 :root[data-theme="dark"] .rrn-sector-empty small,
 :root[data-theme="dark"] .empty-state small,
 :root[data-theme="dark"] #setoresContainer [class*="empty"] small{color:var(--rrn-muted)!important}
+
+/* Maintenance drawer + modal consistency */
+:root[data-theme="dark"] .rrn-maintenance-handle,
+:root[data-theme="dark"] .rrn-maintenance-sheet,
+:root[data-theme="dark"] .rrn-maintenance-sheet-head,
+:root[data-theme="dark"] .rrn-maintenance-card,
+:root[data-theme="dark"] .rrn-maintenance-empty,
+:root[data-theme="dark"] #modalTodasManutencoes .modal-content,
+:root[data-theme="dark"] #listaTodasManutencoes{background:var(--rrn-surface)!important;color:var(--rrn-text)!important;border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] .rrn-maintenance-card{background:var(--rrn-surface-2)!important}
+:root[data-theme="dark"] .rrn-maintenance-handle,
+:root[data-theme="dark"] .rrn-maintenance-sheet strong,
+:root[data-theme="dark"] .rrn-maintenance-card strong,
+:root[data-theme="dark"] #modalTodasManutencoes h2,
+:root[data-theme="dark"] #modalTodasManutencoes strong{color:var(--rrn-heading)!important}
+:root[data-theme="dark"] .rrn-maintenance-sheet small,
+:root[data-theme="dark"] .rrn-maintenance-card small,
+:root[data-theme="dark"] #modalTodasManutencoes small,
+:root[data-theme="dark"] #modalTodasManutencoes p{color:var(--rrn-muted)!important}
+:root[data-theme="dark"] .rrn-maintenance-sheet-actions button,
+:root[data-theme="dark"] .rrn-maintenance-card button,
+:root[data-theme="dark"] .rrn-maintenance-all,
+:root[data-theme="dark"] #modalTodasManutencoes button:not(.close-btn){background:var(--rrn-surface-2)!important;color:var(--rrn-heading)!important;border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] .rrn-maintenance-sheet-actions button:hover,
+:root[data-theme="dark"] .rrn-maintenance-card button:hover,
+:root[data-theme="dark"] .rrn-maintenance-all:hover{background:var(--rrn-surface-soft)!important}
+:root[data-theme="dark"] .rrn-maintenance-sheet-actions kbd{background:var(--rrn-bg)!important;color:var(--rrn-muted)!important;border-color:var(--rrn-border)!important}
