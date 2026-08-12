@@ -7,7 +7,7 @@
     && !String(cfg.url).includes('SEU-PROJETO')
     && !String(cfg.anonKey).includes('SUA_CHAVE');
 
-  const authRedirectUrl = `${location.origin}/index.html`;
+  const authRedirectUrl = `${location.origin}/login.html`;
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const params = new URLSearchParams(location.search);
   const recoveryHint = params.get('type') === 'recovery' || /(?:^|[&#])type=recovery(?:&|$)/i.test(location.hash);
@@ -29,7 +29,6 @@
 
   function injectRecoveryUI() {
     if (document.getElementById('forgotPasswordButton')) return;
-
     const loginPasswordField = document.getElementById('loginSenha')?.closest('.field');
     const forgot = document.createElement('button');
     forgot.type = 'button';
@@ -56,8 +55,8 @@
     const style = document.createElement('style');
     style.id = 'rrnAuthRecoveryStyles';
     style.textContent = `
-      .rrn-auth-link{align-self:flex-end;margin:-7px 0 3px;padding:3px 0;border:0;background:transparent;color:#295991;font:inherit;font-size:.72rem;font-weight:700;cursor:pointer}.rrn-auth-link:hover{text-decoration:underline}
-      .rrn-auth-back{margin:-4px 0 8px}.rrn-auth-back button{padding:0;border:0;background:transparent;color:#295991;font:inherit;font-size:.7rem;font-weight:700;cursor:pointer}.rrn-auth-back button:hover{text-decoration:underline}
+      .rrn-auth-link{align-self:flex-end;margin:-7px 0 3px;padding:3px 0;border:0;background:transparent;color:var(--rrn-secondary,#2F7D78);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}.rrn-auth-link:hover{text-decoration:underline}
+      .rrn-auth-back{margin:-4px 0 8px}.rrn-auth-back button{padding:0;border:0;background:transparent;color:var(--rrn-secondary,#2F7D78);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}.rrn-auth-back button:hover{text-decoration:underline}
     `;
     document.head.appendChild(style);
   }
@@ -114,7 +113,6 @@
   }
 
   injectRecoveryUI();
-
   document.querySelectorAll('.auth-tab').forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.target)));
   document.getElementById('forgotPasswordButton')?.addEventListener('click', showForgot);
   document.querySelectorAll('[data-auth-back]').forEach(button => button.addEventListener('click', () => switchTab('login')));
@@ -228,7 +226,7 @@
       const { error } = await client.auth.updateUser({ password });
       if (error) throw error;
       await client.auth.signOut();
-      history.replaceState(null, '', '/index.html');
+      history.replaceState(null, '', '/login.html');
       switchTab('login');
       setMessage(document.getElementById('loginMsg'), 'Senha redefinida com sucesso. Entre com sua nova senha.', 'success');
     } catch (error) {
