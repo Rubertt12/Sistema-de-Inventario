@@ -21,6 +21,8 @@
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
     addStylesheet('/style/trash.css', 'data-rrn-trash');
+    addStylesheet('/style/search-center-v2.css', 'data-rrn-search-center-v2');
+    addStylesheet('/style/maintenance-drawer-v2.css', 'data-rrn-maintenance-drawer-v2');
   }
 
   function ensureBrandTheme() {
@@ -54,42 +56,25 @@
     try {
       const parsed = JSON.parse(value);
       return Boolean(parsed && typeof parsed === 'object' && ('senha' in parsed || 'password' in parsed));
-    } catch {
-      return false;
-    }
+    } catch { return false; }
   }
 
   function guardLegacyCredentials() {
     if (!isDashboard || window.__RRN_LEGACY_CREDENTIAL_GUARD__) return;
     window.__RRN_LEGACY_CREDENTIAL_GUARD__ = true;
-
-    legacyCredentialKeys.forEach(key => {
-      localStorage.removeItem(key);
-      sessionStorage.removeItem(key);
-    });
-
+    legacyCredentialKeys.forEach(key => { localStorage.removeItem(key); sessionStorage.removeItem(key); });
     const originalSetItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function(key, value) {
       const normalizedKey = String(key);
-      if (this === localStorage && legacyCredentialKeys.has(normalizedKey)) {
-        console.warn(`RRN Manager: armazenamento legado de credencial bloqueado (${normalizedKey}).`);
-        return;
-      }
-      if (this === localStorage && normalizedKey === 'usuarioLogado' && containsPlaintextPassword(value)) {
-        console.warn('RRN Manager: tentativa de armazenar senha no usuarioLogado foi bloqueada.');
-        return;
-      }
+      if (this === localStorage && legacyCredentialKeys.has(normalizedKey)) return;
+      if (this === localStorage && normalizedKey === 'usuarioLogado' && containsPlaintextPassword(value)) return;
       return originalSetItem.call(this, key, value);
     };
   }
 
   function currentRole() {
     if (window.RRN_SESSION?.role) return window.RRN_SESSION.role;
-    try {
-      return JSON.parse(localStorage.getItem('usuarioLogado') || '{}').perfil || null;
-    } catch {
-      return null;
-    }
+    try { return JSON.parse(localStorage.getItem('usuarioLogado') || '{}').perfil || null; } catch { return null; }
   }
 
   window.verificarPermissoes = function verificarPermissoes() {
@@ -98,7 +83,6 @@
     const addSetor = document.getElementById('addSetorBtn');
     const deleteAll = document.querySelector('.excluir-tudo-btn');
     const canOperate = role === 'admin' || role === 'operador' || role == null;
-
     if (adminMenu) adminMenu.style.display = role === 'admin' ? 'block' : 'none';
     if (addSetor) addSetor.style.display = canOperate ? '' : 'none';
     if (deleteAll) deleteAll.style.display = role === 'admin' ? '' : 'none';
@@ -119,20 +103,14 @@
   ensureFooterStyles();
   guardLegacyCredentials();
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', cleanupLegacyMarkup, { once: true });
-  } else {
-    cleanupLegacyMarkup();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cleanupLegacyMarkup, { once: true });
+  else cleanupLegacyMarkup();
 
   const load = src => new Promise((resolve, reject) => {
     if (document.querySelector(`script[data-rrn-src="${src}"]`)) return resolve();
     const script = document.createElement('script');
-    script.src = src;
-    script.async = false;
-    script.dataset.rrnSrc = src;
-    script.onload = resolve;
-    script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
+    script.src = src; script.async = false; script.dataset.rrnSrc = src;
+    script.onload = resolve; script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
     document.head.appendChild(script);
   });
 
@@ -140,13 +118,9 @@
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
     await load('/js/theme-mode.js');
     await load('/js/footer-v2.js');
-
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
-    if (isDashboard && window.RRN_PREVIEW_DEMO) {
-      window.loadSetoresAndMachines?.();
-      window.renderSetores?.();
-    }
+    if (isDashboard && window.RRN_PREVIEW_DEMO) { window.loadSetoresAndMachines?.(); window.renderSetores?.(); }
 
     if (isDashboard) {
       await load('/js/icons-v2.js');
@@ -172,6 +146,7 @@
       await load('/js/user-asset-linking.js');
       await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
+      await load('/js/search-center-v2.js');
     }
 
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
@@ -203,9 +178,6 @@
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
     const notice = document.getElementById('backendNotice');
-    if (notice) {
-      notice.hidden = false;
-      notice.textContent = error.message || 'Falha ao iniciar o backend.';
-    }
+    if (notice) { notice.hidden = false; notice.textContent = error.message || 'Falha ao iniciar o backend.'; }
   });
 })();
