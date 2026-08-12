@@ -1,0 +1,36 @@
+/* RRN Manager — abas da navbar sem caixa externa */
+
+.navbar .rrn-app-tabs{
+  padding:0!important;
+  gap:4px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+.navbar .rrn-app-tab{
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+.navbar .rrn-app-tab:hover{
+  background:rgba(255,255,255,.08)!important;
+}
+
+.navbar .rrn-app-tab.is-active,
+.navbar .rrn-app-tab[aria-selected="true"]{
+  background:rgba(255,255,255,.12)!important;
+  box-shadow:none!important;
+}
+
+@media(max-width:780px){
+  .navbar .nav-links.active .rrn-app-tabs{
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+}
