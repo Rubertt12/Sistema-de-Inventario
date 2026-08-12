@@ -21,7 +21,7 @@
     el.textContent = message;
     el.hidden = false;
     clearTimeout(toast.timer);
-    toast.timer = setTimeout(() => { el.hidden = true; }, 4200);
+    toast.timer = setTimeout(() => { el.hidden = true; }, 5200);
   }
 
   async function ensureClient() {
@@ -103,17 +103,47 @@
     modal.hidden = false;
   }
 
+  async function edgeErrorMessage(error, data, fallback) {
+    if (data?.error) return data.error;
+    const response = error?.context;
+    if (response && typeof response.clone === 'function') {
+      try {
+        const body = await response.clone().json();
+        if (body?.error) return body.error;
+        if (body?.message) return body.message;
+      } catch {}
+      try {
+        const text = await response.clone().text();
+        if (text && !/^\s*</.test(text)) return text;
+      } catch {}
+    }
+    return error?.message && error.message !== 'Edge Function returned a non-2xx status code'
+      ? error.message
+      : fallback;
+  }
+
   function controlHtml(collaborator) {
     const customer = customerFor(collaborator);
     const hasEmail = Boolean(normalizeEmail(collaborator.email));
+    const isActiveCollaborator = collaborator.status === 'active';
 
     if (!hasEmail) {
       return `<div class="collab-portal-control"><span class="badge badge-inactive">Sem e-mail</span><small>Cadastre um e-mail para liberar o portal.</small></div>`;
     }
 
+    if (!isActiveCollaborator) {
+      return `<div class="collab-portal-control"><span class="badge badge-inactive">Colaborador inativo</span><small>Ative o colaborador antes de criar ou liberar o acesso ao Portal.</small><button type="button" class="action-btn" disabled>Ative o colaborador primeiro</button></div>`;
+    }
+
     if (collaborator.portal_access || customer?.status === 'active') {
       const temporary = Boolean(customer?.must_change_password);
       const active = customer?.status === 'active';
+      const hasAccount = Boolean(collaborator.user_id || customer?.user_id);
+
+      if (!hasAccount) {
+        return `<div class="collab-portal-control"><span class="badge badge-pending">Pré-autorizado</span><small>Acesso autorizado, mas a conta ainda não foi criada.</small><button type="button" class="action-btn" data-collab-portal-toggle="${collaborator.id}" data-enabled="true">Criar acesso e gerar senha</button><button type="button" class="action-btn danger" data-collab-portal-toggle="${collaborator.id}" data-enabled="false">Revogar portal</button></div>`;
+      }
+
       const label = temporary ? 'Senha temporária' : active ? 'Portal liberado' : 'Pré-autorizado';
       const hint = temporary
         ? 'Conta criada. O colaborador precisa trocar a senha no primeiro login.'
@@ -135,7 +165,7 @@
       const cell = row.children?.[2];
       if (!cell) return;
       const customer = customerFor(collaborator);
-      const signature = `${collaborator.portal_access}|${collaborator.user_id || ''}|${customer?.status || ''}|${customer?.must_change_password || false}|${collaborator.email || ''}`;
+      const signature = `${collaborator.status}|${collaborator.portal_access}|${collaborator.user_id || ''}|${customer?.status || ''}|${customer?.must_change_password || false}|${collaborator.email || ''}`;
       if (cell.dataset.portalAccessSignature === signature) return;
       cell.dataset.portalAccessSignature = signature;
       cell.innerHTML = controlHtml(collaborator);
@@ -174,15 +204,21 @@
   }
 
   async function enablePortal(button, collaborator) {
+    if (collaborator.status !== 'active') {
+      toast('Ative o colaborador antes de criar ou liberar o acesso ao Portal.');
+      return;
+    }
+
     button.disabled = true;
+    const original = button.textContent;
     button.textContent = 'Criando acesso...';
     const { data, error } = await client.functions.invoke('portal-user-access', {
       body: { action: 'provision', collaborator_id: collaborator.id }
     });
     if (error || data?.error) {
       button.disabled = false;
-      button.textContent = 'Liberar portal';
-      toast(data?.error || error?.message || 'Não foi possível criar o acesso ao Portal.');
+      button.textContent = original || 'Liberar portal';
+      toast(await edgeErrorMessage(error, data, 'Não foi possível criar o acesso ao Portal.'));
       return;
     }
 
