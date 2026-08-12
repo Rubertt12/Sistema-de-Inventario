@@ -1,0 +1,196 @@
+/* RRN Manager — dark mode global consistency layer */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+}
+
+:root[data-theme="dark"] html,
+:root[data-theme="dark"] body{
+  background:var(--rrn-bg)!important;
+  color:var(--rrn-text)!important;
+}
+
+/* Common surfaces across dashboard, settings, admin and auth */
+:root[data-theme="dark"] .settings-topbar,
+:root[data-theme="dark"] .settings-sidebar,
+:root[data-theme="dark"] .settings-card,
+:root[data-theme="dark"] .settings-user-card,
+:root[data-theme="dark"] .settings-session-pill,
+:root[data-theme="dark"] .settings-nav button.active,
+:root[data-theme="dark"] .settings-nav button:hover,
+:root[data-theme="dark"] .layout-choice-grid button,
+:root[data-theme="dark"] .settings-segment button.active,
+:root[data-theme="dark"] .workspace-meta span,
+:root[data-theme="dark"] .settings-back-btn,
+:root[data-theme="dark"] .settings-ghost-btn,
+:root[data-theme="dark"] .admin-user,
+:root[data-theme="dark"] .tenant-card,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .kpi-grid article,
+:root[data-theme="dark"] .auth-card,
+:root[data-theme="dark"] .modal-content,
+:root[data-theme="dark"] .config-modal,
+:root[data-theme="dark"] .modal-transferencia-content,
+:root[data-theme="dark"] .box-setor,
+:root[data-theme="dark"] .rrn-password-card{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] .settings-sidebar,
+:root[data-theme="dark"] .admin-sidebar,
+:root[data-theme="dark"] .settings-kpis>div,
+:root[data-theme="dark"] .workspace-summary,
+:root[data-theme="dark"] .settings-segment,
+:root[data-theme="dark"] .layout-demo,
+:root[data-theme="dark"] .upload-box{
+  background:var(--rrn-surface-soft)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+/* Headings and muted copy */
+:root[data-theme="dark"] .settings-brand strong,
+:root[data-theme="dark"] .settings-user-card strong,
+:root[data-theme="dark"] .settings-nav button strong,
+:root[data-theme="dark"] .settings-sidebar-note strong,
+:root[data-theme="dark"] .settings-page-heading h1,
+:root[data-theme="dark"] .settings-card h2,
+:root[data-theme="dark"] .workspace-summary>strong,
+:root[data-theme="dark"] .settings-kpis strong,
+:root[data-theme="dark"] .settings-field>span,
+:root[data-theme="dark"] .background-preview-wrap>span,
+:root[data-theme="dark"] .settings-action-copy h2,
+:root[data-theme="dark"] .settings-info-box strong,
+:root[data-theme="dark"] .page-heading h1,
+:root[data-theme="dark"] .panel-heading h2,
+:root[data-theme="dark"] .tenant-card strong,
+:root[data-theme="dark"] .admin-user strong,
+:root[data-theme="dark"] .rrn-password-head h2,
+:root[data-theme="dark"] #passwordChangeForm label{
+  color:var(--rrn-heading)!important;
+}
+
+:root[data-theme="dark"] .settings-brand small,
+:root[data-theme="dark"] .settings-user-card span,
+:root[data-theme="dark"] .settings-user-card small,
+:root[data-theme="dark"] .settings-nav button,
+:root[data-theme="dark"] .settings-nav button small,
+:root[data-theme="dark"] .settings-sidebar-note,
+:root[data-theme="dark"] .settings-sidebar-note small,
+:root[data-theme="dark"] .settings-page-heading p,
+:root[data-theme="dark"] .settings-card-head p,
+:root[data-theme="dark"] .profile-settings-copy span,
+:root[data-theme="dark"] .profile-settings-copy small,
+:root[data-theme="dark"] .settings-kpis span,
+:root[data-theme="dark"] .settings-kpis small,
+:root[data-theme="dark"] .layout-choice-grid button small,
+:root[data-theme="dark"] .settings-field>small,
+:root[data-theme="dark"] .settings-action-copy p,
+:root[data-theme="dark"] .settings-info-box p,
+:root[data-theme="dark"] .page-heading p,
+:root[data-theme="dark"] .panel-heading p,
+:root[data-theme="dark"] .rrn-password-head p,
+:root[data-theme="dark"] .rrn-password-hint{
+  color:var(--rrn-muted)!important;
+}
+
+/* Forms */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .settings-input-action input,
+:root[data-theme="dark"] .color-field code,
+:root[data-theme="dark"] .rrn-password-field{
+  background:var(--rrn-input)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder{color:var(--rrn-muted)!important}
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] select:focus,
+:root[data-theme="dark"] textarea:focus,
+:root[data-theme="dark"] .rrn-password-field:focus-within{
+  border-color:var(--rrn-secondary)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--rrn-secondary) 18%,transparent)!important;
+}
+:root[data-theme="dark"] .rrn-password-field input{background:transparent!important;color:var(--rrn-text)!important}
+:root[data-theme="dark"] .rrn-password-field button{background:transparent!important;color:var(--rrn-secondary)!important}
+
+/* Buttons */
+:root[data-theme="dark"] .settings-back-btn,
+:root[data-theme="dark"] .settings-ghost-btn,
+:root[data-theme="dark"] .rrn-password-close,
+:root[data-theme="dark"] .rrn-password-cancel,
+:root[data-theme="dark"] .btn-secondary,
+:root[data-theme="dark"] .btn-ghost,
+:root[data-theme="dark"] .action-btn{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-heading)!important;
+  border-color:var(--rrn-border)!important;
+}
+:root[data-theme="dark"] .settings-back-btn:hover,
+:root[data-theme="dark"] .settings-ghost-btn:hover,
+:root[data-theme="dark"] .rrn-password-close:hover,
+:root[data-theme="dark"] .rrn-password-cancel:hover,
+:root[data-theme="dark"] .btn-secondary:hover,
+:root[data-theme="dark"] .btn-ghost:hover,
+:root[data-theme="dark"] .action-btn:hover{background:var(--rrn-surface-soft)!important}
+:root[data-theme="dark"] .settings-primary-btn,
+:root[data-theme="dark"] .settings-input-action button,
+:root[data-theme="dark"] .rrn-password-save,
+:root[data-theme="dark"] .btn-primary{
+  background:var(--rrn-primary)!important;
+  color:#fff!important;
+  border-color:var(--rrn-primary)!important;
+}
+
+/* Settings-specific visuals */
+:root[data-theme="dark"] .settings-card,
+:root[data-theme="dark"] .settings-user-card,
+:root[data-theme="dark"] .settings-nav button.active{box-shadow:none!important}
+:root[data-theme="dark"] .settings-nav button>span,
+:root[data-theme="dark"] .settings-action-icon{
+  background:color-mix(in srgb,var(--rrn-secondary) 14%,var(--rrn-surface-soft))!important;
+  color:var(--rrn-secondary)!important;
+}
+:root[data-theme="dark"] .settings-nav button.active>span{background:var(--rrn-secondary)!important;color:#fff!important}
+:root[data-theme="dark"] .background-preview{border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] .background-preview>strong{
+  background:color-mix(in srgb,var(--rrn-surface) 92%,transparent)!important;
+  color:var(--rrn-heading)!important;
+}
+:root[data-theme="dark"] .preview-cards i{background:color-mix(in srgb,var(--rrn-surface) 90%,transparent)!important;border-color:var(--rrn-border)!important}
+
+/* Password dialog created dynamically */
+:root[data-theme="dark"] .rrn-password-modal{background:rgba(2,8,11,.72)!important}
+:root[data-theme="dark"] .rrn-password-card{box-shadow:0 24px 70px rgba(0,0,0,.45)!important}
+:root[data-theme="dark"] .rrn-password-icon{
+  background:color-mix(in srgb,var(--rrn-secondary) 14%,transparent)!important;
+  color:var(--rrn-secondary)!important;
+}
+:root[data-theme="dark"] .rrn-password-message.error{color:var(--rrn-danger)!important}
+:root[data-theme="dark"] .rrn-password-message.success{color:var(--rrn-success)!important}
+
+/* Tables/admin */
+:root[data-theme="dark"] table,
+:root[data-theme="dark"] tbody,
+:root[data-theme="dark"] tr,
+:root[data-theme="dark"] td{background:transparent!important;color:var(--rrn-text)!important}
+:root[data-theme="dark"] th{background:var(--rrn-surface-soft)!important;color:var(--rrn-heading)!important;border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] td{border-color:var(--rrn-border)!important}
+
+/* Neutralize common legacy inline light colors everywhere */
+:root[data-theme="dark"] body [style*="background:#fff"],
+:root[data-theme="dark"] body [style*="background: #fff"],
+:root[data-theme="dark"] body [style*="background:white"],
+:root[data-theme="dark"] body [style*="background: white"],
+:root[data-theme="dark"] body [style*="background:#f9f9f9"],
+:root[data-theme="dark"] body [style*="background: #f9f9f9"]{background:var(--rrn-surface)!important}
+:root[data-theme="dark"] body [style*="color:#333"],
+:root[data-theme="dark"] body [style*="color: #333"],
+:root[data-theme="dark"] body [style*="color:#295991"],
+:root[data-theme="dark"] body [style*="color: #295991"],
+:root[data-theme="dark"] body [style*="color:#163A4D"],
+:root[data-theme="dark"] body [style*="color: #163A4D"]{color:var(--rrn-text)!important}
