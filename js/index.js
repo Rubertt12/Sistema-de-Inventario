@@ -41,6 +41,15 @@
     document.head.appendChild(link);
   }
 
+  function ensureFooterStyles() {
+    if (document.querySelector('link[data-rrn-footer-v2]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/style/footer-v2.css';
+    link.setAttribute('data-rrn-footer-v2', '1');
+    document.head.appendChild(link);
+  }
+
   function containsPlaintextPassword(value) {
     try {
       const parsed = JSON.parse(value);
@@ -107,6 +116,7 @@
   ensureBrandTheme();
   addStylesheet('/style/settings-v2.css', 'data-rrn-settings-v2');
   ensureTypography();
+  ensureFooterStyles();
   guardLegacyCredentials();
 
   if (document.readyState === 'loading') {
@@ -129,6 +139,7 @@
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
     await load('/js/theme-mode.js');
+    await load('/js/footer-v2.js');
 
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
