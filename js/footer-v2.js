@@ -3,6 +3,10 @@
   if (window.__RRN_FOOTER_V2__) return;
   window.__RRN_FOOTER_V2__ = true;
 
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+  }
+
   function tenantLabel() {
     const fromBrand = window.RRN_TENANT_BRANDING?.tenant_name;
     if (fromBrand) return fromBrand;
@@ -13,34 +17,48 @@
   }
 
   function render() {
-    if (document.querySelector('.rrn-footer')) return;
+    document.querySelector('.rrn-footer')?.remove();
     const isAuth = Boolean(document.querySelector('.auth-shell'));
     const isAdmin = /usuarios\.html$/i.test(location.pathname) || Boolean(document.querySelector('.admin-shell'));
+    const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
+    if (!isAuth && !isAdmin && !isDashboard) return;
+
+    const tenant = tenantLabel();
     const footer = document.createElement('footer');
     footer.className = `rrn-footer${isAuth ? ' rrn-footer--auth' : ''}${isAdmin ? ' rrn-footer--admin' : ''}`;
     footer.setAttribute('aria-label', 'Rodapé do RRN Manager');
-    const tenant = tenantLabel();
+
+    const nav = isAuth
+      ? '<a href="/index.html">Site</a>'
+      : isAdmin
+        ? '<a href="/dashboard.html">Painel</a><a href="/index.html">Site</a>'
+        : '<a href="/index.html">Site</a><button type="button" data-rrn-footer-settings>Configurações</button>';
+
     footer.innerHTML = `
-      <div class="rrn-footer-inner">
+      <div class="rrn-footer-main">
         <div class="rrn-footer-brand">
           <img src="/img/icon-png.png" alt="" aria-hidden="true">
-          <div><strong>RRN Manager</strong><small>${tenant ? `Ambiente ${escapeHtml(tenant)}` : 'Gestão de ativos e inventário'}</small></div>
+          <div>
+            <strong>RRN Manager</strong>
+            <small>${tenant ? `Ambiente: ${escapeHtml(tenant)}` : 'Gestão de ativos e inventário'}</small>
+          </div>
         </div>
-        <div class="rrn-footer-meta">© ${new Date().getFullYear()} RRN Manager · Todos os direitos reservados</div>
+        <nav class="rrn-footer-nav" aria-label="Links do rodapé">${nav}</nav>
+      </div>
+      <div class="rrn-footer-bottom">
+        <span>© ${new Date().getFullYear()} RRN Manager</span>
+        <span>${tenant ? 'Ambiente empresarial protegido' : 'Organização e controle para sua operação'}</span>
       </div>`;
     document.body.appendChild(footer);
+
+    footer.querySelector('[data-rrn-footer-settings]')?.addEventListener('click', () => {
+      if (typeof window.openConfigModal === 'function') window.openConfigModal();
+    });
   }
 
-  function escapeHtml(value) {
-    return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render, { once: true });
-  else render();
-
-  window.addEventListener('rrn:tenantbranding', () => {
-    const footer = document.querySelector('.rrn-footer');
-    if (footer) footer.remove();
-    render();
-  });
+  const boot = () => setTimeout(render, 0);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+  window.addEventListener('rrn:tenantbranding', render);
+  window.addEventListener('rrn:session-ready', render);
 })();
