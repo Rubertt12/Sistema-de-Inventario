@@ -1,12 +1,12 @@
 /* RRN Manager — gaveta lateral de manutenção */
-/* Redeploy de produção: mantém a aba lateral fixa e visível na viewport. */
 .rrn-maintenance-drawer{
   position:fixed!important;
-  inset:0!important;
+  right:0!important;
+  top:50%!important;
+  width:0!important;
+  height:0!important;
   z-index:1180!important;
   display:block!important;
-  width:auto!important;
-  height:auto!important;
   margin:0!important;
   padding:0!important;
   max-width:none!important;
@@ -15,13 +15,20 @@
   visibility:visible!important;
   opacity:1!important;
   overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
   color:var(--rrn-text,#263238)!important;
 }
 .rrn-maintenance-drawer.recolhido{
   display:block!important;
   visibility:visible!important;
   opacity:1!important;
-  inset:0!important;
+  right:0!important;
+  top:50%!important;
+  width:0!important;
+  height:0!important;
+  background:transparent!important;
 }
 
 .rrn-maintenance-handle{
@@ -152,6 +159,13 @@
 :root[data-theme="dark"] .rrn-maintenance-sheet-head{background:var(--rrn-surface,#162328)!important}
 
 @media(max-width:700px){
+  .rrn-maintenance-drawer,.rrn-maintenance-drawer.recolhido{
+    top:auto!important;
+    right:0!important;
+    bottom:18px!important;
+    width:0!important;
+    height:0!important;
+  }
   .rrn-maintenance-handle{
     top:auto!important;
     bottom:18px!important;
