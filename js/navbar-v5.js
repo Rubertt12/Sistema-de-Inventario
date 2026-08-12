@@ -7,13 +7,18 @@
   let observer = null;
   let scheduled = false;
 
-  function ensureCss() {
-    if (document.querySelector('link[data-rrn-navbar-v5]')) return;
+  function ensureStylesheet(href, marker) {
+    if (document.querySelector(`link[${marker}]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '/style/navbar-v5.css';
-    link.setAttribute('data-rrn-navbar-v5', '1');
+    link.href = href;
+    link.setAttribute(marker, '1');
     document.head.appendChild(link);
+  }
+
+  function ensureCss() {
+    ensureStylesheet('/style/navbar-v5.css', 'data-rrn-navbar-v5');
+    ensureStylesheet('/style/navbar-flat-tabs.css', 'data-rrn-navbar-flat-tabs');
   }
 
   function sessionInfo() {
