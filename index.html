@@ -3,139 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RRN Manager | Acesso</title>
-  <meta name="description" content="Acesso ao RRN Manager" />
+  <title>RRN Manager | Gestão de ativos e inventário</title>
+  <meta name="description" content="RRN Manager: organize ativos, setores, responsáveis, movimentações e manutenção em um único ambiente." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style/style.css" />
-  <link rel="stylesheet" href="/style/login-corporate.css" />
-  <link rel="stylesheet" href="/style/login-no-scroll-fix.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style/landing-v2.css" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
 <body>
-  <main class="auth-shell" id="authShell">
-    <section class="brand-panel" aria-label="Apresentação">
-      <div class="brand-mark">
-        <img src="/img/icon-png.png" alt="RRN Manager" />
-        <span>RRN Manager</span>
+  <header class="landing-header" id="topo">
+    <div class="landing-container landing-nav-wrap">
+      <a class="landing-brand" href="#topo" aria-label="RRN Manager - início"><img src="/img/icon-png.png" alt="" /><span>RRN Manager</span></a>
+      <button class="landing-menu-toggle" id="landingMenuToggle" type="button" aria-expanded="false" aria-controls="landingNav">Menu</button>
+      <nav class="landing-nav" id="landingNav" aria-label="Navegação principal">
+        <a href="#recursos">Recursos</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#empresas">Para empresas</a>
+        <a href="#seguranca">Segurança</a>
+      </nav>
+      <div class="landing-nav-actions">
+        <a class="landing-btn landing-btn-ghost" href="/login.html">Login</a>
+        <a class="landing-btn landing-btn-primary" href="/login.html?mode=register">Criar acesso</a>
       </div>
+    </div>
+  </header>
 
-      <div class="brand-copy">
-        <span class="eyebrow">Gestão de ativos e inventário</span>
-        <h1 id="brandTitle">Controle patrimonial com mais organização e eficiência</h1>
-        <p id="brandSubtitle">Gerencie equipamentos, responsáveis, setores e movimentações com praticidade e visão centralizada.</p>
+  <main>
+    <section class="landing-hero">
+      <div class="landing-container landing-hero-grid">
+        <div class="landing-hero-copy">
+          <span class="landing-eyebrow">Inventário, movimentação e controle em um só lugar</span>
+          <h1>Tenha uma visão clara do seu parque de equipamentos.</h1>
+          <p>O RRN Manager centraliza setores, ativos, responsáveis, movimentações, manutenção e histórico para facilitar a operação diária e reduzir a dependência de planilhas dispersas.</p>
+          <div class="landing-hero-actions">
+            <a class="landing-btn landing-btn-primary landing-btn-lg" href="/login.html">Acessar plataforma</a>
+            <a class="landing-btn landing-btn-secondary landing-btn-lg" href="#recursos">Conhecer recursos</a>
+          </div>
+          <div class="landing-proof-row" aria-label="Principais benefícios">
+            <span>Ambientes separados por empresa</span>
+            <span>Histórico de movimentações</span>
+            <span>Gestão de acessos</span>
+          </div>
+        </div>
+
+        <div class="landing-product-card" aria-label="Prévia do RRN Manager">
+          <div class="landing-product-top"><div><small>Visão geral</small><strong>Inventário operacional</strong></div><span class="landing-status">Ambiente ativo</span></div>
+          <div class="landing-kpis">
+            <article><small>Setores</small><strong>12</strong><span>organizados</span></article>
+            <article><small>Equipamentos</small><strong>248</strong><span>catalogados</span></article>
+            <article><small>Manutenção</small><strong>7</strong><span>em acompanhamento</span></article>
+          </div>
+          <div class="landing-product-list">
+            <div class="landing-product-row"><span class="landing-dot"></span><div><strong>Administrativo</strong><small>Notebooks, monitores e impressoras</small></div><b>82 ativos</b></div>
+            <div class="landing-product-row"><span class="landing-dot"></span><div><strong>Operações</strong><small>Equipamentos com responsáveis definidos</small></div><b>116 ativos</b></div>
+            <div class="landing-product-row"><span class="landing-dot"></span><div><strong>Estoque</strong><small>Itens disponíveis e em movimentação</small></div><b>50 ativos</b></div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="auth-panel">
-      <div class="auth-card" id="authCard">
-        <div class="mobile-brand">
-          <img src="/img/icon-png.png" alt="RRN Manager" />
-          <span>RRN Manager</span>
+    <section class="landing-section" id="recursos">
+      <div class="landing-container">
+        <div class="landing-section-heading"><span class="landing-eyebrow">Recursos</span><h2>Ferramentas para organizar a rotina de ativos.</h2><p>Estruture o inventário sem transformar a operação em um processo complicado.</p></div>
+        <div class="landing-feature-grid">
+          <article class="landing-feature"><span class="landing-feature-number">01</span><h3>Inventário por setores</h3><p>Organize equipamentos em setores e visualize rapidamente o que pertence a cada ambiente.</p></article>
+          <article class="landing-feature"><span class="landing-feature-number">02</span><h3>Movimentações e transferências</h3><p>Registre mudanças de setor e mantenha o histórico operacional dos equipamentos.</p></article>
+          <article class="landing-feature"><span class="landing-feature-number">03</span><h3>Manutenção e chamados</h3><p>Acompanhe observações, prioridades e equipamentos que precisam de atenção.</p></article>
+          <article class="landing-feature"><span class="landing-feature-number">04</span><h3>Usuários e permissões</h3><p>Separe funções administrativas, operacionais e de monitoramento conforme a necessidade.</p></article>
+          <article class="landing-feature"><span class="landing-feature-number">05</span><h3>Identidade por empresa</h3><p>Personalize portal, logo, cores e experiência de entrada para cada organização.</p></article>
+          <article class="landing-feature"><span class="landing-feature-number">06</span><h3>Importação e exportação</h3><p>Conte com recursos de portabilidade para apoiar backup, integração e conferência de dados.</p></article>
         </div>
-
-        <header class="auth-header">
-          <span class="eyebrow">Área segura</span>
-          <h2 id="authTitle">Acessar sistema</h2>
-          <p id="authSubtitle">Entre com seu e-mail e senha para continuar.</p>
-        </header>
-
-        <div id="backendNotice" class="notice notice-warning" hidden>
-          O backend ainda não foi configurado. Preencha <code>js/supabase-config.js</code> antes de usar esta versão.
-        </div>
-
-        <div class="auth-tabs" role="tablist" aria-label="Acesso e cadastro">
-          <button type="button" class="auth-tab active" id="tabLogin" data-target="login" role="tab" aria-selected="true">Entrar</button>
-          <button type="button" class="auth-tab" id="tabRegister" data-target="register" role="tab" aria-selected="false">Criar conta</button>
-        </div>
-
-        <form id="formLogin" class="auth-form active" novalidate>
-          <label class="field">
-            <span>E-mail</span>
-            <input type="email" id="loginEmail" placeholder="nome@empresa.com" autocomplete="email" required />
-          </label>
-
-          <label class="field">
-            <span>Senha</span>
-            <div class="password-field">
-              <input type="password" id="loginSenha" placeholder="Sua senha" autocomplete="current-password" required />
-              <button type="button" class="password-toggle" data-toggle-password="loginSenha" aria-label="Mostrar ou ocultar senha">Mostrar</button>
-            </div>
-          </label>
-
-          <button type="submit" class="btn-primary" id="loginButton">
-            <span>Entrar no sistema</span>
-          </button>
-          <p class="form-message" id="loginMsg" role="status"></p>
-        </form>
-
-        <form id="formRegister" class="auth-form" novalidate>
-          <div class="form-grid two-columns">
-            <label class="field">
-              <span>Seu nome</span>
-              <input type="text" id="registerName" placeholder="Nome completo" autocomplete="name" required />
-            </label>
-
-            <label class="field">
-              <span>E-mail</span>
-              <input type="email" id="registerEmail" placeholder="nome@empresa.com" autocomplete="email" required />
-            </label>
-          </div>
-
-          <label class="field">
-            <span>Senha</span>
-            <div class="password-field">
-              <input type="password" id="registerPassword" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" minlength="8" required />
-              <button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Mostrar ou ocultar senha">Mostrar</button>
-            </div>
-          </label>
-
-          <div class="divider"><span>Escolha uma forma de entrada</span></div>
-
-          <label class="field">
-            <span>Nome da organização</span>
-            <input type="text" id="registerOrganization" placeholder="Ex.: Empresa ABC" />
-            <small>Informe o nome da empresa para configurar o ambiente inicial.</small>
-          </label>
-
-          <label class="field">
-            <span>Código de convite</span>
-            <input type="text" id="registerInvite" placeholder="Cole aqui se você recebeu um convite" autocomplete="off" />
-            <small>Se você recebeu um convite, use o código para ingressar na organização correspondente.</small>
-          </label>
-
-          <label class="terms-check">
-            <input type="checkbox" id="acceptTerms" required />
-            <span>Confirmo que estou autorizado a criar ou ingressar neste ambiente.</span>
-          </label>
-
-          <button type="submit" class="btn-primary" id="registerButton">
-            <span>Criar acesso</span>
-          </button>
-          <p class="form-message" id="registerMsg" role="status"></p>
-        </form>
-
-        <footer class="auth-footer">
-          <span>RRN Manager</span>
-        </footer>
       </div>
+    </section>
+
+    <section class="landing-section landing-section-soft" id="como-funciona">
+      <div class="landing-container landing-split">
+        <div class="landing-section-heading align-left"><span class="landing-eyebrow">Como funciona</span><h2>Do cadastro ao acompanhamento diário.</h2><p>Uma estrutura direta para quem precisa saber onde cada ativo está e o que aconteceu com ele.</p></div>
+        <div class="landing-steps">
+          <article><span>1</span><div><h3>Crie ou acesse o ambiente da empresa</h3><p>Cada organização possui contexto próprio, usuários e identidade visual.</p></div></article>
+          <article><span>2</span><div><h3>Estruture setores e equipamentos</h3><p>Cadastre o ambiente de forma compatível com a operação real da empresa.</p></div></article>
+          <article><span>3</span><div><h3>Acompanhe alterações e manutenção</h3><p>Use histórico e registros operacionais para manter rastreabilidade.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section" id="empresas">
+      <div class="landing-container landing-business-card">
+        <div><span class="landing-eyebrow">Para empresas</span><h2>Um portal próprio para cada organização.</h2><p>Empresas podem ter endereço de acesso específico, identidade visual própria e dados isolados no ambiente correspondente.</p></div>
+        <div class="landing-url-card"><small>Exemplo de portal</small><code>rrnmanager.com/login.html?org=sua-empresa</code><span>O usuário vê claramente qual ambiente está acessando.</span></div>
+      </div>
+    </section>
+
+    <section class="landing-section landing-section-dark" id="seguranca">
+      <div class="landing-container landing-security-grid">
+        <div><span class="landing-eyebrow">Segurança e controle</span><h2>Acesso orientado ao ambiente correto.</h2><p>O sistema valida o usuário autenticado e o ambiente da empresa antes de liberar o acesso aos dados correspondentes.</p></div>
+        <div class="landing-security-points"><article><strong>Acesso autenticado</strong><span>Login por e-mail e senha com sessão segura.</span></article><article><strong>Isolamento por empresa</strong><span>Dados e contexto associados ao tenant do usuário.</span></article><article><strong>Perfis de acesso</strong><span>Permissões diferentes para administração, operação e monitoramento.</span></article></div>
+      </div>
+    </section>
+
+    <section class="landing-cta">
+      <div class="landing-container landing-cta-inner"><div><span class="landing-eyebrow">RRN Manager</span><h2>Organize seu inventário com mais clareza.</h2><p>Acesse seu ambiente ou crie uma nova organização para começar.</p></div><div class="landing-cta-actions"><a class="landing-btn landing-btn-primary landing-btn-lg" href="/login.html">Entrar</a><a class="landing-btn landing-btn-secondary landing-btn-lg" href="/login.html?mode=register">Criar acesso</a></div></div>
     </section>
   </main>
 
-  <div id="appLoading" class="app-loading" hidden>
-    <div class="loading-card">
-      <img src="/img/icon-png.png" alt="" />
-      <div class="spinner"></div>
-      <strong id="loadingText">Validando acesso...</strong>
-      <small>Carregando seu ambiente com segurança.</small>
+  <footer class="landing-footer">
+    <div class="landing-container landing-footer-grid">
+      <div class="landing-footer-brand"><a class="landing-brand" href="#topo"><img src="/img/icon-png.png" alt="" /><span>RRN Manager</span></a><p>Gestão de ativos, inventário e movimentações em ambientes organizados por empresa.</p></div>
+      <div class="landing-footer-column"><strong>Produto</strong><a href="#recursos">Recursos</a><a href="#como-funciona">Como funciona</a><a href="#seguranca">Segurança</a></div>
+      <div class="landing-footer-column"><strong>Acesso</strong><a href="/login.html">Login</a><a href="/login.html?mode=register">Criar acesso</a></div>
+      <div class="landing-footer-column"><strong>Ambiente</strong><span>Plataforma web responsiva</span><span>Gestão multiempresa</span><span>Identidade personalizável</span></div>
     </div>
-  </div>
+    <div class="landing-container landing-footer-bottom"><span>© <span id="landingYear"></span> RRN Manager. Todos os direitos reservados.</span><a href="#topo">Voltar ao topo</a></div>
+  </footer>
 
-  <script src="/js/supabase-config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/auth-preview-client-bridge.js"></script>
-  <script src="/js/login-slide-mode.js"></script>
-  <script src="/js/index.js"></script>
+  <script src="/js/landing-v2.js"></script>
 </body>
 </html>
