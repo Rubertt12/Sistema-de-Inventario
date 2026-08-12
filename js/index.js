@@ -132,6 +132,7 @@
       await load('/js/scanner.js');
       await load('/js/transfer-v2.js');
       await load('/js/machine-details-v2.js');
+      await load('/js/ticket-author-bridge.js');
       await load('/js/asset-history.js');
       await load('/js/dashboard-hotfix.js');
       await load('/js/equipment-list-performance.js');
