@@ -110,3 +110,30 @@
 :root[data-theme="dark"] #setoresContainer [style*="background: #fff"]{
   background:var(--rrn-surface)!important;
 }
+
+/* Inventory overview and empty states still inherited legacy blue in dark mode. */
+:root[data-theme="dark"] .rrn-dashboard-overview{
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--rrn-secondary) 12%,var(--rrn-surface)),color-mix(in srgb,var(--rrn-accent) 8%,var(--rrn-surface)))!important;
+  box-shadow:none!important;
+}
+:root[data-theme="dark"] .rrn-overview-copy>span{color:var(--rrn-secondary)!important}
+:root[data-theme="dark"] .rrn-overview-copy>strong{color:var(--rrn-heading)!important}
+:root[data-theme="dark"] .rrn-overview-copy>small{color:var(--rrn-muted)!important}
+:root[data-theme="dark"] .rrn-overview-stats>div{background:var(--rrn-surface-2)!important;border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] .rrn-overview-stats span{color:var(--rrn-heading)!important}
+:root[data-theme="dark"] .rrn-overview-stats small{color:var(--rrn-muted)!important}
+:root[data-theme="dark"] .rrn-sector-empty,
+:root[data-theme="dark"] .empty-state,
+:root[data-theme="dark"] #setoresContainer .empty-state,
+:root[data-theme="dark"] #setoresContainer [class*="empty"]{
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+:root[data-theme="dark"] .rrn-sector-empty strong,
+:root[data-theme="dark"] .empty-state strong,
+:root[data-theme="dark"] #setoresContainer [class*="empty"] strong{color:var(--rrn-heading)!important}
+:root[data-theme="dark"] .rrn-sector-empty small,
+:root[data-theme="dark"] .empty-state small,
+:root[data-theme="dark"] #setoresContainer [class*="empty"] small{color:var(--rrn-muted)!important}
