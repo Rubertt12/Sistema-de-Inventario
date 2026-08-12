@@ -141,7 +141,7 @@
           <div class="rrn-interaction-body">
             <div class="rrn-interaction-head"><strong>Interação ${index + 1}</strong><small>${esc(fmt(item?.data || item?.created_at || item?.atualizadoEm))}</small></div>
             <p>${esc(interactionText(item))}</p>
-            ${(item?.autor || item?.usuario || item?.responsavel) ? `<em>Por ${esc(item.autor || item.usuario || item.responsavel)}</em>` : ''}
+            ${(item?.autor || item?.usuario || item?.responsavel || item?.criadoPor) ? `<em>Por ${esc(item.autor || item.usuario || item.responsavel || item.criadoPor)}</em>` : ''}
           </div>
         </div>`).join('')}
     </div>`;
@@ -155,11 +155,13 @@
       const priority = String(ticket?.prioridade || 'Baixa');
       const priorityClass = priority.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9_-]/g, '');
       const ticketLabel = ticket?.numero || ticket?.id || `Chamado ${index + 1}`;
+      const author = ticket?.autor || ticket?.criadoPor || ticket?.usuario || ticket?.responsavel || '';
       return `<section class="rrn-ticket-card">
         <span class="rrn-ticket-dot" aria-hidden="true"></span>
         <div class="rrn-ticket-card-body">
           <div class="rrn-ticket-card-head"><div><span class="rrn-ticket-label">Chamado</span><strong>${esc(ticketLabel)}</strong></div><span class="rrn-priority rrn-priority-${esc(priorityClass)}">${esc(priority)}</span></div>
           <p class="rrn-ticket-description">${esc(ticketText(ticket))}</p>
+          ${author ? `<div class="rrn-ticket-author">Registrado por <strong>${esc(author)}</strong></div>` : ''}
           <div class="rrn-ticket-date">${esc(fmt(ticket?.data || ticket?.created_at))}</div>
           ${renderInteractions(ticket)}
         </div>
