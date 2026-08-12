@@ -117,6 +117,7 @@
 
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
+    await load('/js/theme-mode.js');
 
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
@@ -151,6 +152,7 @@
     }
 
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+    await load('/js/tenant-branding-runtime.js');
 
     if (document.getElementById('formLogin')) {
       await load('/js/auth-v2.js');
