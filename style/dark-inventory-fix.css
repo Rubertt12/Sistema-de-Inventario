@@ -1,0 +1,112 @@
+:root[data-theme="dark"]{
+  --rrn-blue:var(--rrn-primary)!important;
+  --rrn-pink:var(--rrn-secondary)!important;
+  --rrn-yellow:var(--rrn-accent)!important;
+  --rrn-beige:var(--rrn-bg)!important;
+  --rrn-ink:var(--rrn-text)!important;
+  --rrn-muted:var(--rrn-muted)!important;
+}
+
+:root[data-theme="dark"] #setoresContainer,
+:root[data-theme="dark"] #setoresContainer .rrn-setor-card,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-item,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-main,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-grid-details,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-actions,
+:root[data-theme="dark"] #setoresContainer .rrn-sector-empty,
+:root[data-theme="dark"] #setoresContainer .rrn-equipment-load-more{
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] #setoresContainer .rrn-setor-card,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-item,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-grid-details{
+  background:var(--rrn-surface)!important;
+}
+
+:root[data-theme="dark"] #setoresContainer .rrn-machine-title-row strong,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact strong,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-product-line,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-meta,
+:root[data-theme="dark"] #setoresContainer .rrn-setor-card h2,
+:root[data-theme="dark"] #setoresContainer .rrn-setor-card h3,
+:root[data-theme="dark"] #setoresContainer .rrn-setor-card strong,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-item strong,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-item span:not(.rrn-status):not(.badge):not(.chip):not(.pill){
+  color:var(--rrn-text)!important;
+}
+
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact small,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-item small,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-meta,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-product-line{
+  color:var(--rrn-muted)!important;
+}
+
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact-icon{
+  color:var(--rrn-primary)!important;
+  background:color-mix(in srgb,var(--rrn-primary) 12%,transparent)!important;
+}
+
+:root[data-theme="dark"] #setoresContainer .rrn-machine-grid-details,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact,
+:root[data-theme="dark"] #setoresContainer .rrn-machine-actions{
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact.is-empty{
+  background:var(--rrn-surface-soft)!important;
+}
+:root[data-theme="dark"] #setoresContainer .rrn-machine-fact.is-empty strong{
+  color:var(--rrn-muted)!important;
+}
+
+:root[data-theme="dark"] .rrn-btn,
+:root[data-theme="dark"] .rrn-icon-btn,
+:root[data-theme="dark"] .rrn-action-btn,
+:root[data-theme="dark"] .machine-action,
+:root[data-theme="dark"] .equipment-action,
+:root[data-theme="dark"] .transfer-action,
+:root[data-theme="dark"] .history-action{
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] .rrn-btn:not(.primary):not(.danger),
+:root[data-theme="dark"] .rrn-icon-btn,
+:root[data-theme="dark"] .rrn-action-btn{
+  background:var(--rrn-surface-2)!important;
+}
+
+:root[data-theme="dark"] .rrn-btn:hover,
+:root[data-theme="dark"] .rrn-icon-btn:hover,
+:root[data-theme="dark"] .rrn-action-btn:hover{
+  background:var(--rrn-surface-soft)!important;
+  color:var(--rrn-heading)!important;
+}
+
+:root[data-theme="dark"] .rrn-user-assets-badge,
+:root[data-theme="dark"] .user-assets-badge,
+:root[data-theme="dark"] .related-assets-badge{
+  color:var(--rrn-heading)!important;
+  background:color-mix(in srgb,var(--rrn-secondary) 15%,transparent)!important;
+  border-color:color-mix(in srgb,var(--rrn-secondary) 30%,transparent)!important;
+}
+
+:root[data-theme="dark"] .modal-content [style*="color:#295991"],
+:root[data-theme="dark"] .modal-content [style*="color: #295991"],
+:root[data-theme="dark"] #setoresContainer [style*="color:#295991"],
+:root[data-theme="dark"] #setoresContainer [style*="color: #295991"],
+:root[data-theme="dark"] #setoresContainer [style*="color:#163A4D"],
+:root[data-theme="dark"] #setoresContainer [style*="color: #163A4D"]{
+  color:var(--rrn-text)!important;
+}
+
+:root[data-theme="dark"] .modal-content [style*="background:#fff"],
+:root[data-theme="dark"] .modal-content [style*="background: #fff"],
+:root[data-theme="dark"] #setoresContainer [style*="background:#fff"],
+:root[data-theme="dark"] #setoresContainer [style*="background: #fff"]{
+  background:var(--rrn-surface)!important;
+}
