@@ -125,3 +125,15 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(boot, 0), { once:true });
   else setTimeout(boot, 0);
 })();
+
+(() => {
+  'use strict';
+  if (window.__RRN_SUPPORT_DESK_SLA_LOADER__) return;
+  window.__RRN_SUPPORT_DESK_SLA_LOADER__ = true;
+  if (document.querySelector('script[data-rrn-service-desk-sla-ui]')) return;
+  const script = document.createElement('script');
+  script.src = '/js/service-desk-sla-ui.js';
+  script.async = false;
+  script.setAttribute('data-rrn-service-desk-sla-ui', '1');
+  document.head.appendChild(script);
+})();

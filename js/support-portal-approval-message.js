@@ -2,17 +2,23 @@
   'use strict';
   if (window.__RRN_SUPPORT_APPROVAL_MESSAGE__) return;
   window.__RRN_SUPPORT_APPROVAL_MESSAGE__ = true;
+
   const cfg = window.RRN_SUPABASE || {};
   const client = window.supabase?.createClient?.(cfg.url, cfg.anonKey, { auth:{persistSession:true,autoRefreshToken:true} });
   if (!client) return;
 
-  function loadCollaboratorAssets() {
-    if (document.querySelector('script[data-rrn-support-collaborator-assets]')) return;
+  function ensureScript(src, marker) {
+    if (document.querySelector(`script[${marker}]`)) return;
     const script = document.createElement('script');
-    script.src = '/js/support-collaborator-assets.js';
+    script.src = src;
     script.async = false;
-    script.dataset.rrnSupportCollaboratorAssets = '1';
+    script.setAttribute(marker, '1');
     document.head.appendChild(script);
+  }
+
+  function ensurePortalExtensions() {
+    ensureScript('/js/support-collaborator-assets.js', 'data-rrn-support-collaborator-assets');
+    ensureScript('/js/service-desk-sla-ui.js', 'data-rrn-service-desk-sla-ui');
   }
 
   async function sync() {
@@ -31,8 +37,15 @@
     }
   }
 
-  loadCollaboratorAssets();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(sync, 150), { once:true });
-  else setTimeout(sync, 150);
-  client.auth.onAuthStateChange(() => setTimeout(sync, 200));
+  function boot() {
+    ensurePortalExtensions();
+    setTimeout(sync, 150);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
+  else boot();
+  client.auth.onAuthStateChange(() => {
+    ensurePortalExtensions();
+    setTimeout(sync, 200);
+  });
 })();
