@@ -23,6 +23,7 @@
     addStylesheet('/style/trash.css', 'data-rrn-trash');
     addStylesheet('/style/search-center-v2.css', 'data-rrn-search-center-v2');
     addStylesheet('/style/maintenance-drawer-v2.css', 'data-rrn-maintenance-drawer-v2');
+    addStylesheet('/style/color-coherence-v3.css', 'data-rrn-color-coherence-v3');
   }
 
   function ensureBrandTheme() {
