@@ -1,7 +1,7 @@
 (() => {
   'use strict';
-  if (window.__RRN_MAINTENANCE_DRAWER_V4__) return;
-  window.__RRN_MAINTENANCE_DRAWER_V4__ = true;
+  if (window.__RRN_MAINTENANCE_DRAWER_V5__) return;
+  window.__RRN_MAINTENANCE_DRAWER_V5__ = true;
 
   const STORAGE_KEY = 'rrn_maintenance_drawer_open';
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -70,9 +70,9 @@
     const open = panel.classList.contains('rrn-maintenance-drawer--open');
 
     panel.innerHTML = `
-      <button class="rrn-maintenance-handle" type="button" aria-label="Abrir máquinas em manutenção" title="Abrir manutenção · Ctrl+M">
+      <button class="rrn-maintenance-handle" type="button" aria-label="Visualizar máquinas em manutenção" title="Visualizar manutenção · Ctrl+M">
         <span class="rrn-maintenance-handle-grip" aria-hidden="true"></span>
-        <span class="rrn-maintenance-handle-label">Manutenção</span>
+        <span class="rrn-maintenance-handle-label">Visualizar manutenção</span>
         <span class="rrn-maintenance-badge">${items.length}</span>
       </button>
       <section class="rrn-maintenance-sheet" aria-label="Máquinas em manutenção" aria-hidden="${open ? 'false' : 'true'}">
