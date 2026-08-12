@@ -27,8 +27,10 @@
 
   async function boot() {
     ensureStyle('/style/footer-v2.css', 'data-rrn-footer-v2');
+    ensureStyle('/style/support-admin-permissions.css', 'data-rrn-support-admin-permissions');
     await load('/js/footer-v2.js');
     await load('/js/admin-company-ux-v2.js');
+    await load('/js/support-admin-permissions.js');
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => boot().catch(console.error), { once: true });
