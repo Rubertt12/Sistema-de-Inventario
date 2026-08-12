@@ -3,7 +3,7 @@
   if (window.__RRN_SEARCH_CENTER_V2__) return;
   window.__RRN_SEARCH_CENTER_V2__ = true;
 
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const norm = value => String(value ?? '').trim().toLowerCase();
 
   function getSectors() {
@@ -54,7 +54,7 @@
 
     const input = document.getElementById('rrnGlobalAssetSearch');
     input?.addEventListener('input', () => renderResults(input.value));
-    window.addEventListener('rrn:remote-sync-applied', () => input?.value && renderResults(input.value));
+    window.addEventListener('rrn:inventory-remote-update', () => input?.value && renderResults(input.value));
     installTab();
   }
 
@@ -119,7 +119,8 @@
     const activate = () => {
       if (home) home.hidden = true;
       inventory.style.display = 'none';
-      document.getElementById('paginacaoSetores')?.style && (document.getElementById('paginacaoSetores').style.display = 'none');
+      const pagination = document.getElementById('paginacaoSetores');
+      if (pagination) pagination.style.display = 'none';
       search.hidden = false;
       document.body.dataset.rrnView = 'search';
       location.hash = 'pesquisa';
@@ -130,7 +131,8 @@
     document.addEventListener('click', event => {
       if (!event.target.closest('[data-home-action="inventory"], [data-rrn-tab="inventory"], [href="#inventario"], [href="#dashboard"]')) return;
       search.hidden = true;
-      document.getElementById('paginacaoSetores')?.style && (document.getElementById('paginacaoSetores').style.display = '');
+      const pagination = document.getElementById('paginacaoSetores');
+      if (pagination) pagination.style.display = '';
     }, true);
 
     if (location.hash === '#pesquisa') activate();
