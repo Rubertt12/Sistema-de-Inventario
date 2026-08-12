@@ -1,144 +1,155 @@
 (() => {
   'use strict';
-  if (window.__RRN_SEARCH_CENTER_V2__) return;
-  window.__RRN_SEARCH_CENTER_V2__ = true;
+  if (window.__RRN_SEARCH_CENTER_V3__) return;
+  window.__RRN_SEARCH_CENTER_V3__ = true;
 
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const norm = value => String(value ?? '').trim().toLowerCase();
+  let timer = null;
 
   function getSectors() {
     try { if (typeof setores !== 'undefined' && Array.isArray(setores)) return setores; } catch {}
-    try { const data = JSON.parse(localStorage.getItem('setores') || '[]'); return Array.isArray(data) ? data : []; } catch { return []; }
+    try {
+      const raw = localStorage.getItem('setores');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch { return []; }
   }
 
-  function tickets(machine) {
+  function ticketList(machine) {
     if (Array.isArray(machine?.chamados)) return machine.chamados;
     if (Array.isArray(machine?.chamado)) return machine.chamado;
     return [];
   }
 
-  function searchable(asset, sector) {
-    return [asset?.nome, asset?.etiqueta, asset?.tipo, asset?.tipoMaquina, asset?.usuarioResponsavel, asset?.fabricante, asset?.modelo, asset?.localizacao, asset?.situacaoPatrimonial, sector?.nome]
-      .filter(Boolean).join(' ').toLowerCase();
+  function machineKey(machine, index) {
+    return String(machine?.id ?? machine?.uuid ?? machine?.etiqueta ?? index);
   }
 
-  function find(query) {
+  function searchable(machine, sector) {
+    return [
+      machine?.nome, machine?.etiqueta, machine?.tipo, machine?.tipoMaquina,
+      machine?.usuarioResponsavel, machine?.fabricante, machine?.modelo,
+      machine?.localizacao, machine?.situacaoPatrimonial, sector?.nome
+    ].filter(Boolean).join(' ').toLowerCase();
+  }
+
+  function findMachines(query) {
     const q = norm(query);
     if (!q) return [];
-    const out = [];
+    const found = [];
     getSectors().forEach((sector, sectorIndex) => {
-      (Array.isArray(sector?.maquinas) ? sector.maquinas : []).forEach((asset, assetIndex) => {
-        if (!searchable(asset, sector).includes(q)) return;
-        out.push({ sector, sectorIndex, asset, assetIndex, ticketCount: tickets(asset).length });
+      (Array.isArray(sector?.maquinas) ? sector.maquinas : []).forEach((machine, assetIndex) => {
+        if (!searchable(machine, sector).includes(q)) return;
+        found.push({ sector, sectorIndex, machine, assetIndex });
       });
     });
-    return out.slice(0, 50);
+    return found.slice(0, 8);
   }
 
-  function ensureUi() {
-    if (document.getElementById('rrnSearchCenter')) return;
-    const main = document.querySelector('main');
-    if (!main) return;
-
-    const section = document.createElement('section');
-    section.id = 'rrnSearchCenter';
-    section.className = 'rrn-search-center';
-    section.hidden = true;
-    section.innerHTML = `
-      <div class="rrn-search-head">
-        <div><span class="rrn-search-eyebrow">Consulta de ativos</span><h2>Pesquisa de máquinas</h2><p>Localize rapidamente um equipamento e acesse o histórico de chamados do setor.</p></div>
-      </div>
-      <div class="rrn-search-box"><input type="search" id="rrnGlobalAssetSearch" placeholder="Pesquise por série, etiqueta, usuário, modelo, tipo ou setor" autocomplete="off"><span id="rrnSearchCount">Digite para pesquisar</span></div>
-      <div id="rrnSearchResults" class="rrn-search-results"><div class="rrn-search-empty">Os resultados aparecerão aqui.</div></div>`;
-    main.prepend(section);
-
-    const input = document.getElementById('rrnGlobalAssetSearch');
-    input?.addEventListener('input', () => renderResults(input.value));
-    window.addEventListener('rrn:inventory-remote-update', () => input?.value && renderResults(input.value));
-    installTab();
+  function ensureResultsHost(input) {
+    let host = document.getElementById('rrnNavbarSearchResults');
+    if (host) return host;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'rrn-navbar-search-wrap';
+    input.parentNode.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+    host = document.createElement('div');
+    host.id = 'rrnNavbarSearchResults';
+    host.className = 'rrn-navbar-search-results';
+    host.hidden = true;
+    wrapper.appendChild(host);
+    return host;
   }
 
-  function renderResults(query) {
-    const container = document.getElementById('rrnSearchResults');
-    const count = document.getElementById('rrnSearchCount');
-    if (!container || !count) return;
+  function closeResults() {
+    const host = document.getElementById('rrnNavbarSearchResults');
+    if (host) host.hidden = true;
+  }
+
+  function openAsset(sectorIndex, assetIndex) {
+    window.RRN_TABS?.setTab?.('inventory');
+    if (typeof window.setTab === 'function') window.setTab('inventory');
+    setTimeout(() => {
+      if (typeof window.showInfo === 'function') window.showInfo(sectorIndex, assetIndex);
+    }, 80);
+  }
+
+  function render(query) {
+    const input = document.getElementById('searchInput');
+    if (!input) return;
+    const host = ensureResultsHost(input);
     const q = norm(query);
     if (!q) {
-      count.textContent = 'Digite para pesquisar';
-      container.innerHTML = '<div class="rrn-search-empty">Os resultados aparecerão aqui.</div>';
+      host.innerHTML = '';
+      host.hidden = true;
       return;
     }
-    const results = find(q);
-    count.textContent = `${results.length} resultado${results.length === 1 ? '' : 's'}`;
+
+    const results = findMachines(q);
+    host.hidden = false;
     if (!results.length) {
-      container.innerHTML = '<div class="rrn-search-empty">Nenhum equipamento encontrado.</div>';
+      host.innerHTML = '<div class="rrn-navbar-search-empty">Nenhuma máquina encontrada.</div>';
       return;
     }
-    container.innerHTML = results.map(({ sector, sectorIndex, asset, assetIndex, ticketCount }) => `
-      <article class="rrn-search-result">
-        <div class="rrn-search-result-main">
-          <div class="rrn-search-result-title"><strong>${esc(asset?.nome || asset?.etiqueta || 'Equipamento')}</strong><span>${esc(asset?.tipo || 'Equipamento')}</span></div>
-          <div class="rrn-search-meta">
-            <span><b>Setor</b>${esc(sector?.nome || 'Sem setor')}</span>
-            <span><b>Etiqueta</b>${esc(asset?.etiqueta || '—')}</span>
-            <span><b>Responsável</b>${esc(asset?.usuarioResponsavel || '—')}</span>
-            <span><b>Modelo</b>${esc(asset?.modelo || asset?.fabricante || '—')}</span>
-            <span><b>Status</b>${asset?.emManutencao ? 'Em manutenção' : 'Operando'}</span>
-            <span><b>Chamados</b>${ticketCount}</span>
-          </div>
-        </div>
-        <div class="rrn-search-actions">
-          <button type="button" data-search-info="${sectorIndex}:${assetIndex}">Ver equipamento</button>
-          <a href="/chamados-setor.html?setor=${sectorIndex}&maquina=${encodeURIComponent(asset?.id || assetIndex)}">Chamados do setor</a>
-        </div>
-      </article>`).join('');
-    container.querySelectorAll('[data-search-info]').forEach(button => {
+
+    host.innerHTML = `
+      <div class="rrn-navbar-search-caption">${results.length} resultado${results.length === 1 ? '' : 's'}</div>
+      ${results.map(({ sector, sectorIndex, machine, assetIndex }) => {
+        const ticketCount = ticketList(machine).length;
+        return `<article class="rrn-navbar-search-card">
+          <button type="button" class="rrn-navbar-search-machine" data-open-machine="${sectorIndex}:${assetIndex}">
+            <strong>${esc(machine?.nome || machine?.etiqueta || 'Equipamento')}</strong>
+            <span>${esc(machine?.tipo || 'Equipamento')} · ${esc(machine?.etiqueta || 'sem etiqueta')}</span>
+            <small>${esc(sector?.nome || 'Sem setor')} · ${esc(machine?.usuarioResponsavel || 'sem responsável')}</small>
+          </button>
+          <a class="rrn-navbar-ticket-link" href="/chamados-setor.html?setor=${sectorIndex}&maquina=${encodeURIComponent(machineKey(machine, assetIndex))}">
+            Chamados <b>${ticketCount}</b>
+          </a>
+        </article>`;
+      }).join('')}`;
+
+    host.querySelectorAll('[data-open-machine]').forEach(button => {
       button.addEventListener('click', () => {
-        const [sectorIndex, assetIndex] = button.dataset.searchInfo.split(':').map(Number);
-        if (typeof window.showInfo === 'function') window.showInfo(sectorIndex, assetIndex);
+        const [sectorIndex, assetIndex] = button.dataset.openMachine.split(':').map(Number);
+        closeResults();
+        openAsset(sectorIndex, assetIndex);
       });
     });
   }
 
-  function installTab() {
-    const inventory = document.getElementById('setoresContainer');
-    const home = document.getElementById('rrnDashboardHome');
-    const search = document.getElementById('rrnSearchCenter');
-    if (!inventory || !search) return;
+  function boot() {
+    const input = document.getElementById('searchInput');
+    if (!input) return;
 
-    const navbar = document.querySelector('.navbar .nav-links, .nav-links');
-    if (!navbar || document.getElementById('rrnSearchTabButton')) return;
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.id = 'rrnSearchTabButton';
-    button.className = 'rrn-search-tab-button';
-    button.textContent = 'Pesquisa';
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.insertAdjacentElement('beforebegin', button); else navbar.prepend(button);
+    // A busca existente vira consulta global; não cria aba nova e não altera Dashboard/Inventário.
+    input.removeAttribute('onkeyup');
+    input.setAttribute('placeholder', 'Pesquisar máquina...');
+    input.setAttribute('autocomplete', 'off');
+    ensureResultsHost(input);
 
-    const activate = () => {
-      if (home) home.hidden = true;
-      inventory.style.display = 'none';
-      const pagination = document.getElementById('paginacaoSetores');
-      if (pagination) pagination.style.display = 'none';
-      search.hidden = false;
-      document.body.dataset.rrnView = 'search';
-      location.hash = 'pesquisa';
-      setTimeout(() => document.getElementById('rrnGlobalAssetSearch')?.focus(), 0);
-    };
-    button.addEventListener('click', activate);
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => render(input.value), 120);
+    });
+    input.addEventListener('focus', () => { if (input.value.trim()) render(input.value); });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeResults();
+        input.blur();
+      }
+    });
 
     document.addEventListener('click', event => {
-      if (!event.target.closest('[data-home-action="inventory"], [data-rrn-tab="inventory"], [href="#inventario"], [href="#dashboard"]')) return;
-      search.hidden = true;
-      const pagination = document.getElementById('paginacaoSetores');
-      if (pagination) pagination.style.display = '';
-    }, true);
+      if (!event.target.closest('.rrn-navbar-search-wrap')) closeResults();
+    });
 
-    if (location.hash === '#pesquisa') activate();
+    window.addEventListener('rrn:inventory-remote-update', () => {
+      if (input.value.trim()) render(input.value);
+    });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ensureUi, { once: true });
-  else ensureUi();
-  setTimeout(ensureUi, 700);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+  setTimeout(boot, 700);
 })();
