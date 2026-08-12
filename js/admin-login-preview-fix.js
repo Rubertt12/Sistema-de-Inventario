@@ -3,22 +3,34 @@
   if (window.__RRN_ADMIN_LOGIN_PREVIEW_FIX__) return;
   window.__RRN_ADMIN_LOGIN_PREVIEW_FIX__ = true;
 
-  function bind() {
-    const button = document.getElementById('openLoginButton');
-    if (!button || button.dataset.rrnPreviewBound === '1') return;
-    button.dataset.rrnPreviewBound = '1';
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const selector = document.getElementById('tenantSelector');
-      const option = selector?.selectedOptions?.[0];
-      const slug = document.getElementById('tenantSlug')?.textContent?.trim();
-      const tenantSlug = slug && slug !== '—' ? slug : option?.dataset?.slug;
-      if (!tenantSlug) return;
-      window.open(`${location.origin}/index.html?org=${encodeURIComponent(tenantSlug)}&preview=1`, '_blank', 'noopener,noreferrer');
-    }, true);
+  function ensureStyle(href, marker) {
+    if (document.querySelector(`link[${marker}]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.setAttribute(marker, '1');
+    document.head.appendChild(link);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind, { once: true });
-  else bind();
+  function load(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[data-rrn-admin-src="${src}"]`)) return resolve();
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = false;
+      script.dataset.rrnAdminSrc = src;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function boot() {
+    ensureStyle('/style/footer-v2.css', 'data-rrn-footer-v2');
+    await load('/js/footer-v2.js');
+    await load('/js/admin-company-ux-v2.js');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => boot().catch(console.error), { once: true });
+  else boot().catch(console.error);
 })();
