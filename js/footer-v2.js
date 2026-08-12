@@ -16,6 +16,16 @@
     } catch { return ''; }
   }
 
+  function ensureDashboardPolish() {
+    const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
+    if (!isDashboard || document.querySelector('link[data-rrn-dashboard-polish-v4]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/style/dashboard-polish-v4.css';
+    link.setAttribute('data-rrn-dashboard-polish-v4', '1');
+    document.head.appendChild(link);
+  }
+
   function render() {
     document.querySelector('.rrn-footer')?.remove();
     const isAuth = Boolean(document.querySelector('.auth-shell'));
@@ -50,6 +60,7 @@
         <span>${tenant ? 'Ambiente empresarial protegido' : 'Organização e controle para sua operação'}</span>
       </div>`;
     document.body.appendChild(footer);
+    ensureDashboardPolish();
 
     footer.querySelector('[data-rrn-footer-settings]')?.addEventListener('click', () => {
       if (typeof window.openConfigModal === 'function') window.openConfigModal();
