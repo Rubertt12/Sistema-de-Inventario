@@ -150,8 +150,10 @@
       await load('/js/user-asset-linking.js');
       await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
+      await load('/js/navbar-v5.js');
       await load('/js/search-center-v2.js');
       await load('/js/dashboard-quality-fixes.js');
+      await load('/js/service-desk-inventory-bridge.js');
     }
 
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
