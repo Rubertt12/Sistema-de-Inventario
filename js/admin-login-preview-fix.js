@@ -33,6 +33,7 @@
     await load('/js/admin-company-ux-v2.js');
     await load('/js/support-admin-permissions.js');
     await load('/js/collaborator-management.js');
+    await load('/js/collaborator-portal-access.js');
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => boot().catch(console.error), { once: true });
