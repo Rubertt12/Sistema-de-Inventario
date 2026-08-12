@@ -12,6 +12,27 @@ function rrnChamadoEscape(value) {
   }[char]));
 }
 
+function rrnCurrentUser() {
+  const session = window.RRN_SESSION || {};
+  if (session.name || session.userName || session.email || session.userId) {
+    return {
+      id: session.userId || '',
+      nome: session.name || session.userName || session.email || 'Usuário',
+      email: session.email || ''
+    };
+  }
+  try {
+    const legacy = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
+    return {
+      id: legacy.id || '',
+      nome: legacy.nome || legacy.name || legacy.email || 'Usuário',
+      email: legacy.email || ''
+    };
+  } catch {
+    return { id: '', nome: 'Usuário', email: '' };
+  }
+}
+
 function rrnGetMachine() {
   if (currentSetorIndex == null || currentMaquinaIndex == null) return null;
   return setores?.[currentSetorIndex]?.maquinas?.[currentMaquinaIndex] || null;
@@ -85,7 +106,6 @@ function showInfo(setorIndex, maquinaIndex) {
   currentMaquinaIndex = maquinaIndex;
   paginaAtual = 1;
 
-  // Compatibilidade com as funções de manutenção que ainda vivem em setores.js.
   try { maquinaAtivaSetor = setorIndex; } catch {}
   try { maquinaAtivaIndex = maquinaIndex; } catch {}
 
@@ -130,14 +150,17 @@ function renderChamados(machine = rrnGetMachine()) {
 
   list.innerHTML = visible.length ? visible.map(({ ticket, originalIndex }) => {
     const interactions = Array.isArray(ticket?.interacoes) ? ticket.interacoes : [];
+    const author = ticket?.autor || ticket?.criadoPor || ticket?.usuario || '';
     return `
       <li class="rrn-ticket-item" style="margin-bottom:10px;border:1px solid #ccc;padding:10px;border-radius:8px;">
         <div><strong>Chamado:</strong> ${rrnChamadoEscape(ticket?.texto || '')}</div>
         <div><strong>Prioridade:</strong> ${rrnChamadoEscape(ticket?.prioridade || 'Não informada')}</div>
+        ${author ? `<div><strong>Registrado por:</strong> ${rrnChamadoEscape(author)}</div>` : ''}
         <small>${rrnChamadoEscape(rrnFormatDate(ticket?.data))}</small>
         ${interactions.map((interaction, index) => `
           <div style="margin-top:6px;border-left:2px solid #aaa;padding-left:10px;">
             <strong>Interação ${index + 1}:</strong> ${rrnChamadoEscape(interaction?.texto || '')}<br>
+            ${(interaction?.autor || interaction?.usuario || interaction?.responsavel) ? `<small>Por ${rrnChamadoEscape(interaction.autor || interaction.usuario || interaction.responsavel)}</small><br>` : ''}
             <small>${rrnChamadoEscape(rrnFormatDate(interaction?.data))}</small>
           </div>`).join('')}
         <div style="margin-top:8px;">
@@ -192,11 +215,15 @@ function saveObservation() {
   if (!machine) return alert('Selecione um equipamento.');
   if (!text) return alert('A observação não pode estar vazia.');
 
+  const user = rrnCurrentUser();
   const tickets = rrnTickets(machine);
   tickets.push({
     texto: text,
     prioridade: priority,
     data: new Date().toISOString(),
+    autor: user.nome,
+    autorId: user.id,
+    autorEmail: user.email,
     interacoes: []
   });
 
@@ -221,8 +248,15 @@ function salvarInteracao(index) {
   const text = input?.value.trim();
   if (!ticket || !text) return alert('Digite a interação.');
 
+  const user = rrnCurrentUser();
   if (!Array.isArray(ticket.interacoes)) ticket.interacoes = [];
-  ticket.interacoes.push({ texto: text, data: new Date().toISOString() });
+  ticket.interacoes.push({
+    texto: text,
+    data: new Date().toISOString(),
+    autor: user.nome,
+    autorId: user.id,
+    autorEmail: user.email
+  });
   if (input) input.value = '';
   rrnPersistTickets(machine);
   renderChamados(machine);
