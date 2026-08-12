@@ -1,0 +1,143 @@
+/* RRN Manager — acabamento final da dashboard */
+
+/* Estrutura da página: conteúdo cresce e o rodapé fica no fim real da viewport. */
+body:has(#setoresContainer){
+  min-height:100vh!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+body:has(#setoresContainer)>main{
+  flex:1 0 auto!important;
+  width:100%!important;
+}
+body:has(#setoresContainer)>.rrn-footer{
+  flex:0 0 auto!important;
+  margin-top:auto!important;
+}
+
+/* Navbar: tabs compactas, alinhadas e integradas ao fundo escuro. */
+.navbar .nav-links{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+.navbar .rrn-app-tabs{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  padding:4px!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  border-radius:11px!important;
+  background:rgba(255,255,255,.07)!important;
+  box-shadow:none!important;
+}
+.navbar .rrn-app-tab{
+  min-height:34px!important;
+  height:34px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:rgba(255,255,255,.82)!important;
+  box-shadow:none!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+}
+.navbar .rrn-app-tab::after{color:inherit!important}
+.navbar .rrn-app-tab:hover{
+  background:rgba(255,255,255,.10)!important;
+  color:#fff!important;
+}
+.navbar .rrn-app-tab.is-active,
+.navbar .rrn-app-tab[aria-selected="true"]{
+  background:var(--rrn-secondary,#2F7D78)!important;
+  color:#fff!important;
+}
+.navbar .rrn-app-tab.is-active::before{display:none!important}
+.navbar #searchInput{
+  min-height:38px!important;
+  height:38px!important;
+  border-radius:10px!important;
+}
+.navbar .user-menu{
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+
+/* Rodapé da dashboard: compacto, sem área vazia gigante. */
+body:has(#setoresContainer) .rrn-footer{
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  margin-bottom:0!important;
+  padding:0!important;
+}
+body:has(#setoresContainer) .rrn-footer-main,
+body:has(#setoresContainer) .rrn-footer-bottom{
+  width:min(1440px,calc(100% - 40px))!important;
+  min-height:0!important;
+  height:auto!important;
+}
+body:has(#setoresContainer) .rrn-footer-main{
+  padding:8px 0!important;
+  gap:16px!important;
+}
+body:has(#setoresContainer) .rrn-footer-brand img{
+  width:27px!important;
+  height:27px!important;
+}
+body:has(#setoresContainer) .rrn-footer-brand strong{font-size:.76rem!important}
+body:has(#setoresContainer) .rrn-footer-brand small{font-size:.64rem!important}
+body:has(#setoresContainer) .rrn-footer-nav a,
+body:has(#setoresContainer) .rrn-footer-nav button{
+  min-height:30px!important;
+  padding:0 9px!important;
+  font-size:.66rem!important;
+}
+body:has(#setoresContainer) .rrn-footer-bottom{
+  padding:6px 0 7px!important;
+  font-size:.60rem!important;
+}
+
+/* Alça lateral de manutenção: texto legível, sem branco forçado. */
+.rrn-maintenance-handle{
+  background:var(--rrn-surface,#F8FAFA)!important;
+  color:var(--rrn-heading,#163A4D)!important;
+  border-color:var(--rrn-border,rgba(22,58,77,.18))!important;
+}
+.rrn-maintenance-handle-label{
+  color:var(--rrn-heading,#163A4D)!important;
+}
+.rrn-maintenance-handle:hover{
+  background:var(--rrn-surface-soft,#EEF2F3)!important;
+  color:var(--rrn-heading,#163A4D)!important;
+}
+.rrn-maintenance-handle-grip{background:var(--rrn-secondary,#2F7D78)!important}
+.rrn-maintenance-badge{
+  background:color-mix(in srgb,var(--rrn-accent,#D97745) 16%,var(--rrn-surface,#F8FAFA))!important;
+  color:var(--rrn-heading,#163A4D)!important;
+}
+:root[data-theme="dark"] .rrn-maintenance-handle{
+  background:var(--rrn-surface,#162328)!important;
+  color:var(--rrn-heading,#D8F0EE)!important;
+}
+:root[data-theme="dark"] .rrn-maintenance-handle-label{
+  color:var(--rrn-heading,#D8F0EE)!important;
+}
+
+@media(max-width:930px){
+  .navbar .nav-links{gap:8px!important}
+  .navbar .rrn-app-tabs{width:100%!important}
+  .navbar .rrn-app-tab{flex:1 1 0!important}
+}
+
+@media(max-width:720px){
+  body:has(#setoresContainer) .rrn-footer-main{
+    padding:8px 0 6px!important;
+    gap:8px!important;
+  }
+  body:has(#setoresContainer) .rrn-footer-bottom{padding:5px 0 7px!important}
+}
