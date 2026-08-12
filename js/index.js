@@ -187,6 +187,7 @@
 
     if (isDashboard) {
       await load('/js/tenant-runtime.js');
+      await load('/js/remote-inventory-sync.js');
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
       await load('/js/password-management.js');
