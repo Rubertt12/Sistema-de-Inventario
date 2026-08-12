@@ -1,0 +1,104 @@
+/* RRN Manager — navbar mobile recolhida por padrão */
+@media (max-width: 780px) {
+  .navbar {
+    position: relative !important;
+    flex-wrap: nowrap !important;
+    min-height: 64px !important;
+    padding: 8px 12px !important;
+    overflow: visible !important;
+  }
+
+  .navbar > h1 {
+    min-width: 0;
+    max-width: calc(100% - 58px);
+    font-size: clamp(1rem, 5vw, 1.28rem) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .navbar .navbar-icon {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .navbar .menu-toggle {
+    display: inline-grid !important;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    border: 1px solid rgba(255,255,255,.18) !important;
+    border-radius: 11px !important;
+    background: rgba(255,255,255,.09) !important;
+    color: #fff !important;
+    font-size: 1.45rem !important;
+    line-height: 1 !important;
+    cursor: pointer;
+  }
+
+  .navbar .nav-links:not(.active) {
+    display: none !important;
+  }
+
+  .navbar .nav-links.active {
+    position: absolute !important;
+    z-index: 1200 !important;
+    top: calc(100% + 8px) !important;
+    left: 10px !important;
+    right: 10px !important;
+    display: flex !important;
+    width: auto !important;
+    max-height: min(72vh, 580px);
+    padding: 12px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 9px !important;
+    overflow-y: auto !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    border-radius: 15px !important;
+    background: var(--rrn-primary, #163A4D) !important;
+    box-shadow: 0 18px 45px rgba(5,28,40,.28) !important;
+  }
+
+  .navbar .nav-links.active .rrn-app-tabs {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 5px !important;
+    padding: 5px !important;
+  }
+
+  .navbar .nav-links.active .rrn-app-tab {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  .navbar .nav-links.active #searchInput,
+  .navbar .nav-links.active #searchInput:focus {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  .navbar .nav-links.active .user-menu {
+    width: 100% !important;
+    min-height: 46px !important;
+    justify-content: flex-start !important;
+  }
+
+  .navbar .nav-links.active .user-dropdown {
+    position: static !important;
+    width: 100% !important;
+    max-height: 260px !important;
+    margin-top: 8px !important;
+    transform: none !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  body.rrn-mobile-nav-open {
+    overflow-x: hidden;
+  }
+}
