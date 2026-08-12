@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RRN Manager | Central de Chamados</title>
+  <meta name="description" content="Central de atendimento, SLA e conversas do RRN Manager." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style/rrn-theme-v2.css" />
+  <link rel="stylesheet" href="/style/support-desk.css" />
+  <link rel="icon" href="/img/icon-png.png" type="image/png" />
+</head>
+<body class="desk-body">
+  <header class="desk-topbar topbar">
+    <a class="desk-brand" href="/dashboard.html"><img src="/img/icon-png.png" alt="" /><span><strong>RRN Manager</strong><small>Central de Chamados</small></span></a>
+    <div class="desk-top-actions"><a class="desk-btn" href="/dashboard.html">← Inventário</a><button class="desk-btn" type="button" id="deskRefreshBtn">↻ Atualizar</button><button class="desk-btn" type="button" data-rrn-theme-toggle>Modo escuro</button></div>
+  </header>
+
+  <main class="desk-main">
+    <section class="desk-heading"><div><span>Service Desk</span><h1>Central de Chamados</h1><p id="deskWorkspaceLabel">Carregando ambiente e fila de atendimento...</p></div><a class="desk-btn" href="/portal.html" target="_blank" rel="noopener">Ver portal do colaborador ↗</a></section>
+
+    <section class="desk-kpis" aria-label="Indicadores de chamados">
+      <article class="desk-kpi"><span>Novos</span><strong id="deskKpiNew">0</strong><small>Aguardando primeiro atendimento</small></article>
+      <article class="desk-kpi"><span>Em atendimento</span><strong id="deskKpiProgress">0</strong><small>Atribuídos ou em tratamento</small></article>
+      <article class="desk-kpi"><span>Aguardando usuário</span><strong id="deskKpiWaiting">0</strong><small>Dependem do solicitante</small></article>
+      <article class="desk-kpi"><span>Resolvidos hoje</span><strong id="deskKpiResolved">0</strong><small>Marcados como resolvidos</small></article>
+    </section>
+
+    <nav class="desk-toolbar" aria-label="Filtros da fila">
+      <button class="desk-filter active" type="button" data-desk-filter="all">Todos</button>
+      <button class="desk-filter" type="button" data-desk-filter="new">Novos</button>
+      <button class="desk-filter" type="button" data-desk-filter="mine">Meus chamados</button>
+      <button class="desk-filter" type="button" data-desk-filter="sla">SLA próximo</button>
+      <button class="desk-filter" type="button" data-desk-filter="critical">Críticos</button>
+    </nav>
+
+    <section class="desk-grid">
+      <aside class="desk-list-panel"><div class="desk-list-head"><strong id="deskListTitle">Fila de atendimento</strong><small id="deskListCount">0 chamados</small></div><div class="desk-ticket-list" id="deskTicketList"></div></aside>
+      <section class="desk-detail-panel">
+        <div class="desk-empty" id="deskEmpty"><div><h2>Selecione um chamado</h2><p>Abra um item da fila para ver solicitante, equipamento, setor, SLA e a conversa completa.</p></div></div>
+        <article class="desk-ticket-view" id="deskTicketView" hidden>
+          <header class="desk-detail-head">
+            <div class="desk-detail-top"><div><small id="deskTicketNumber">Chamado</small><h2 id="deskTicketTitle">—</h2></div><div class="desk-detail-badges"><span class="desk-badge" id="deskTicketStatus">Novo</span><span class="desk-priority" id="deskTicketPriority">Média</span></div></div>
+            <div class="desk-info-grid"><div class="desk-info-card"><span>Solicitante</span><strong id="deskRequesterName">—</strong><small id="deskRequesterMeta">—</small></div><div class="desk-info-card"><span>Equipamento / setor</span><strong id="deskAssetName">—</strong><small id="deskAssetMeta">—</small></div></div>
+            <div class="desk-sla-row"><div class="desk-sla-box"><small>Primeira resposta</small><strong id="deskFirstResponseSla">—</strong></div><div class="desk-sla-box"><small>Resolução</small><strong id="deskResolutionSla">—</strong></div><div class="desk-sla-box"><small>Atendimento ativo</small><strong id="deskHandlingTime">—</strong></div></div>
+            <div class="desk-action-row" id="deskActionRow"><button class="desk-btn primary" type="button" id="deskClaimBtn">Assumir chamado</button><button class="desk-btn warning" type="button" id="deskWaitingBtn">Aguardando usuário</button><button class="desk-btn success" type="button" id="deskResolveBtn">Resolver chamado</button></div>
+          </header>
+          <section class="desk-chat"><div class="desk-messages" id="deskMessages"></div><form class="desk-compose" id="deskMessageForm"><input type="text" id="deskMessageInput" placeholder="Responder ao solicitante..." autocomplete="off" /><button class="desk-btn primary" type="submit">Enviar</button></form></section>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <div class="desk-modal" id="deskResolveModal" hidden role="dialog" aria-modal="true" aria-labelledby="deskResolveTitle"><div class="desk-modal-card"><h2 id="deskResolveTitle">Resolver chamado</h2><p>Registre a solução e, se souber, a causa. O solicitante poderá confirmar ou reabrir.</p><form class="desk-resolution-form" id="deskResolveForm"><label>Solução aplicada<textarea id="deskResolutionInput" required placeholder="Ex: Driver reinstalado e conexão validada."></textarea></label><label>Causa<textarea id="deskCauseInput" placeholder="Ex: Driver corrompido."></textarea></label><div class="desk-modal-actions"><button class="desk-btn" type="button" id="deskResolveCancel">Cancelar</button><button class="desk-btn success" type="submit">Finalizar atendimento</button></div></form></div></div>
+  <div class="desk-toast" id="deskToast" hidden role="status"></div>
+
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/theme-mode.js"></script>
+  <script src="/js/support-desk.js"></script>
+</body>
+</html>
