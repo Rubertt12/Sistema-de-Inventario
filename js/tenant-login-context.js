@@ -1,6 +1,5 @@
 (() => {
   'use strict';
-
   if (window.__RRN_TENANT_LOGIN_CONTEXT__) return;
   window.__RRN_TENANT_LOGIN_CONTEXT__ = true;
 
@@ -61,7 +60,7 @@
     box.className = `rrn-tenant-portal${invalid ? ' rrn-tenant-invalid' : ''}`;
     const name = tenant?.tenant_name || 'Ambiente não encontrado';
     const logo = tenant?.logo_url || '/img/icon-png.png';
-    box.innerHTML = `<img class="rrn-tenant-portal-logo" src="${logo}" alt=""><div class="rrn-tenant-portal-copy"><small>${invalid ? 'Portal indisponível' : 'Portal da empresa'}</small><strong>${name}</strong><code>${requestedSlug}</code>${invalid ? '<a class="rrn-tenant-generic-link" href="/index.html">Ir para o acesso geral</a>' : ''}</div>`;
+    box.innerHTML = `<img class="rrn-tenant-portal-logo" src="${logo}" alt=""><div class="rrn-tenant-portal-copy"><small>${invalid ? 'Portal indisponível' : 'Portal da empresa'}</small><strong>${name}</strong><code>${requestedSlug}</code>${invalid ? '<a class="rrn-tenant-generic-link" href="/login.html">Ir para o acesso geral</a>' : ''}</div>`;
     header.insertAdjacentElement('afterend', box);
     if (!invalid) {
       const title = document.getElementById('authTitle');
@@ -116,9 +115,6 @@
       return;
     }
 
-    // Se já existir uma sessão de outra empresa, encerra somente essa sessão para
-    // permitir que o usuário autentique no portal solicitado. Sessões da própria
-    // empresa continuam sendo tratadas normalmente pelo fluxo principal.
     const { data: sessionData } = await client.auth.getSession();
     if (sessionData?.session?.user) {
       try {
@@ -134,18 +130,15 @@
     const form = document.getElementById('formLogin');
     if (!form || form.dataset.rrnTenantBound === '1') return;
     form.dataset.rrnTenantBound = '1';
-
     form.addEventListener('submit', async event => {
       if (!requestedSlug) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!portalValid) return setMessage('Portal da empresa indisponível.', 'error');
-
       const email = document.getElementById('loginEmail')?.value.trim().toLowerCase();
       const password = document.getElementById('loginSenha')?.value || '';
       const button = document.getElementById('loginButton');
       if (!email || !password) return setMessage('Informe e-mail e senha.', 'error');
-
       setMessage();
       setBusy(button, true);
       try {
@@ -164,9 +157,7 @@
       } catch (error) {
         const message = String(error?.message || '');
         setMessage(/Invalid login credentials/i.test(message) ? 'E-mail ou senha inválidos.' : (message || 'Não foi possível entrar.'), 'error');
-      } finally {
-        setBusy(button, false);
-      }
+      } finally { setBusy(button, false); }
     }, true);
   }
 
