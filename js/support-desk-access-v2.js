@@ -7,8 +7,7 @@
   const client = window.supabase?.createClient?.(cfg.url, cfg.anonKey, { auth:{persistSession:true,autoRefreshToken:true} });
   if (!client) return;
   const $ = id => document.getElementById(id);
-  let user = null, profile = null, staff = null;
-  let bridging = false;
+  let user = null, profile = null, staff = null, bridging = false;
 
   function selectedTicketId() {
     return document.querySelector('[data-ticket-id].active')?.dataset.ticketId || null;
@@ -27,24 +26,31 @@
     main.innerHTML = `<section class="desk-detail-panel" style="max-width:760px;margin:60px auto;padding:34px"><div class="desk-empty" style="min-height:320px"><div><h2>Acesso restrito à equipe de suporte</h2><p>Seu usuário não está marcado como Técnico ou Gestor de Suporte. Um administrador pode liberar em Configurações → Administração → Usuários.</p><p style="margin-top:18px"><a class="desk-btn primary" href="/usuarios.html">Gerenciar usuários</a> <a class="desk-btn" href="/dashboard.html">Voltar ao painel</a></p></div></div></section>`;
   }
 
+  function setHidden(el, value) {
+    if (el && el.hidden !== value) el.hidden = value;
+  }
+
   function syncStaffUi() {
     if (!staff) return;
     const label = $('deskWorkspaceLabel');
     if (label && !label.dataset.supportRoleApplied) {
       label.dataset.supportRoleApplied = '1';
-      label.textContent = `${label.textContent.split(' · ')[0] || 'Workspace'} · ${profile?.name || user?.email || 'Usuário'} · ${staff.role === 'manager' ? 'Gestor de suporte' : 'Técnico de suporte'}`;
+      const workspace = (label.textContent || 'Workspace').split(' · ')[0] || 'Workspace';
+      label.textContent = `${workspace} · ${profile?.name || user?.email || 'Usuário'} · ${staff.role === 'manager' ? 'Gestor de suporte' : 'Técnico de suporte'}`;
     }
     if (!bridging) return;
     const view = $('deskTicketView');
     if (!view || view.hidden) return;
-    const status = $('deskTicketStatus')?.className || '';
-    const closed = /resolved|closed/.test(status);
-    if ($('deskActionRow')) $('deskActionRow').hidden = closed;
-    ['deskClaimBtn','deskWaitingBtn','deskResolveBtn'].forEach(id => { const el=$(id); if(el) el.hidden=closed; });
+    const statusClass = $('deskTicketStatus')?.className || '';
+    const closed = /resolved|closed/.test(statusClass);
+    setHidden($('deskActionRow'), closed);
+    setHidden($('deskClaimBtn'), closed);
+    setHidden($('deskWaitingBtn'), closed);
+    setHidden($('deskResolveBtn'), closed);
     const input = $('deskMessageInput');
     const send = $('deskMessageForm')?.querySelector('button');
-    if (input && !/closed/.test(status)) input.disabled = false;
-    if (send && !/closed/.test(status)) send.disabled = false;
+    if (input && !closed && input.disabled) input.disabled = false;
+    if (send && !closed && send.disabled) send.disabled = false;
   }
 
   async function bridgeClaim(event) {
@@ -65,7 +71,7 @@
   function bridgeOpenResolve(event) {
     if (!bridging) return;
     event.preventDefault(); event.stopImmediatePropagation();
-    if ($('deskResolveModal')) $('deskResolveModal').hidden = false;
+    setHidden($('deskResolveModal'), false);
     $('deskResolutionInput')?.focus();
   }
 
@@ -78,7 +84,7 @@
     if (!resolution) return;
     const now = new Date().toISOString();
     const { error } = await client.from('support_tickets').update({ assigned_to:ticket.assigned_to || user.id, status:'resolved', first_response_at:ticket.first_response_at || now, handling_started_at:ticket.handling_started_at || now, resolved_at:now, resolution, cause:cause || null }).eq('id', ticket.id);
-    if (!error && $('deskResolveModal')) $('deskResolveModal').hidden = true;
+    if (!error) setHidden($('deskResolveModal'), true);
   }
 
   async function bridgeMessage(event) {

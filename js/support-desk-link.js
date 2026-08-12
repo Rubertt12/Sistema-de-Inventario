@@ -4,18 +4,29 @@
   window.__RRN_SUPPORT_DESK_LINK__ = true;
 
   const cfg = window.RRN_SUPABASE || {};
-  const client = window.supabase?.createClient?.(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true } });
+  let client = null;
   let allowed = false;
   let checked = false;
 
+  async function waitForClient() {
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      if (window.supabase?.createClient && cfg.url && cfg.anonKey) {
+        client = window.supabase.createClient(cfg.url, cfg.anonKey, { auth:{persistSession:true,autoRefreshToken:true} });
+        return true;
+      }
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return false;
+  }
+
   async function resolveAccess() {
-    if (!client) { checked = true; return; }
+    if (!await waitForClient()) { checked = true; return sync(); }
     try {
-      const { data: { session } } = await client.auth.getSession();
-      if (!session?.user) { checked = true; return; }
-      const { data: profile } = await client.from('profiles').select('user_id,tenant_id,status').eq('user_id', session.user.id).maybeSingle();
-      if (!profile || profile.status !== 'active') { checked = true; return; }
-      const { data: staff } = await client.from('support_staff').select('id').eq('user_id', session.user.id).eq('tenant_id', profile.tenant_id).eq('status', 'active').maybeSingle();
+      const { data:{session} } = await client.auth.getSession();
+      if (!session?.user) return;
+      const { data:profile } = await client.from('profiles').select('user_id,tenant_id,status').eq('user_id', session.user.id).maybeSingle();
+      if (!profile || profile.status !== 'active') return;
+      const { data:staff } = await client.from('support_staff').select('id').eq('user_id', session.user.id).eq('tenant_id', profile.tenant_id).eq('status','active').maybeSingle();
       allowed = !!staff;
     } catch (error) {
       console.warn('RRN support desk access:', error);
@@ -57,7 +68,7 @@
     mount();
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', resolveAccess, { once: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', resolveAccess, { once:true });
   else resolveAccess();
-  new MutationObserver(sync).observe(document.documentElement, { childList: true, subtree: true });
+  new MutationObserver(sync).observe(document.documentElement, { childList:true, subtree:true });
 })();
