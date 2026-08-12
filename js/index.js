@@ -32,6 +32,15 @@
     document.head.appendChild(link);
   }
 
+  function ensureTypography() {
+    if (document.querySelector('link[data-rrn-typography-v2]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/style/typography-v2.css';
+    link.setAttribute('data-rrn-typography-v2', '1');
+    document.head.appendChild(link);
+  }
+
   function containsPlaintextPassword(value) {
     try {
       const parsed = JSON.parse(value);
@@ -97,6 +106,7 @@
   ensureDashboardStyles();
   ensureBrandTheme();
   addStylesheet('/style/settings-v2.css', 'data-rrn-settings-v2');
+  ensureTypography();
   guardLegacyCredentials();
 
   if (document.readyState === 'loading') {
