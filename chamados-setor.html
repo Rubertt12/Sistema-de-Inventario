@@ -1,1 +1,60 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RRN Manager | Chamados do setor</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/style/rrn-theme-v2.css"><link rel="stylesheet" href="/style/typography-v2.css"><link rel="stylesheet" href="/style/ticket-tree-v2.css"><link rel="icon" href="/img/icon-png.png" type="image/png"></head><body><header class="rrn-tree-topbar"><a class="rrn-tree-brand" href="/dashboard.html#pesquisa"><img src="/img/icon-png.png" alt=""><div><strong>RRN Manager</strong><span>Histórico de chamados</span></div></a><a class="rrn-tree-back" href="/dashboard.html#pesquisa">Voltar para pesquisa</a></header><main class="rrn-tree-shell"><section class="rrn-tree-hero"><div><span class="rrn-tree-eyebrow">Setor selecionado</span><h1 id="sectorTitle">Carregando setor...</h1><p id="sectorSubtitle">Organizando equipamentos e chamados.</p></div><div class="rrn-tree-stats"><div><span>Equipamentos</span><strong id="assetCount">0</strong></div><div><span>Chamados</span><strong id="ticketCount">0</strong></div><div><span>Em manutenção</span><strong id="maintenanceCount">0</strong></div></div></section><section class="rrn-tree-toolbar"><input id="treeFilter" type="search" placeholder="Filtrar máquinas deste setor"><button id="expandAll" type="button">Expandir todas</button><button id="collapseAll" type="button">Recolher todas</button></section><section id="ticketTree" class="rrn-ticket-tree"><div class="rrn-tree-loading">Carregando histórico...</div></section></main><div id="treeNotice" class="rrn-tree-notice" hidden></div><script src="/js/supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/js/ticket-tree-v2.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RRN Manager | Chamados do setor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style/rrn-theme-v2.css">
+  <link rel="stylesheet" href="/style/typography-v2.css">
+  <link rel="stylesheet" href="/style/ticket-tree-v2.css">
+  <link rel="icon" href="/img/icon-png.png" type="image/png">
+</head>
+<body>
+  <header class="rrn-tree-topbar">
+    <a class="rrn-tree-brand" href="/dashboard.html#pesquisa">
+      <img src="/img/icon-png.png" alt="">
+      <div><strong>RRN Manager</strong><span>Histórico técnico por setor</span></div>
+    </a>
+    <a class="rrn-tree-back" href="/dashboard.html#pesquisa">Voltar para pesquisa</a>
+  </header>
+
+  <main class="rrn-tree-shell">
+    <section class="rrn-tree-hero">
+      <div>
+        <span class="rrn-tree-eyebrow">Árvore de chamados</span>
+        <h1 id="sectorTitle">Carregando setor...</h1>
+        <p id="sectorSubtitle">Organizando equipamentos, chamados e interações.</p>
+      </div>
+      <div class="rrn-tree-stats">
+        <div><span>Equipamentos</span><strong id="assetCount">0</strong></div>
+        <div><span>Chamados</span><strong id="ticketCount">0</strong></div>
+        <div><span>Em manutenção</span><strong id="maintenanceCount">0</strong></div>
+      </div>
+    </section>
+
+    <section class="rrn-tree-guide">
+      <span class="rrn-tree-guide-line"></span>
+      <div><strong>Setor</strong><small>expanda uma máquina para navegar em Máquina → Chamado → Interações</small></div>
+    </section>
+
+    <section class="rrn-tree-toolbar">
+      <input id="treeFilter" type="search" placeholder="Filtrar máquinas deste setor" autocomplete="off">
+      <button id="expandAll" type="button">Expandir todas</button>
+      <button id="collapseAll" type="button">Recolher todas</button>
+    </section>
+
+    <section id="ticketTree" class="rrn-ticket-tree" aria-live="polite">
+      <div class="rrn-tree-loading">Carregando histórico...</div>
+    </section>
+  </main>
+
+  <div id="treeNotice" class="rrn-tree-notice" hidden></div>
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/theme-mode.js"></script>
+  <script src="/js/ticket-tree-v2.js"></script>
+</body>
+</html>
