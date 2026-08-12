@@ -161,3 +161,5 @@ body [style*="border:1px solid #ccc"],body [style*="border: 1px solid #ccc"],bod
 :root[data-theme="dark"] body [style*="color:white"],:root[data-theme="dark"] body [style*="color: white"]{color:var(--rrn-text)!important}
 :root[data-theme="dark"] .navbar [style*="color:white"],:root[data-theme="dark"] .navbar [style*="color: white"]{color:#fff!important}
 :root[data-theme="dark"] .rrn-machine-item,:root[data-theme="dark"] .rrn-machine-grid-details,:root[data-theme="dark"] .rrn-machine-fact,:root[data-theme="dark"] .rrn-home-panel,:root[data-theme="dark"] .rrn-kpi,:root[data-theme="dark"] .modal-content,:root[data-theme="dark"] .config-modal{box-shadow:none!important}
+
+/* redeploy production 2026-08-12 */
