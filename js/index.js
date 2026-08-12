@@ -96,6 +96,7 @@
 
   ensureDashboardStyles();
   ensureBrandTheme();
+  addStylesheet('/style/settings-v2.css', 'data-rrn-settings-v2');
   guardLegacyCredentials();
 
   if (document.readyState === 'loading') {
@@ -130,6 +131,7 @@
       await load('/js/icons-v2.js');
       await load('/js/icon-mutation-bridge.js');
       await load('/js/dashboard-ui.js');
+      await load('/js/settings-v2.js');
       await load('/js/maintenance-panel.js');
       await load('/js/scanner.js');
       await load('/js/transfer-v2.js');
