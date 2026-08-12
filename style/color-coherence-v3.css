@@ -138,6 +138,25 @@ body [style*="border:1px solid #ccc"],body [style*="border: 1px solid #ccc"],bod
   box-shadow:0 8px 24px rgba(22,58,77,.07)!important;
 }
 
+/* Indicador de sincronização na navbar: contraste correto no tema claro. */
+:root:not([data-theme="dark"]) .navbar .rrn-sync-status{
+  background:rgba(255,255,255,.12)!important;
+  border-color:rgba(255,255,255,.22)!important;
+  color:rgba(255,255,255,.94)!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(8px);
+}
+:root:not([data-theme="dark"]) .navbar .rrn-sync-status>span:not(.rrn-sync-dot){color:rgba(255,255,255,.94)!important}
+:root:not([data-theme="dark"]) .navbar .rrn-sync-dot{
+  background:#7FE0C2!important;
+  box-shadow:0 0 0 3px rgba(127,224,194,.16)!important;
+}
+:root:not([data-theme="dark"]) body[data-rrn-sync-status="channel_error"] .navbar .rrn-sync-dot,
+:root:not([data-theme="dark"]) body[data-rrn-sync-status="timed_out"] .navbar .rrn-sync-dot{
+  background:#FFAAA0!important;
+  box-shadow:0 0 0 3px rgba(255,170,160,.16)!important;
+}
+
 /* Dark sem restos claros */
 :root[data-theme="dark"] body [style*="color:white"],:root[data-theme="dark"] body [style*="color: white"]{color:var(--rrn-text)!important}
 :root[data-theme="dark"] .navbar [style*="color:white"],:root[data-theme="dark"] .navbar [style*="color: white"]{color:#fff!important}
