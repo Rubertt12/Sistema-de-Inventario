@@ -29,17 +29,27 @@
     }, 80);
   }
 
-  function forceCategoryChooser(sectorIndex) {
+  function keepSectorOpen(sectorIndex) {
     const index = Number(sectorIndex);
-    if (!Number.isInteger(index) || index < 0) return;
-
+    if (!Number.isInteger(index) || index < 0) return false;
     try {
       if (typeof setoresVisiveis !== 'undefined') setoresVisiveis[index] = true;
     } catch {}
+    return true;
+  }
+
+  function forceCategoryChooser(sectorIndex) {
+    const index = Number(sectorIndex);
+    if (!keepSectorOpen(index)) return;
 
     try { window.RRN_SECTOR_CATEGORIES?.back?.(index); } catch {}
 
+    // Alguns módulos legados podem reescrever o estado durante o mesmo clique.
+    // Reafirma que o setor precisa continuar aberto antes de ajustar a UI.
+    keepSectorOpen(index);
+
     [0, 40, 120].forEach(delay => setTimeout(() => {
+      keepSectorOpen(index);
       const card = document.querySelector(`.rrn-setor-card[data-setor-index="${index}"]`);
       if (!card) return;
 
@@ -58,18 +68,24 @@
     }, delay));
   }
 
-  // Fallback legado: só intercepta o botão quando o guardião oficial de categorias
-  // não estiver carregado. Com o guardião ativo, ele é a única fonte de estado e
-  // evita a categoria anterior ser reaplicada após clicar em "Voltar às categorias".
+  // O guardião oficial limpa a categoria selecionada. Antes que ele rode, garantimos
+  // que o setor permaneça aberto; assim "Voltar às categorias" não vira, por engano,
+  // o mesmo comportamento de "Ocultar equipamentos".
   window.addEventListener('click', event => {
     const button = event.target?.closest?.('.rrn-category-back-btn');
     if (!button) return;
-    if (window.RRN_SECTOR_CATEGORY_GUARD) return;
 
     const card = button.closest('.rrn-setor-card');
     const sectorIndex = Number(card?.dataset?.setorIndex);
     if (!Number.isInteger(sectorIndex)) return;
 
+    keepSectorOpen(sectorIndex);
+
+    // Com o guardião carregado, deixamos o evento seguir normalmente para que ele
+    // limpe seu próprio estado interno (activeBySector/choiceModeBySector).
+    if (window.RRN_SECTOR_CATEGORY_GUARD) return;
+
+    // Fallback para versões antigas onde o guardião ainda não está disponível.
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
