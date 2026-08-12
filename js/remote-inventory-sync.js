@@ -19,6 +19,23 @@
   let lastRemoteUpdatedAt = null;
   let applyingRemote = false;
 
+  function ensureSearchAssets() {
+    if (!document.querySelector('link[data-rrn-search-center]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/style/search-center-v2.css';
+      link.dataset.rrnSearchCenter = '1';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-rrn-search-center]')) {
+      const script = document.createElement('script');
+      script.src = '/js/search-center-v2.js';
+      script.async = false;
+      script.dataset.rrnSearchCenter = '1';
+      document.head.appendChild(script);
+    }
+  }
+
   function stateFromPayload(payload = {}) {
     return payload && typeof payload === 'object' ? payload : {};
   }
@@ -123,6 +140,7 @@
   }
 
   async function boot() {
+    ensureSearchAssets();
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user) return;
 
