@@ -100,6 +100,7 @@
   ensureDashboardStyles();
   ensureBrandTheme();
   addStylesheet('/style/settings-v2.css', 'data-rrn-settings-v2');
+  addStylesheet('/style/settings-layout-v4.css', 'data-rrn-settings-layout-v4');
   ensureTypography();
   ensureFooterStyles();
   guardLegacyCredentials();
