@@ -1,4 +1,5 @@
 /* RRN Manager — gaveta lateral de manutenção */
+/* Redeploy de produção: mantém a aba lateral fixa e visível na viewport. */
 .rrn-maintenance-drawer{
   position:fixed!important;
   inset:0!important;
