@@ -4,15 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RRN Manager | Acesso</title>
-  <meta name="description" content="Acesso seguro ao RRN Manager" />
+  <meta name="description" content="Acesso ao RRN Manager" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style/style.css" />
+  <link rel="stylesheet" href="/style/login-corporate.css" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
 <body>
-  <main class="auth-shell">
+  <main class="auth-shell" id="authShell">
     <section class="brand-panel" aria-label="Apresentação">
       <div class="brand-mark">
         <img src="/img/icon-png.png" alt="RRN Manager" />
@@ -21,16 +22,8 @@
 
       <div class="brand-copy">
         <span class="eyebrow">Gestão de ativos e inventário</span>
-        <h1>Inventário organizado, acesso seguro e dados separados por empresa.</h1>
-        <p>Uma base única para setores, equipamentos, manutenção, usuários e operação diária — agora preparada para múltiplos tenants.</p>
-      </div>
-
-      <div class="security-note">
-        <span class="security-dot"></span>
-        <div>
-          <strong>Autenticação real</strong>
-          <small>Senhas deixam de ser armazenadas no navegador.</small>
-        </div>
+        <h1 id="brandTitle">Controle patrimonial com mais organização e eficiência</h1>
+        <p id="brandSubtitle">Gerencie equipamentos, responsáveis, setores e movimentações com praticidade e visão centralizada.</p>
       </div>
     </section>
 
@@ -43,8 +36,8 @@
 
         <header class="auth-header">
           <span class="eyebrow">Área segura</span>
-          <h2 id="authTitle">Acessar workspace</h2>
-          <p id="authSubtitle">Entre com seu e-mail corporativo e senha.</p>
+          <h2 id="authTitle">Acessar sistema</h2>
+          <p id="authSubtitle">Entre com seu e-mail e senha para continuar.</p>
         </header>
 
         <div id="backendNotice" class="notice notice-warning" hidden>
@@ -102,18 +95,18 @@
           <label class="field">
             <span>Nome da organização</span>
             <input type="text" id="registerOrganization" placeholder="Ex.: Empresa ABC" />
-            <small>Use este campo para criar um novo tenant. O primeiro usuário será administrador.</small>
+            <small>Informe o nome da empresa para configurar o ambiente inicial.</small>
           </label>
 
           <label class="field">
             <span>Código de convite</span>
             <input type="text" id="registerInvite" placeholder="Cole aqui se você recebeu um convite" autocomplete="off" />
-            <small>Se houver código de convite, o tenant do convite será utilizado e o nome da organização será ignorado.</small>
+            <small>Se você recebeu um convite, use o código para ingressar na organização correspondente.</small>
           </label>
 
           <label class="terms-check">
             <input type="checkbox" id="acceptTerms" required />
-            <span>Confirmo que estou autorizado a criar ou ingressar neste workspace.</span>
+            <span>Confirmo que estou autorizado a criar ou ingressar neste ambiente.</span>
           </label>
 
           <button type="submit" class="btn-primary" id="registerButton">
@@ -124,8 +117,6 @@
 
         <footer class="auth-footer">
           <span>RRN Manager</span>
-          <span class="footer-separator">•</span>
-          <span>Multi-tenant</span>
         </footer>
       </div>
     </section>
@@ -136,7 +127,7 @@
       <img src="/img/icon-png.png" alt="" />
       <div class="spinner"></div>
       <strong id="loadingText">Validando acesso...</strong>
-      <small>Carregando seu workspace com segurança.</small>
+      <small>Carregando seu ambiente com segurança.</small>
     </div>
   </div>
 
