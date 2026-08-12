@@ -8,10 +8,35 @@
   let allowed = false;
   let checked = false;
 
+  function ensureStylesheet(href, marker) {
+    if (document.querySelector(`link[${marker}]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.setAttribute(marker, '1');
+    document.head.appendChild(link);
+  }
+
+  function ensureScript(src, marker) {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.setAttribute(marker, '1');
+    document.head.appendChild(script);
+  }
+
+  function ensureDashboardExtensions() {
+    ensureStylesheet('/style/mobile-navbar-v2.css', 'data-rrn-mobile-navbar-v2');
+    ensureScript('/js/mobile-navbar-v2.js', 'data-rrn-mobile-navbar-v2');
+    ensureScript('/js/service-desk-inventory-bridge.js', 'data-rrn-service-inventory-bridge');
+  }
+
   async function waitForClient() {
     for (let attempt = 0; attempt < 50; attempt += 1) {
       if (window.supabase?.createClient && cfg.url && cfg.anonKey) {
         client = window.supabase.createClient(cfg.url, cfg.anonKey, { auth:{persistSession:true,autoRefreshToken:true} });
+        ensureDashboardExtensions();
         return true;
       }
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -20,6 +45,8 @@
   }
 
   async function resolveAccess() {
+    ensureStylesheet('/style/mobile-navbar-v2.css', 'data-rrn-mobile-navbar-v2');
+    ensureScript('/js/mobile-navbar-v2.js', 'data-rrn-mobile-navbar-v2');
     if (!await waitForClient()) { checked = true; return sync(); }
     try {
       const { data:{session} } = await client.auth.getSession();
