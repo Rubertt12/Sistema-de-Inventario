@@ -1,10 +1,9 @@
 (() => {
   'use strict';
-  if (window.__RRN_MAINTENANCE_DRAWER_V3__) return;
-  window.__RRN_MAINTENANCE_DRAWER_V3__ = true;
+  if (window.__RRN_MAINTENANCE_DRAWER_V4__) return;
+  window.__RRN_MAINTENANCE_DRAWER_V4__ = true;
 
   const STORAGE_KEY = 'rrn_maintenance_drawer_open';
-
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
   function inventory() {
@@ -31,9 +30,17 @@
     return `${escapeHtml(asset.tipo || 'Equipamento')} · ${escapeHtml(asset.etiqueta || asset.nome || 'Sem identificação')}`;
   }
 
-  function relocatePanel() {
-    const panel = document.getElementById('painelManutencao');
-    if (panel && panel.parentElement !== document.body) document.body.appendChild(panel);
+  function ensurePanel() {
+    let panel = document.getElementById('painelManutencao');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.id = 'painelManutencao';
+      panel.setAttribute('aria-live', 'polite');
+      document.body.appendChild(panel);
+    } else if (panel.parentElement !== document.body) {
+      document.body.appendChild(panel);
+    }
+    panel.classList.add('rrn-maintenance-drawer');
     return panel;
   }
 
@@ -42,12 +49,11 @@
   }
 
   function isOpen() {
-    return Boolean(document.getElementById('painelManutencao')?.classList.contains('rrn-maintenance-drawer--open'));
+    return Boolean(ensurePanel().classList.contains('rrn-maintenance-drawer--open'));
   }
 
   function setOpen(open, persist = true) {
-    const panel = relocatePanel();
-    if (!panel) return;
+    const panel = ensurePanel();
     panel.classList.toggle('rrn-maintenance-drawer--open', open);
     panel.classList.toggle('recolhido', !open);
     panel.setAttribute('aria-expanded', String(open));
@@ -58,9 +64,7 @@
   function togglePanel() { setOpen(!isOpen()); }
 
   function renderPanel() {
-    const panel = relocatePanel();
-    if (!panel) return;
-    panel.classList.add('rrn-maintenance-drawer');
+    const panel = ensurePanel();
     const items = maintenanceAssets();
     const visible = items.slice(0, 5);
     const open = panel.classList.contains('rrn-maintenance-drawer--open');
@@ -121,6 +125,8 @@
   }
 
   function bindShortcut() {
+    if (window.__RRN_MAINTENANCE_SHORTCUT_BOUND__) return;
+    window.__RRN_MAINTENANCE_SHORTCUT_BOUND__ = true;
     document.addEventListener('keydown', event => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || String(event.key).toLowerCase() !== 'm') return;
       if (event.target?.matches?.('input,textarea,select,[contenteditable="true"]')) return;
@@ -137,8 +143,7 @@
   }
 
   function boot() {
-    const panel = relocatePanel();
-    if (!panel) return;
+    const panel = ensurePanel();
     const saved = sessionStorage.getItem(STORAGE_KEY) === '1';
     panel.classList.toggle('rrn-maintenance-drawer--open', saved);
     panel.classList.toggle('recolhido', !saved);
