@@ -34,6 +34,7 @@
     await load('/js/support-admin-permissions.js');
     await load('/js/collaborator-management.js');
     await load('/js/collaborator-portal-access.js');
+    await load('/js/admin-user-delete.js');
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => boot().catch(console.error), { once: true });
