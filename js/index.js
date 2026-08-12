@@ -167,6 +167,8 @@
     await load('/js/tenant-branding-runtime.js');
 
     if (document.getElementById('formLogin')) {
+      await load('/js/tenant-login-context.js');
+      await window.RRN_TENANT_LOGIN_READY;
       await load('/js/auth-v2.js');
       window.RRN_PREVIEW?.seed?.(false);
       return;
