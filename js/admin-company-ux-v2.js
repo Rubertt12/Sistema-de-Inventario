@@ -21,9 +21,9 @@
     toast.timer = setTimeout(() => { el.hidden = true; }, 3200);
   }
 
-  function portalUrl(tenant) {
+  function portalUrl(tenant, preview = false) {
     if (!tenant?.slug) return '';
-    return `${location.origin}/index.html?org=${encodeURIComponent(tenant.slug)}`;
+    return `${location.origin}/login.html?org=${encodeURIComponent(tenant.slug)}${preview ? '&preview=1' : ''}`;
   }
 
   async function copy(text, success) {
@@ -52,6 +52,7 @@
     tenants = data || [];
     syncBrandingSelector();
     enhanceOverviewPortalActions();
+    enhanceBrandingPortalAction();
     enhanceCompanyRows();
   }
 
@@ -110,6 +111,22 @@
     }
   }
 
+  function enhanceBrandingPortalAction() {
+    const button = $('openBrandLoginButton');
+    if (!button || button.dataset.rrnLoginRouteBound === '1') return;
+    button.dataset.rrnLoginRouteBound = '1';
+    button.textContent = 'Visualizar portal';
+    button.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const id = $('brandingTenantSelector')?.value;
+      const tenant = tenants.find(t => t.id === id) || currentTenant();
+      const url = portalUrl(tenant, true);
+      if (!url) return toast('Não foi possível identificar o portal desta empresa.');
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }, true);
+  }
+
   function enhanceCompanyRows() {
     const body = $('companiesBody');
     if (!body || !tenants.length) return;
@@ -124,10 +141,7 @@
         open.className = 'action-btn';
         open.dataset.openCompanyPortal = tenant.id;
         open.textContent = 'Abrir portal';
-        open.onclick = event => {
-          event.stopPropagation();
-          window.open(portalUrl(tenant), '_blank', 'noopener');
-        };
+        open.onclick = event => { event.stopPropagation(); window.open(portalUrl(tenant), '_blank', 'noopener'); };
         actions.prepend(open);
       }
       if (!actions.querySelector(`[data-copy-company-portal="${tenant.id}"]`)) {
@@ -136,10 +150,7 @@
         copyButton.className = 'action-btn';
         copyButton.dataset.copyCompanyPortal = tenant.id;
         copyButton.textContent = 'Copiar URL';
-        copyButton.onclick = event => {
-          event.stopPropagation();
-          copy(portalUrl(tenant), `URL de ${tenant.name || 'empresa'} copiada.`);
-        };
+        copyButton.onclick = event => { event.stopPropagation(); copy(portalUrl(tenant), `URL de ${tenant.name || 'empresa'} copiada.`); };
         actions.prepend(copyButton);
       }
     });
@@ -156,12 +167,14 @@
       const observer = new MutationObserver(() => {
         syncBrandingSelector();
         enhanceOverviewPortalActions();
+        enhanceBrandingPortalAction();
       });
       observer.observe(main, { childList: true });
       main.addEventListener('change', () => {
         const branding = $('brandingTenantSelector');
         if (branding && Array.from(branding.options).some(o => o.value === main.value)) branding.value = main.value;
         enhanceOverviewPortalActions();
+        enhanceBrandingPortalAction();
       });
     }
   }
@@ -175,6 +188,7 @@
       syncBrandingSelector();
       enhanceCompanyRows();
       enhanceOverviewPortalActions();
+      enhanceBrandingPortalAction();
     }, 500);
   }
 
