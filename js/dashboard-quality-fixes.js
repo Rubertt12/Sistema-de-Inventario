@@ -58,11 +58,14 @@
     }, delay));
   }
 
-  // Usa window/capture para interceptar antes dos handlers legados e impedir que
-  // "Voltar às categorias" feche o setor por engano.
+  // Fallback legado: só intercepta o botão quando o guardião oficial de categorias
+  // não estiver carregado. Com o guardião ativo, ele é a única fonte de estado e
+  // evita a categoria anterior ser reaplicada após clicar em "Voltar às categorias".
   window.addEventListener('click', event => {
     const button = event.target?.closest?.('.rrn-category-back-btn');
     if (!button) return;
+    if (window.RRN_SECTOR_CATEGORY_GUARD) return;
+
     const card = button.closest('.rrn-setor-card');
     const sectorIndex = Number(card?.dataset?.setorIndex);
     if (!Number.isInteger(sectorIndex)) return;
