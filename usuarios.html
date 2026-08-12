@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RRN Manager | Gestão de usuários</title>
+  <title>RRN Manager | Administração</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet" />
@@ -11,63 +11,51 @@
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <img src="/img/icon-png.png" alt="RRN Manager" />
-      <div><strong>RRN Manager</strong><span>Administração do workspace</span></div>
-    </div>
-    <button class="btn-secondary" onclick="location.href='dashboard.html'">Voltar ao painel</button>
-  </header>
+<header class="topbar"><div class="brand"><img src="/img/icon-png.png" alt="RRN Manager"><div><strong>RRN Manager</strong><span id="adminScopeLabel">Administração</span></div></div><button class="btn-secondary" onclick="location.href='dashboard.html'">Voltar ao painel</button></header>
+<main class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="admin-user"><span class="eyebrow">Sessão</span><strong id="currentAdmin">Carregando...</strong><small id="adminLevel">Validando permissões</small></div>
+    <nav class="admin-nav">
+      <button class="active" data-view="overview">Visão geral</button>
+      <button data-view="companies" id="companiesNav">Empresas</button>
+      <button data-view="users">Usuários</button>
+      <button data-view="invites">Convites</button>
+      <button data-view="branding">Identidade visual</button>
+    </nav>
+  </aside>
 
-  <main class="page-shell">
-    <section class="page-heading">
-      <div>
-        <span class="eyebrow">Administração</span>
-        <h1>Usuários e acessos</h1>
-        <p>Convide pessoas, altere perfis e controle quem pode acessar os dados do tenant.</p>
-      </div>
-      <div class="tenant-card">
-        <span>Workspace</span>
-        <strong id="tenantName">Carregando...</strong>
-        <small id="currentAdmin">Validando sessão</small>
-      </div>
-    </section>
-
+  <section class="admin-content">
     <div id="pageNotice" class="notice" hidden></div>
-
-    <section class="panel">
-      <div class="panel-heading">
-        <span class="eyebrow">Convites</span>
-        <h2>Convidar novo membro</h2>
-        <p>O usuário define a própria senha. Você só escolhe o perfil e gera um código temporário.</p>
-      </div>
-      <form id="inviteForm" class="invite-form">
-        <label class="field"><span>E-mail</span><input type="email" id="inviteEmail" placeholder="pessoa@empresa.com" required /></label>
-        <label class="field"><span>Perfil</span><select id="inviteRole"><option value="operador">Operador</option><option value="monitoramento">Monitoramento</option><option value="admin">Administrador</option></select></label>
-        <label class="field"><span>Validade</span><select id="inviteDays"><option value="1">1 dia</option><option value="3">3 dias</option><option value="7" selected>7 dias</option><option value="14">14 dias</option></select></label>
-        <button type="submit" class="btn-primary" id="inviteButton">Gerar convite</button>
-      </form>
-      <div id="inviteResult" class="invite-result" hidden>
-        <div><span>Código de convite</span><strong id="inviteCode"></strong><small>Este código aparece uma única vez. Envie-o por um canal seguro.</small></div>
-        <button type="button" class="btn-secondary" id="copyInviteButton">Copiar código</button>
-      </div>
+    <section class="view active" data-view-panel="overview">
+      <div class="page-heading"><div><span class="eyebrow">Administração</span><h1 id="pageTitle">Central administrativa</h1><p id="pageSubtitle">Controle empresas, usuários, acessos e identidade visual em um só lugar.</p></div><div class="tenant-card"><span>Empresa selecionada</span><strong id="tenantName">Carregando...</strong><small id="tenantSlug">—</small></div></div>
+      <div class="kpi-grid"><article><span>Empresas</span><strong id="kpiCompanies">—</strong><small>cadastradas</small></article><article><span>Ativas</span><strong id="kpiActiveCompanies">—</strong><small>em operação</small></article><article><span>Usuários</span><strong id="kpiUsers">—</strong><small>no escopo visível</small></article><article><span>Convites</span><strong id="kpiInvites">—</strong><small>pendentes</small></article></div>
+      <div class="panel"><div class="panel-heading"><span class="eyebrow">Acesso rápido</span><h2>Empresa atual</h2><p>Use o seletor abaixo para trocar o contexto administrativo.</p></div><div class="context-row"><label class="field grow"><span>Empresa</span><select id="tenantSelector"></select></label><button class="btn-secondary" id="openLoginButton">Abrir login personalizado</button></div></div>
     </section>
 
-    <section class="panel">
-      <div class="panel-heading inline-heading"><div><span class="eyebrow">Membros</span><h2>Usuários do workspace</h2></div><span class="counter" id="memberCount">0 usuários</span></div>
-      <div class="table-wrap"><table><thead><tr><th>Usuário</th><th>Perfil</th><th>Status</th><th>Cadastro</th><th class="align-right">Ações</th></tr></thead><tbody id="membersBody"></tbody></table></div>
+    <section class="view" data-view-panel="companies">
+      <div class="page-heading"><div><span class="eyebrow">Plataforma</span><h1>Empresas cadastradas</h1><p>Visão global das organizações que utilizam o RRN Manager.</p></div></div>
+      <div class="panel"><div class="table-wrap"><table><thead><tr><th>Empresa</th><th>Status</th><th>Usuários</th><th>Cadastro</th><th class="align-right">Ações</th></tr></thead><tbody id="companiesBody"></tbody></table></div></div>
+      <div class="panel"><div class="panel-heading"><span class="eyebrow">Configuração</span><h2>Dados da empresa selecionada</h2></div><div class="form-grid"><label class="field"><span>Nome</span><input id="companyName"></label><label class="field"><span>Slug</span><input id="companySlug" disabled></label><label class="field"><span>Status</span><select id="companyStatus"><option value="active">Ativa</option><option value="inactive">Inativa</option></select></label></div><button class="btn-primary" id="saveCompanyButton">Salvar empresa</button></div>
     </section>
 
-    <section class="panel">
-      <div class="panel-heading inline-heading"><div><span class="eyebrow">Pendentes</span><h2>Convites recentes</h2></div><button type="button" class="btn-ghost" id="refreshButton">Atualizar</button></div>
-      <div class="table-wrap"><table><thead><tr><th>E-mail</th><th>Perfil</th><th>Expira em</th><th>Status</th></tr></thead><tbody id="invitesBody"></tbody></table></div>
+    <section class="view" data-view-panel="users">
+      <div class="page-heading"><div><span class="eyebrow">Pessoas</span><h1>Usuários e acessos</h1><p>Altere perfil e status dos membros da empresa selecionada.</p></div><span class="counter" id="memberCount">0 usuários</span></div>
+      <div class="panel"><div class="table-wrap"><table><thead><tr><th>Usuário</th><th>Perfil</th><th>Status</th><th>Cadastro</th><th class="align-right">Ações</th></tr></thead><tbody id="membersBody"></tbody></table></div></div>
     </section>
-  </main>
 
-  <div id="toast" class="toast" hidden></div>
-  <script src="/js/supabase-config.js"></script>
-  <script src="/js/preview-demo.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/usuarios.js"></script>
-</body>
-</html>
+    <section class="view" data-view-panel="invites">
+      <div class="page-heading"><div><span class="eyebrow">Acessos</span><h1>Convites</h1><p>Gere acessos para a empresa selecionada e acompanhe os convites recentes.</p></div></div>
+      <div class="panel"><form id="inviteForm" class="invite-form"><label class="field"><span>E-mail</span><input type="email" id="inviteEmail" placeholder="pessoa@empresa.com" required></label><label class="field"><span>Perfil</span><select id="inviteRole"><option value="operador">Operador</option><option value="monitoramento">Monitoramento</option><option value="admin">Administrador</option></select></label><label class="field"><span>Validade</span><select id="inviteDays"><option value="1">1 dia</option><option value="3">3 dias</option><option value="7" selected>7 dias</option><option value="14">14 dias</option></select></label><button class="btn-primary" id="inviteButton">Gerar convite</button></form><div id="inviteResult" class="invite-result" hidden><div><span>Código</span><strong id="inviteCode"></strong><small>O código aparece uma única vez.</small></div><button class="btn-secondary" id="copyInviteButton">Copiar</button></div></div>
+      <div class="panel"><div class="panel-heading inline-heading"><div><span class="eyebrow">Histórico</span><h2>Convites recentes</h2></div><button class="btn-ghost" id="refreshButton">Atualizar</button></div><div class="table-wrap"><table><thead><tr><th>E-mail</th><th>Perfil</th><th>Expira</th><th>Status</th><th></th></tr></thead><tbody id="invitesBody"></tbody></table></div></div>
+    </section>
+
+    <section class="view" data-view-panel="branding">
+      <div class="page-heading"><div><span class="eyebrow">White label</span><h1>Identidade visual</h1><p>Personalize como a empresa aparece no login e nos elementos principais do sistema.</p></div></div>
+      <div class="branding-layout"><div class="panel branding-form"><div class="form-grid two"><label class="field"><span>Cor principal</span><input type="color" id="brandPrimary"></label><label class="field"><span>Cor secundária</span><input type="color" id="brandSecondary"></label><label class="field"><span>Cor de destaque</span><input type="color" id="brandAccent"></label><label class="field"><span>Fundo/superfície</span><input type="color" id="brandSurface"></label><label class="field"><span>Texto</span><input type="color" id="brandText"></label></div><label class="field"><span>Título do login</span><input id="brandLoginTitle" placeholder="Controle patrimonial com mais organização e eficiência"></label><label class="field"><span>Subtítulo</span><textarea id="brandLoginSubtitle" rows="3"></textarea></label><div class="upload-grid"><label class="upload-box"><span>Logo da empresa</span><input type="file" id="brandLogoFile" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG ou WEBP</small></label><label class="upload-box"><span>Fundo da tela de login</span><input type="file" id="brandBackgroundFile" accept="image/png,image/jpeg,image/webp"><small>Até 8 MB</small></label></div><button class="btn-primary" id="saveBrandingButton">Salvar identidade visual</button></div>
+      <div class="brand-preview" id="brandPreview"><div class="preview-overlay"></div><div class="preview-brand"><img id="previewLogo" src="/img/icon-png.png" alt=""><span id="previewCompanyName">RRN Manager</span></div><div class="preview-copy"><span>Gestão de ativos e inventário</span><h2 id="previewTitle">Controle patrimonial com mais organização e eficiência</h2><p id="previewSubtitle">Gerencie equipamentos, responsáveis, setores e movimentações com praticidade e visão centralizada.</p></div></div></div>
+    </section>
+  </section>
+</main>
+<div id="toast" class="toast" hidden></div>
+<script src="/js/supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/js/usuarios.js"></script>
+</body></html>
