@@ -70,6 +70,27 @@
     }
   }
 
+  function paintPreapprovedPortalButtons() {
+    document.querySelectorAll('#collaboratorsBody .collab-portal-control').forEach(control => {
+      const badge = control.querySelector('.badge');
+      const button = control.querySelector('[data-collab-portal-toggle]');
+      if (!badge || !button) return;
+
+      const label = (badge.textContent || '').trim().toLowerCase();
+      if (label !== 'pré-autorizado' && label !== 'pre-autorizado') return;
+
+      button.dataset.enabled = 'true';
+      button.classList.remove('danger');
+      button.textContent = 'Criar acesso e gerar senha';
+      button.title = 'Criar a conta do Portal e gerar uma senha temporária de primeiro acesso';
+    });
+  }
+
+  function repaint() {
+    paintDeleteButtons();
+    paintPreapprovedPortalButtons();
+  }
+
   async function deleteUser(button) {
     const userId = button.dataset.deleteUserId;
     const row = button.closest('tr');
@@ -130,19 +151,22 @@
       deleteUser(button);
     });
 
-    $('tenantSelector')?.addEventListener('change', () => setTimeout(paintDeleteButtons, 120));
+    $('tenantSelector')?.addEventListener('change', () => setTimeout(repaint, 120));
+    document.addEventListener('click', event => {
+      if (event.target.closest('[data-view="collaborators"]')) setTimeout(paintPreapprovedPortalButtons, 160);
+    });
 
-    const root = $('membersBody') || document.body;
-    observer = new MutationObserver(() => requestAnimationFrame(paintDeleteButtons));
+    const root = document.querySelector('.admin-content') || document.body;
+    observer = new MutationObserver(() => requestAnimationFrame(repaint));
     observer.observe(root, { childList: true, subtree: true });
   }
 
   async function boot() {
     await ensureClient();
     bind();
-    paintDeleteButtons();
-    setTimeout(paintDeleteButtons, 250);
-    setTimeout(paintDeleteButtons, 900);
+    repaint();
+    setTimeout(repaint, 250);
+    setTimeout(repaint, 900);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
