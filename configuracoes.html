@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RRN Manager | Configurações</title>
+  <meta name="description" content="Preferências, aparência, dados, segurança e administração do RRN Manager." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style/rrn-theme-v2.css" />
+  <link rel="stylesheet" href="/style/typography-v2.css" />
+  <link rel="stylesheet" href="/style/settings-page.css" />
+  <link rel="icon" href="/img/icon-png.png" type="image/png" />
+</head>
+<body class="rrn-settings-page-body">
+  <header class="settings-topbar topbar">
+    <a class="settings-brand" href="/dashboard.html" aria-label="Voltar ao RRN Manager">
+      <img src="/img/icon-png.png" alt="" class="navbar-icon" />
+      <span><strong>RRN Manager</strong><small>Configurações</small></span>
+    </a>
+    <div class="settings-topbar-actions">
+      <span class="settings-session-pill" id="settingsSessionPill">Carregando sessão...</span>
+      <a class="settings-back-btn" href="/dashboard.html">← Voltar ao painel</a>
+    </div>
+  </header>
+
+  <main class="settings-shell">
+    <aside class="settings-sidebar" aria-label="Seções das configurações">
+      <div class="settings-user-card">
+        <img id="userAvatar" src="/img/avatar.webp" alt="Avatar do usuário" />
+        <div>
+          <span>Sessão atual</span>
+          <strong id="settingsSidebarName">Usuário</strong>
+          <small id="settingsSidebarWorkspace">Workspace</small>
+        </div>
+      </div>
+
+      <nav class="settings-nav" role="tablist" aria-label="Configurações">
+        <button type="button" class="active" data-settings-nav="general" role="tab" aria-selected="true"><span>01</span><div><strong>Geral</strong><small>Perfil e workspace</small></div></button>
+        <button type="button" data-settings-nav="appearance" role="tab" aria-selected="false"><span>02</span><div><strong>Aparência</strong><small>Tema, layout e fundo</small></div></button>
+        <button type="button" data-settings-nav="data" role="tab" aria-selected="false"><span>03</span><div><strong>Dados</strong><small>Backup e CSV</small></div></button>
+        <button type="button" data-settings-nav="security" role="tab" aria-selected="false"><span>04</span><div><strong>Segurança</strong><small>Senha e sessão</small></div></button>
+        <button type="button" data-settings-nav="admin" id="settingsAdminNav" role="tab" aria-selected="false" hidden><span>05</span><div><strong>Administração</strong><small>Usuários e empresa</small></div></button>
+      </nav>
+
+      <div class="settings-sidebar-note">
+        <strong>Salvamento automático</strong>
+        <small>Preferências visuais são aplicadas assim que você altera.</small>
+      </div>
+    </aside>
+
+    <section class="settings-content">
+      <section class="settings-panel active" data-settings-panel="general" role="tabpanel">
+        <div class="settings-page-heading">
+          <span class="settings-eyebrow">Geral</span>
+          <h1>Seu ambiente</h1>
+          <p>Perfil, identificação visual e contexto do workspace em que você está trabalhando.</p>
+        </div>
+
+        <div class="settings-grid settings-grid-two">
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Perfil</h2><p>Sua identificação dentro do RRN Manager.</p></div><span class="settings-card-badge">Conta</span></div>
+            <div class="profile-settings">
+              <img id="profilePic" src="/img/avatar.webp" alt="Foto do perfil" />
+              <div class="profile-settings-copy">
+                <strong id="settingsProfileName">Usuário</strong>
+                <span id="settingsProfileEmail">—</span>
+                <small>PNG, JPG ou WEBP de até 2 MB.</small>
+                <div class="settings-inline-actions">
+                  <label class="settings-primary-btn" for="profilePicInput">Alterar foto</label>
+                  <button type="button" class="settings-ghost-btn" id="removeProfilePicBtn">Restaurar avatar</button>
+                </div>
+                <input type="file" id="profilePicInput" accept="image/*" hidden />
+              </div>
+            </div>
+          </article>
+
+          <article class="settings-card workspace-settings-card">
+            <div class="settings-card-head"><div><h2>Workspace atual</h2><p>Confira o contexto antes de importar ou alterar dados.</p></div><span class="settings-card-badge settings-card-badge-ok">Ativo</span></div>
+            <div class="workspace-summary">
+              <span>Empresa / workspace</span>
+              <strong id="settingsWorkspaceName">Carregando...</strong>
+              <div class="workspace-meta"><span id="settingsRole">Perfil</span><span id="settingsTenantId">Tenant</span></div>
+            </div>
+          </article>
+        </div>
+
+        <article class="settings-card">
+          <div class="settings-card-head"><div><h2>Resumo do inventário</h2><p>Uma leitura rápida dos dados disponíveis neste workspace.</p></div></div>
+          <div class="settings-kpis">
+            <div><span>Setores</span><strong id="settingsKpiSectors">0</strong><small>cadastrados</small></div>
+            <div><span>Equipamentos</span><strong id="settingsKpiAssets">0</strong><small>no inventário</small></div>
+            <div><span>Manutenção</span><strong id="settingsKpiMaintenance">0</strong><small>em atendimento</small></div>
+            <div><span>Histórico</span><strong id="settingsKpiHistory">0</strong><small>eventos locais</small></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="settings-panel" data-settings-panel="appearance" role="tabpanel" hidden>
+        <div class="settings-page-heading">
+          <span class="settings-eyebrow">Aparência</span>
+          <h1>Visual e experiência</h1>
+          <p>Personalize o sistema sem mexer na estrutura do inventário.</p>
+        </div>
+
+        <div class="settings-grid settings-grid-two">
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Tema do sistema</h2><p>Escolha entre visual claro ou escuro.</p></div></div>
+            <div class="settings-segment" role="group" aria-label="Tema do sistema">
+              <button type="button" data-theme-choice="light">☀ Claro</button>
+              <button type="button" data-theme-choice="dark">☾ Escuro</button>
+            </div>
+          </article>
+
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Visualização do inventário</h2><p>Defina como os setores aparecem na dashboard.</p></div></div>
+            <div class="layout-choice-grid">
+              <button type="button" data-layout-choice="grid"><span class="layout-demo layout-demo-grid"><i></i><i></i><i></i><i></i></span><strong>Grade</strong><small>Mais visual</small></button>
+              <button type="button" data-layout-choice="list"><span class="layout-demo layout-demo-list"><i></i><i></i><i></i></span><strong>Lista</strong><small>Mais compacta</small></button>
+            </div>
+          </article>
+        </div>
+
+        <article class="settings-card">
+          <div class="settings-card-head"><div><h2>Fundo da dashboard</h2><p>Use uma cor, uma URL ou uma imagem local. A prévia abaixo não altera esta página.</p></div><button type="button" class="settings-ghost-btn" id="resetAppearanceBtn">Restaurar padrão</button></div>
+          <div class="background-settings-grid">
+            <div class="background-controls">
+              <label class="settings-field"><span>Cor de fundo</span><div class="color-field"><input type="color" id="bgColorPicker" value="#EEF2F3" /><code id="bgColorValue">#EEF2F3</code></div></label>
+              <label class="settings-field"><span>Imagem por URL</span><div class="settings-input-action"><input type="url" id="bgImageUrl" placeholder="https://..." /><button type="button" id="applyBgImageUrlBtn">Aplicar</button></div></label>
+              <div class="settings-field"><span>Imagem do computador</span><div class="settings-upload-row"><label class="settings-ghost-btn" for="bgImageUpload">Selecionar imagem</label><input type="file" id="bgImageUpload" accept="image/*" hidden /><button type="button" class="settings-primary-btn" id="applyBgUploadBtn">Aplicar imagem</button></div><small id="bgUploadName">Nenhum arquivo selecionado</small></div>
+            </div>
+            <div class="background-preview-wrap">
+              <span>Prévia</span>
+              <div class="background-preview" id="backgroundPreview"><div class="preview-navbar"></div><div class="preview-cards"><i></i><i></i><i></i></div><strong>Dashboard</strong></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
+        <div class="settings-page-heading">
+          <span class="settings-eyebrow">Dados</span>
+          <h1>Backup e portabilidade</h1>
+          <p>Exporte uma cópia completa ou trabalhe com planilhas CSV sem misturar as opções.</p>
+        </div>
+
+        <article class="settings-card settings-action-card">
+          <div class="settings-action-copy"><span class="settings-action-icon">JSON</span><div><h2>Backup completo</h2><p>Inclui setores, equipamentos, chamados, histórico e lixeira. É a opção indicada para restauração.</p></div></div>
+          <div class="settings-action-buttons"><button type="button" class="settings-ghost-btn" id="importBackupBtn">Importar JSON</button><button type="button" class="settings-primary-btn" id="exportBackupBtn">Exportar backup</button><input type="file" id="jsonInput" accept=".json,application/json" hidden /></div>
+        </article>
+
+        <article class="settings-card settings-action-card">
+          <div class="settings-action-copy"><span class="settings-action-icon">CSV</span><div><h2>Planilha do inventário</h2><p>Ideal para análise, conferência e edição em Excel ou outras ferramentas de planilha.</p></div></div>
+          <div class="settings-action-buttons"><button type="button" class="settings-ghost-btn" id="importCsvBtn">Importar CSV</button><button type="button" class="settings-primary-btn" id="exportCsvBtn">Exportar CSV</button><input type="file" id="csvInputSettings" accept=".csv,text/csv" hidden /></div>
+        </article>
+
+        <div class="settings-info-box"><strong>Antes de importar</strong><p>O sistema substitui o inventário atual pelos dados do arquivo importado. Faça um backup JSON antes de uma importação grande.</p></div>
+      </section>
+
+      <section class="settings-panel" data-settings-panel="security" role="tabpanel" hidden>
+        <div class="settings-page-heading">
+          <span class="settings-eyebrow">Segurança</span>
+          <h1>Conta e acesso</h1>
+          <p>Gerencie sua credencial e encerre a sessão quando necessário.</p>
+        </div>
+
+        <article class="settings-card settings-action-card">
+          <div class="settings-action-copy"><span class="settings-action-icon">•••</span><div><h2>Alterar senha</h2><p>Confirme a senha atual e defina uma nova senha de acesso.</p></div></div>
+          <div class="settings-action-buttons"><button type="button" class="settings-primary-btn" id="changePasswordBtn">Alterar senha</button></div>
+        </article>
+
+        <article class="settings-card settings-action-card">
+          <div class="settings-action-copy"><span class="settings-action-icon">↪</span><div><h2>Sessão atual</h2><p id="securitySessionText">Sua sessão está sendo validada.</p></div></div>
+          <div class="settings-action-buttons"><button type="button" class="settings-danger-btn" id="logoutSettingsBtn">Sair da conta</button></div>
+        </article>
+      </section>
+
+      <section class="settings-panel" data-settings-panel="admin" id="settingsAdminPanel" role="tabpanel" hidden>
+        <div class="settings-page-heading">
+          <span class="settings-eyebrow">Administração</span>
+          <h1>Gerenciamento do workspace</h1>
+          <p>Ferramentas avançadas ficam fora das preferências pessoais para não virar uma salada de botão.</p>
+        </div>
+
+        <div class="settings-grid settings-grid-two">
+          <a class="settings-card settings-link-card" href="/usuarios.html"><span class="settings-action-icon">ADM</span><div><h2>Usuários e empresas</h2><p>Gerencie membros, perfis, convites, status e empresas disponíveis.</p><strong>Abrir central administrativa →</strong></div></a>
+          <a class="settings-card settings-link-card" href="/usuarios.html#branding"><span class="settings-action-icon">UI</span><div><h2>Identidade visual</h2><p>Altere logo, cores e apresentação da empresa dentro do sistema.</p><strong>Personalizar identidade →</strong></div></a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="settings-toast" id="settingsToast" hidden role="status"></div>
+
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/preview-demo.js"></script>
+  <script src="/js/theme-mode.js"></script>
+  <script src="/js/tenant-runtime.js"></script>
+  <script src="/js/tenant-branding-runtime.js"></script>
+  <script src="/js/profile-picture-v2.js"></script>
+  <script src="/js/backup-v3.js"></script>
+  <script src="/js/password-management.js"></script>
+  <script src="/js/settings-page.js"></script>
+</body>
+</html>
