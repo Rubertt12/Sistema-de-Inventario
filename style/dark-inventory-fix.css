@@ -110,3 +110,71 @@
 :root[data-theme="dark"] #setoresContainer [style*="background: #fff"]{
   background:var(--rrn-surface)!important;
 }
+
+/* Visão geral do inventário: dashboard-ui.css ainda usa a paleta azul antiga com alta especificidade. */
+:root[data-theme="dark"] .rrn-dashboard-overview{
+  color:var(--rrn-text)!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--rrn-secondary) 10%,var(--rrn-surface)),color-mix(in srgb,var(--rrn-accent) 8%,var(--rrn-surface)))!important;
+  border-color:var(--rrn-border)!important;
+  box-shadow:0 7px 22px rgba(0,0,0,.18)!important;
+}
+
+:root[data-theme="dark"] .rrn-overview-copy>span{
+  color:var(--rrn-secondary)!important;
+}
+
+:root[data-theme="dark"] .rrn-overview-copy>strong{
+  color:var(--rrn-heading)!important;
+}
+
+:root[data-theme="dark"] .rrn-overview-copy>small{
+  color:var(--rrn-muted)!important;
+}
+
+:root[data-theme="dark"] .rrn-overview-stats>div{
+  color:var(--rrn-text)!important;
+  background:var(--rrn-surface-2)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] .rrn-overview-stats span{
+  color:var(--rrn-heading)!important;
+}
+
+:root[data-theme="dark"] .rrn-overview-stats small{
+  color:var(--rrn-muted)!important;
+}
+
+/* Estado vazio do inventário. */
+:root[data-theme="dark"] .rrn-empty-state,
+:root[data-theme="dark"] .rrn-sector-empty,
+:root[data-theme="dark"] .empty-state,
+:root[data-theme="dark"] #setoresContainer .empty-message{
+  color:var(--rrn-text)!important;
+  background:var(--rrn-surface)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] .rrn-empty-state h2,
+:root[data-theme="dark"] .rrn-empty-state h3,
+:root[data-theme="dark"] .rrn-empty-state strong,
+:root[data-theme="dark"] .rrn-sector-empty h2,
+:root[data-theme="dark"] .rrn-sector-empty h3,
+:root[data-theme="dark"] .rrn-sector-empty strong,
+:root[data-theme="dark"] .empty-state h2,
+:root[data-theme="dark"] .empty-state h3,
+:root[data-theme="dark"] .empty-state strong,
+:root[data-theme="dark"] #setoresContainer .empty-message strong{
+  color:var(--rrn-heading)!important;
+}
+
+:root[data-theme="dark"] .rrn-empty-state p,
+:root[data-theme="dark"] .rrn-empty-state small,
+:root[data-theme="dark"] .rrn-sector-empty p,
+:root[data-theme="dark"] .rrn-sector-empty small,
+:root[data-theme="dark"] .empty-state p,
+:root[data-theme="dark"] .empty-state small,
+:root[data-theme="dark"] #setoresContainer .empty-message p,
+:root[data-theme="dark"] #setoresContainer .empty-message small{
+  color:var(--rrn-muted)!important;
+}
