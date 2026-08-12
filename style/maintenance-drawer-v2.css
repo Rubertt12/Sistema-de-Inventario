@@ -1,4 +1,5 @@
 /* RRN Manager — gaveta lateral de manutenção */
+/* Redeploy: mantém somente a aba lateral e a gaveta, sem overlay sobre a página. */
 .rrn-maintenance-drawer{
   position:fixed!important;
   right:0!important;
