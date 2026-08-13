@@ -7,6 +7,7 @@
   const params = new URLSearchParams(location.search);
   const requestedSlug = params.get('org');
   const panel = () => document.querySelector('.brand-panel');
+  const DEFAULT_LOGIN_BACKGROUND = 'https://images.pexels.com/photos/4484155/pexels-photo-4484155.jpeg?auto=compress&dpr=1&h=1000&w=1600';
 
   function hexToRgba(hex, alpha) {
     const raw = String(hex || '#163A4D').replace('#', '').trim();
@@ -20,21 +21,30 @@
     return `url(${JSON.stringify(String(url || ''))})`;
   }
 
+  function backgroundUrl(brand = {}) {
+    return brand.login_background_url || DEFAULT_LOGIN_BACKGROUND;
+  }
+
   function applyBrandBackground(brand = {}) {
     const el = panel();
-    if (!el || !brand.login_background_url) return;
+    if (!el) return;
+
+    const bg = backgroundUrl(brand);
     const clean = brand.login_background_overlay === false;
+
     if (clean) {
-      el.style.setProperty('background-image', cssUrl(brand.login_background_url), 'important');
+      el.style.setProperty('background-image', cssUrl(bg), 'important');
       el.dataset.rrnBackgroundMode = 'clean';
     } else {
       const primary = hexToRgba(brand.primary_color || '#163A4D', .90);
       const secondary = hexToRgba(brand.secondary_color || '#2F7D78', .74);
-      el.style.setProperty('background-image', `linear-gradient(145deg,${primary},${secondary}),${cssUrl(brand.login_background_url)}`, 'important');
+      el.style.setProperty('background-image', `linear-gradient(145deg,${primary},${secondary}),${cssUrl(bg)}`, 'important');
       el.dataset.rrnBackgroundMode = 'overlay';
     }
+
     el.style.setProperty('background-size', 'cover', 'important');
     el.style.setProperty('background-position', 'center', 'important');
+    el.style.setProperty('background-repeat', 'no-repeat', 'important');
   }
 
   async function loadPublicPreference() {
