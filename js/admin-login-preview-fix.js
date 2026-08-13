@@ -31,6 +31,7 @@
     ensureStyle('/style/collaborator-management.css', 'data-rrn-collaborator-management');
     await load('/js/footer-v2.js');
     await load('/js/admin-company-ux-v2.js');
+    await load('/js/admin-registration-approval.js');
     await load('/js/support-admin-permissions.js');
     await load('/js/collaborator-management.js');
     await load('/js/collaborator-portal-access.js');
