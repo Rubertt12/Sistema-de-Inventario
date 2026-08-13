@@ -4,6 +4,8 @@
   window.__RRN_LOGIN_BACKGROUND_MODE_V2__ = true;
 
   const cfg = window.RRN_SUPABASE || {};
+  const params = new URLSearchParams(location.search);
+  const requestedSlug = params.get('org');
   const panel = () => document.querySelector('.brand-panel');
 
   function hexToRgba(hex, alpha) {
@@ -36,13 +38,12 @@
   }
 
   async function loadPublicPreference() {
-    const slug = new URLSearchParams(location.search).get('org');
-    if (!slug || !window.supabase?.createClient || !cfg.url || !cfg.anonKey) return;
+    if (!requestedSlug || !window.supabase?.createClient || !cfg.url || !cfg.anonKey) return;
     const client = window.RRN_SUPABASE_CLIENT || window.supabase.createClient(cfg.url, cfg.anonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });
     window.RRN_SUPABASE_CLIENT = client;
-    const { data, error } = await client.rpc('get_public_tenant_branding_v2', { p_slug: slug });
+    const { data, error } = await client.rpc('get_public_tenant_branding_v2', { p_slug: requestedSlug });
     if (error) return console.warn('RRN background mode:', error.message || error);
     const brand = Array.isArray(data) ? data[0] : data;
     if (brand) applyBrandBackground(brand);
@@ -50,7 +51,11 @@
 
   window.addEventListener('rrn:tenantbranding', event => {
     const brand = event.detail || {};
-    if (Object.prototype.hasOwnProperty.call(brand, 'login_background_overlay')) applyBrandBackground(brand);
+    if (Object.prototype.hasOwnProperty.call(brand, 'login_background_overlay')) {
+      applyBrandBackground(brand);
+    } else if (requestedSlug) {
+      setTimeout(() => loadPublicPreference().catch(() => undefined), 0);
+    }
   });
 
   if (window.RRN_TENANT_BRANDING && Object.prototype.hasOwnProperty.call(window.RRN_TENANT_BRANDING, 'login_background_overlay')) {
@@ -58,4 +63,8 @@
   }
 
   loadPublicPreference().catch(error => console.warn('RRN background mode:', error));
+  if (requestedSlug) {
+    setTimeout(() => loadPublicPreference().catch(() => undefined), 450);
+    setTimeout(() => loadPublicPreference().catch(() => undefined), 1100);
+  }
 })();
