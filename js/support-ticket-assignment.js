@@ -18,7 +18,8 @@
     filter: 'all',
     busy: false,
     ready: false,
-    refreshTimer: null
+    refreshTimer: null,
+    listObserver: null
   };
 
   const $ = id => document.getElementById(id);
@@ -44,6 +45,10 @@
     return `${agent.name || agent.email || 'Suporte'} · ${role} · ${count} ativo${count === 1 ? '' : 's'}`;
   }
 
+  function optionsSignature(items, includeCounts = true) {
+    return items.map(agent => [agent.user_id, agent.name, agent.email, agent.support_role, includeCounts ? agent.active_ticket_count : ''].join('|')).join(';;');
+  }
+
   function ensureUi() {
     if (!state.ready) return;
 
@@ -53,7 +58,7 @@
       wrap.className = 'desk-assignee-filter-wrap';
       wrap.innerHTML = '<span>Responsável</span><select id="deskAssigneeFilter" aria-label="Filtrar chamados por responsável"></select>';
       toolbar.appendChild(wrap);
-      $('deskAssigneeFilter').addEventListener('change', event => {
+      $('deskAssigneeFilter')?.addEventListener('change', event => {
         state.filter = event.target.value;
         applyFilter();
       });
@@ -77,38 +82,45 @@
         </div>`;
       infoGrid.insertAdjacentElement('afterend', panel);
 
-      $('deskAssigneeSelect').addEventListener('change', async event => {
-        const value = event.target.value || null;
-        await assignSelected(value);
+      $('deskAssigneeSelect')?.addEventListener('change', async event => {
+        await assignSelected(event.target.value || null);
       });
-      $('deskUnassignBtn').addEventListener('click', async () => assignSelected(null));
+      $('deskUnassignBtn')?.addEventListener('click', async () => assignSelected(null));
     }
 
     renderAgentOptions();
     syncSelected();
     applyFilter();
+    ensureListObserver();
   }
 
   function renderAgentOptions() {
     const detailSelect = $('deskAssigneeSelect');
     const filterSelect = $('deskAssigneeFilter');
+    const signature = optionsSignature(state.agents);
 
-    if (detailSelect) {
+    if (detailSelect && detailSelect.dataset.optionsSignature !== signature) {
       const previous = detailSelect.value;
       detailSelect.innerHTML = '<option value="">Não atribuído</option>' + state.agents.map(agent =>
         `<option value="${esc(agent.user_id)}">${esc(agentLabel(agent))}</option>`
       ).join('');
+      detailSelect.dataset.optionsSignature = signature;
       if ([...detailSelect.options].some(option => option.value === previous)) detailSelect.value = previous;
     }
 
-    if (filterSelect) {
+    if (filterSelect && filterSelect.dataset.optionsSignature !== signature) {
       const previous = state.filter;
       filterSelect.innerHTML = '<option value="all">Todos os responsáveis</option><option value="unassigned">Não atribuídos</option>' + state.agents.map(agent =>
         `<option value="${esc(agent.user_id)}">${esc(agent.name || agent.email || 'Suporte')}</option>`
       ).join('');
+      filterSelect.dataset.optionsSignature = signature;
       filterSelect.value = [...filterSelect.options].some(option => option.value === previous) ? previous : 'all';
       state.filter = filterSelect.value;
     }
+  }
+
+  function setHidden(el, value) {
+    if (el && el.hidden !== value) el.hidden = value;
   }
 
   function syncSelected() {
@@ -116,17 +128,19 @@
     if (!panel) return;
     const id = selectedTicketId();
     const ticket = id ? state.tickets.get(id) : null;
-    panel.hidden = !ticket;
+    setHidden(panel, !ticket);
     if (!ticket) return;
 
     const agent = state.agents.find(item => item.user_id === ticket.assigned_to);
     const closed = ['resolved', 'closed'].includes(ticket.status);
-    $('deskAssignmentName').textContent = agent?.name || (ticket.assigned_to ? 'Suporte atribuído' : 'Não atribuído');
-    $('deskAssignmentHint').textContent = closed
-      ? 'Chamado encerrado. A atribuição fica preservada no histórico.'
-      : ticket.assigned_to
-        ? `Atendimento direcionado para ${agent?.name || 'um integrante da equipe'}.`
-        : 'Chamado disponível para distribuição pela gestão.';
+    if ($('deskAssignmentName')) $('deskAssignmentName').textContent = agent?.name || (ticket.assigned_to ? 'Suporte atribuído' : 'Não atribuído');
+    if ($('deskAssignmentHint')) {
+      $('deskAssignmentHint').textContent = closed
+        ? 'Chamado encerrado. A atribuição fica preservada no histórico.'
+        : ticket.assigned_to
+          ? `Atendimento direcionado para ${agent?.name || 'um integrante da equipe'}.`
+          : 'Chamado disponível para distribuição pela gestão.';
+    }
 
     const select = $('deskAssigneeSelect');
     if (select) {
@@ -136,12 +150,14 @@
         option.textContent = 'Responsável atual';
         select.appendChild(option);
       }
-      select.value = ticket.assigned_to || '';
+      if (select.value !== (ticket.assigned_to || '')) select.value = ticket.assigned_to || '';
       select.disabled = closed || state.busy;
     }
-    if ($('deskUnassignBtn')) {
-      $('deskUnassignBtn').hidden = !ticket.assigned_to;
-      $('deskUnassignBtn').disabled = closed || state.busy;
+
+    const unassign = $('deskUnassignBtn');
+    if (unassign) {
+      setHidden(unassign, !ticket.assigned_to);
+      unassign.disabled = closed || state.busy;
     }
   }
 
@@ -155,33 +171,27 @@
       const show = state.filter === 'all'
         || (state.filter === 'unassigned' && !ticket?.assigned_to)
         || ticket?.assigned_to === state.filter;
-      card.hidden = !show;
+      setHidden(card, !show);
       if (show) visible += 1;
     });
     const count = $('deskListCount');
     if (count && state.filter !== 'all') count.textContent = `${visible} ${visible === 1 ? 'chamado' : 'chamados'} neste responsável`;
   }
 
-  async function refreshData() {
-    if (!state.ready || state.busy) return;
+  function ensureListObserver() {
+    if (state.listObserver) return;
+    const list = $('deskTicketList');
+    if (!list) return;
+    state.listObserver = new MutationObserver(() => {
+      applyFilter();
+      syncSelected();
+    });
+    state.listObserver.observe(list, { childList: true });
+  }
+
+  function scheduleRefresh(delay = 100) {
     clearTimeout(state.refreshTimer);
-    state.refreshTimer = setTimeout(async () => {
-      try {
-        const [agentsRes, ticketsRes] = await Promise.all([
-          client.rpc('support_assignment_options'),
-          client.from('support_tickets').select('id,assigned_to,status').eq('tenant_id', state.profile.tenant_id)
-        ]);
-        if (agentsRes.error) throw agentsRes.error;
-        if (ticketsRes.error) throw ticketsRes.error;
-        state.agents = agentsRes.data || [];
-        state.tickets.clear();
-        (ticketsRes.data || []).forEach(ticket => state.tickets.set(ticket.id, ticket));
-        renderAgentOptions();
-        ensureUi();
-      } catch (error) {
-        console.warn('RRN ticket assignment refresh:', error);
-      }
-    }, 80);
+    state.refreshTimer = setTimeout(() => refreshDataImmediate(), delay);
   }
 
   async function assignSelected(userId) {
@@ -215,21 +225,23 @@
   }
 
   async function refreshDataImmediate() {
+    if (!state.ready || !state.profile) return;
     try {
       const [agentsRes, ticketsRes] = await Promise.all([
         client.rpc('support_assignment_options'),
         client.from('support_tickets').select('id,assigned_to,status').eq('tenant_id', state.profile.tenant_id)
       ]);
-      if (!agentsRes.error) state.agents = agentsRes.data || state.agents;
-      if (!ticketsRes.error) {
-        state.tickets.clear();
-        (ticketsRes.data || []).forEach(ticket => state.tickets.set(ticket.id, ticket));
-      }
+      if (agentsRes.error) throw agentsRes.error;
+      if (ticketsRes.error) throw ticketsRes.error;
+
+      state.agents = agentsRes.data || [];
+      state.tickets.clear();
+      (ticketsRes.data || []).forEach(ticket => state.tickets.set(ticket.id, ticket));
       renderAgentOptions();
       syncSelected();
       applyFilter();
     } catch (error) {
-      console.warn('RRN ticket assignment:', error);
+      console.warn('RRN ticket assignment refresh:', error);
     }
   }
 
@@ -247,33 +259,42 @@
     state.profile = profile;
 
     const { data: agents, error } = await client.rpc('support_assignment_options');
-    if (error) {
-      // Técnico comum não recebe o controle de distribuição; mantém apenas "Assumir chamado".
-      return;
-    }
+    if (error) return;
+
     state.agents = agents || [];
     state.ready = true;
-
     await refreshDataImmediate();
     ensureUi();
 
-    const root = document.querySelector('.desk-main') || document.body;
-    new MutationObserver(() => {
-      ensureUi();
-      applyFilter();
-      syncSelected();
-    }).observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
-
     document.addEventListener('click', event => {
-      if (event.target.closest('[data-ticket-id]') || event.target.closest('#deskRefreshBtn')) refreshData();
+      if (event.target.closest('[data-ticket-id]')) {
+        setTimeout(() => {
+          syncSelected();
+          applyFilter();
+        }, 0);
+      } else if (event.target.closest('#deskRefreshBtn')) {
+        scheduleRefresh(150);
+      }
     });
 
     const channel = client.channel(`rrn-assignment-${profile.tenant_id}`)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'support_tickets', filter: `tenant_id=eq.${profile.tenant_id}` }, () => refreshData())
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'support_tickets',
+        filter: `tenant_id=eq.${profile.tenant_id}`
+      }, () => scheduleRefresh(120))
       .subscribe();
-    window.addEventListener('beforeunload', () => client.removeChannel(channel), { once: true });
+
+    window.addEventListener('beforeunload', () => {
+      if (state.listObserver) state.listObserver.disconnect();
+      client.removeChannel(channel);
+    }, { once: true });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(boot, 0), { once: true });
-  else setTimeout(boot, 0);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(boot, 0), { once: true });
+  } else {
+    setTimeout(boot, 0);
+  }
 })();
