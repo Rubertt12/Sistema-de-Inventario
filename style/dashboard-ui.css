@@ -1,6 +1,6 @@
 .rrn-dashboard-overview {
   width: min(1160px, calc(100% - 12px));
-  margin: 26px auto 6px;
+  margin: 10px auto 6px;
   padding: 18px 20px;
   display: flex;
   align-items: center;
@@ -11,6 +11,12 @@
   color: #295991;
   background: linear-gradient(135deg, rgba(237, 158, 245, 0.18), rgba(242, 191, 79, 0.18));
   box-shadow: 0 7px 22px rgba(41, 89, 145, 0.08);
+}
+
+/* Na aba Inventário, aproxima o conteúdo da navbar fixa sem encostar nela. */
+body.rrn-tab-inventory:has(#setoresContainer) .dashboard-actions {
+  margin-top: 80px !important;
+  margin-bottom: 6px !important;
 }
 
 .rrn-overview-copy {
@@ -180,10 +186,15 @@
 }
 
 @media (max-width: 780px) {
+  body.rrn-tab-inventory:has(#setoresContainer) .dashboard-actions {
+    margin-top: 70px !important;
+    margin-bottom: 5px !important;
+  }
+
   .rrn-dashboard-overview {
     align-items: stretch;
     flex-direction: column;
-    margin-top: 18px;
+    margin-top: 8px;
   }
 
   .rrn-overview-stats {
