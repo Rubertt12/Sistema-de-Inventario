@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RRN Manager · Inventário de Setores</title>
 
+  <link rel="stylesheet" href="/style/boot-screen.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style/styles.css">
 
@@ -290,6 +291,41 @@
       <div id="listaTodasManutencoes"></div>
     </div>
   </div>
+
+  <script>
+    (() => {
+      'use strict';
+      const root = document.documentElement;
+      let finished = false;
+      let finalScriptWired = false;
+      const reveal = () => {
+        if (finished) return;
+        finished = true;
+        root.classList.add('rrn-ready');
+      };
+      const revealSettled = () => setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(reveal)), 220);
+      const wireFinalScript = script => {
+        if (finalScriptWired || !script?.matches?.('script[data-rrn-src="/js/password-management.js"]')) return;
+        finalScriptWired = true;
+        script.addEventListener('load', revealSettled, { once:true });
+        script.addEventListener('error', revealSettled, { once:true });
+      };
+      const observer = new MutationObserver(records => {
+        records.forEach(record => record.addedNodes.forEach(node => {
+          if (node.nodeType !== 1) return;
+          wireFinalScript(node);
+          node.querySelectorAll?.('script[data-rrn-src="/js/password-management.js"]').forEach(wireFinalScript);
+        }));
+      });
+      observer.observe(document.head, { childList:true, subtree:true });
+      document.querySelectorAll('script[data-rrn-src="/js/password-management.js"]').forEach(wireFinalScript);
+      window.addEventListener('pageshow', event => { if (event.persisted) reveal(); }, { once:true });
+      setTimeout(() => {
+        if (!finished && document.querySelector('link[data-rrn-theme-v2]')) revealSettled();
+      }, 4500);
+      setTimeout(reveal, 7200);
+    })();
+  </script>
 
   <!-- Bibliotecas externas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
