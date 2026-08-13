@@ -1,0 +1,290 @@
+/* RRN Manager — Dark Mode V5
+   Refinamento visual global sobre o tema existente. */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --rrn-bg:#0b1115;
+  --rrn-surface:#111a20;
+  --rrn-surface-2:#172229;
+  --rrn-surface-soft:#1b282f;
+  --rrn-input:#0f181e;
+  --rrn-text:#e8eff2;
+  --rrn-heading:#f4f8f9;
+  --rrn-muted:#9eacb3;
+  --rrn-border:rgba(184,211,219,.14);
+  --rrn-primary:#5ea9a5;
+  --rrn-primary-hover:#72bbb7;
+  --rrn-secondary:#62aaa6;
+  --rrn-secondary-hover:#76bbb7;
+  --rrn-accent:#e39866;
+  --rrn-navbar:#091116;
+  --rrn-navbar-2:#10262d;
+  --rrn-success:#67c8a2;
+  --rrn-warning:#efad78;
+  --rrn-danger:#f18b84;
+  --shadow:0 22px 60px rgba(0,0,0,.34);
+}
+
+:root[data-theme="dark"] body{
+  background:
+    radial-gradient(circle at 15% -10%,rgba(94,169,165,.10),transparent 30rem),
+    radial-gradient(circle at 95% 5%,rgba(227,152,102,.055),transparent 24rem),
+    var(--rrn-bg)!important;
+  color:var(--rrn-text)!important;
+}
+
+/* Navegação e barras superiores */
+:root[data-theme="dark"] .navbar,
+:root[data-theme="dark"] .topbar,
+:root[data-theme="dark"] .settings-topbar,
+:root[data-theme="dark"] .admin-topbar,
+:root[data-theme="dark"] header:not(.auth-header){
+  border-color:rgba(255,255,255,.07)!important;
+}
+:root[data-theme="dark"] .navbar{
+  background:linear-gradient(135deg,#081116,#12303a)!important;
+  box-shadow:0 10px 34px rgba(0,0,0,.32)!important;
+}
+:root[data-theme="dark"] .settings-topbar,
+:root[data-theme="dark"] .topbar:not(.navbar){
+  background:rgba(13,21,26,.88)!important;
+  backdrop-filter:blur(20px) saturate(130%)!important;
+}
+
+/* Superfícies principais */
+:root[data-theme="dark"] .settings-card,
+:root[data-theme="dark"] .admin-user,
+:root[data-theme="dark"] .tenant-card,
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .rrn-card,
+:root[data-theme="dark"] .dashboard-card,
+:root[data-theme="dark"] .kpi-card,
+:root[data-theme="dark"] .chart-card,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .overview-card,
+:root[data-theme="dark"] .summary-card,
+:root[data-theme="dark"] .queue-card,
+:root[data-theme="dark"] .health-card,
+:root[data-theme="dark"] .machine-card,
+:root[data-theme="dark"] .equipment-card,
+:root[data-theme="dark"] .sector-card,
+:root[data-theme="dark"] .setor-card,
+:root[data-theme="dark"] .transfer-card,
+:root[data-theme="dark"] .detail-card,
+:root[data-theme="dark"] .auth-card{
+  background:linear-gradient(180deg,rgba(23,34,41,.96),rgba(16,25,31,.98))!important;
+  border-color:var(--rrn-border)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.18)!important;
+}
+:root[data-theme="dark"] .settings-card:hover,
+:root[data-theme="dark"] .tenant-card:hover,
+:root[data-theme="dark"] .machine-card:hover,
+:root[data-theme="dark"] .equipment-card:hover,
+:root[data-theme="dark"] .sector-card:hover,
+:root[data-theme="dark"] .setor-card:hover{
+  border-color:rgba(98,170,166,.30)!important;
+}
+
+/* Sidebars e agrupadores */
+:root[data-theme="dark"] .settings-sidebar,
+:root[data-theme="dark"] .admin-sidebar,
+:root[data-theme="dark"] .sidebar,
+:root[data-theme="dark"] .filters-bar,
+:root[data-theme="dark"] .toolbar,
+:root[data-theme="dark"] .tabs,
+:root[data-theme="dark"] .dashboard-tabs,
+:root[data-theme="dark"] .view-toggle,
+:root[data-theme="dark"] .category-bar,
+:root[data-theme="dark"] .sector-category-bar{
+  background:rgba(16,25,31,.92)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+/* Hierarquia tipográfica */
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4,
+:root[data-theme="dark"] .card-title,
+:root[data-theme="dark"] .section-title,
+:root[data-theme="dark"] .panel-title,
+:root[data-theme="dark"] .machine-title,
+:root[data-theme="dark"] .equipment-title{
+  color:var(--rrn-heading)!important;
+}
+:root[data-theme="dark"] .muted,
+:root[data-theme="dark"] .subtitle,
+:root[data-theme="dark"] .description,
+:root[data-theme="dark"] .card-subtitle,
+:root[data-theme="dark"] .machine-meta,
+:root[data-theme="dark"] .equipment-meta,
+:root[data-theme="dark"] .card-meta{
+  color:var(--rrn-muted)!important;
+}
+
+/* Campos */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .search-input,
+:root[data-theme="dark"] .settings-input-action input{
+  background:#0e171c!important;
+  color:var(--rrn-text)!important;
+  border-color:rgba(184,211,219,.16)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+:root[data-theme="dark"] input:hover,
+:root[data-theme="dark"] select:hover,
+:root[data-theme="dark"] textarea:hover{
+  border-color:rgba(184,211,219,.25)!important;
+}
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] select:focus,
+:root[data-theme="dark"] textarea:focus{
+  border-color:var(--rrn-secondary)!important;
+  box-shadow:0 0 0 3px rgba(98,170,166,.15)!important;
+}
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder{color:#718087!important}
+
+/* Botões */
+:root[data-theme="dark"] .btn-primary,
+:root[data-theme="dark"] .settings-primary-btn,
+:root[data-theme="dark"] button.primary,
+:root[data-theme="dark"] .primary-button,
+:root[data-theme="dark"] .save-btn,
+:root[data-theme="dark"] .btn-confirmar{
+  background:linear-gradient(180deg,#64aca8,#4f9692)!important;
+  border-color:#64aca8!important;
+  color:#061112!important;
+  box-shadow:0 7px 18px rgba(53,125,121,.18)!important;
+}
+:root[data-theme="dark"] .btn-primary:hover,
+:root[data-theme="dark"] .settings-primary-btn:hover,
+:root[data-theme="dark"] button.primary:hover,
+:root[data-theme="dark"] .primary-button:hover{
+  background:linear-gradient(180deg,#78beb9,#61aaa6)!important;
+  transform:translateY(-1px);
+}
+:root[data-theme="dark"] .btn-secondary,
+:root[data-theme="dark"] .btn-ghost,
+:root[data-theme="dark"] .settings-ghost-btn,
+:root[data-theme="dark"] .settings-back-btn,
+:root[data-theme="dark"] .action-btn,
+:root[data-theme="dark"] .rrn-theme-toggle{
+  background:#172229!important;
+  border-color:var(--rrn-border)!important;
+  color:var(--rrn-heading)!important;
+}
+:root[data-theme="dark"] .btn-secondary:hover,
+:root[data-theme="dark"] .btn-ghost:hover,
+:root[data-theme="dark"] .settings-ghost-btn:hover,
+:root[data-theme="dark"] .settings-back-btn:hover,
+:root[data-theme="dark"] .action-btn:hover,
+:root[data-theme="dark"] .rrn-theme-toggle:hover{
+  background:#213139!important;
+  border-color:rgba(98,170,166,.28)!important;
+}
+
+/* Tabelas */
+:root[data-theme="dark"] table{
+  background:transparent!important;
+  border-color:var(--rrn-border)!important;
+}
+:root[data-theme="dark"] thead th,
+:root[data-theme="dark"] th{
+  background:#17242b!important;
+  color:#dce7ea!important;
+  border-color:var(--rrn-border)!important;
+}
+:root[data-theme="dark"] tbody tr{background:transparent!important}
+:root[data-theme="dark"] tbody tr:nth-child(even) td{background:rgba(255,255,255,.012)!important}
+:root[data-theme="dark"] tbody tr:hover td{background:rgba(98,170,166,.065)!important}
+:root[data-theme="dark"] td{color:#d5dfe3!important;border-color:rgba(184,211,219,.09)!important}
+
+/* Modais e menus flutuantes */
+:root[data-theme="dark"] .modal,
+:root[data-theme="dark"] .modal-backdrop,
+:root[data-theme="dark"] .overlay{backdrop-filter:blur(4px)}
+:root[data-theme="dark"] .modal-content,
+:root[data-theme="dark"] .config-modal,
+:root[data-theme="dark"] .modal-transferencia-content,
+:root[data-theme="dark"] .user-dropdown{
+  background:#121d23!important;
+  color:var(--rrn-text)!important;
+  border-color:rgba(184,211,219,.16)!important;
+  box-shadow:0 28px 80px rgba(0,0,0,.50)!important;
+}
+
+/* Configurações */
+:root[data-theme="dark"] .settings-nav button.active{
+  background:linear-gradient(90deg,rgba(98,170,166,.11),rgba(98,170,166,.035))!important;
+  border-color:rgba(98,170,166,.26)!important;
+}
+:root[data-theme="dark"] .settings-nav button:hover{background:rgba(255,255,255,.025)!important}
+:root[data-theme="dark"] .settings-user-card,
+:root[data-theme="dark"] .settings-session-pill,
+:root[data-theme="dark"] .workspace-meta span,
+:root[data-theme="dark"] .settings-kpis>div,
+:root[data-theme="dark"] .workspace-summary,
+:root[data-theme="dark"] .settings-segment,
+:root[data-theme="dark"] .layout-choice-grid button{
+  background:#141f25!important;
+  border-color:var(--rrn-border)!important;
+}
+:root[data-theme="dark"] .settings-info-box{
+  background:rgba(239,173,120,.055)!important;
+  border-color:rgba(239,173,120,.22)!important;
+}
+
+/* Badges e status */
+:root[data-theme="dark"] .badge,
+:root[data-theme="dark"] .status-badge,
+:root[data-theme="dark"] .chip,
+:root[data-theme="dark"] .pill{
+  background:#172229!important;
+  border-color:var(--rrn-border)!important;
+}
+:root[data-theme="dark"] .status-ok,
+:root[data-theme="dark"] .badge-success,
+:root[data-theme="dark"] .status-active{background:rgba(103,200,162,.11)!important;color:#7dd8b5!important}
+:root[data-theme="dark"] .status-warning,
+:root[data-theme="dark"] .badge-warning{background:rgba(239,173,120,.11)!important;color:#f0b788!important}
+:root[data-theme="dark"] .status-danger,
+:root[data-theme="dark"] .badge-danger,
+:root[data-theme="dark"] .status-inactive{background:rgba(241,139,132,.11)!important;color:#f49a94!important}
+
+/* Login */
+:root[data-theme="dark"] .auth-panel{
+  background:radial-gradient(circle at 50% 0,rgba(98,170,166,.10),transparent 28rem),#0b1115!important;
+}
+:root[data-theme="dark"] .auth-tabs{background:#0f191f!important;border:1px solid var(--rrn-border)}
+:root[data-theme="dark"] .auth-tab:not(.active){color:#9eacb3!important}
+:root[data-theme="dark"] .auth-tab.active{background:#203138!important;color:#f4f8f9!important}
+
+/* Scrollbars */
+:root[data-theme="dark"] *{scrollbar-color:#32474f #0d151a}
+:root[data-theme="dark"] *::-webkit-scrollbar{width:10px;height:10px}
+:root[data-theme="dark"] *::-webkit-scrollbar-track{background:#0d151a}
+:root[data-theme="dark"] *::-webkit-scrollbar-thumb{background:#32474f;border:2px solid #0d151a;border-radius:999px}
+:root[data-theme="dark"] *::-webkit-scrollbar-thumb:hover{background:#42616a}
+
+/* Seleção, foco e divisores */
+:root[data-theme="dark"] ::selection{background:rgba(98,170,166,.32);color:#fff}
+:root[data-theme="dark"] hr{border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] :focus-visible{outline:2px solid rgba(114,187,183,.72);outline-offset:2px}
+
+/* Compatibilidade com cores claras antigas */
+:root[data-theme="dark"] body [style*="background-color: white"],
+:root[data-theme="dark"] body [style*="background-color:#fff"],
+:root[data-theme="dark"] body [style*="background-color: #fff"],
+:root[data-theme="dark"] body [style*="background:#ffffff"],
+:root[data-theme="dark"] body [style*="background: #ffffff"]{background-color:var(--rrn-surface)!important}
+:root[data-theme="dark"] body [style*="color: black"],
+:root[data-theme="dark"] body [style*="color:#000"],
+:root[data-theme="dark"] body [style*="color: #000"]{color:var(--rrn-text)!important}
+
+@media(max-width:760px){
+  :root[data-theme="dark"] body{background:#0b1115!important}
+  :root[data-theme="dark"] .settings-card,
+  :root[data-theme="dark"] .auth-card{box-shadow:none!important}
+}
