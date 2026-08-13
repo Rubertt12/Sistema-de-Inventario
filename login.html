@@ -38,9 +38,19 @@
         <form id="formRegister" class="auth-form" novalidate>
           <div class="form-grid two-columns"><label class="field"><span>Seu nome</span><input type="text" id="registerName" placeholder="Nome completo" autocomplete="name" required /></label><label class="field"><span>E-mail</span><input type="email" id="registerEmail" placeholder="nome@empresa.com" autocomplete="email" required /></label></div>
           <label class="field"><span>Senha</span><div class="password-field"><input type="password" id="registerPassword" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" minlength="8" required /><button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Mostrar ou ocultar senha">Mostrar</button></div></label>
-          <div class="divider"><span>Escolha uma forma de entrada</span></div>
-          <label class="field"><span>Nome da organização</span><input type="text" id="registerOrganization" placeholder="Ex.: Empresa ABC" /><small>Informe o nome da empresa para configurar o ambiente inicial.</small></label>
-          <label class="field"><span>Código de convite</span><input type="text" id="registerInvite" placeholder="Cole aqui se você recebeu um convite" autocomplete="off" /><small>Se você recebeu um convite, use o código para ingressar na organização correspondente.</small></label>
+          <div class="divider"><span>Como você vai usar o RRN?</span></div>
+          <div class="rrn-account-type" role="radiogroup" aria-label="Tipo de conta">
+            <label class="rrn-account-option"><input type="radio" name="registerAccountType" value="company" checked><span><strong>Empresa / equipe</strong><small>Para organizações com usuários, inventário corporativo, chamados e permissões.</small></span></label>
+            <label class="rrn-account-option"><input type="radio" name="registerAccountType" value="technician_store"><span><strong>Técnico autônomo / loja</strong><small>Para assistência técnica ou loja com estoque, vendas, clientes e ordens de serviço.</small></span></label>
+          </div>
+          <div id="companyRegistrationFields" class="rrn-registration-fields">
+            <label class="field"><span>Nome da organização</span><input type="text" id="registerOrganization" placeholder="Ex.: Empresa ABC" /><small>Informe a empresa para criar o ambiente ou use um convite abaixo.</small></label>
+            <label class="field"><span>Código de convite</span><input type="text" id="registerInvite" placeholder="Cole aqui se você recebeu um convite" autocomplete="off" /><small>Use o código para ingressar em uma organização existente.</small></label>
+          </div>
+          <div id="technicianRegistrationFields" class="rrn-registration-fields" hidden>
+            <label class="field"><span>Nome da loja ou assistência <small>(opcional)</small></span><input type="text" id="registerStoreName" placeholder="Ex.: Tech Ramires" autocomplete="organization" /><small>Se deixar vazio, o RRN cria a loja usando seu nome.</small></label>
+            <div class="rrn-tech-note"><strong>Perfil Técnico/Vendedor:</strong> você terá seu próprio ambiente com produtos, entradas e saídas de estoque, vendas, clientes, margem, alertas de estoque mínimo e ordens de serviço.</div>
+          </div>
           <label class="terms-check"><input type="checkbox" id="acceptTerms" required /><span>Confirmo que estou autorizado a criar ou ingressar neste ambiente.</span></label>
           <button type="submit" class="btn-primary" id="registerButton"><span>Criar acesso</span></button><p class="form-message" id="registerMsg" role="status"></p>
         </form>
@@ -55,6 +65,7 @@
   <script src="/js/tenant-branding-runtime.js"></script>
   <script src="/js/auth-preview-client-bridge.js"></script>
   <script src="/js/login-slide-mode.js"></script>
+  <script src="/js/technician-registration.js"></script>
   <script src="/js/auth-mfa-v4.js"></script>
 </body>
 </html>
