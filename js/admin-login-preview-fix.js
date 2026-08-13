@@ -30,6 +30,7 @@
     ensureStyle('/style/support-admin-permissions.css', 'data-rrn-support-admin-permissions');
     ensureStyle('/style/collaborator-management.css', 'data-rrn-collaborator-management');
     await load('/js/footer-v2.js');
+    await load('/js/admin-branding-overlay-v2.js');
     await load('/js/admin-company-ux-v2.js');
     await load('/js/admin-registration-approval.js');
     await load('/js/support-admin-permissions.js');
