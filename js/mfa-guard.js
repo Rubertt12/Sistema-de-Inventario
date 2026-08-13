@@ -28,20 +28,13 @@
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user) return;
 
-    const [{ data: profile }, { data: aal, error: aalError }] = await Promise.all([
-      client.from('profiles').select('user_id,tenant_id,role,status').eq('user_id', session.user.id).maybeSingle(),
-      client.auth.mfa.getAuthenticatorAssuranceLevel()
-    ]);
-    if (aalError || !profile || profile.status !== 'active') return;
-    if (aal?.currentLevel === 'aal2') return;
+    const { data: aal, error } = await client.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (error || !aal) return;
+    if (aal.currentLevel === 'aal2') return;
 
-    let required = ['admin', 'monitoramento'].includes(profile.role) || aal?.nextLevel === 'aal2';
-    if (!required) {
-      const { data: staff } = await client.from('support_staff')
-        .select('id').eq('user_id', session.user.id).eq('tenant_id', profile.tenant_id).eq('status', 'active').maybeSingle();
-      required = Boolean(staff?.id);
-    }
-    if (!required) return;
+    // Só bloqueia quando a própria conta já possui um segundo fator verificado.
+    // Quem ainda não ativou 2FA continua com acesso normal e pode ativar depois.
+    if (aal.nextLevel !== 'aal2') return;
 
     const next = `${location.pathname}${location.search}${location.hash}`;
     location.replace(`/login.html?mfa=required&next=${encodeURIComponent(next)}`);
