@@ -14,7 +14,6 @@
 
   let profile = null;
   let factors = [];
-  let required = false;
   let pendingFactor = null;
 
   function msg(text = '', type = '') {
@@ -26,13 +25,6 @@
 
   function labelFactor(factor, index) {
     return factor.friendly_name || `Aplicativo autenticador ${index + 1}`;
-  }
-
-  async function resolveRequired(userId) {
-    if (['admin', 'monitoramento'].includes(profile.role)) return true;
-    const { data } = await client.from('support_staff').select('id')
-      .eq('user_id', userId).eq('tenant_id', profile.tenant_id).eq('status', 'active').maybeSingle();
-    return Boolean(data?.id);
   }
 
   async function load() {
@@ -50,16 +42,17 @@
 
     profile = p;
     factors = (factorData?.totp || []).filter(f => f.status === 'verified');
-    required = await resolveRequired(session.user.id);
 
     $('securityUser').textContent = profile.name || profile.email || 'Usuário';
     $('securityTenant').textContent = profile.tenants?.name || 'Workspace';
     $('securityAal').textContent = aal?.currentLevel === 'aal2' ? 'Sessão AAL2' : 'Sessão AAL1';
     $('securityStatusText').textContent = factors.length ? 'Autenticação em dois fatores ativa' : 'Autenticação em dois fatores desativada';
-    $('securityStatusHint').textContent = required
-      ? 'Obrigatória para o seu perfil. Mantenha pelo menos um autenticador verificado.'
-      : factors.length ? 'Sua conta exige o segundo fator em novos logins.' : 'Você pode ativar o 2FA para aumentar a segurança da conta.';
-    $('securityStatusBadge').textContent = factors.length ? '2FA ativo' : (required ? '2FA obrigatório' : '2FA opcional');
+    $('securityStatusHint').textContent = factors.length
+      ? 'Nos novos logins, depois do e-mail e senha, o RRN exigirá o código do seu autenticador.'
+      : profile.role === 'admin'
+        ? '2FA é opcional, mas ações administrativas críticas podem exigir uma sessão AAL2.'
+        : '2FA é opcional. Você pode ativá-lo a qualquer momento para aumentar a segurança da conta.';
+    $('securityStatusBadge').textContent = factors.length ? '2FA ativo' : '2FA opcional';
     $('securityStatusBadge').className = `security-badge ${factors.length ? 'on' : 'off'}`;
 
     renderFactors();
@@ -69,7 +62,7 @@
     const list = $('securityFactors');
     if (!list) return;
     if (!factors.length) {
-      list.innerHTML = '<div class="security-factor"><div><strong>Nenhum autenticador cadastrado</strong><small>Adicione um aplicativo autenticador para proteger sua conta.</small></div></div>';
+      list.innerHTML = '<div class="security-factor"><div><strong>Nenhum autenticador cadastrado</strong><small>Você pode adicionar um aplicativo autenticador quando quiser.</small></div></div>';
       return;
     }
     list.innerHTML = factors.map((factor, index) => `
@@ -92,10 +85,7 @@
   }
 
   async function removeFactor(factorId) {
-    if (required && factors.length <= 1) {
-      return msg('Seu perfil exige 2FA. Adicione um autenticador de backup antes de remover o atual.', 'error');
-    }
-    if (!confirm('Remover este autenticador da sua conta?')) return;
+    if (!confirm('Remover este autenticador da sua conta? O 2FA ficará desativado se este for o último fator.')) return;
     try {
       if (!await ensureAal2()) return msg('Confirmação AAL2 necessária para remover o autenticador.', 'error');
       const { error } = await client.auth.mfa.unenroll({ factorId });
@@ -131,7 +121,7 @@
       if (error) throw error;
       $('securityEnrollModal').hidden = true;
       pendingFactor = null;
-      msg('2FA ativado com sucesso.', 'success');
+      msg('2FA ativado com sucesso. A partir do próximo login, o código será obrigatório depois da senha.', 'success');
       await load();
     } catch (error) { msg('Código inválido ou expirado. Tente novamente.', 'error'); }
     finally { button.disabled = false; }
@@ -139,7 +129,11 @@
 
   $('securityAddFactor')?.addEventListener('click', startEnroll);
   $('securityVerifyEnroll')?.addEventListener('click', verifyEnroll);
-  $('securityCancelEnroll')?.addEventListener('click', () => { $('securityEnrollModal').hidden = true; pendingFactor = null; });
+  $('securityCancelEnroll')?.addEventListener('click', async () => {
+    if (pendingFactor?.id) await client.auth.mfa.unenroll({ factorId: pendingFactor.id }).catch(() => undefined);
+    $('securityEnrollModal').hidden = true;
+    pendingFactor = null;
+  });
   $('securityBack')?.addEventListener('click', () => history.length > 1 ? history.back() : location.replace('/dashboard.html'));
 
   load().catch(error => msg(error.message || 'Falha ao carregar segurança da conta.', 'error'));
