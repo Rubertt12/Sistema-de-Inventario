@@ -17,7 +17,7 @@
     const style = document.createElement('style');
     style.id = 'rrnEmailConfirmationStyle';
     style.textContent = `
-      .rrn-confirmation-card{display:grid;gap:14px;text-align:center}.rrn-confirmation-icon{width:58px;height:58px;margin:0 auto;display:grid;place-items:center;border-radius:18px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 12%,var(--rrn-surface,#fff));font-size:1.6rem}.rrn-confirmation-copy{display:grid;gap:7px}.rrn-confirmation-copy strong{color:var(--rrn-heading,#163A4D);font:800 1.05rem Manrope,Inter,sans-serif}.rrn-confirmation-copy p{margin:0;color:var(--rrn-muted,#66757F);font-size:.82rem;line-height:1.5}.rrn-confirmation-email{display:block;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 7%,var(--rrn-surface,#fff));border:1px solid var(--rrn-border,rgba(22,58,77,.15));color:var(--rrn-heading,#163A4D);font-weight:800;word-break:break-word}.rrn-confirmation-actions{display:grid;gap:8px}.rrn-confirmation-hint{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--rrn-accent,#D97745) 8%,var(--rrn-surface,#fff));color:var(--rrn-muted,#66757F);font-size:.72rem;line-height:1.45}.rrn-confirmation-status{min-height:18px;margin:0;font-size:.76rem;font-weight:700}.rrn-confirmation-status.success{color:var(--rrn-success,#2F7D78)}.rrn-confirmation-status.error{color:var(--rrn-danger,#B9473A)}
+      .rrn-confirmation-card{display:grid;gap:14px;text-align:center}.rrn-confirmation-card[hidden]{display:none!important}.rrn-confirmation-icon{width:58px;height:58px;margin:0 auto;display:grid;place-items:center;border-radius:18px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 12%,var(--rrn-surface,#fff));font-size:1.6rem}.rrn-confirmation-copy{display:grid;gap:7px}.rrn-confirmation-copy strong{color:var(--rrn-heading,#163A4D);font:800 1.05rem Manrope,Inter,sans-serif}.rrn-confirmation-copy p{margin:0;color:var(--rrn-muted,#66757F);font-size:.82rem;line-height:1.5}.rrn-confirmation-email{display:block;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 7%,var(--rrn-surface,#fff));border:1px solid var(--rrn-border,rgba(22,58,77,.15));color:var(--rrn-heading,#163A4D);font-weight:800;word-break:break-word}.rrn-confirmation-actions{display:grid;gap:8px}.rrn-confirmation-hint{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--rrn-accent,#D97745) 8%,var(--rrn-surface,#fff));color:var(--rrn-muted,#66757F);font-size:.72rem;line-height:1.45}.rrn-confirmation-status{min-height:18px;margin:0;font-size:.76rem;font-weight:700}.rrn-confirmation-status.success{color:var(--rrn-success,#2F7D78)}.rrn-confirmation-status.error{color:var(--rrn-danger,#B9473A)}
     `;
     document.head.appendChild(style);
   }
@@ -28,7 +28,7 @@
     if (!register) return;
     ensureStyles();
     register.insertAdjacentHTML('afterend', `
-      <section id="formEmailConfirmation" class="auth-form rrn-confirmation-card" aria-live="polite">
+      <section id="formEmailConfirmation" class="auth-form rrn-confirmation-card" aria-live="polite" hidden>
         <div class="rrn-confirmation-icon">✉️</div>
         <div class="rrn-confirmation-copy">
           <strong>Confirme seu e-mail</strong>
@@ -46,6 +46,8 @@
 
     $('resendConfirmationButton')?.addEventListener('click', resendConfirmation);
     $('confirmationBackToLogin')?.addEventListener('click', backToLogin);
+    $('tabLogin')?.addEventListener('click', hideConfirmationPanel);
+    $('tabRegister')?.addEventListener('click', hideConfirmationPanel);
   }
 
   function setStatus(text = '', type = '') {
@@ -67,13 +69,24 @@
     if (tabs) tabs.hidden = hidden;
   }
 
+  function hideConfirmationPanel() {
+    const panel = $('formEmailConfirmation');
+    if (!panel) return;
+    panel.hidden = true;
+    panel.classList.remove('active');
+  }
+
   function showConfirmation(email, reason = 'signup') {
     ensurePanel();
     rememberEmail(email || lastEmail || $('loginEmail')?.value || $('registerEmail')?.value);
     if (!lastEmail) return;
 
     document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
-    $('formEmailConfirmation')?.classList.add('active');
+    const panel = $('formEmailConfirmation');
+    if (panel) {
+      panel.hidden = false;
+      panel.classList.add('active');
+    }
     hideTabs(true);
     if ($('authTitle')) $('authTitle').textContent = 'Confirme seu e-mail';
     if ($('authSubtitle')) $('authSubtitle').textContent = reason === 'login'
@@ -85,7 +98,7 @@
   }
 
   function backToLogin() {
-    $('formEmailConfirmation')?.classList.remove('active');
+    hideConfirmationPanel();
     hideTabs(false);
     if ($('loginEmail') && lastEmail) $('loginEmail').value = lastEmail;
     $('tabLogin')?.click();
@@ -179,6 +192,7 @@
   }
 
   ensurePanel();
+  hideConfirmationPanel();
   captureEmails();
   observeLoginMessage();
 
