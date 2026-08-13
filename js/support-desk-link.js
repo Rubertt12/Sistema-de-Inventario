@@ -51,10 +51,10 @@
     try {
       const { data:{session} } = await client.auth.getSession();
       if (!session?.user) return;
-      const { data:profile } = await client.from('profiles').select('user_id,tenant_id,status').eq('user_id', session.user.id).maybeSingle();
+      const { data:profile } = await client.from('profiles').select('user_id,tenant_id,status,role').eq('user_id', session.user.id).maybeSingle();
       if (!profile || profile.status !== 'active') return;
       const { data:staff } = await client.from('support_staff').select('id').eq('user_id', session.user.id).eq('tenant_id', profile.tenant_id).eq('status','active').maybeSingle();
-      allowed = !!staff;
+      allowed = !!staff || profile.role === 'monitoramento';
     } catch (error) {
       console.warn('RRN support desk access:', error);
     } finally {
