@@ -53,6 +53,15 @@
     }
   }
 
+  function disabledConfirmationApi() {
+    return {
+      __rrnDisabled: true,
+      show: email => showRegistrationCreated(email || $('registerEmail')?.value || $('loginEmail')?.value || ''),
+      resend: async () => ({ disabled: true }),
+      getEmail: () => String($('registerEmail')?.value || $('loginEmail')?.value || '').trim().toLowerCase()
+    };
+  }
+
   function disableEmailConfirmationUi() {
     if (path !== '/login.html' && path !== '/index.html' && path !== '/') return;
 
@@ -66,8 +75,10 @@
 
     const patchApi = () => {
       const api = window.RRN_EMAIL_CONFIRMATION;
-      if (api && !api.__rrnDisabled) {
-        api.show = (email) => showRegistrationCreated(email || api.getEmail?.() || $('registerEmail')?.value || $('loginEmail')?.value || '');
+      if (!api) {
+        window.RRN_EMAIL_CONFIRMATION = disabledConfirmationApi();
+      } else if (!api.__rrnDisabled) {
+        api.show = email => showRegistrationCreated(email || api.getEmail?.() || $('registerEmail')?.value || $('loginEmail')?.value || '');
         api.resend = async () => ({ disabled: true });
         api.__rrnDisabled = true;
       }
@@ -169,7 +180,6 @@
     disableEmailConfirmationUi();
     fixPendingRegistrationCopy();
     injectMfaSettings();
-
     new MutationObserver(() => routeLegacySecurityLinks()).observe(document.body, { childList: true, subtree: true });
   }
 
