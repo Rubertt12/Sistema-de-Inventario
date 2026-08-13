@@ -1,86 +1,133 @@
 (() => {
   'use strict';
-  if (window.__RRN_TECHNICIAN_REGISTRATION__) return;
-  window.__RRN_TECHNICIAN_REGISTRATION__ = true;
+  if (window.__RRN_PUBLIC_REGISTRATION__) return;
+  window.__RRN_PUBLIC_REGISTRATION__ = true;
 
   const $ = id => document.getElementById(id);
   const form = $('formRegister');
   if (!form) return;
 
-  const style = document.createElement('style');
-  style.textContent = `
-    .rrn-account-type{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 12px}.rrn-account-option{position:relative;display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--rrn-border,rgba(22,58,77,.18));border-radius:13px;background:var(--rrn-surface,#fff);cursor:pointer;transition:.18s ease}.rrn-account-option:hover{border-color:var(--rrn-secondary,#2F7D78)}.rrn-account-option input{margin-top:3px}.rrn-account-option strong{display:block;color:var(--rrn-heading,#163A4D);font-size:.86rem}.rrn-account-option small{display:block;margin-top:3px;color:var(--rrn-muted,#66757F);font-size:.72rem;line-height:1.35}.rrn-account-option:has(input:checked){border-color:var(--rrn-secondary,#2F7D78);box-shadow:0 0 0 2px color-mix(in srgb,var(--rrn-secondary,#2F7D78) 12%,transparent);background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 5%,var(--rrn-surface,#fff))}.rrn-registration-fields[hidden]{display:none!important}.rrn-tech-note{padding:10px 12px;border-radius:11px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 8%,var(--rrn-surface,#fff));color:var(--rrn-muted,#66757F);font-size:.75rem;line-height:1.45}.rrn-tech-note strong{color:var(--rrn-heading,#163A4D)}@media(max-width:620px){.rrn-account-type{grid-template-columns:1fr}}
-  `;
-  document.head.appendChild(style);
-
-  const accountRadios = [...document.querySelectorAll('input[name="registerAccountType"]')];
-  const companyFields = $('companyRegistrationFields');
-  const technicianFields = $('technicianRegistrationFields');
-
-  function selectedType() {
-    return accountRadios.find(r => r.checked)?.value || 'company';
-  }
-
-  function syncMode() {
-    const technician = selectedType() === 'technician_store';
-    if (companyFields) companyFields.hidden = technician;
-    if (technicianFields) technicianFields.hidden = !technician;
-    const org = $('registerOrganization');
-    const invite = $('registerInvite');
-    if (technician) {
-      if (org) org.value = '';
-      if (invite) invite.value = '';
-    }
-  }
-
-  accountRadios.forEach(r => r.addEventListener('change', syncMode));
-  syncMode();
-
   const cfg = window.RRN_SUPABASE || {};
   const client = window.RRN_SUPABASE_CLIENT || window.supabase?.createClient?.(cfg.url, cfg.anonKey, {
-    auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:true }
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
   if (client) window.RRN_SUPABASE_CLIENT = client;
 
-  function setRegisterMessage(text, type='') {
+  function setMessage(text, type = '') {
     const el = $('registerMsg');
     if (!el) return;
     el.textContent = text;
-    el.classList.remove('error','success');
+    el.classList.remove('error', 'success');
     if (type) el.classList.add(type);
   }
 
-  async function waitProfile(userId) {
-    let last = null;
-    for (let i=0;i<8;i++) {
-      const { data, error } = await client.from('profiles')
-        .select('user_id,tenant_id,name,email,role,status,tenants(name,workspace_type)')
-        .eq('user_id',userId).maybeSingle();
-      if (!error && data) return data;
-      last = error;
-      await new Promise(r => setTimeout(r,200*(i+1)));
-    }
-    throw last || new Error('Perfil ainda não disponível.');
+  function setBusy(busy) {
+    const button = $('registerButton');
+    if (!button) return;
+    button.disabled = busy;
+    button.querySelector('span')?.replaceChildren(document.createTextNode(busy ? 'Criando acesso...' : 'Criar acesso'));
+    if (!button.querySelector('span')) button.textContent = busy ? 'Criando acesso...' : 'Criar acesso';
   }
 
+  function showConfirmation(email) {
+    if (window.RRN_EMAIL_CONFIRMATION?.show) {
+      window.RRN_EMAIL_CONFIRMATION.show(email, 'signup');
+      return;
+    }
+    if ($('loginEmail')) $('loginEmail').value = email;
+    $('tabLogin')?.click();
+    const msg = $('loginMsg');
+    if (msg) {
+      msg.textContent = 'Cadastro criado. Confirme seu e-mail para continuar.';
+      msg.classList.remove('error');
+      msg.classList.add('success');
+    }
+  }
+
+  async function showPendingIfNeeded() {
+    if (!client) return false;
+    const { data: { session } } = await client.auth.getSession();
+    if (!session?.user) return false;
+    const { data } = await client.from('pending_registrations')
+      .select('user_id,name,email,status,requested_at')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+    if (!data || data.status !== 'pending') return false;
+    await client.auth.signOut().catch(() => undefined);
+    showPendingPanel(data.email || session.user.email || '');
+    return true;
+  }
+
+  function ensurePendingPanel() {
+    if ($('formRegistrationPending')) return;
+    form.insertAdjacentHTML('afterend', `
+      <section id="formRegistrationPending" class="auth-form rrn-registration-pending" hidden>
+        <div class="rrn-pending-icon">⏳</div>
+        <div class="rrn-pending-copy">
+          <strong>Cadastro aguardando liberação</strong>
+          <p>Seu e-mail já foi validado. Agora o Administrador Geral precisa definir o tipo do seu acesso antes do primeiro uso.</p>
+          <span id="pendingRegistrationEmail" class="rrn-pending-email"></span>
+          <small>Depois da liberação, volte e entre normalmente com seu e-mail e senha.</small>
+        </div>
+        <button type="button" class="btn-primary" id="pendingBackToLogin">Voltar para o login</button>
+      </section>`);
+    const style = document.createElement('style');
+    style.textContent = `
+      .rrn-registration-pending{display:none;gap:14px;text-align:center}.rrn-registration-pending.active{display:grid}.rrn-pending-icon{width:58px;height:58px;margin:0 auto;display:grid;place-items:center;border-radius:18px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 10%,var(--rrn-surface,#fff));font-size:1.5rem}.rrn-pending-copy{display:grid;gap:8px}.rrn-pending-copy strong{font:800 1.04rem Manrope,Inter,sans-serif;color:var(--rrn-heading,#163A4D)}.rrn-pending-copy p,.rrn-pending-copy small{margin:0;color:var(--rrn-muted,#66757F);line-height:1.5}.rrn-pending-copy p{font-size:.83rem}.rrn-pending-copy small{font-size:.73rem}.rrn-pending-email{padding:9px 11px;border-radius:10px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 7%,var(--rrn-surface,#fff));font-weight:800;color:var(--rrn-heading,#163A4D);word-break:break-word}`;
+    document.head.appendChild(style);
+    $('pendingBackToLogin')?.addEventListener('click', () => {
+      const panel = $('formRegistrationPending');
+      if (panel) { panel.classList.remove('active'); panel.hidden = true; }
+      document.querySelector('.auth-tabs')?.removeAttribute('hidden');
+      $('tabLogin')?.click();
+    });
+  }
+
+  function showPendingPanel(email) {
+    ensurePendingPanel();
+    document.querySelectorAll('.auth-form').forEach(el => el.classList.remove('active'));
+    const panel = $('formRegistrationPending');
+    if (panel) { panel.hidden = false; panel.classList.add('active'); }
+    const tabs = document.querySelector('.auth-tabs');
+    if (tabs) tabs.hidden = true;
+    if ($('authTitle')) $('authTitle').textContent = 'Aguardando liberação';
+    if ($('authSubtitle')) $('authSubtitle').textContent = 'Seu cadastro está em análise pelo Administrador Geral.';
+    if ($('pendingRegistrationEmail')) $('pendingRegistrationEmail').textContent = email;
+  }
+
+  function observePendingLogin() {
+    const msg = $('loginMsg');
+    if (!msg) return;
+    const inspect = async () => {
+      if (!/perfil ainda não disponível|não foi possível carregar seu perfil/i.test(msg.textContent || '')) return;
+      await showPendingIfNeeded().catch(() => undefined);
+    };
+    new MutationObserver(inspect).observe(msg, { childList: true, characterData: true, subtree: true });
+  }
+
+  ensurePendingPanel();
+  observePendingLogin();
+  setTimeout(() => showPendingIfNeeded().catch(() => undefined), 0);
+
   form.addEventListener('submit', async event => {
-    if (selectedType() !== 'technician_store') return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (!client) return setRegisterMessage('Serviço de autenticação indisponível.','error');
+    if (!client) return setMessage('Serviço de autenticação indisponível.', 'error');
 
     const name = $('registerName')?.value.trim();
     const email = $('registerEmail')?.value.trim().toLowerCase();
     const password = $('registerPassword')?.value || '';
-    const storeName = $('registerStoreName')?.value.trim() || '';
-    if (!name || !email || password.length < 8) return setRegisterMessage('Preencha nome, e-mail e uma senha com pelo menos 8 caracteres.','error');
-    if (!$('acceptTerms')?.checked) return setRegisterMessage('Confirme que você está autorizado a criar este ambiente.','error');
+    const inviteCode = $('registerInvite')?.value.trim() || '';
 
-    const button = $('registerButton');
-    const original = button?.textContent || 'Criar acesso';
-    if (button) { button.disabled = true; button.textContent = 'Criando sua loja...'; }
-    setRegisterMessage('');
+    if (!name || !email || password.length < 8) {
+      return setMessage('Preencha nome, e-mail e uma senha com pelo menos 8 caracteres.', 'error');
+    }
+    if (!$('acceptTerms')?.checked) {
+      return setMessage('Confirme os dados para solicitar seu acesso.', 'error');
+    }
 
+    setBusy(true);
+    setMessage('');
     try {
       const { data, error } = await client.auth.signUp({
         email,
@@ -89,43 +136,22 @@
           emailRedirectTo: `${location.origin}/login.html`,
           data: {
             name,
-            account_type: 'technician_store',
-            store_name: storeName,
+            invite_code: inviteCode,
+            account_type: 'pending',
             organization_name: '',
-            invite_code: ''
+            store_name: ''
           }
         }
       });
       if (error) throw error;
 
-      if (data.session?.user) {
-        const profile = await waitProfile(data.session.user.id);
-        localStorage.setItem('usuarioLogado', JSON.stringify({
-          id: profile.user_id,
-          nome: profile.name || email,
-          email: profile.email || email,
-          perfil: profile.role,
-          tenant_id: profile.tenant_id,
-          tenant: profile.tenants?.name || storeName || 'Minha loja'
-        }));
-        location.replace('/loja.html');
-        return;
-      }
-
+      if (data.session) await client.auth.signOut().catch(() => undefined);
       form.reset();
-      syncMode();
-      if ($('loginEmail')) $('loginEmail').value = email;
-      $('tabLogin')?.click();
-      const loginMsg = $('loginMsg');
-      if (loginMsg) {
-        loginMsg.textContent = 'Conta de Técnico/Vendedor criada. Confirme seu e-mail e depois entre normalmente.';
-        loginMsg.classList.remove('error');
-        loginMsg.classList.add('success');
-      }
+      showConfirmation(email);
     } catch (error) {
-      setRegisterMessage(error?.message || 'Não foi possível criar o perfil Técnico/Vendedor.','error');
+      setMessage(error?.message || 'Não foi possível criar o acesso.', 'error');
     } finally {
-      if (button) { button.disabled = false; button.textContent = original; }
+      setBusy(false);
     }
   }, true);
 })();
