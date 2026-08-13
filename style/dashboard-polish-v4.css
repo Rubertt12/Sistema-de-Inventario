@@ -128,10 +128,171 @@ body:has(#setoresContainer) .rrn-footer-bottom{
   color:var(--rrn-heading,#D8F0EE)!important;
 }
 
+/* Modal de transferência V3: cabe na viewport e mantém ações sempre visíveis. */
+body #modalTransferencia{
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  padding:12px!important;
+}
+body #modalTransferencia .rrn-transfer-v3{
+  box-sizing:border-box!important;
+  width:min(1120px,calc(100vw - 28px))!important;
+  height:min(800px,calc(100dvh - 24px))!important;
+  max-height:calc(100dvh - 24px)!important;
+  display:grid!important;
+  grid-template-rows:auto auto minmax(0,1fr) auto auto!important;
+  overflow:hidden!important;
+  padding:0!important;
+  border:1px solid color-mix(in srgb,var(--rrn-primary,#295991) 32%,var(--rrn-border,rgba(41,89,145,.17)))!important;
+  border-radius:18px!important;
+  background:var(--rrn-surface,#f8fbfd)!important;
+  box-shadow:0 26px 70px rgba(11,29,43,.28)!important;
+}
+body #modalTransferencia .rrn-transfer-head{
+  min-width:0!important;
+  padding:18px 20px 13px!important;
+  border-bottom:1px solid var(--rrn-border,rgba(41,89,145,.12))!important;
+  background:linear-gradient(180deg,var(--rrn-surface,#fff),var(--rrn-surface-soft,#f5f8fa))!important;
+}
+body #modalTransferencia .rrn-transfer-head h2{
+  margin:2px 0 3px!important;
+  font-size:1.3rem!important;
+}
+body #modalTransferencia .rrn-transfer-head small{
+  max-width:760px!important;
+  font-size:.68rem!important;
+  line-height:1.4!important;
+}
+body #modalTransferencia .rrn-transfer-head .btn-fechar{
+  width:34px!important;
+  height:34px!important;
+  border-radius:9px!important;
+}
+body #modalTransferencia .rrn-transfer-steps{
+  margin:12px 20px!important;
+  padding:9px 12px!important;
+  border-radius:12px!important;
+  background:var(--rrn-surface-soft,#f7fafb)!important;
+}
+body #modalTransferencia .rrn-transfer-step>span{
+  width:25px!important;
+  height:25px!important;
+}
+body #modalTransferencia .rrn-transfer-columns{
+  min-height:0!important;
+  height:100%!important;
+  padding:0 20px!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+body #modalTransferencia .rrn-transfer-panel{
+  min-height:0!important;
+  height:100%!important;
+  padding:12px!important;
+  overflow:hidden!important;
+  border-radius:13px!important;
+  background:var(--rrn-surface-2,#fff)!important;
+}
+body #modalTransferencia .rrn-transfer-panel-head{
+  margin-bottom:8px!important;
+}
+body #modalTransferencia .rrn-transfer-v3 input[type="search"]{
+  min-height:38px!important;
+  height:38px!important;
+  margin-bottom:8px!important;
+  padding:7px 10px!important;
+}
+body #modalTransferencia .rrn-transfer-list{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:auto!important;
+  overscroll-behavior:contain!important;
+  padding-right:4px!important;
+}
+body #modalTransferencia .rrn-transfer-choice{
+  padding:8px 9px!important;
+}
+body #modalTransferencia .rrn-transfer-choice-icon{
+  width:31px!important;
+  height:31px!important;
+}
+body #modalTransferencia .rrn-transfer-summary{
+  margin:11px 20px 0!important;
+  padding:9px 11px!important;
+  border-radius:12px!important;
+}
+body #modalTransferencia .rrn-transfer-summary-eyebrow{
+  margin-bottom:6px!important;
+}
+body #modalTransferencia .rrn-transfer-route>div{
+  padding:6px 9px!important;
+}
+body #modalTransferencia .rrn-transfer-summary-asset{
+  margin-top:6px!important;
+  padding-top:6px!important;
+}
+body #modalTransferencia .rrn-transfer-actions{
+  position:relative!important;
+  bottom:auto!important;
+  z-index:2!important;
+  margin:0!important;
+  padding:11px 20px 14px!important;
+  border-top:1px solid var(--rrn-border,rgba(41,89,145,.12))!important;
+  background:var(--rrn-surface,#fff)!important;
+  box-shadow:0 -8px 20px rgba(11,29,43,.04)!important;
+}
+body #modalTransferencia .rrn-transfer-actions button{
+  min-height:39px!important;
+}
+
+:root[data-theme="dark"] body #modalTransferencia .rrn-transfer-v3{
+  background:var(--rrn-surface,#111a20)!important;
+  border-color:rgba(103,200,162,.18)!important;
+  color:var(--rrn-text,#e8eff2)!important;
+}
+:root[data-theme="dark"] body #modalTransferencia .rrn-transfer-head,
+:root[data-theme="dark"] body #modalTransferencia .rrn-transfer-actions{
+  background:#101a1f!important;
+  border-color:rgba(184,211,219,.11)!important;
+}
+:root[data-theme="dark"] body #modalTransferencia .rrn-transfer-steps,
+:root[data-theme="dark"] body #modalTransferencia .rrn-transfer-panel{
+  background:#142027!important;
+  border-color:rgba(184,211,219,.12)!important;
+}
+:root[data-theme="dark"] body #modalTransferencia .rrn-transfer-summary{
+  background:#172229!important;
+  border-color:rgba(184,211,219,.12)!important;
+}
+
 @media(max-width:930px){
   .navbar .nav-links{gap:8px!important}
   .navbar .rrn-app-tabs{width:100%!important}
   .navbar .rrn-app-tab{flex:1 1 0!important}
+
+  body #modalTransferencia .rrn-transfer-v3{
+    width:min(760px,calc(100vw - 20px))!important;
+    height:calc(100dvh - 16px)!important;
+    max-height:calc(100dvh - 16px)!important;
+  }
+  body #modalTransferencia .rrn-transfer-columns{
+    grid-template-columns:1fr!important;
+    overflow:auto!important;
+    align-content:start!important;
+  }
+  body #modalTransferencia .rrn-transfer-panel,
+  body #modalTransferencia .rrn-transfer-panel:last-child{
+    grid-column:auto!important;
+    min-height:220px!important;
+    height:auto!important;
+  }
+  body #modalTransferencia .rrn-transfer-list,
+  body #modalTransferencia .rrn-transfer-panel:last-child .rrn-transfer-list{
+    min-height:120px!important;
+    max-height:190px!important;
+  }
 }
 
 @media(max-width:720px){
@@ -140,4 +301,22 @@ body:has(#setoresContainer) .rrn-footer-bottom{
     gap:8px!important;
   }
   body:has(#setoresContainer) .rrn-footer-bottom{padding:5px 0 7px!important}
+
+  body #modalTransferencia{padding:6px!important}
+  body #modalTransferencia .rrn-transfer-v3{
+    width:calc(100vw - 12px)!important;
+    height:calc(100dvh - 12px)!important;
+    max-height:calc(100dvh - 12px)!important;
+    border-radius:14px!important;
+  }
+  body #modalTransferencia .rrn-transfer-head{padding:13px 14px 10px!important}
+  body #modalTransferencia .rrn-transfer-head h2{font-size:1.12rem!important}
+  body #modalTransferencia .rrn-transfer-steps{margin:8px 14px!important}
+  body #modalTransferencia .rrn-transfer-columns{padding:0 14px!important}
+  body #modalTransferencia .rrn-transfer-summary{margin:8px 14px 0!important}
+  body #modalTransferencia .rrn-transfer-actions{
+    margin:0!important;
+    padding:9px 14px 11px!important;
+  }
+  body #modalTransferencia .rrn-transfer-actions button{flex:1 1 0!important}
 }
