@@ -16,14 +16,20 @@
     } catch { return ''; }
   }
 
-  function ensureDashboardPolish() {
-    const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
-    if (!isDashboard || document.querySelector('link[data-rrn-dashboard-polish-v4]')) return;
+  function addStylesheet(href, marker) {
+    if (document.querySelector(`link[${marker}]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '/style/dashboard-polish-v4.css';
-    link.setAttribute('data-rrn-dashboard-polish-v4', '1');
+    link.href = href;
+    link.setAttribute(marker, '1');
     document.head.appendChild(link);
+  }
+
+  function ensureDashboardPolish() {
+    const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
+    if (!isDashboard) return;
+    addStylesheet('/style/dashboard-polish-v4.css', 'data-rrn-dashboard-polish-v4');
+    addStylesheet('/style/footer-dashboard-v3.css', 'data-rrn-footer-dashboard-v3');
   }
 
   function render() {
@@ -35,7 +41,7 @@
 
     const tenant = tenantLabel();
     const footer = document.createElement('footer');
-    footer.className = `rrn-footer${isAuth ? ' rrn-footer--auth' : ''}${isAdmin ? ' rrn-footer--admin' : ''}`;
+    footer.className = `rrn-footer${isAuth ? ' rrn-footer--auth' : ''}${isAdmin ? ' rrn-footer--admin' : ''}${isDashboard ? ' rrn-footer--dashboard' : ''}`;
     footer.setAttribute('aria-label', 'Rodapé do RRN Manager');
 
     const nav = isAuth
@@ -64,6 +70,7 @@
 
     footer.querySelector('[data-rrn-footer-settings]')?.addEventListener('click', () => {
       if (typeof window.openConfigModal === 'function') window.openConfigModal();
+      else location.href = '/configuracoes.html';
     });
   }
 
