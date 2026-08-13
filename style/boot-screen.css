@@ -1,0 +1,79 @@
+/* RRN Manager — boot screen crítico para evitar FOUC/layout antigo durante a montagem. */
+html:not(.rrn-ready){
+  overflow:hidden;
+  background:#eef3f5;
+}
+
+html:not(.rrn-ready) body > *{
+  visibility:hidden!important;
+  animation:rrnBootContentFallback 0s 8s forwards;
+}
+
+html:not(.rrn-ready)::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:2147483646;
+  background:
+    radial-gradient(circle at 18% 18%,rgba(47,125,120,.16),transparent 34%),
+    radial-gradient(circle at 82% 78%,rgba(22,58,77,.12),transparent 36%),
+    linear-gradient(145deg,#f7fafb 0%,#edf3f5 52%,#e8f0f1 100%);
+  animation:rrnBootOverlayFallback .28s ease 8s forwards;
+}
+
+html:not(.rrn-ready)::after{
+  content:"RRN Manager\A Preparando seu ambiente...";
+  white-space:pre-line;
+  position:fixed;
+  left:50%;
+  top:50%;
+  z-index:2147483647;
+  width:min(360px,calc(100vw - 40px));
+  min-height:190px;
+  transform:translate(-50%,-50%);
+  box-sizing:border-box;
+  padding:108px 28px 26px;
+  border:1px solid rgba(22,58,77,.12);
+  border-radius:22px;
+  background:
+    url('/img/icon-png.png') center 27px/58px 58px no-repeat,
+    rgba(255,255,255,.94);
+  box-shadow:0 28px 80px rgba(22,58,77,.16),inset 0 1px 0 rgba(255,255,255,.9);
+  color:#60727d;
+  text-align:center;
+  font:600 13px/1.55 Inter,Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;
+  letter-spacing:.01em;
+  backdrop-filter:blur(18px) saturate(120%);
+  animation:rrnBootCardPulse 1.35s ease-in-out infinite,rrnBootOverlayFallback .28s ease 8s forwards;
+}
+
+html.rrn-ready{
+  overflow:auto;
+}
+
+html.rrn-ready body{
+  animation:rrnAppReveal .22s ease-out both;
+}
+
+@keyframes rrnBootCardPulse{
+  0%,100%{box-shadow:0 28px 80px rgba(22,58,77,.14),inset 0 1px 0 rgba(255,255,255,.9);transform:translate(-50%,-50%) scale(1)}
+  50%{box-shadow:0 30px 88px rgba(47,125,120,.22),inset 0 1px 0 rgba(255,255,255,.95);transform:translate(-50%,-50%) scale(1.012)}
+}
+
+@keyframes rrnAppReveal{
+  from{opacity:.01;transform:translateY(3px)}
+  to{opacity:1;transform:none}
+}
+
+@keyframes rrnBootOverlayFallback{
+  to{opacity:0;visibility:hidden;pointer-events:none}
+}
+
+@keyframes rrnBootContentFallback{
+  to{visibility:visible}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html:not(.rrn-ready)::after{animation:rrnBootOverlayFallback .01s linear 8s forwards}
+  html.rrn-ready body{animation:none}
+}
