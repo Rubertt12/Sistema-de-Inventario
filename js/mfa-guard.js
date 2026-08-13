@@ -28,12 +28,22 @@
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user) return;
 
+    const { data: profile } = await client.from('profiles')
+      .select('role,status')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    if (profile?.status === 'active' && profile.role === 'tecnico_vendedor' && path !== '/loja.html') {
+      location.replace('/loja.html');
+      return;
+    }
+
     const { data: aal, error } = await client.auth.mfa.getAuthenticatorAssuranceLevel();
     if (error || !aal) return;
     if (aal.currentLevel === 'aal2') return;
 
-    // Só bloqueia quando a própria conta já possui um segundo fator verificado.
-    // Quem ainda não ativou 2FA continua com acesso normal e pode ativar depois.
+    // O 2FA é opcional para ativar. Depois que a conta possui um fator
+    // verificado, o segundo fator passa a ser obrigatório nos novos logins.
     if (aal.nextLevel !== 'aal2') return;
 
     const next = `${location.pathname}${location.search}${location.hash}`;
