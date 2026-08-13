@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RRN Manager | Segurança da conta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style/rrn-theme-v2.css">
+  <link rel="stylesheet" href="/style/mfa.css">
+  <link rel="icon" href="/img/icon-png.png" type="image/png">
+</head>
+<body class="security-body">
+  <header class="topbar" style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--rrn-navbar,#163A4D);color:#fff">
+    <div style="display:flex;align-items:center;gap:10px"><img src="/img/icon-png.png" alt="" style="width:34px;height:34px"><div><strong>RRN Manager</strong><div style="font-size:.75rem;opacity:.78">Segurança da conta</div></div></div>
+    <button type="button" class="security-btn" id="securityBack">Voltar</button>
+  </header>
+
+  <main class="security-shell">
+    <section class="security-heading">
+      <div><span style="font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--rrn-secondary,#2F7D78)">Conta e acesso</span><h1>Autenticação em dois fatores</h1><p>Proteja seu acesso ao RRN Manager usando um aplicativo autenticador TOTP.</p></div>
+      <div style="text-align:right"><strong id="securityUser">Carregando...</strong><div id="securityTenant" style="font-size:.8rem;color:var(--rrn-muted,#66757F)">Workspace</div></div>
+    </section>
+
+    <section class="security-card">
+      <div class="security-status">
+        <div class="security-status-copy"><span>Status da conta</span><strong id="securityStatusText">Verificando 2FA...</strong><small id="securityStatusHint">Carregando política de segurança.</small></div>
+        <div style="display:flex;gap:8px;align-items:center"><span class="security-badge off" id="securityStatusBadge">Verificando</span><span class="security-badge" id="securityAal" style="background:rgba(47,125,120,.1);color:var(--rrn-secondary,#2F7D78)">AAL1</span></div>
+      </div>
+      <div class="security-actions"><button type="button" class="security-btn primary" id="securityAddFactor">Adicionar autenticador</button></div>
+      <p class="security-message" id="securityMessage" role="status"></p>
+    </section>
+
+    <section class="security-card">
+      <div><span style="font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--rrn-secondary,#2F7D78)">Dispositivos</span><h2 style="margin:5px 0 3px;color:var(--rrn-heading,#163A4D)">Aplicativos autenticadores</h2><p style="margin:0;color:var(--rrn-muted,#66757F)">Você pode manter mais de um autenticador como backup.</p></div>
+      <div class="security-factor-list" id="securityFactors"></div>
+    </section>
+  </main>
+
+  <div class="security-modal" id="securityEnrollModal" hidden>
+    <div class="security-modal-card">
+      <h2>Adicionar autenticador</h2>
+      <p>Escaneie o QR Code no Google Authenticator, Microsoft Authenticator, Authy, 1Password ou outro aplicativo TOTP.</p>
+      <div class="security-setup"><img id="securityEnrollQr" alt="QR Code de autenticação"><div><strong>Chave manual</strong><code class="security-secret" id="securityEnrollSecret"></code><input class="security-code" id="securityEnrollCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000"></div></div>
+      <div class="security-actions" style="justify-content:flex-end"><button type="button" class="security-btn" id="securityCancelEnroll">Cancelar</button><button type="button" class="security-btn primary" id="securityVerifyEnroll">Verificar e ativar</button></div>
+    </div>
+  </div>
+
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/theme-mode.js"></script>
+  <script src="/js/tenant-branding-runtime.js"></script>
+  <script src="/js/mfa-security.js"></script>
+</body>
+</html>
