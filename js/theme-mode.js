@@ -21,6 +21,15 @@
     if (isDashboard) addStylesheet('/style/dark-inventory-fix.css', 'data-rrn-dark-inventory-fix');
   }
 
+  function ensureMfaGuard() {
+    if (document.querySelector('script[data-rrn-mfa-guard]')) return;
+    const script = document.createElement('script');
+    script.src = '/js/mfa-guard.js';
+    script.async = true;
+    script.dataset.rrnMfaGuard = '1';
+    document.head.appendChild(script);
+  }
+
   function preferred() {
     const saved = localStorage.getItem(KEY);
     if (saved === 'dark' || saved === 'light') return saved;
@@ -57,8 +66,24 @@
     return button;
   }
 
+  function mountSecurityLink() {
+    const dropdown = document.getElementById('userDropdown');
+    if (!dropdown || dropdown.querySelector('[data-rrn-security-link]')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.rrnSecurityLink = '1';
+    button.textContent = '🔐 Segurança / 2FA';
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      location.href = '/seguranca.html';
+    });
+    const logout = dropdown.querySelector('.logout-btn,[onclick*="logout"],button[onclick*="sair"]');
+    dropdown.insertBefore(button, logout || dropdown.lastElementChild || null);
+  }
+
   function mount() {
     ensureThemeFixes();
+    mountSecurityLink();
     if (document.querySelector('[data-rrn-theme-toggle]')) {
       syncButtons(document.documentElement.dataset.theme || preferred());
       return;
@@ -88,12 +113,16 @@
 
   ensureThemeFixes();
   apply(preferred());
+  ensureMfaGuard();
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mount, { once: true });
   } else {
     mount();
   }
+
+  setTimeout(mountSecurityLink, 350);
+  setTimeout(mountSecurityLink, 1100);
 
   window.RRN_THEME = {
     get: () => document.documentElement.dataset.theme,
