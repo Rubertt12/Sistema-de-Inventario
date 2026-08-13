@@ -1,0 +1,14 @@
+.rrn-ticket-card.is-service-desk .rrn-ticket-card-body{border-color:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 30%,var(--rrn-border,rgba(22,58,77,.11)));background:linear-gradient(135deg,color-mix(in srgb,var(--rrn-secondary,#2F7D78) 5%,var(--rrn-surface,#fff)),color-mix(in srgb,var(--rrn-bg,#F4F7F8) 74%,var(--rrn-surface,#fff)))}
+.rrn-ticket-label{display:block;margin-bottom:2px;color:var(--rrn-muted,#66757F);font-size:.58rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.rrn-ticket-title{margin:9px 0 2px;color:var(--rrn-heading,#163A4D);font-size:.82rem;line-height:1.35}
+.rrn-service-desk-history{margin-top:10px;padding-top:10px;border-top:1px solid var(--rrn-border,rgba(22,58,77,.11))}
+.rrn-service-desk-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rrn-service-desk-meta>span{display:inline-flex;align-items:center;gap:4px;min-height:25px;padding:4px 8px;border-radius:999px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 9%,transparent);color:var(--rrn-primary,#163A4D);font-size:.62rem}
+.rrn-service-desk-meta>span:first-child{background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 16%,transparent);font-weight:850}
+.rrn-service-desk-note{margin-top:9px;padding:9px 10px;border-radius:9px;background:color-mix(in srgb,var(--rrn-accent,#D97745) 7%,var(--rrn-surface,#fff));border:1px solid color-mix(in srgb,var(--rrn-accent,#D97745) 18%,transparent)}
+.rrn-service-desk-note.is-resolution{background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 7%,var(--rrn-surface,#fff));border-color:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 18%,transparent)}
+.rrn-service-desk-note strong{display:block;color:var(--rrn-heading,#163A4D);font-size:.64rem;text-transform:uppercase;letter-spacing:.04em}
+.rrn-service-desk-note p{margin:4px 0 0!important;font-size:.72rem!important}
+.rrn-service-desk-ended{margin-top:8px;color:var(--rrn-muted,#66757F);font-size:.62rem;font-weight:700}
+.rrn-priority-critica{background:rgba(127,48,40,.16);color:#7f3028}
+@media(max-width:560px){.rrn-service-desk-meta{align-items:flex-start;flex-direction:column}.rrn-service-desk-meta>span{width:100%;border-radius:8px}}
