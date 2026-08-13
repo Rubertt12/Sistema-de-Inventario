@@ -11,6 +11,7 @@
   window.RRN_SUPABASE_CLIENT = client;
 
   const $ = id => document.getElementById(id);
+  const DEFAULT_LOGIN_BACKGROUND = 'https://images.pexels.com/photos/4484155/pexels-photo-4484155.jpeg?auto=compress&dpr=1&h=1000&w=1600';
   let currentOverlay = true;
   let selectedBackgroundUrl = '';
   let localPreviewUrl = '';
@@ -29,7 +30,7 @@
   }
 
   function previewBackgroundUrl() {
-    return localPreviewUrl || selectedBackgroundUrl || window.__RRN_ADMIN_BRANDING_CURRENT__?.login_background_url || '';
+    return localPreviewUrl || selectedBackgroundUrl || window.__RRN_ADMIN_BRANDING_CURRENT__?.login_background_url || DEFAULT_LOGIN_BACKGROUND;
   }
 
   function applyPreview() {
@@ -38,15 +39,13 @@
     const bg = previewBackgroundUrl();
     const primary = $('brandPrimary')?.value || '#163A4D';
     const secondary = $('brandSecondary')?.value || '#2F7D78';
-    if (!bg) {
-      preview.style.backgroundImage = `linear-gradient(145deg,${primary},${secondary})`;
-      return;
-    }
+
     preview.style.backgroundImage = currentOverlay
       ? `linear-gradient(145deg,${primary}e6,${secondary}b8),url(${JSON.stringify(bg)})`
       : `url(${JSON.stringify(bg)})`;
     preview.style.backgroundSize = 'cover';
     preview.style.backgroundPosition = 'center';
+    preview.style.backgroundRepeat = 'no-repeat';
   }
 
   async function saveOverlayPreference(value) {
@@ -77,7 +76,7 @@
     control.innerHTML = `
       <div class="branding-overlay-copy">
         <strong>Camada de cor sobre o fundo do login</strong>
-        <small>Desative para mostrar a imagem original, sem filtro ou gradiente por cima.</small>
+        <small>Desative para mostrar a imagem do login sem filtro ou gradiente, inclusive usando o fundo padrão do RRN Manager.</small>
       </div>
       <span class="branding-switch">
         <input type="checkbox" id="brandLoginOverlay" checked>
