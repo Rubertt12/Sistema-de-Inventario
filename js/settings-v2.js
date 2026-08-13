@@ -12,8 +12,13 @@
     location.href = '/configuracoes.html';
   }
 
+  function removeStandaloneSecurityShortcut() {
+    document.querySelectorAll('[data-rrn-security-link]').forEach(button => button.remove());
+  }
+
   function install() {
     window.openConfigModal = openSettingsPage;
+    removeStandaloneSecurityShortcut();
 
     const legacyModal = document.getElementById('configModal');
     if (legacyModal) {
@@ -28,4 +33,6 @@
     document.addEventListener('DOMContentLoaded', install, { once: true });
   }
   window.addEventListener('load', install, { once: true });
+  setTimeout(removeStandaloneSecurityShortcut, 500);
+  setTimeout(removeStandaloneSecurityShortcut, 1400);
 })();
