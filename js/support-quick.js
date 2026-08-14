@@ -25,7 +25,10 @@
       const el = $(view);
       if (el) el.hidden = view !== id;
     });
+    window.dispatchEvent(new CustomEvent('rrn:support-view',{detail:{id}}));
   }
+
+  window.RRNSupportQuick = { showOnly };
 
   function alertBox(id, message = '', success = false) {
     const el = $(id);
@@ -143,9 +146,6 @@
       }).select('*').single();
       if (error) throw error;
       state.ticket = data;
-
-      // A troca de tela acontece imediatamente após o 201 do backend.
-      // Carregamento de mensagens/realtime não pode prender o usuário em "Abrindo...".
       openChat();
     } catch (error) {
       console.error('RRN suporte rápido - abrir chamado:', error);
