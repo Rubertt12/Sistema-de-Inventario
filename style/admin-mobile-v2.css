@@ -1,0 +1,377 @@
+/* RRN Manager — Administração mobile v2 */
+@media (max-width: 700px) {
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .topbar {
+    min-height: 60px;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 9px;
+  }
+
+  .brand img {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    border-radius: 10px;
+  }
+
+  .brand strong {
+    overflow: hidden;
+    max-width: 145px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .84rem;
+  }
+
+  .topbar > .btn-secondary {
+    min-height: 36px;
+    padding: 0 10px;
+    white-space: nowrap;
+    font-size: .68rem;
+  }
+
+  .admin-shell {
+    display: block;
+    min-height: calc(100dvh - 60px);
+  }
+
+  .admin-sidebar {
+    position: relative;
+    padding: 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-user {
+    padding: 11px 13px;
+    border-radius: 13px;
+  }
+
+  .admin-user .eyebrow {
+    margin-bottom: 3px;
+    font-size: .56rem;
+  }
+
+  .admin-user strong {
+    font-size: .82rem;
+  }
+
+  .admin-user small {
+    margin-top: 2px;
+    font-size: .64rem;
+  }
+
+  .admin-nav {
+    display: flex;
+    gap: 7px;
+    margin-top: 10px;
+    padding: 1px 0 3px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-nav::-webkit-scrollbar { display: none; }
+
+  .admin-nav button {
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface, #fff);
+    text-align: center;
+    white-space: nowrap;
+    font-size: .66rem;
+    scroll-snap-align: start;
+  }
+
+  .admin-nav button.active {
+    border-color: var(--primary);
+  }
+
+  .admin-content {
+    width: 100%;
+    padding: 20px 12px 40px;
+  }
+
+  .page-heading {
+    gap: 12px;
+    margin-bottom: 17px;
+  }
+
+  .page-heading h1 {
+    font-size: 1.62rem;
+    line-height: 1.08;
+  }
+
+  .page-heading p,
+  .panel-heading p {
+    margin-top: 6px;
+    font-size: .74rem;
+    line-height: 1.45;
+  }
+
+  .eyebrow {
+    margin-bottom: 5px;
+    font-size: .58rem;
+  }
+
+  .counter {
+    align-self: flex-start;
+    padding: 6px 9px;
+    font-size: .65rem;
+  }
+
+  .tenant-card {
+    min-width: 0;
+    padding: 12px 13px;
+    border-radius: 13px;
+  }
+
+  .panel {
+    margin-bottom: 14px;
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .panel-heading {
+    margin-bottom: 13px;
+  }
+
+  .panel-heading h2 {
+    font-size: 1.08rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    margin-bottom: 14px;
+  }
+
+  .kpi-grid article {
+    min-width: 0;
+    padding: 13px;
+    border-radius: 14px;
+  }
+
+  .kpi-grid strong {
+    margin: 4px 0 2px;
+    font-size: 1.45rem;
+  }
+
+  .kpi-grid span,
+  .kpi-grid small {
+    font-size: .62rem;
+  }
+
+  /* Tabelas deixam de ser tabelas e viram cards no celular. */
+  .table-wrap {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .table-wrap table,
+  .table-wrap tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .table-wrap thead {
+    display: none;
+  }
+
+  .table-wrap tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .table-wrap tbody tr {
+    display: block;
+    padding: 13px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface, #fff);
+    box-shadow: 0 6px 18px rgba(22,58,77,.05);
+  }
+
+  .table-wrap tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    padding: 9px 0;
+    border: 0;
+    border-bottom: 1px solid rgba(22,58,77,.08);
+    white-space: normal;
+    text-align: right;
+    font-size: .74rem;
+  }
+
+  .table-wrap tbody td:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .table-wrap tbody td:first-child {
+    align-items: flex-start;
+    padding-top: 0;
+    text-align: left;
+  }
+
+  .table-wrap tbody td::before {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-size: .56rem;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  [data-view-panel="users"] tbody td:nth-child(1)::before { content: "Usuário"; }
+  [data-view-panel="users"] tbody td:nth-child(2)::before { content: "Perfil"; }
+  [data-view-panel="users"] tbody td:nth-child(3)::before { content: "Status"; }
+  [data-view-panel="users"] tbody td:nth-child(4)::before { content: "Cadastro"; }
+  [data-view-panel="users"] tbody td:nth-child(5)::before { content: "Ações"; }
+
+  [data-view-panel="companies"] tbody td:nth-child(1)::before { content: "Empresa"; }
+  [data-view-panel="companies"] tbody td:nth-child(2)::before { content: "Status"; }
+  [data-view-panel="companies"] tbody td:nth-child(3)::before { content: "Usuários"; }
+  [data-view-panel="companies"] tbody td:nth-child(4)::before { content: "Cadastro"; }
+  [data-view-panel="companies"] tbody td:nth-child(5)::before { content: "Ações"; }
+
+  [data-view-panel="invites"] tbody td:nth-child(1)::before { content: "E-mail"; }
+  [data-view-panel="invites"] tbody td:nth-child(2)::before { content: "Perfil"; }
+  [data-view-panel="invites"] tbody td:nth-child(3)::before { content: "Expira"; }
+  [data-view-panel="invites"] tbody td:nth-child(4)::before { content: "Status"; }
+  [data-view-panel="invites"] tbody td:nth-child(5)::before { content: "Ações"; }
+
+  .user-cell {
+    min-width: 0;
+    max-width: 72%;
+    text-align: right;
+  }
+
+  .user-cell strong,
+  .user-cell small {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .user-cell strong {
+    font-size: .78rem;
+  }
+
+  .user-cell small {
+    margin-top: 2px;
+    font-size: .64rem;
+  }
+
+  .badge {
+    font-size: .62rem;
+  }
+
+  .actions {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .action-btn {
+    min-height: 38px;
+    padding: 0 11px;
+    font-size: .66rem;
+  }
+
+  [data-view-panel="users"] tbody td:last-child,
+  [data-view-panel="companies"] tbody td:last-child,
+  [data-view-panel="invites"] tbody td:last-child {
+    align-items: flex-start;
+  }
+
+  .context-row,
+  .invite-result,
+  .inline-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .context-row .btn-secondary,
+  .invite-result .btn-secondary,
+  .inline-heading .btn-ghost,
+  .btn-primary {
+    width: 100%;
+  }
+
+  .invite-form,
+  .form-grid,
+  .form-grid.two,
+  .upload-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .invite-form .field:first-child { grid-column: auto; }
+
+  .field input,
+  .field select,
+  .field textarea {
+    min-height: 46px;
+    font-size: 16px; /* evita zoom automático no iOS/alguns browsers */
+  }
+
+  .branding-layout {
+    display: block;
+  }
+
+  .brand-preview {
+    position: relative;
+    top: auto;
+    min-height: 330px;
+    margin-top: 14px;
+    padding: 18px;
+    border-radius: 17px;
+  }
+
+  .preview-copy {
+    left: 18px;
+    right: 18px;
+    bottom: 20px;
+  }
+
+  .preview-copy h2 {
+    font-size: 1.5rem;
+  }
+
+  .toast {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    text-align: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand strong { max-width: 112px; }
+  .topbar > .btn-secondary { padding: 0 8px; font-size: .62rem; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .admin-content { padding-left: 9px; padding-right: 9px; }
+  .panel { padding: 11px; }
+}
