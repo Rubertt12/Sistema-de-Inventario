@@ -37,16 +37,56 @@
     return ticket;
   }
 
-  function showFinished(ticket) {
+  function protocolFromHeader() {
+    const text = document.getElementById('quickTicketNumber')?.textContent || '';
+    const match = text.match(/#?\s*(\d+)/);
+    return match?.[1] || '';
+  }
+
+  function normalizeProtocolHeader() {
+    const label = document.getElementById('quickTicketNumber');
+    if (!label) return;
+    const number = protocolFromHeader();
+    if (number) label.textContent = `Protocolo #${number}`;
+  }
+
+  function showFinished(ticket = {}) {
     const views = ['quickStart','quickIdentify','quickOpenTicket','quickChat','quickFinished'];
     views.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.hidden = id !== 'quickFinished';
     });
+
+    const number = ticket.ticket_number || protocolFromHeader();
     const protocol = document.getElementById('quickProtocolNumber');
-    if (protocol) protocol.textContent = `#${ticket.ticket_number}`;
+    if (protocol) protocol.textContent = number ? `#${number}` : '—';
+
+    const endedAt = ticket.closed_at ? new Date(ticket.closed_at) : new Date();
     const meta = document.getElementById('quickFinishedMeta');
-    if (meta) meta.textContent = `Encerrado em ${new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'}).format(new Date())}. Guarde o protocolo para referência.`;
+    if (meta) {
+      meta.textContent = `Atendimento encerrado em ${new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'}).format(endedAt)}. Guarde este protocolo para consultas futuras.`;
+    }
+  }
+
+  function watchProtocolAndClosure() {
+    const number = document.getElementById('quickTicketNumber');
+    const status = document.getElementById('quickTicketStatus');
+
+    normalizeProtocolHeader();
+
+    if (number) {
+      new MutationObserver(() => normalizeProtocolHeader())
+        .observe(number, { childList:true, characterData:true, subtree:true });
+    }
+
+    if (status) {
+      new MutationObserver(() => {
+        normalizeProtocolHeader();
+        if (/encerrado/i.test(status.textContent || '')) {
+          showFinished({ ticket_number: protocolFromHeader(), closed_at: new Date().toISOString() });
+        }
+      }).observe(status, { childList:true, characterData:true, subtree:true });
+    }
   }
 
   async function endChat(button) {
@@ -97,6 +137,7 @@
     }
 
     document.getElementById('quickNewAttendance')?.addEventListener('click', newAttendance);
+    watchProtocolAndClosure();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, { once: true });
