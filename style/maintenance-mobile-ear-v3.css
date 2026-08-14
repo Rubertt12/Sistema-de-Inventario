@@ -1,0 +1,108 @@
+/* RRN Manager — manutenção mobile em formato de "orelha" lateral */
+@media (max-width:700px){
+  .rrn-maintenance-drawer,
+  .rrn-maintenance-drawer.recolhido{
+    top:50%!important;
+    right:0!important;
+    bottom:auto!important;
+    width:0!important;
+    height:0!important;
+    z-index:1180!important;
+  }
+
+  .rrn-maintenance-handle{
+    top:58%!important;
+    right:0!important;
+    bottom:auto!important;
+    width:46px!important;
+    min-width:46px!important;
+    max-width:46px!important;
+    height:72px!important;
+    min-height:72px!important;
+    padding:8px 5px!important;
+    transform:translateY(-50%)!important;
+    flex-direction:column!important;
+    gap:6px!important;
+    writing-mode:horizontal-tb!important;
+    border-radius:15px 0 0 15px!important;
+    border-right:0!important;
+    touch-action:pan-y!important;
+    overflow:visible!important;
+  }
+
+  .rrn-maintenance-handle::after{
+    content:'‹';
+    display:grid;
+    place-items:center;
+    width:18px;
+    height:18px;
+    color:#fff;
+    font:900 1.35rem/1 system-ui,sans-serif;
+    opacity:.92;
+  }
+
+  .rrn-maintenance-handle-grip{
+    width:20px!important;
+    height:4px!important;
+    flex:0 0 4px!important;
+  }
+
+  .rrn-maintenance-handle-label{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    overflow:hidden!important;
+    clip:rect(0 0 0 0)!important;
+    white-space:nowrap!important;
+  }
+
+  .rrn-maintenance-badge{
+    position:absolute!important;
+    top:-9px!important;
+    left:-9px!important;
+    min-width:24px!important;
+    height:24px!important;
+    padding:0 6px!important;
+    border:2px solid var(--rrn-surface,#fff)!important;
+    box-shadow:0 5px 14px rgba(0,0,0,.22)!important;
+  }
+
+  .rrn-maintenance-sheet{
+    top:58%!important;
+    right:0!important;
+    bottom:auto!important;
+    width:min(88vw,370px)!important;
+    max-height:min(72vh,620px)!important;
+    border-radius:18px 0 0 18px!important;
+    transform:translate(102%,-50%)!important;
+    box-shadow:0 26px 72px rgba(0,0,0,.38)!important;
+    touch-action:pan-y!important;
+  }
+
+  .rrn-maintenance-drawer--open .rrn-maintenance-sheet{
+    transform:translate(0,-50%)!important;
+  }
+
+  .rrn-maintenance-sheet-head{
+    padding:15px 14px!important;
+    gap:10px!important;
+  }
+
+  .rrn-maintenance-sheet-head strong{font-size:.9rem!important}
+  .rrn-maintenance-sheet-head small{font-size:.66rem!important}
+  .rrn-maintenance-list{padding:11px!important;gap:8px!important}
+  .rrn-maintenance-card{padding:11px!important;gap:9px!important}
+  .rrn-maintenance-card-copy strong{font-size:.72rem!important}
+  .rrn-maintenance-card-copy small{font-size:.62rem!important}
+  .rrn-maintenance-sheet-actions button{padding:7px 9px!important;font-size:.64rem!important}
+  .rrn-maintenance-sheet-actions kbd{display:none!important}
+
+  /* Não deixa a aba bloquear o conteúdo quando a gaveta está aberta. */
+  .rrn-maintenance-drawer--open .rrn-maintenance-handle{display:none!important}
+}
+
+@media (max-width:420px){
+  .rrn-maintenance-handle{top:61%!important;width:42px!important;min-width:42px!important;max-width:42px!important;height:66px!important;min-height:66px!important}
+  .rrn-maintenance-sheet{top:55%!important;width:min(92vw,360px)!important;max-height:74vh!important}
+  .rrn-maintenance-drawer--open .rrn-maintenance-sheet{transform:translate(0,-50%)!important}
+}
