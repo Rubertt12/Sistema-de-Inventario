@@ -7,11 +7,12 @@
   if (!cfg.url || !cfg.anonKey || !window.supabase?.createClient) return;
   const client = window.supabase.createClient(cfg.url, cfg.anonKey, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:false, storageKey:'rrn-guest-support-auth' } });
   const $ = id => document.getElementById(id);
-  const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   let config = null;
   let transcript = [];
   let observer = null;
   let armed = false;
+  let handoffMode = false;
 
   function ensureUi(){
     if ($('quickBot')) return;
@@ -89,6 +90,7 @@
   }
 
   function handoff(){
+    handoffMode = true;
     const machine=$('quickBotAsset')?.value.trim()||'';
     const summary=transcript.filter(x=>x.type==='user').map(x=>x.text).join('\n');
     if($('quickMachine')) $('quickMachine').value=machine;
@@ -97,9 +99,11 @@
     $('quickOpenTicket').hidden=false;
     const title=$('quickOpenTicket').querySelector('h2'); if(title) title.textContent='Confirme os dados do atendimento';
     const info=$('quickOpenTicket').querySelector('.quick-info'); if(info) info.textContent='Ao abrir o chamado, o equipamento identificado ficará como Aguardando manutenção até a equipe técnica assumir.';
+    setTimeout(() => $('quickOpenTicket')?.querySelector('button[type="submit"]')?.focus(), 0);
   }
 
   async function resolved(){
+    handoffMode = false;
     transcript=[];
     $('quickBot').hidden=true;
     $('quickStart').hidden=false;
@@ -113,6 +117,7 @@
     armed=true; ensureUi();
     $('quickBotName').textContent=config.bot_name||'Assistente RRN';
     observer=new MutationObserver(()=>{
+      if (handoffMode) return;
       const ticket=$('quickOpenTicket'); const bot=$('quickBot');
       if(!ticket||!bot||ticket.hidden) return;
       if($('quickChat') && !$('quickChat').hidden) return;
