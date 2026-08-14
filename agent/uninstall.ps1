@@ -1,0 +1,24 @@
+$ErrorActionPreference = 'Stop'
+
+function Test-Administrator {
+  $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+  $principal = New-Object Security.Principal.WindowsPrincipal($identity)
+  return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+if (-not (Test-Administrator)) {
+  if (-not $PSCommandPath) { throw 'Salve este script em um arquivo .ps1 antes de executá-lo.' }
+  Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+  exit
+}
+
+schtasks.exe /Delete /TN 'RRN Agent - 08h' /F 2>$null | Out-Null
+schtasks.exe /Delete /TN 'RRN Agent - 18h' /F 2>$null | Out-Null
+
+$installDir = Join-Path $env:ProgramFiles 'RRN Manager Agent'
+$configDir = Join-Path $env:ProgramData 'RRN Manager Agent'
+
+if (Test-Path $installDir) { Remove-Item -Recurse -Force $installDir }
+if (Test-Path $configDir) { Remove-Item -Recurse -Force $configDir }
+
+Write-Host 'RRN Agent removido desta máquina.' -ForegroundColor Green
