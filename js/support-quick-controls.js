@@ -47,11 +47,13 @@
     const label = document.getElementById('quickTicketNumber');
     if (!label) return;
     const number = protocolFromHeader();
-    if (number) label.textContent = `Protocolo #${number}`;
+    if (!number) return;
+    const next = `Protocolo #${number}`;
+    if (label.textContent !== next) label.textContent = next;
   }
 
   function showFinished(ticket = {}) {
-    const views = ['quickStart','quickIdentify','quickOpenTicket','quickChat','quickFinished'];
+    const views = ['quickStart','quickIdentify','quickOpenTicket','quickBot','quickChat','quickFinished'];
     views.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.hidden = id !== 'quickFinished';
@@ -111,7 +113,7 @@
   async function newAttendance() {
     try { await client.auth.signOut(); } catch {}
     ['quickIdentifyForm','quickTicketForm','quickMessageForm'].forEach(id => document.getElementById(id)?.reset?.());
-    const views = ['quickStart','quickIdentify','quickOpenTicket','quickChat','quickFinished'];
+    const views = ['quickStart','quickIdentify','quickOpenTicket','quickBot','quickChat','quickFinished'];
     views.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.hidden = id !== 'quickStart';
