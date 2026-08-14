@@ -3,7 +3,8 @@
   if (window.__RRN_SETTINGS_AGENT__) return;
   window.__RRN_SETTINGS_AGENT__ = true;
 
-  const RELEASE_ZIP = 'https://github.com/Rubertt12/Sistema-de-Inventario/releases/download/rrn-agent-latest/RRN-Agent-Windows-x64.zip';
+  const RELEASE_BASE = 'https://github.com/Rubertt12/Sistema-de-Inventario/releases/download/rrn-agent-latest';
+  const RELEASE_ZIP = `${RELEASE_BASE}/RRN-Agent-Windows-x64.zip`;
   const state = { devices: [], token: null, command: '', loading: false };
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -24,7 +25,7 @@
   }
 
   function commandFor(code) {
-    const scriptUrl = `${location.origin}/agent/install.ps1`;
+    const scriptUrl = `${RELEASE_BASE}/install.ps1`;
     return `$p = Join-Path $env:TEMP 'rrn-install.ps1'; Invoke-WebRequest '${scriptUrl}' -OutFile $p; powershell.exe -NoProfile -ExecutionPolicy Bypass -File $p -EnrollmentCode '${code}'`;
   }
 
@@ -78,6 +79,7 @@
     const button = document.createElement('button');
     button.type = 'button';
     button.dataset.settingsAgentNav = 'agent';
+    button.dataset.settingsNav = 'agent';
     button.setAttribute('role','tab');
     button.setAttribute('aria-selected','false');
     button.innerHTML = '<span>05</span><div><strong>Agente RRN</strong><small>Windows e inventário automático</small></div>';
@@ -87,6 +89,8 @@
     const panel = document.createElement('section');
     panel.className = 'settings-panel';
     panel.dataset.settingsAgentPanel = 'agent';
+    panel.dataset.settingsPanel = 'agent';
+    panel.setAttribute('role','tabpanel');
     panel.hidden = true;
     content.appendChild(panel);
 
