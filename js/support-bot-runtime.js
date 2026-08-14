@@ -12,6 +12,7 @@
   let transcript = [];
   let armed = false;
   let handoffMode = false;
+  let handoffBusy = false;
 
   function ensureUi(){
     if ($('quickBot')) return;
@@ -101,21 +102,72 @@
     }
   }
 
-  function handoff(){
-    handoffMode = true;
+  async function autoAssignLatestTicket(){
+    try{
+      const requester=await customerId();
+      if(!requester) return;
+      for(let attempt=0; attempt<10; attempt++){
+        const {data,error}=await client.from('support_tickets')
+          .select('id,status,assigned_to,ticket_number')
+          .eq('requester_id',requester)
+          .not('status','eq','closed')
+          .order('opened_at',{ascending:false})
+          .limit(1);
+        if(!error && data?.[0]?.id){
+          const ticket=data[0];
+          if(!ticket.assigned_to){
+            const {data:assignment,error:assignError}=await client.rpc('support_auto_assign_ticket',{p_ticket_id:ticket.id});
+            if(assignError) console.warn('RRN auto assignment:',assignError);
+            else {
+              const row=Array.isArray(assignment)?assignment[0]:assignment;
+              window.dispatchEvent(new CustomEvent('rrn:support-assignment',{detail:row||{assignment_status:'queued'}}));
+            }
+          }
+          return;
+        }
+        await new Promise(resolve=>setTimeout(resolve,250));
+      }
+    }catch(error){ console.warn('RRN auto assignment:',error); }
+  }
+
+  async function handoff(){
+    if(handoffBusy) return;
+    handoffBusy=true;
+    handoffMode=true;
+    const btn=$('quickBotHandoff');
+    if(btn){ btn.disabled=true; btn.textContent='Encaminhando...'; }
+
     const machine=$('quickBotAsset')?.value.trim()||'';
     const summary=transcript.filter(x=>x.type==='user').map(x=>x.text).join('\n');
     if($('quickMachine')) $('quickMachine').value=machine;
     if($('quickProblem')) $('quickProblem').value=summary||'Solicitação encaminhada pela triagem automática.';
+
+    addMessage('bot','Certo. Vou abrir seu protocolo e procurar um atendente disponível agora.');
+
+    // Mantém a confirmação invisível para o usuário e dispara o fluxo já existente de criação.
     if(window.RRNSupportQuick?.showOnly) window.RRNSupportQuick.showOnly('quickOpenTicket');
     else { $('quickBot').hidden=true; $('quickOpenTicket').hidden=false; }
-    const title=$('quickOpenTicket').querySelector('h2'); if(title) title.textContent='Confirme os dados do atendimento';
-    const info=$('quickOpenTicket').querySelector('.quick-info'); if(info) info.textContent='Ao abrir o chamado, o equipamento identificado ficará como Aguardando manutenção até a equipe técnica assumir.';
-    setTimeout(() => $('quickOpenTicket')?.querySelector('button[type="submit"]')?.focus(), 0);
+
+    const form=$('quickTicketForm');
+    const submit=form?.querySelector('button[type="submit"]');
+    if(submit) submit.textContent='Encaminhando ao suporte...';
+
+    setTimeout(()=>{
+      try{
+        if(form?.requestSubmit) form.requestSubmit();
+        else submit?.click();
+        autoAssignLatestTicket();
+      }catch(error){
+        console.error('RRN bot handoff:',error);
+        handoffBusy=false;
+        if(btn){ btn.disabled=false; btn.textContent='Falar com atendente'; }
+      }
+    },0);
   }
 
   async function resolved(){
     handoffMode = false;
+    handoffBusy = false;
     transcript=[];
     if(window.RRNSupportQuick?.showOnly) window.RRNSupportQuick.showOnly('quickStart');
     else { $('quickBot').hidden=true; $('quickStart').hidden=false; }
@@ -131,7 +183,8 @@
     window.addEventListener('rrn:support-view',event=>{
       const id=event.detail?.id;
       if(id==='quickOpenTicket' && !handoffMode) showBot();
-      if(id==='quickChat' || id==='quickFinished' || id==='quickStart' || id==='quickIdentify') handoffMode=false;
+      if(id==='quickChat') { handoffBusy=false; }
+      if(id==='quickFinished' || id==='quickStart' || id==='quickIdentify') { handoffMode=false; handoffBusy=false; }
     });
     if($('quickOpenTicket') && !$('quickOpenTicket').hidden) showBot();
   }
