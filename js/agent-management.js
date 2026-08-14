@@ -99,7 +99,7 @@
 
   function commandFor(code) {
     const scriptUrl = `${siteBase}/agent/install.ps1`;
-    return `powershell -NoProfile -ExecutionPolicy Bypass -Command "$p=Join-Path $env:TEMP 'rrn-install.ps1'; Invoke-WebRequest '${scriptUrl}' -OutFile $p; & $p -EnrollmentCode '${code}'"`;
+    return `$p = Join-Path $env:TEMP 'rrn-install.ps1'; Invoke-WebRequest '${scriptUrl}' -OutFile $p; powershell.exe -NoProfile -ExecutionPolicy Bypass -File $p -EnrollmentCode '${code}'`;
   }
 
   function render() {
