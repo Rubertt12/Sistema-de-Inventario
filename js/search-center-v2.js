@@ -7,6 +7,31 @@
   const norm = value => String(value ?? '').trim().toLowerCase();
   let timer = null;
 
+  function ensureSearchContrastStyles() {
+    if (document.getElementById('rrnSearchContrastFix')) return;
+    const style = document.createElement('style');
+    style.id = 'rrnSearchContrastFix';
+    style.textContent = `
+      .rrn-navbar-search-results{color:#24323a!important}
+      .rrn-navbar-search-caption{color:#687780!important}
+      .rrn-navbar-search-card{background:#fff!important;color:#24323a!important}
+      .rrn-navbar-search-machine{color:#24323a!important;background:#fff!important}
+      .rrn-navbar-search-machine strong{color:#17394a!important;opacity:1!important;-webkit-text-fill-color:#17394a!important}
+      .rrn-navbar-search-machine span{color:#465761!important;opacity:1!important;-webkit-text-fill-color:#465761!important}
+      .rrn-navbar-search-machine small{color:#687780!important;opacity:1!important;-webkit-text-fill-color:#687780!important}
+      .rrn-navbar-search-empty{color:#465761!important}
+      :root[data-theme="dark"] .rrn-navbar-search-results{color:#e8f0f2!important}
+      :root[data-theme="dark"] .rrn-navbar-search-caption{color:#a8b6bc!important}
+      :root[data-theme="dark"] .rrn-navbar-search-card,
+      :root[data-theme="dark"] .rrn-navbar-search-machine{background:#1b2a30!important;color:#e8f0f2!important}
+      :root[data-theme="dark"] .rrn-navbar-search-machine strong{color:#f2f7f8!important;-webkit-text-fill-color:#f2f7f8!important}
+      :root[data-theme="dark"] .rrn-navbar-search-machine span{color:#c8d4d8!important;-webkit-text-fill-color:#c8d4d8!important}
+      :root[data-theme="dark"] .rrn-navbar-search-machine small{color:#9fb0b6!important;-webkit-text-fill-color:#9fb0b6!important}
+      :root[data-theme="dark"] .rrn-navbar-search-empty{color:#c8d4d8!important}
+    `;
+    document.head.appendChild(style);
+  }
+
   function getSectors() {
     try { if (typeof setores !== 'undefined' && Array.isArray(setores)) return setores; } catch {}
     try {
@@ -121,6 +146,7 @@
   function boot() {
     const input = document.getElementById('searchInput');
     if (!input) return;
+    ensureSearchContrastStyles();
 
     // A busca existente vira consulta global; não cria aba nova e não altera Dashboard/Inventário.
     input.removeAttribute('onkeyup');
