@@ -14,3 +14,8 @@ grant select, insert on table public.tenant_inventory_snapshots to authenticated
 
 revoke all privileges on table public.dashboard_preferences from authenticated;
 grant select, insert, update on table public.dashboard_preferences to authenticated;
+
+-- Migração legada é operação administrativa pontual; não precisa ficar exposta ao navegador.
+revoke execute on function public.migrate_legacy_inventory() from public;
+revoke execute on function public.migrate_legacy_inventory() from anon;
+revoke execute on function public.migrate_legacy_inventory() from authenticated;
