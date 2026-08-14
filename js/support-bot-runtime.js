@@ -10,7 +10,6 @@
   const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let config = null;
   let transcript = [];
-  let observer = null;
   let armed = false;
   let handoffMode = false;
 
@@ -89,42 +88,10 @@
     finally{ btn.disabled=false; }
   }
 
-  function handoff(){
-    handoffMode = true;
-    const machine=$('quickBotAsset')?.value.trim()||'';
-    const summary=transcript.filter(x=>x.type==='user').map(x=>x.text).join('\n');
-    if($('quickMachine')) $('quickMachine').value=machine;
-    if($('quickProblem')) $('quickProblem').value=summary||'Solicitação encaminhada pela triagem automática.';
-    $('quickBot').hidden=true;
-    $('quickOpenTicket').hidden=false;
-    const title=$('quickOpenTicket').querySelector('h2'); if(title) title.textContent='Confirme os dados do atendimento';
-    const info=$('quickOpenTicket').querySelector('.quick-info'); if(info) info.textContent='Ao abrir o chamado, o equipamento identificado ficará como Aguardando manutenção até a equipe técnica assumir.';
-    setTimeout(() => $('quickOpenTicket')?.querySelector('button[type="submit"]')?.focus(), 0);
-  }
-
-  async function resolved(){
-    handoffMode = false;
-    transcript=[];
-    $('quickBot').hidden=true;
-    $('quickStart').hidden=false;
-    try{ await client.auth.signOut(); }catch{}
-  }
-
-  function shouldShowBot(){
-    const ticket=$('quickOpenTicket');
-    const bot=$('quickBot');
-    const chat=$('quickChat');
-    const finished=$('quickFinished');
-    if(!ticket||!bot||handoffMode) return false;
-    if(ticket.hidden) return false;
-    if(chat && !chat.hidden) return false;
-    if(finished && !finished.hidden) return false;
-    return true;
-  }
-
-  function enterBot(){
-    if(!shouldShowBot()) return;
-    const ticket=$('quickOpenTicket'); const bot=$('quickBot');
+  function showBot(){
+    if(!armed || handoffMode) return;
+    const bot=$('quickBot'); const ticket=$('quickOpenTicket');
+    if(!bot||!ticket) return;
     ticket.hidden=true;
     bot.hidden=false;
     if(!bot.dataset.started){
@@ -134,15 +101,39 @@
     }
   }
 
+  function handoff(){
+    handoffMode = true;
+    const machine=$('quickBotAsset')?.value.trim()||'';
+    const summary=transcript.filter(x=>x.type==='user').map(x=>x.text).join('\n');
+    if($('quickMachine')) $('quickMachine').value=machine;
+    if($('quickProblem')) $('quickProblem').value=summary||'Solicitação encaminhada pela triagem automática.';
+    if(window.RRNSupportQuick?.showOnly) window.RRNSupportQuick.showOnly('quickOpenTicket');
+    else { $('quickBot').hidden=true; $('quickOpenTicket').hidden=false; }
+    const title=$('quickOpenTicket').querySelector('h2'); if(title) title.textContent='Confirme os dados do atendimento';
+    const info=$('quickOpenTicket').querySelector('.quick-info'); if(info) info.textContent='Ao abrir o chamado, o equipamento identificado ficará como Aguardando manutenção até a equipe técnica assumir.';
+    setTimeout(() => $('quickOpenTicket')?.querySelector('button[type="submit"]')?.focus(), 0);
+  }
+
+  async function resolved(){
+    handoffMode = false;
+    transcript=[];
+    if(window.RRNSupportQuick?.showOnly) window.RRNSupportQuick.showOnly('quickStart');
+    else { $('quickBot').hidden=true; $('quickStart').hidden=false; }
+    try{ await client.auth.signOut(); }catch{}
+  }
+
   async function activate(){
     if(armed) return;
     config=await loadConfig();
     if(!config?.enabled) return;
     armed=true; ensureUi();
     $('quickBotName').textContent=config.bot_name||'Assistente RRN';
-    observer=new MutationObserver(()=>enterBot());
-    observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:['hidden']});
-    enterBot();
+    window.addEventListener('rrn:support-view',event=>{
+      const id=event.detail?.id;
+      if(id==='quickOpenTicket' && !handoffMode) showBot();
+      if(id==='quickChat' || id==='quickFinished' || id==='quickStart' || id==='quickIdentify') handoffMode=false;
+    });
+    if($('quickOpenTicket') && !$('quickOpenTicket').hidden) showBot();
   }
 
   function boot(){ ensureUi(); activate(); }
