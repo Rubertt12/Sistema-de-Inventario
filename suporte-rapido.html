@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/style/rrn-theme-v2.css" />
   <link rel="stylesheet" href="/style/support-quick.css" />
   <link rel="stylesheet" href="/style/support-quick-controls.css" />
+  <link rel="stylesheet" href="/style/support-bot-runtime.css" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
 <body class="quick-body">
@@ -46,7 +47,7 @@
       <span class="quick-eyebrow">Novo chamado</span>
       <h2>O que está acontecendo?</h2>
       <form id="quickTicketForm" class="quick-form">
-        <label><span>Equipamento</span><input id="quickMachine" placeholder="Patrimônio, serial ou hostname" /></label>
+        <label><span>Equipamento</span><input id="quickMachine" placeholder="Patrimônio, serial, hostname ou usuário responsável" /></label>
         <label><span>Problema</span><textarea id="quickProblem" required rows="5" placeholder="Descreva o problema com o máximo de clareza."></textarea></label>
         <div class="quick-info">A prioridade será definida pela equipe de suporte após a triagem.</div>
         <button class="quick-btn primary" type="submit">Abrir chamado</button>
@@ -73,6 +74,7 @@
   <script src="/js/supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/support-quick.js"></script>
+  <script src="/js/support-bot-runtime.js"></script>
   <script src="/js/support-quick-controls.js"></script>
 </body>
 </html>
