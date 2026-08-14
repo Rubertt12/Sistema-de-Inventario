@@ -30,11 +30,11 @@
       <h2>Só precisamos saber quem está falando.</h2>
       <form id="quickIdentifyForm" class="quick-form">
         <label><span>Nome completo</span><input id="quickName" required autocomplete="name" /></label>
-        <label><span>Código da empresa</span><input id="quickOrg" required placeholder="ex: minha-empresa" /></label>
+        <label><span>Empresa <small>(opcional)</small></span><input id="quickOrg" placeholder="O RRN identifica automaticamente quando possível" /></label>
         <label><span>E-mail</span><input id="quickEmail" type="email" autocomplete="email" placeholder="voce@empresa.com" /></label>
         <label><span>Telefone</span><input id="quickPhone" type="tel" autocomplete="tel" placeholder="(51) 99999-9999" /></label>
         <label><span>Matrícula <small>(opcional)</small></span><input id="quickEmployee" /></label>
-        <p class="quick-hint">Informe pelo menos e-mail ou telefone para facilitar o retorno.</p>
+        <p class="quick-hint">Informe pelo menos e-mail ou telefone para facilitar o retorno. A empresa é identificada automaticamente quando há apenas um portal disponível.</p>
         <button class="quick-btn primary" type="submit">Continuar</button>
       </form>
       <div class="quick-alert" id="quickIdentifyAlert" hidden></div>
