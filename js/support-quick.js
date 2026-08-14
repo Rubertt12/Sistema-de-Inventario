@@ -21,11 +21,15 @@
   const normalizeSlug = value => String(value || '').trim().toLowerCase().replace(/\s+/g,'-');
 
   function showOnly(id) {
-    ['quickStart','quickIdentify','quickOpenTicket','quickChat'].forEach(view => { $(view).hidden = view !== id; });
+    ['quickStart','quickIdentify','quickOpenTicket','quickBot','quickChat','quickFinished'].forEach(view => {
+      const el = $(view);
+      if (el) el.hidden = view !== id;
+    });
   }
 
   function alertBox(id, message = '', success = false) {
     const el = $(id);
+    if (!el) return;
     if (!message) { el.hidden = true; el.textContent = ''; return; }
     el.hidden = false;
     el.textContent = message;
@@ -46,7 +50,7 @@
   async function startGuest(event) {
     event?.preventDefault();
     showOnly('quickIdentify');
-    setTimeout(() => $('quickName').focus(), 0);
+    setTimeout(() => $('quickName')?.focus(), 0);
   }
 
   async function identify(event) {
@@ -114,7 +118,7 @@
     }
     if (data?.[0]) {
       state.ticket = data[0];
-      await openChat();
+      openChat();
     }
   }
 
@@ -139,7 +143,10 @@
       }).select('*').single();
       if (error) throw error;
       state.ticket = data;
-      await openChat();
+
+      // A troca de tela acontece imediatamente após o 201 do backend.
+      // Carregamento de mensagens/realtime não pode prender o usuário em "Abrindo...".
+      openChat();
     } catch (error) {
       console.error('RRN suporte rápido - abrir chamado:', error);
       alertBox('quickTicketAlert', friendlyError(error,'Não foi possível abrir o chamado.'));
@@ -149,12 +156,12 @@
     }
   }
 
-  async function openChat() {
+  function openChat() {
     if (!state.ticket) return;
     showOnly('quickChat');
     renderTicket();
-    await loadMessages();
     subscribe();
+    Promise.resolve(loadMessages()).catch(error => console.error('RRN suporte rápido - carregar mensagens:', error));
   }
 
   function renderTicket() {
