@@ -11,6 +11,18 @@
   <link rel="stylesheet" href="/style/rrn-theme-v2.css" />
   <link rel="stylesheet" href="/style/support-portal.css" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
+  <style>
+    .support-chat-back {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      margin-bottom: 1rem;
+      color: var(--rrn-primary, #295991);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .support-chat-back:hover { text-decoration: underline; }
+  </style>
 </head>
 <body class="support-portal-body">
   <div class="support-shell">
@@ -22,6 +34,7 @@
       <section class="support-auth-wrap" id="supportAuthView">
         <div class="support-auth-copy"><span class="support-eyebrow">Suporte sem burocracia</span><h1>Abra seu chamado e acompanhe tudo em uma conversa.</h1><p>Identifique o equipamento, descreva o problema e fale diretamente com o suporte. Se o ativo já estiver no inventário, o RRN Manager relaciona automaticamente patrimônio, serial e setor.</p><div class="support-auth-points"><article><strong>Equipamento reconhecido</strong><small>Busca por patrimônio, número de série ou hostname.</small></article><article><strong>SLA visível</strong><small>Acompanhe o tempo de primeira resposta e resolução.</small></article><article><strong>Histórico completo</strong><small>Mensagens e solução ficam vinculadas ao chamado.</small></article></div></div>
         <section class="support-auth-card" aria-label="Acesso ao portal">
+          <a class="support-chat-back" href="/suporte-rapido.html">← Voltar ao início do chat</a>
           <div class="support-tabs"><button type="button" class="active" data-auth-tab="login">Entrar</button><button type="button" data-auth-tab="register">Primeiro acesso</button></div>
           <form class="support-form" id="supportLoginForm"><label class="support-field"><span>E-mail</span><input type="email" id="supportLoginEmail" autocomplete="email" required /></label><label class="support-field"><span>Senha</span><input type="password" id="supportLoginPassword" autocomplete="current-password" required minlength="6" /></label><button class="support-btn primary" type="submit">Entrar no portal</button><p class="support-form-note">Esta área é destinada ao colaborador que abre e acompanha chamados. Equipe de suporte usa o acesso interno.</p></form>
           <form class="support-form" id="supportRegisterForm" hidden><label class="support-field"><span>Nome completo</span><input type="text" id="supportRegisterName" autocomplete="name" required /></label><label class="support-field"><span>E-mail</span><input type="email" id="supportRegisterEmail" autocomplete="email" required /></label><label class="support-field"><span>Senha</span><input type="password" id="supportRegisterPassword" autocomplete="new-password" minlength="6" required /></label><label class="support-field"><span>Código da empresa</span><input type="text" id="supportRegisterOrg" placeholder="ex: minha-empresa" required /></label><label class="support-field"><span>Matrícula <small>(opcional)</small></span><input type="text" id="supportRegisterEmployee" /></label><label class="support-field"><span>Telefone <small>(opcional)</small></span><input type="tel" id="supportRegisterPhone" autocomplete="tel" /></label><button class="support-btn primary" type="submit">Criar acesso ao suporte</button><p class="support-form-note" id="supportOrgHint">Use o código fornecido pela sua empresa.</p></form>
