@@ -68,6 +68,7 @@
     const path = location.pathname.toLowerCase();
     if (path.endsWith('/dashboard.html') || document.getElementById('setoresContainer')) {
       loadScript('/js/dashboard-appearance-runtime-v2.js?v=20260814-1', 'data-rrn-dashboard-appearance-runtime-v2');
+      loadScript('/js/responsible-identity-v2.js?v=20260814-1', 'data-rrn-responsible-identity-v2');
     }
     if (path.endsWith('/configuracoes.html')) {
       loadScript('/js/settings-appearance-extras-v2.js?v=20260814-1', 'data-rrn-settings-appearance-extras-v2');
