@@ -1,0 +1,2 @@
+Trigger de deploy após reconexão Git/Vercel.
+Data local: 2026-08-14 09:52 -03:00
