@@ -9,9 +9,14 @@
 
   function getClient(){
     if(client) return client;
+    client = window.RRN_GET_SUPABASE_CLIENT?.() || window.RRN_SUPABASE_CLIENT || null;
+    if (client) return client;
+
     const cfg=window.RRN_SUPABASE||{};
     if(!cfg.url||!cfg.anonKey||!window.supabase?.createClient) return null;
-    client=window.supabase.createClient(cfg.url,cfg.anonKey); return client;
+    client=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    window.RRN_SUPABASE_CLIENT = client;
+    return client;
   }
 
   function ensureUi(){
