@@ -23,6 +23,9 @@
   const originalSetItem = Storage.prototype.setItem;
   const originalRemoveItem = Storage.prototype.removeItem;
   let syncTimer = null;
+  let idleTimer = null;
+  let lastActivityAt = Date.now();
+  let idleGuardInstalled = false;
 
   function addStyle() {
     if (document.querySelector('link[data-rrn-enterprise]')) return;
@@ -139,7 +142,7 @@
   }
 
   function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   }
 
   function setDisplay(selector, visible, display = '') {
@@ -213,14 +216,90 @@
     setTimeout(enforceRoleUi, 250);
   }
 
-  async function secureLogout() {
-    try { await pushState(); } catch {}
-    try { await client.auth.signOut(); } catch {}
+  function clearLocalSessionState() {
+    clearTimeout(idleTimer);
     for (const key of syncKeys) originalRemoveItem.call(localStorage, key);
     originalRemoveItem.call(localStorage, 'usuarioLogado');
     purgeLegacyCredentials();
     sessionStorage.removeItem('rrn_hydrated_tenant');
+  }
+
+  async function secureLogout() {
+    try { await pushState(); } catch {}
+    try { await client.auth.signOut({ scope: 'local' }); } catch {}
+    clearLocalSessionState();
     location.replace('index.html');
+  }
+
+  async function signOutOtherSessions() {
+    const { error } = await client.auth.signOut({ scope: 'others' });
+    if (error) throw error;
+    return true;
+  }
+
+  async function signOutAllSessions() {
+    try { await pushState(); } catch {}
+    const { error } = await client.auth.signOut({ scope: 'global' });
+    if (error) throw error;
+    clearLocalSessionState();
+    location.replace('/login.html');
+    return true;
+  }
+
+  function idleStorageKey() {
+    return `rrn_idle_timeout_minutes_${profile?.user_id || 'user'}`;
+  }
+
+  function getIdleMinutes() {
+    const raw = localStorage.getItem(idleStorageKey());
+    if (raw == null || raw === '') return 120;
+    const value = Number(raw);
+    return Number.isFinite(value) && value >= 0 ? value : 120;
+  }
+
+  function scheduleIdleLogout() {
+    clearTimeout(idleTimer);
+    const minutes = getIdleMinutes();
+    if (!minutes) return;
+    const timeoutMs = minutes * 60 * 1000;
+    const remaining = timeoutMs - (Date.now() - lastActivityAt);
+    if (remaining <= 0) {
+      sessionStorage.setItem('rrn_logout_reason', 'idle');
+      secureLogout().catch(console.warn);
+      return;
+    }
+    idleTimer = setTimeout(() => {
+      sessionStorage.setItem('rrn_logout_reason', 'idle');
+      secureLogout().catch(console.warn);
+    }, remaining);
+  }
+
+  function markActivity() {
+    lastActivityAt = Date.now();
+    scheduleIdleLogout();
+  }
+
+  function setIdleMinutes(value) {
+    const minutes = Number(value);
+    if (!Number.isFinite(minutes) || minutes < 0) throw new Error('Tempo de inatividade inválido.');
+    originalSetItem.call(localStorage, idleStorageKey(), String(minutes));
+    lastActivityAt = Date.now();
+    scheduleIdleLogout();
+    window.dispatchEvent(new CustomEvent('rrn:idle-timeout-updated', { detail: { minutes } }));
+    return minutes;
+  }
+
+  function installIdleGuard() {
+    if (idleGuardInstalled) return;
+    idleGuardInstalled = true;
+    const options = { passive: true, capture: true };
+    window.addEventListener('pointerdown', markActivity, options);
+    window.addEventListener('touchstart', markActivity, options);
+    window.addEventListener('keydown', markActivity, { capture: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') markActivity();
+    });
+    scheduleIdleLogout();
   }
 
   async function boot() {
@@ -248,6 +327,13 @@
     });
 
     window.RRN_SECURE_LOGOUT = secureLogout;
+    window.RRN_SESSION_SECURITY = Object.freeze({
+      signOutOthers: signOutOtherSessions,
+      signOutAll: signOutAllSessions,
+      getIdleMinutes,
+      setIdleMinutes
+    });
+    installIdleGuard();
     window.dispatchEvent(new CustomEvent('rrn:session-ready', { detail: window.RRN_SESSION }));
 
     if (await hydrate()) return;
