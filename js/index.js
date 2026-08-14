@@ -26,7 +26,6 @@
     addStylesheet('/style/search-center-v2.css', 'data-rrn-search-center-v2');
     addStylesheet('/style/maintenance-drawer-v2.css', 'data-rrn-maintenance-drawer-v2');
     addStylesheet('/style/maintenance-mobile-ear-v3.css?v=20260814-1', 'data-rrn-maintenance-mobile-ear-v3');
-    addStylesheet('/style/agent-management.css?v=20260814-1', 'data-rrn-agent-management');
     addStylesheet('/style/color-coherence-v3.css', 'data-rrn-color-coherence-v3');
   }
 
@@ -177,7 +176,6 @@
     if (isDashboard) {
       await load('/js/tenant-runtime.js');
       await load('/js/remote-inventory-sync.js');
-      await load('/js/agent-management.js?v=20260814-1');
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
       await load('/js/password-management.js');
