@@ -27,6 +27,12 @@
     return null;
   }
 
+  async function trustedDevice() {
+    if (!window.RRN_MFA_TRUST?.isTrusted) return false;
+    try { return await window.RRN_MFA_TRUST.isTrusted(); }
+    catch { return false; }
+  }
+
   async function boot() {
     const client = await waitClient();
     if (!client) return;
@@ -45,9 +51,10 @@
 
     const { data: aal, error } = await client.auth.mfa.getAuthenticatorAssuranceLevel();
     if (error || !aal) return;
-    if (aal.currentLevel === 'aal2') return;
+    if (aal.currentLevel === 'aal2' || aal.rrnTrustedDevice) return;
 
     if (aal.nextLevel !== 'aal2') return;
+    if (await trustedDevice()) return;
 
     const next = `${location.pathname}${location.search}${location.hash}`;
     location.replace(`/login.html?mfa=required&next=${encodeURIComponent(next)}`);
