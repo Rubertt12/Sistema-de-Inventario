@@ -1,3 +1,3 @@
 RRN Manager production redeploy trigger
-2026-08-13T12:45:00-03:00
-publish-login-default-background-clean-mode
+2026-08-14T16:48:00-03:00
+force-production-deploy-latest-main
