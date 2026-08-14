@@ -159,6 +159,7 @@
 
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
     await load('/js/tenant-branding-runtime.js');
+    if (isDashboard) await load('/js/maintenance-waiting-queue.js');
 
     if (document.getElementById('formLogin')) {
       await load('/js/tenant-login-context.js');
