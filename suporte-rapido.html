@@ -60,6 +60,14 @@
       <div class="quick-messages" id="quickMessages"></div>
       <form class="quick-compose" id="quickMessageForm"><input id="quickMessageInput" autocomplete="off" placeholder="Digite sua mensagem..." /><button class="quick-btn primary" type="submit">Enviar</button></form>
     </section>
+
+    <section class="quick-card quick-finished" id="quickFinished" hidden>
+      <span class="quick-eyebrow">Atendimento encerrado</span>
+      <h2>Chamado finalizado.</h2>
+      <div class="quick-protocol"><span>Protocolo</span><strong id="quickProtocolNumber">#000000</strong></div>
+      <p id="quickFinishedMeta">Seu atendimento foi encerrado.</p>
+      <button class="quick-btn primary" id="quickNewAttendance" type="button">Voltar ao início do chat</button>
+    </section>
   </main>
 
   <script src="/js/supabase-config.js"></script>
