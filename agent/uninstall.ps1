@@ -15,6 +15,11 @@ if (-not (Test-Administrator)) {
 schtasks.exe /Delete /TN 'RRN Agent - 08h' /F 2>$null | Out-Null
 schtasks.exe /Delete /TN 'RRN Agent - 18h' /F 2>$null | Out-Null
 
+$runKey = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
+Remove-ItemProperty -Path $runKey -Name 'RRN Agent' -ErrorAction SilentlyContinue
+Get-Process 'RRN.Agent.Tray' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+Start-Sleep -Milliseconds 400
+
 $installDir = Join-Path $env:ProgramFiles 'RRN Manager Agent'
 $configDir = Join-Path $env:ProgramData 'RRN Manager Agent'
 
