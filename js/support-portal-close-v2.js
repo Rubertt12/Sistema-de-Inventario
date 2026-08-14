@@ -108,3 +108,12 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refresh, { once: true });
   else refresh();
 })();
+
+(() => {
+  if (document.querySelector('script[data-rrn-typing-indicator]')) return;
+  const script = document.createElement('script');
+  script.src = '/js/support-typing-indicator.js?v=20260814-1';
+  script.async = false;
+  script.dataset.rrnTypingIndicator = '1';
+  document.head.appendChild(script);
+})();
