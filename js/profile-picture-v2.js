@@ -64,10 +64,21 @@
     document.head.appendChild(script);
   }
 
+  function ensureDashboardHomeOverrides() {
+    if (document.getElementById('rrnDashboardHomeOverrides')) return;
+    const style = document.createElement('style');
+    style.id = 'rrnDashboardHomeOverrides';
+    style.textContent = `
+      #rrnDashboardHome [data-dashboard-customize]{display:none!important}
+    `;
+    document.head.appendChild(style);
+  }
+
   function installPageEnhancements() {
     const path = location.pathname.toLowerCase();
     if (path.endsWith('/dashboard.html') || document.getElementById('setoresContainer')) {
-      loadScript('/js/dashboard-appearance-runtime-v2.js?v=20260814-1', 'data-rrn-dashboard-appearance-runtime-v2');
+      ensureDashboardHomeOverrides();
+      loadScript('/js/dashboard-appearance-runtime-v2.js?v=20260814-2', 'data-rrn-dashboard-appearance-runtime-v2');
       loadScript('/js/responsible-identity-v2.js?v=20260814-1', 'data-rrn-responsible-identity-v2');
     }
     if (path.endsWith('/configuracoes.html')) {
