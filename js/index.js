@@ -25,6 +25,7 @@
     addStylesheet('/style/trash.css', 'data-rrn-trash');
     addStylesheet('/style/search-center-v2.css', 'data-rrn-search-center-v2');
     addStylesheet('/style/maintenance-drawer-v2.css', 'data-rrn-maintenance-drawer-v2');
+    addStylesheet('/style/maintenance-mobile-ear-v3.css?v=20260814-1', 'data-rrn-maintenance-mobile-ear-v3');
     addStylesheet('/style/color-coherence-v3.css', 'data-rrn-color-coherence-v3');
   }
 
@@ -133,6 +134,7 @@
       await load('/js/support-desk-link.js');
       await load('/js/settings-v2.js');
       await load('/js/maintenance-panel.js');
+      await load('/js/maintenance-mobile-gesture-v3.js?v=20260814-1');
       await load('/js/scanner.js');
       await load('/js/transfer-v2.js');
       await load('/js/machine-details-v2.js');
