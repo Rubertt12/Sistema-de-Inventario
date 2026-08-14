@@ -174,7 +174,7 @@
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
       await load('/js/password-management.js');
-      await load('/js/dashboard-customize.js');
+      await load('/js/dashboard-customize-v2.js');
       await load('/js/inventory-snapshots.js');
       window.verificarPermissoes?.();
       window.RRN_UI?.updateOverview?.();
