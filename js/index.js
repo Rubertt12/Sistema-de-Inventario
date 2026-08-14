@@ -17,6 +17,7 @@
     addStylesheet('/style/enterprise.css', 'data-rrn-enterprise');
     addStylesheet('/style/dashboard-ui.css', 'data-rrn-dashboard-ui');
     addStylesheet('/style/dashboard-tabs.css', 'data-rrn-dashboard-tabs');
+    addStylesheet('/style/dashboard-admin-tools.css', 'data-rrn-dashboard-admin-tools');
     addStylesheet('/style/grid-machine-details.css', 'data-rrn-grid-machine-details');
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
@@ -173,9 +174,13 @@
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
       await load('/js/password-management.js');
+      await load('/js/dashboard-customize.js');
+      await load('/js/inventory-snapshots.js');
       window.verificarPermissoes?.();
       window.RRN_UI?.updateOverview?.();
       window.RRN_TABS?.renderHome?.();
+      window.RRN_DASHBOARD_CUSTOMIZE?.refresh?.();
+      window.RRN_INVENTORY_SNAPSHOTS?.refresh?.();
       window.RRN_ICONS?.decorateStatic?.();
       window.RRN_GRID_DETAILS?.enhanceAll?.();
       window.RRN_COMPACT_ACTIONS?.enhance?.();
