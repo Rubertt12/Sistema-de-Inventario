@@ -21,13 +21,28 @@
     if (isDashboard) addStylesheet('/style/dark-inventory-fix.css', 'data-rrn-dark-inventory-fix');
   }
 
-  function ensureMfaGuard() {
+  function loadMfaGuard() {
     if (document.querySelector('script[data-rrn-mfa-guard]')) return;
     const script = document.createElement('script');
     script.src = '/js/mfa-guard.js';
     script.async = true;
     script.dataset.rrnMfaGuard = '1';
     document.head.appendChild(script);
+  }
+
+  function ensureMfaGuard() {
+    if (window.__RRN_MFA_TRUSTED_DEVICE__ || document.querySelector('script[data-rrn-mfa-trusted]')) {
+      if (window.__RRN_MFA_TRUSTED_DEVICE__) loadMfaGuard();
+      else document.querySelector('script[data-rrn-mfa-trusted]')?.addEventListener('load', loadMfaGuard, { once: true });
+      return;
+    }
+    const trusted = document.createElement('script');
+    trusted.src = '/js/mfa-trusted-device.js';
+    trusted.async = false;
+    trusted.dataset.rrnMfaTrusted = '1';
+    trusted.onload = loadMfaGuard;
+    trusted.onerror = loadMfaGuard;
+    document.head.appendChild(trusted);
   }
 
   function preferred() {
