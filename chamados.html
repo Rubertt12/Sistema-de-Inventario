@@ -37,6 +37,7 @@
       <button class="desk-filter" type="button" data-desk-filter="mine">Meus chamados</button>
       <button class="desk-filter" type="button" data-desk-filter="sla">SLA próximo</button>
       <button class="desk-filter" type="button" data-desk-filter="critical">Críticos</button>
+      <button class="desk-filter" type="button" data-desk-filter="closed">Finalizados</button>
     </nav>
 
     <section class="desk-grid">
@@ -48,7 +49,7 @@
             <div class="desk-detail-top"><div><small id="deskTicketNumber">Chamado</small><h2 id="deskTicketTitle">—</h2></div><div class="desk-detail-badges"><span class="desk-badge" id="deskTicketStatus">Novo</span><span class="desk-priority" id="deskTicketPriority">Média</span></div></div>
             <div class="desk-info-grid"><div class="desk-info-card"><span>Solicitante</span><strong id="deskRequesterName">—</strong><small id="deskRequesterMeta">—</small></div><div class="desk-info-card"><span>Equipamento / setor</span><strong id="deskAssetName">—</strong><small id="deskAssetMeta">—</small></div></div>
             <div class="desk-sla-row"><div class="desk-sla-box"><small>Primeira resposta</small><strong id="deskFirstResponseSla">—</strong></div><div class="desk-sla-box"><small>Resolução</small><strong id="deskResolutionSla">—</strong></div><div class="desk-sla-box"><small>Atendimento ativo</small><strong id="deskHandlingTime">—</strong></div></div>
-            <div class="desk-action-row" id="deskActionRow"><button class="desk-btn primary" type="button" id="deskClaimBtn">Assumir chamado</button><button class="desk-btn warning" type="button" id="deskWaitingBtn">Aguardando usuário</button><button class="desk-btn success" type="button" id="deskResolveBtn">Resolver chamado</button></div>
+            <div class="desk-action-row" id="deskActionRow"><button class="desk-btn primary" type="button" id="deskClaimBtn">Assumir chamado</button><button class="desk-btn warning" type="button" id="deskWaitingBtn">Aguardando usuário</button><button class="desk-btn success" type="button" id="deskResolveBtn">Resolver chamado</button><button class="desk-btn danger" type="button" id="deskCloseBtn">Encerrar atendimento</button></div>
           </header>
           <section class="desk-chat"><div class="desk-messages" id="deskMessages"></div><form class="desk-compose" id="deskMessageForm"><input type="text" id="deskMessageInput" placeholder="Responder ao solicitante..." autocomplete="off" /><button class="desk-btn primary" type="submit">Enviar</button></form></section>
         </article>
@@ -70,7 +71,7 @@
   <script src="/js/support-ticket-participation.js"></script>
   <script src="/js/support-desk-priority.js"></script>
   <script src="/js/support-desk-ui-fixes.js?v=20260814-2"></script>
-  <script src="/js/support-desk-close-v2.js?v=20260814-1"></script>
+  <script src="/js/support-desk-close-v2.js?v=20260814-2"></script>
   <script src="/js/support-desk-queue-toggle.js?v=20260814-1"></script>
 </body>
 </html>
