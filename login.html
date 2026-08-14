@@ -38,7 +38,7 @@
         </form>
         <form id="formRegister" class="auth-form" novalidate>
           <div class="form-grid two-columns"><label class="field"><span>Seu nome</span><input type="text" id="registerName" placeholder="Nome completo" autocomplete="name" required /></label><label class="field"><span>E-mail</span><input type="email" id="registerEmail" placeholder="seu@email.com" autocomplete="email" required /></label></div>
-          <label class="field"><span>Senha</span><div class="password-field"><input type="password" id="registerPassword" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" minlength="8" required /><button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Mostrar ou ocultar senha">Mostrar</button></div></label>
+          <label class="field"><span>Senha</span><div class="password-field"><input type="password" id="registerPassword" placeholder="12+ caracteres, com número e símbolo" autocomplete="new-password" minlength="12" required /><button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Mostrar ou ocultar senha">Mostrar</button></div></label>
           <label class="field"><span>Código de convite <small>(opcional)</small></span><input type="text" id="registerInvite" placeholder="Use somente se recebeu um convite" autocomplete="off" /><small>Com convite, você entra diretamente no ambiente definido pela empresa. Sem convite, o cadastro fica aguardando liberação do Administrador Geral.</small></label>
           <label class="terms-check"><input type="checkbox" id="acceptTerms" required /><span>Confirmo meus dados e solicito acesso ao RRN Manager.</span></label>
           <button type="submit" class="btn-primary" id="registerButton"><span>Criar acesso</span></button><p class="form-message" id="registerMsg" role="status"></p>
@@ -55,6 +55,7 @@
   <script src="/js/login-background-mode-v2.js"></script>
   <script src="/js/auth-preview-client-bridge.js"></script>
   <script src="/js/login-slide-mode.js"></script>
+  <script src="/js/login-password-policy-v2.js"></script>
   <script src="/js/rrn-auth-flow-fix.js"></script>
   <script src="/js/technician-registration.js"></script>
   <script src="/js/auth-mfa-v4.js"></script>
