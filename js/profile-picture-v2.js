@@ -50,17 +50,39 @@
       if (!value) return;
       apply(value);
       localStorage.setItem(storageKey(), value);
+      window.dispatchEvent(new CustomEvent('rrn:profile-image-change', { detail: { src: value } }));
     };
     reader.readAsDataURL(file);
+  }
+
+  function loadScript(src, marker) {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.setAttribute(marker, '1');
+    document.head.appendChild(script);
+  }
+
+  function installPageEnhancements() {
+    const path = location.pathname.toLowerCase();
+    if (path.endsWith('/dashboard.html') || document.getElementById('setoresContainer')) {
+      loadScript('/js/dashboard-appearance-runtime-v2.js?v=20260814-1', 'data-rrn-dashboard-appearance-runtime-v2');
+    }
+    if (path.endsWith('/configuracoes.html')) {
+      loadScript('/js/settings-appearance-extras-v2.js?v=20260814-1', 'data-rrn-settings-appearance-extras-v2');
+    }
   }
 
   function install() {
     window.changeProfilePicture = changeProfilePictureV2;
     load();
+    installPageEnhancements();
   }
 
   window.addEventListener('rrn:session-ready', load);
+  window.addEventListener('rrn:profile-image-change', event => apply(event.detail?.src));
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();
-  window.addEventListener('load', load);
+  window.addEventListener('load', () => { load(); installPageEnhancements(); });
 })();
