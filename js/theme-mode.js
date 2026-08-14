@@ -56,12 +56,21 @@
     apply(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
   }
 
+  function bindExistingButtons() {
+    document.querySelectorAll('[data-rrn-theme-toggle]').forEach(button => {
+      if (button.dataset.rrnThemeBound === '1') return;
+      button.dataset.rrnThemeBound = '1';
+      button.addEventListener('click', toggle);
+    });
+  }
+
   function makeButton(extra = '') {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `rrn-theme-toggle ${extra}`.trim();
     button.setAttribute('data-rrn-theme-toggle', '1');
     button.setAttribute('aria-label', 'Alternar tema claro e escuro');
+    button.dataset.rrnThemeBound = '1';
     button.addEventListener('click', toggle);
     return button;
   }
@@ -84,6 +93,7 @@
   function mount() {
     ensureThemeFixes();
     mountSecurityLink();
+    bindExistingButtons();
     if (document.querySelector('[data-rrn-theme-toggle]')) {
       syncButtons(document.documentElement.dataset.theme || preferred());
       return;
