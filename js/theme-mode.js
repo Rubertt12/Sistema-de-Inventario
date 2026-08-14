@@ -140,12 +140,6 @@
       const button = makeButton();
       topbar.insertBefore(button, topbar.lastElementChild);
       syncButtons(document.documentElement.dataset.theme || preferred());
-      return;
-    }
-
-    if (document.querySelector('.auth-shell')) {
-      document.body.appendChild(makeButton('rrn-theme-toggle--floating'));
-      syncButtons(document.documentElement.dataset.theme || preferred());
     }
   }
 
