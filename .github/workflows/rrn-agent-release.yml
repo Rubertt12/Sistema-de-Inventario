@@ -6,8 +6,10 @@ on:
     branches: [main]
     paths:
       - 'agent/RRN.Agent/**'
+      - 'agent/RRN.Agent.Tray/**'
       - 'agent/install.ps1'
       - 'agent/uninstall.ps1'
+      - 'img/icon-png.png'
       - '.github/workflows/rrn-agent-release.yml'
 
 permissions:
@@ -23,24 +25,32 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Publish Windows x64 single-file agent
+      - name: Publish Windows x64 agent and tray
         shell: pwsh
         run: |
           dotnet restore agent/RRN.Agent/RRN.Agent.csproj
-          dotnet publish agent/RRN.Agent/RRN.Agent.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false -o dist
-          Copy-Item agent/install.ps1 dist/install.ps1
-          Copy-Item agent/uninstall.ps1 dist/uninstall.ps1
-          Compress-Archive -Path dist/RRN.Agent.exe,dist/install.ps1,dist/uninstall.ps1 -DestinationPath dist/RRN-Agent-Windows-x64.zip -Force
+          dotnet restore agent/RRN.Agent.Tray/RRN.Agent.Tray.csproj
+          dotnet publish agent/RRN.Agent/RRN.Agent.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false -o dist/core
+          dotnet publish agent/RRN.Agent.Tray/RRN.Agent.Tray.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false -o dist/tray
+          New-Item -ItemType Directory -Force -Path package | Out-Null
+          Copy-Item dist/core/RRN.Agent.exe package/RRN.Agent.exe
+          Copy-Item dist/tray/RRN.Agent.Tray.exe package/RRN.Agent.Tray.exe
+          Copy-Item img/icon-png.png package/rrn-logo.png
+          Copy-Item agent/install.ps1 package/install.ps1
+          Copy-Item agent/uninstall.ps1 package/uninstall.ps1
+          Compress-Archive -Path package/RRN.Agent.exe,package/RRN.Agent.Tray.exe,package/rrn-logo.png,package/install.ps1,package/uninstall.ps1 -DestinationPath package/RRN-Agent-Windows-x64.zip -Force
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: RRN-Agent-Windows-x64
           path: |
-            dist/RRN.Agent.exe
-            dist/install.ps1
-            dist/uninstall.ps1
-            dist/RRN-Agent-Windows-x64.zip
+            package/RRN.Agent.exe
+            package/RRN.Agent.Tray.exe
+            package/rrn-logo.png
+            package/install.ps1
+            package/uninstall.ps1
+            package/RRN-Agent-Windows-x64.zip
 
       - name: Replace rolling release
         shell: bash
@@ -49,9 +59,11 @@ jobs:
         run: |
           gh release delete rrn-agent-latest --yes --cleanup-tag || true
           gh release create rrn-agent-latest \
-            dist/RRN.Agent.exe \
-            dist/install.ps1 \
-            dist/uninstall.ps1 \
-            dist/RRN-Agent-Windows-x64.zip \
+            package/RRN.Agent.exe \
+            package/RRN.Agent.Tray.exe \
+            package/rrn-logo.png \
+            package/install.ps1 \
+            package/uninstall.ps1 \
+            package/RRN-Agent-Windows-x64.zip \
             --title "RRN Agent Windows (latest)" \
-            --notes "Build automático do RRN Agent Windows x64. O instalador registra sincronizações diárias às 08:00 e 18:00."
+            --notes "Build automático do RRN Agent Windows x64 com aplicativo de bandeja, sincronização manual e atualização do agente. O inventário automático continua às 08:00 e 18:00."
