@@ -32,6 +32,17 @@
     el.className = `quick-alert${success ? ' success' : ''}`;
   }
 
+  function friendlyError(error, fallback) {
+    const raw = String(error?.message || '').trim();
+    const lower = raw.toLowerCase();
+    if (lower.includes('anonymous') && (lower.includes('disabled') || lower.includes('not enabled'))) {
+      return 'O atendimento sem senha ainda não está habilitado no servidor. Entre com sua conta por enquanto ou peça ao administrador para habilitar o acesso anônimo do portal.';
+    }
+    if (lower.includes('portal') || lower.includes('empresa')) return raw || 'Não foi possível identificar a empresa.';
+    if (lower.includes('rate limit')) return 'Muitas tentativas em pouco tempo. Aguarde um momento e tente novamente.';
+    return raw || fallback;
+  }
+
   async function startGuest(event) {
     event?.preventDefault();
     showOnly('quickIdentify');
@@ -54,21 +65,22 @@
     try {
       let { data: sessionData } = await client.auth.getSession();
       let user = sessionData?.session?.user;
-      if (!user?.is_anonymous) {
+      if (user && !user.is_anonymous) {
         await client.auth.signOut();
         user = null;
       }
       if (!user) {
         const { data, error } = await client.auth.signInAnonymously({
-          options: { data: { name, rrn_support_portal: true, rrn_support_tenant_slug: org } }
+          options: { data: { name, rrn_support_portal: true, rrn_support_tenant_slug: org || null } }
         });
         if (error) throw error;
         user = data.user;
       }
+      if (!user?.is_anonymous) throw new Error('Não foi possível criar a sessão temporária de atendimento.');
       state.user = user;
 
       const { data: customer, error: bootstrapError } = await client.rpc('support_guest_bootstrap', {
-        p_portal_slug: org,
+        p_portal_slug: org || '',
         p_name: name,
         p_email: email || null,
         p_phone: phone || null,
@@ -76,12 +88,14 @@
       });
       if (bootstrapError) throw bootstrapError;
       state.customer = Array.isArray(customer) ? customer[0] : customer;
-      $('quickUserName').textContent = state.customer?.name || name;
-      $('quickCompany').textContent = org;
+      if (!state.customer?.id) throw new Error('Não foi possível concluir sua identificação.');
+      $('quickUserName').textContent = state.customer.name || name;
+      $('quickCompany').textContent = org || 'Ambiente identificado';
       showOnly('quickOpenTicket');
       await restoreLatestTicket();
     } catch (error) {
-      alertBox('quickIdentifyAlert', error.message || 'Não foi possível iniciar o atendimento sem login.');
+      console.error('RRN suporte rápido - identificação:', error);
+      alertBox('quickIdentifyAlert', friendlyError(error,'Não foi possível iniciar o atendimento sem login.'));
     } finally {
       submit.disabled = false;
       submit.textContent = 'Continuar';
@@ -90,10 +104,14 @@
 
   async function restoreLatestTicket() {
     if (!state.customer?.id) return;
-    const { data } = await client.from('support_tickets').select('*')
+    const { data, error } = await client.from('support_tickets').select('*')
       .eq('requester_id', state.customer.id)
       .not('status','eq','closed')
       .order('opened_at',{ascending:false}).limit(1);
+    if (error) {
+      console.error('RRN suporte rápido - restaurar chamado:', error);
+      return;
+    }
     if (data?.[0]) {
       state.ticket = data[0];
       await openChat();
@@ -110,6 +128,7 @@
     const title = problem.length > 72 ? `${problem.slice(0,69)}...` : problem;
     const submit = $('quickTicketForm').querySelector('button[type="submit"]');
     submit.disabled = true;
+    submit.textContent = 'Abrindo...';
     try {
       const { data, error } = await client.from('support_tickets').insert({
         requester_id: state.customer.id,
@@ -122,8 +141,12 @@
       state.ticket = data;
       await openChat();
     } catch (error) {
-      alertBox('quickTicketAlert', error.message || 'Não foi possível abrir o chamado.');
-    } finally { submit.disabled = false; }
+      console.error('RRN suporte rápido - abrir chamado:', error);
+      alertBox('quickTicketAlert', friendlyError(error,'Não foi possível abrir o chamado.'));
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Abrir chamado';
+    }
   }
 
   async function openChat() {
@@ -147,10 +170,14 @@
   }
 
   async function loadMessages() {
+    if (!state.ticket?.id) return;
     const { data, error } = await client.from('support_ticket_messages')
       .select('id,ticket_id,sender_id,sender_type,message,created_at')
       .eq('ticket_id',state.ticket.id).order('created_at',{ascending:true});
-    if (error) return;
+    if (error) {
+      console.error('RRN suporte rápido - mensagens:', error);
+      return;
+    }
     const box = $('quickMessages');
     if (!data?.length) {
       box.innerHTML = '<div class="quick-info">Chamado aberto. A equipe de suporte verá sua solicitação e poderá responder por aqui.</div>';
@@ -171,10 +198,16 @@
     if (!message) return;
     input.value = '';
     const { error } = await client.from('support_ticket_messages').insert({ ticket_id: state.ticket.id, message });
-    if (error) input.value = message;
+    if (error) {
+      console.error('RRN suporte rápido - enviar mensagem:', error);
+      input.value = message;
+      return;
+    }
+    await loadMessages();
   }
 
   function subscribe() {
+    if (!state.ticket?.id) return;
     if (state.messageChannel) client.removeChannel(state.messageChannel);
     if (state.ticketChannel) client.removeChannel(state.ticketChannel);
     state.messageChannel = client.channel(`guest-msg-${state.ticket.id}`)
@@ -198,25 +231,29 @@
   }
 
   async function restoreSession() {
-    const { data: { session } } = await client.auth.getSession();
-    if (!session?.user?.is_anonymous) return;
-    state.user = session.user;
-    const { data: customer } = await client.from('support_customers').select('*').eq('user_id',session.user.id).eq('status','active').maybeSingle();
-    if (!customer) return;
-    state.customer = customer;
-    $('quickUserName').textContent = customer.name || 'Usuário';
-    $('quickCompany').textContent = 'Suporte rápido';
-    showOnly('quickOpenTicket');
-    await restoreLatestTicket();
+    try {
+      const { data: { session } } = await client.auth.getSession();
+      if (!session?.user?.is_anonymous) return;
+      state.user = session.user;
+      const { data: customer, error } = await client.from('support_customers').select('*').eq('user_id',session.user.id).eq('status','active').maybeSingle();
+      if (error || !customer) return;
+      state.customer = customer;
+      $('quickUserName').textContent = customer.name || 'Usuário';
+      $('quickCompany').textContent = 'Suporte rápido';
+      showOnly('quickOpenTicket');
+      await restoreLatestTicket();
+    } catch (error) {
+      console.error('RRN suporte rápido - restaurar sessão:', error);
+    }
   }
 
   function bind() {
-    $('quickGuestBtn').addEventListener('click',startGuest);
+    $('quickGuestBtn')?.addEventListener('click',startGuest);
     document.querySelectorAll('[data-quick-back]').forEach(btn => btn.addEventListener('click',() => showOnly('quickStart')));
-    $('quickIdentifyForm').addEventListener('submit',identify);
-    $('quickTicketForm').addEventListener('submit',createTicket);
-    $('quickMessageForm').addEventListener('submit',sendMessage);
-    $('quickChangeIdentity').addEventListener('click',changeIdentity);
+    $('quickIdentifyForm')?.addEventListener('submit',identify);
+    $('quickTicketForm')?.addEventListener('submit',createTicket);
+    $('quickMessageForm')?.addEventListener('submit',sendMessage);
+    $('quickChangeIdentity')?.addEventListener('click',changeIdentity);
     const org = new URLSearchParams(location.search).get('org');
     if (org) $('quickOrg').value = org;
   }
