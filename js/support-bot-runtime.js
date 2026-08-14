@@ -7,7 +7,7 @@
   if (!cfg.url || !cfg.anonKey || !window.supabase?.createClient) return;
   const client = window.supabase.createClient(cfg.url, cfg.anonKey, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:false, storageKey:'rrn-guest-support-auth' } });
   const $ = id => document.getElementById(id);
-  const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let config = null;
   let transcript = [];
   let observer = null;
@@ -110,21 +110,39 @@
     try{ await client.auth.signOut(); }catch{}
   }
 
+  function shouldShowBot(){
+    const ticket=$('quickOpenTicket');
+    const bot=$('quickBot');
+    const chat=$('quickChat');
+    const finished=$('quickFinished');
+    if(!ticket||!bot||handoffMode) return false;
+    if(ticket.hidden) return false;
+    if(chat && !chat.hidden) return false;
+    if(finished && !finished.hidden) return false;
+    return true;
+  }
+
+  function enterBot(){
+    if(!shouldShowBot()) return;
+    const ticket=$('quickOpenTicket'); const bot=$('quickBot');
+    ticket.hidden=true;
+    bot.hidden=false;
+    if(!bot.dataset.started){
+      bot.dataset.started='1';
+      addMessage('bot',config.welcome_message||'Olá! Me conte o que está acontecendo.');
+      setTimeout(()=>resolveAsset().catch(()=>{}),100);
+    }
+  }
+
   async function activate(){
     if(armed) return;
     config=await loadConfig();
     if(!config?.enabled) return;
     armed=true; ensureUi();
     $('quickBotName').textContent=config.bot_name||'Assistente RRN';
-    observer=new MutationObserver(()=>{
-      if (handoffMode) return;
-      const ticket=$('quickOpenTicket'); const bot=$('quickBot');
-      if(!ticket||!bot||ticket.hidden) return;
-      if($('quickChat') && !$('quickChat').hidden) return;
-      ticket.hidden=true; bot.hidden=false;
-      if(!bot.dataset.started){ bot.dataset.started='1'; addMessage('bot',config.welcome_message||'Olá! Me conte o que está acontecendo.'); setTimeout(resolveAsset,100); }
-    });
+    observer=new MutationObserver(()=>enterBot());
     observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:['hidden']});
+    enterBot();
   }
 
   function boot(){ ensureUi(); activate(); }
