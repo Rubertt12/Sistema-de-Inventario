@@ -75,17 +75,6 @@
     navLink.dataset.rrnSupportLanding = 'nav';
     nav?.appendChild(navLink);
 
-    const actions = document.querySelector('.landing-nav-actions');
-    if (actions) {
-      const support = document.createElement('button');
-      support.type = 'button';
-      support.className = 'landing-btn landing-btn-ghost landing-support-btn';
-      support.textContent = 'Suporte';
-      support.dataset.rrnSupportLanding = 'header';
-      support.addEventListener('click',openSupport);
-      actions.insertBefore(support, actions.firstChild);
-    }
-
     const heroActions = document.querySelector('.landing-hero-actions');
     if (heroActions) {
       const support = document.createElement('button');
