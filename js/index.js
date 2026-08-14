@@ -154,7 +154,7 @@
       await load('/js/user-asset-linking.js');
       await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
-      await load('/js/stock-inventory-tab.js?v=20260814-1');
+      await load('/js/stock-inventory-v2.js?v=20260814-2');
       await load('/js/navbar-v5.js');
       await load('/js/search-center-v2.js');
       await load('/js/dashboard-quality-fixes.js');

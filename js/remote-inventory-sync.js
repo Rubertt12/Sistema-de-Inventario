@@ -11,7 +11,7 @@
   });
   window.RRN_SUPABASE_CLIENT = client;
 
-  const syncKeys = ['setores', 'chamados', 'asset_history', 'asset_trash'];
+  const syncKeys = ['setores', 'chamados', 'asset_history', 'asset_trash', 'rrn_stock_assets'];
   const rawSetItem = Storage.prototype.setItem;
   const rawRemoveItem = Storage.prototype.removeItem;
   let channel = null;
@@ -82,6 +82,7 @@
     try { window.renderSetores?.(); } catch {}
     try { window.RRN_UI?.updateOverview?.(); } catch {}
     try { window.RRN_TABS?.renderHome?.(); } catch {}
+    try { window.RRN_STOCK?.render?.(); } catch {}
     try { window.RRN_GRID_DETAILS?.enhanceAll?.(); } catch {}
     try { window.RRN_COMPACT_ACTIONS?.enhance?.(); } catch {}
     try { window.RRN_USER_ASSETS?.refreshCards?.(); } catch {}
