@@ -12,16 +12,19 @@
   <link rel="stylesheet" href="/style/support-portal.css" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
   <style>
-    .support-chat-back {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      margin-bottom: 1rem;
-      color: var(--rrn-primary, #295991);
-      font-weight: 700;
-      text-decoration: none;
-    }
-    .support-chat-back:hover { text-decoration: underline; }
+    .support-chat-back { display:inline-flex; align-items:center; gap:.45rem; margin-bottom:1rem; color:var(--rrn-primary,#295991); font-weight:700; text-decoration:none; }
+    .support-chat-back:hover { text-decoration:underline; }
+    body.chat-login-only .support-topbar,
+    body.chat-login-only .support-auth-copy,
+    body.chat-login-only .support-tabs,
+    body.chat-login-only #supportRegisterForm { display:none !important; }
+    body.chat-login-only .support-shell,
+    body.chat-login-only .support-main,
+    body.chat-login-only .support-auth-wrap { min-height:100vh; }
+    body.chat-login-only .support-main { display:grid; place-items:center; padding:20px; }
+    body.chat-login-only .support-auth-wrap { display:grid; place-items:center; width:100%; }
+    body.chat-login-only .support-auth-card { width:min(100%,430px); margin:0; }
+    body.chat-login-only .support-form-note { display:none; }
   </style>
 </head>
 <body class="support-portal-body">
@@ -36,7 +39,7 @@
         <section class="support-auth-card" aria-label="Acesso ao portal">
           <a class="support-chat-back" href="/suporte-rapido.html">← Voltar ao início do chat</a>
           <div class="support-tabs"><button type="button" class="active" data-auth-tab="login">Entrar</button><button type="button" data-auth-tab="register">Primeiro acesso</button></div>
-          <form class="support-form" id="supportLoginForm"><label class="support-field"><span>E-mail</span><input type="email" id="supportLoginEmail" autocomplete="email" required /></label><label class="support-field"><span>Senha</span><input type="password" id="supportLoginPassword" autocomplete="current-password" required minlength="6" /></label><button class="support-btn primary" type="submit">Entrar no portal</button><p class="support-form-note">Esta área é destinada ao colaborador que abre e acompanha chamados. Equipe de suporte usa o acesso interno.</p></form>
+          <form class="support-form" id="supportLoginForm"><label class="support-field"><span>E-mail</span><input type="email" id="supportLoginEmail" autocomplete="email" required /></label><label class="support-field"><span>Senha</span><input type="password" id="supportLoginPassword" autocomplete="current-password" required minlength="6" /></label><button class="support-btn primary" type="submit">Entrar</button><p class="support-form-note">Esta área é destinada ao colaborador que abre e acompanha chamados. Equipe de suporte usa o acesso interno.</p></form>
           <form class="support-form" id="supportRegisterForm" hidden><label class="support-field"><span>Nome completo</span><input type="text" id="supportRegisterName" autocomplete="name" required /></label><label class="support-field"><span>E-mail</span><input type="email" id="supportRegisterEmail" autocomplete="email" required /></label><label class="support-field"><span>Senha</span><input type="password" id="supportRegisterPassword" autocomplete="new-password" minlength="6" required /></label><label class="support-field"><span>Código da empresa</span><input type="text" id="supportRegisterOrg" placeholder="ex: minha-empresa" required /></label><label class="support-field"><span>Matrícula <small>(opcional)</small></span><input type="text" id="supportRegisterEmployee" /></label><label class="support-field"><span>Telefone <small>(opcional)</small></span><input type="tel" id="supportRegisterPhone" autocomplete="tel" /></label><button class="support-btn primary" type="submit">Criar acesso ao suporte</button><p class="support-form-note" id="supportOrgHint">Use o código fornecido pela sua empresa.</p></form>
           <div class="support-alert" id="supportAuthAlert" hidden role="status"></div>
         </section>
@@ -44,20 +47,14 @@
       <section class="support-app" id="supportApp" hidden>
         <div class="support-app-grid">
           <aside class="support-sidebar"><div class="support-user-card"><small id="supportCompanyName">Portal de suporte</small><strong id="supportCustomerName">Usuário</strong><span id="supportCustomerMeta">—</span></div><div class="support-sidebar-actions"><button class="support-btn primary" type="button" id="supportNewTicketBtn">+ Abrir chamado</button><button class="support-btn ghost" type="button" id="supportRefreshBtn" title="Atualizar chamados">↻</button></div><div class="support-ticket-list" id="supportTicketList"></div></aside>
-          <section class="support-content">
-            <div class="support-empty" id="supportEmptyState"><div><h2>Seus chamados aparecem aqui</h2><p>Abra uma solicitação ou selecione um chamado na lista para acompanhar mensagens, SLA e solução.</p></div></div>
-            <article class="support-ticket-view" id="supportTicketView" hidden>
-              <header class="support-ticket-head"><div class="support-ticket-head-top"><div><small id="supportTicketNumber">Chamado</small><h2 id="supportTicketTitle">—</h2></div><div class="support-ticket-head-badges"><span class="support-status" id="supportTicketStatus">Novo</span><span class="support-priority" id="supportTicketPriority">Média</span></div></div><div class="support-asset-card" id="supportTicketAsset"><div><strong id="supportAssetName">Equipamento não vinculado</strong><span id="supportAssetMeta">Informe o patrimônio ou serial no chamado para facilitar a identificação.</span></div><div class="support-sla"><small id="supportSlaLabel">SLA</small><strong id="supportSlaValue">—</strong></div></div></header>
-              <div class="support-resolution-box" id="supportResolutionBox" hidden><h3>Chamado resolvido pelo suporte</h3><p id="supportResolutionText"></p><p id="supportCauseText"></p><div class="support-resolution-actions"><button class="support-btn success" type="button" id="supportConfirmResolutionBtn">✓ Sim, pode encerrar</button><button class="support-btn danger" type="button" id="supportReopenBtn">Ainda não resolveu</button></div></div>
-              <section class="support-chat"><div class="support-chat-messages" id="supportMessages"></div><form class="support-chat-compose" id="supportMessageForm"><input type="text" id="supportMessageInput" placeholder="Digite uma mensagem para o suporte..." autocomplete="off" /><button class="support-btn primary" type="submit">Enviar</button></form></section>
-            </article>
-          </section>
+          <section class="support-content"><div class="support-empty" id="supportEmptyState"><div><h2>Seus chamados aparecem aqui</h2><p>Abra uma solicitação ou selecione um chamado na lista para acompanhar mensagens, SLA e solução.</p></div></div><article class="support-ticket-view" id="supportTicketView" hidden><header class="support-ticket-head"><div class="support-ticket-head-top"><div><small id="supportTicketNumber">Chamado</small><h2 id="supportTicketTitle">—</h2></div><div class="support-ticket-head-badges"><span class="support-status" id="supportTicketStatus">Novo</span><span class="support-priority" id="supportTicketPriority">Média</span></div></div><div class="support-asset-card" id="supportTicketAsset"><div><strong id="supportAssetName">Equipamento não vinculado</strong><span id="supportAssetMeta">Informe o patrimônio ou serial no chamado para facilitar a identificação.</span></div><div class="support-sla"><small id="supportSlaLabel">SLA</small><strong id="supportSlaValue">—</strong></div></div></header><div class="support-resolution-box" id="supportResolutionBox" hidden><h3>Chamado resolvido pelo suporte</h3><p id="supportResolutionText"></p><p id="supportCauseText"></p><div class="support-resolution-actions"><button class="support-btn success" type="button" id="supportConfirmResolutionBtn">✓ Sim, pode encerrar</button><button class="support-btn danger" type="button" id="supportReopenBtn">Ainda não resolveu</button></div></div><section class="support-chat"><div class="support-chat-messages" id="supportMessages"></div><form class="support-chat-compose" id="supportMessageForm"><input type="text" id="supportMessageInput" placeholder="Digite uma mensagem para o suporte..." autocomplete="off" /><button class="support-btn primary" type="submit">Enviar</button></form></section></article></section>
         </div>
       </section>
     </main>
   </div>
   <div class="support-modal" id="supportNewTicketModal" hidden aria-modal="true" role="dialog" aria-labelledby="supportWizardTitle"><div class="support-modal-card"><div class="support-modal-head"><div><h2 id="supportWizardTitle">Abrir novo chamado</h2><p>O assistente vai coletar apenas o necessário.</p></div><button type="button" class="support-close" id="supportWizardClose" aria-label="Fechar">×</button></div><div class="support-wizard-feed" id="supportWizardFeed"></div><form class="support-wizard-compose" id="supportWizardForm"><input type="text" id="supportWizardInput" autocomplete="off" placeholder="Digite sua resposta..." /><button class="support-btn primary" type="submit">Enviar</button></form></div></div>
   <div class="support-toast" id="supportToast" hidden role="status"></div>
+  <script>if(new URLSearchParams(location.search).get('from')==='chat'){document.body.classList.add('chat-login-only');}</script>
   <script src="/js/supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/theme-mode.js"></script>
