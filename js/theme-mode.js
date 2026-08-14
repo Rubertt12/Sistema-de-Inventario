@@ -21,6 +21,18 @@
     if (isDashboard) addStylesheet('/style/dark-inventory-fix.css', 'data-rrn-dark-inventory-fix');
   }
 
+  function ensureFooter() {
+    const path = location.pathname.toLowerCase();
+    if (path === '/' || path.endsWith('/index.html')) return;
+    addStylesheet('/style/footer-v2.css', 'data-rrn-footer-v2');
+    if (window.__RRN_FOOTER_V2__ || document.querySelector('script[data-rrn-footer-v2]')) return;
+    const script = document.createElement('script');
+    script.src = '/js/footer-v2.js';
+    script.async = true;
+    script.dataset.rrnFooterV2 = '1';
+    document.head.appendChild(script);
+  }
+
   function loadMfaGuard() {
     if (document.querySelector('script[data-rrn-mfa-guard]')) return;
     const script = document.createElement('script');
@@ -107,6 +119,7 @@
 
   function mount() {
     ensureThemeFixes();
+    ensureFooter();
     mountSecurityLink();
     bindExistingButtons();
     if (document.querySelector('[data-rrn-theme-toggle]')) {
@@ -137,6 +150,7 @@
   }
 
   ensureThemeFixes();
+  ensureFooter();
   apply(preferred());
   ensureMfaGuard();
 
