@@ -1,0 +1,23 @@
+body.desk-body{min-height:100vh;background:var(--desk-bg)}
+.desk-main{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+.desk-heading{margin:0!important;padding:16px 22px 14px!important;border-bottom:1px solid var(--desk-border);background:var(--desk-surface)}
+.desk-heading h1{font-size:clamp(1.7rem,2.4vw,2.45rem)!important}
+.desk-kpis{margin:0!important;padding:12px 22px!important;gap:10px!important;background:var(--desk-surface-2);border-bottom:1px solid var(--desk-border)}
+.desk-kpi{border-radius:10px!important;box-shadow:none!important;min-height:78px!important}
+.desk-toolbar{margin:0!important;padding:9px 22px!important;border:0!important;border-bottom:1px solid var(--desk-border)!important;border-radius:0!important;box-shadow:none!important;background:var(--desk-surface)!important}
+.desk-grid{height:calc(100vh - 250px)!important;min-height:560px!important;grid-template-columns:360px minmax(0,1fr)!important;gap:0!important;margin:0!important}
+.desk-list-panel,.desk-detail-panel{border-radius:0!important;box-shadow:none!important;border-top:0!important;border-bottom:0!important}
+.desk-list-panel{border-left:0!important;border-right:1px solid var(--desk-border)!important}
+.desk-detail-panel{border-left:0!important;border-right:0!important}
+.desk-list-head{padding:14px 16px!important}
+.desk-ticket-list{padding:10px!important;gap:8px!important}
+.desk-ticket-card{border-radius:9px!important}
+.desk-ticket-view{grid-template-columns:minmax(300px,340px) minmax(0,1fr)!important}
+.desk-detail-head{padding:18px!important}
+.desk-chat{min-width:0!important}
+.desk-messages{padding:24px!important}
+.desk-compose{padding:13px 16px!important}
+.desk-assignment-panel{margin-top:12px!important;padding:12px!important}
+@media(min-width:1500px){.desk-grid{grid-template-columns:400px minmax(0,1fr)!important}.desk-ticket-view{grid-template-columns:360px minmax(0,1fr)!important}}
+@media(max-width:980px){.desk-heading{padding:14px!important}.desk-kpis{padding:10px 14px!important}.desk-toolbar{padding:8px 14px!important}.desk-grid{height:auto!important;grid-template-columns:1fr!important}.desk-list-panel{max-height:340px!important;border-right:0!important;border-bottom:1px solid var(--desk-border)!important}.desk-detail-panel{min-height:650px!important}.desk-ticket-view{grid-template-columns:300px minmax(0,1fr)!important}}
+@media(max-width:680px){.desk-heading{padding:12px 10px!important}.desk-kpis{padding:8px 10px!important}.desk-toolbar{padding:7px 10px!important}.desk-grid{display:block!important}.desk-list-panel{max-height:300px!important}.desk-ticket-view{display:flex!important;flex-direction:column!important}.desk-detail-head{max-height:330px!important;border-right:0!important;border-bottom:1px solid var(--desk-border)!important}.desk-chat{min-height:420px!important}.desk-messages{padding:14px 12px!important}}
