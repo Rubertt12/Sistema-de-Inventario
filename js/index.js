@@ -155,6 +155,7 @@
       await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
       await load('/js/stock-inventory-v2.js?v=20260814-2');
+      await load('/js/nav-label-fix.js?v=20260814-1');
       await load('/js/navbar-v5.js');
       await load('/js/search-center-v2.js');
       await load('/js/dashboard-quality-fixes.js');
@@ -176,6 +177,7 @@
     if (isDashboard) {
       await load('/js/tenant-runtime.js');
       await load('/js/remote-inventory-sync.js');
+      await load('/js/agent-delete-bridge.js?v=20260814-1');
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
       await load('/js/password-management.js');
