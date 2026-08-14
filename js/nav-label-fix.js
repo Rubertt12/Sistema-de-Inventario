@@ -27,12 +27,15 @@
       if (!label) return;
       const icon = button.querySelector(':scope > .rrn-icon');
       if (icon) {
-        const existingText = Array.from(button.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-        if (existingText) existingText.textContent = ` ${label}`;
-        else button.appendChild(document.createTextNode(` ${label}`));
-        Array.from(button.childNodes)
-          .filter(node => node.nodeType === Node.TEXT_NODE && node !== existingText)
-          .forEach(node => node.remove());
+        const textNodes = Array.from(button.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+        const existingText = textNodes[0] || null;
+        const wanted = ` ${label}`;
+        if (existingText) {
+          if (existingText.textContent !== wanted) existingText.textContent = wanted;
+        } else {
+          button.appendChild(document.createTextNode(wanted));
+        }
+        textNodes.slice(1).forEach(node => node.remove());
       } else if (button.textContent.trim() !== label) {
         button.textContent = label;
       }
