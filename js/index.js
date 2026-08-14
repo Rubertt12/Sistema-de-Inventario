@@ -20,6 +20,7 @@
     addStylesheet('/style/dashboard-admin-tools.css', 'data-rrn-dashboard-admin-tools');
     addStylesheet('/style/grid-machine-details.css', 'data-rrn-grid-machine-details');
     addStylesheet('/style/asset-history.css', 'data-rrn-asset-history');
+    addStylesheet('/style/modal-refinement-v2.css?v=20260814-1', 'data-rrn-modal-refinement-v2');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
     addStylesheet('/style/trash.css', 'data-rrn-trash');
     addStylesheet('/style/search-center-v2.css', 'data-rrn-search-center-v2');
