@@ -9,10 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style/rrn-theme-v2.css" />
-  <link rel="stylesheet" href="/style/support-desk.css?v=20260814-fullwidth2" />
-  <link rel="stylesheet" href="/style/support-ticket-assignment.css" />
+  <link rel="stylesheet" href="/style/support-desk.css?v=20260814-fullwidth3" />
+  <link rel="stylesheet" href="/style/support-ticket-assignment.css?v=20260814-2" />
   <link rel="stylesheet" href="/style/support-ticket-participation.css" />
-  <link rel="stylesheet" href="/style/support-desk-fullscreen.css?v=20260814-1" />
+  <link rel="stylesheet" href="/style/support-desk-fullscreen.css?v=20260814-2" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
 <body class="desk-body">
@@ -32,8 +32,8 @@
     </section>
 
     <nav class="desk-toolbar" aria-label="Filtros da fila">
-      <button class="desk-filter active" type="button" data-desk-filter="all">Todos</button>
-      <button class="desk-filter" type="button" data-desk-filter="new">Novos</button>
+      <button class="desk-filter" type="button" data-desk-filter="all">Todos</button>
+      <button class="desk-filter active" type="button" data-desk-filter="new">Novos</button>
       <button class="desk-filter" type="button" data-desk-filter="mine">Meus chamados</button>
       <button class="desk-filter" type="button" data-desk-filter="sla">SLA próximo</button>
       <button class="desk-filter" type="button" data-desk-filter="critical">Críticos</button>
@@ -59,15 +59,16 @@
   <div class="desk-modal" id="deskResolveModal" hidden role="dialog" aria-modal="true" aria-labelledby="deskResolveTitle"><div class="desk-modal-card"><h2 id="deskResolveTitle">Resolver chamado</h2><p>Registre a solução e, se souber, a causa. O solicitante poderá confirmar ou reabrir.</p><form class="desk-resolution-form" id="deskResolveForm"><label>Solução aplicada<textarea id="deskResolutionInput" required placeholder="Ex: Driver reinstalado e conexão validada."></textarea></label><label>Causa<textarea id="deskCauseInput" placeholder="Ex: Driver corrompido."></textarea></label><div class="desk-modal-actions"><button class="desk-btn" type="button" id="deskResolveCancel">Cancelar</button><button class="desk-btn success" type="submit">Finalizar atendimento</button></div></form></div></div>
   <div class="desk-toast" id="deskToast" hidden role="status"></div>
 
-  <script src="/js/supabase-config.js"></script>
+  <script src="/js/supabase-config.js?v=20260814-3"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/theme-mode.js?v=20260814-2"></script>
+  <script src="/js/theme-mode.js?v=20260814-3"></script>
   <script src="/js/support-presence.js"></script>
-  <script src="/js/support-desk.js"></script>
+  <script src="/js/support-desk.js?v=20260814-3"></script>
+  <script src="/js/support-desk-defaults-v2.js?v=20260814-1"></script>
   <script src="/js/support-desk-access-v2.js"></script>
-  <script src="/js/support-ticket-assignment.js"></script>
+  <script src="/js/support-ticket-assignment-v2.js?v=20260814-1"></script>
   <script src="/js/support-ticket-participation.js"></script>
   <script src="/js/support-desk-priority.js"></script>
-  <script src="/js/support-desk-ui-fixes.js?v=20260814-1"></script>
+  <script src="/js/support-desk-ui-fixes.js?v=20260814-2"></script>
 </body>
 </html>
