@@ -4,7 +4,7 @@
   window.__RRN_SUPPORT_TICKET_ASSIGNMENT_V2__ = true;
 
   const $ = id => document.getElementById(id);
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const state = {
@@ -73,23 +73,23 @@
       });
     }
 
-    const infoGrid = document.querySelector('.desk-detail-head .desk-info-grid');
-    if (infoGrid && !$('deskAssignmentPanel')) {
+    const actionRow = $('deskActionRow');
+    if (actionRow && !$('deskAssignmentPanel')) {
       const panel = document.createElement('section');
       panel.id = 'deskAssignmentPanel';
       panel.className = 'desk-assignment-panel';
       panel.innerHTML = `
         <div class="desk-assignment-copy">
-          <span>Responsável pelo atendimento</span>
+          <span>Responsável pelo chamado</span>
           <strong id="deskAssignmentName">Não atribuído</strong>
-          <small id="deskAssignmentHint">Selecione um integrante da equipe e confirme a atribuição.</small>
+          <small id="deskAssignmentHint">Selecione um integrante da equipe.</small>
         </div>
         <div class="desk-assignment-control">
           <select id="deskAssigneeSelect" aria-label="Responsável pelo chamado"></select>
           <button type="button" class="desk-btn primary" id="deskAssignBtn">Atribuir</button>
-          <button type="button" class="desk-btn" id="deskUnassignBtn">Remover atribuição</button>
+          <button type="button" class="desk-btn" id="deskUnassignBtn">Remover</button>
         </div>`;
-      infoGrid.insertAdjacentElement('afterend', panel);
+      actionRow.insertAdjacentElement('beforebegin', panel);
 
       $('deskAssignBtn')?.addEventListener('click', async () => {
         const value = $('deskAssigneeSelect')?.value || '';
@@ -135,17 +135,17 @@
     if (!panel) return;
     const id = selectedTicketId();
     const ticket = id ? state.tickets.get(id) : null;
-    setHidden(panel, !ticket);
-    if (!ticket) return;
+    setHidden(panel, !ticket || ticket.status === 'closed');
+    if (!ticket || ticket.status === 'closed') return;
 
     const agent = state.agents.find(item => item.user_id === ticket.assigned_to);
-    const closed = ['resolved', 'closed'].includes(ticket.status);
+    const resolved = ticket.status === 'resolved';
     if ($('deskAssignmentName')) $('deskAssignmentName').textContent = agent?.name || (ticket.assigned_to ? 'Suporte atribuído' : 'Não atribuído');
-    if ($('deskAssignmentHint')) $('deskAssignmentHint').textContent = closed
-      ? 'Chamado encerrado. A atribuição permanece registrada no histórico.'
+    if ($('deskAssignmentHint')) $('deskAssignmentHint').textContent = resolved
+      ? 'Chamado resolvido. A atribuição permanece registrada.'
       : ticket.assigned_to
         ? `Atendimento atribuído para ${agent?.name || 'um integrante da equipe'}.`
-        : 'Selecione um integrante da equipe e clique em Atribuir.';
+        : 'Selecione quem ficará responsável por este atendimento.';
 
     const select = $('deskAssigneeSelect');
     if (select) {
@@ -156,19 +156,19 @@
         select.appendChild(option);
       }
       select.value = ticket.assigned_to || '';
-      select.disabled = closed || state.busy;
+      select.disabled = resolved || state.busy;
     }
 
     const assign = $('deskAssignBtn');
     if (assign) {
-      assign.disabled = closed || state.busy;
+      assign.disabled = resolved || state.busy;
       assign.textContent = state.busy ? 'Atribuindo...' : (ticket.assigned_to ? 'Reatribuir' : 'Atribuir');
     }
 
     const unassign = $('deskUnassignBtn');
     if (unassign) {
-      setHidden(unassign, !ticket.assigned_to);
-      unassign.disabled = closed || state.busy;
+      setHidden(unassign, !ticket.assigned_to || resolved);
+      unassign.disabled = resolved || state.busy;
     }
   }
 
