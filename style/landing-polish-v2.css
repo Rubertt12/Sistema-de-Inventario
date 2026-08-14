@@ -1,0 +1,163 @@
+/* RRN landing polish: navbar + support CTA */
+.landing-header{
+  background:rgba(248,250,250,.88)!important;
+  border-bottom:1px solid rgba(22,58,77,.08)!important;
+  box-shadow:0 5px 24px rgba(22,58,77,.045);
+}
+.landing-nav-wrap{
+  min-height:72px!important;
+  gap:18px!important;
+}
+.landing-brand{
+  flex:0 0 auto;
+  gap:11px!important;
+  font-size:.96rem;
+  letter-spacing:-.025em;
+}
+.landing-brand img{
+  width:37px!important;
+  height:37px!important;
+  filter:drop-shadow(0 4px 8px rgba(22,58,77,.12));
+}
+.landing-nav{
+  margin-left:auto!important;
+  gap:4px!important;
+  padding:4px;
+  border:1px solid rgba(22,58,77,.075);
+  border-radius:13px;
+  background:rgba(255,255,255,.68);
+}
+.landing-nav a{
+  position:relative;
+  padding:9px 11px;
+  border-radius:9px;
+  color:#52646d!important;
+  font-size:.82rem!important;
+  font-weight:700!important;
+  white-space:nowrap;
+  transition:background .18s ease,color .18s ease,transform .18s ease;
+}
+.landing-nav a:hover{
+  color:var(--rrn-primary)!important;
+  background:#fff;
+  box-shadow:0 4px 12px rgba(22,58,77,.055);
+  transform:translateY(-1px);
+}
+.landing-nav-actions{
+  flex:0 0 auto;
+  gap:7px!important;
+  padding-left:2px;
+}
+.landing-nav-actions .landing-btn{
+  min-height:40px!important;
+  padding:0 14px!important;
+  border-radius:9px!important;
+  font-size:.8rem!important;
+}
+.landing-nav-actions .landing-btn-ghost:not(.landing-support-btn){
+  border:1px solid rgba(22,58,77,.12)!important;
+  background:#fff!important;
+}
+.landing-nav-actions .landing-btn-primary{
+  box-shadow:0 8px 20px rgba(22,58,77,.16)!important;
+}
+.landing-support-btn{
+  border-color:rgba(47,125,120,.18)!important;
+  background:rgba(47,125,120,.075)!important;
+  color:#286d69!important;
+}
+.landing-support-btn::before{
+  content:""!important;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#38a47c;
+  box-shadow:0 0 0 4px rgba(56,164,124,.12);
+}
+
+/* Floating support control */
+.landing-chat-fab{
+  right:24px!important;
+  bottom:22px!important;
+  min-width:142px;
+  min-height:52px!important;
+  padding:0 17px!important;
+  gap:10px!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:16px!important;
+  background:linear-gradient(135deg,#163a4d,#20566d)!important;
+  color:#fff!important;
+  box-shadow:0 14px 35px rgba(22,58,77,.28),0 2px 7px rgba(22,58,77,.15)!important;
+  font:800 .82rem/1 Inter,system-ui,sans-serif!important;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease!important;
+}
+.landing-chat-fab:hover{
+  transform:translateY(-3px)!important;
+  box-shadow:0 18px 42px rgba(22,58,77,.32),0 3px 8px rgba(22,58,77,.16)!important;
+  filter:brightness(1.04);
+}
+.landing-chat-fab-icon{
+  display:block!important;
+  width:22px!important;
+  height:22px!important;
+  flex:0 0 22px!important;
+  stroke:currentColor;
+}
+.landing-chat-fab span{
+  display:inline!important;
+  white-space:nowrap;
+}
+
+@media(max-width:1080px){
+  .landing-nav-wrap{gap:10px!important}
+  .landing-nav a{padding:8px 8px;font-size:.76rem!important}
+  .landing-nav-actions .landing-btn{padding:0 11px!important}
+}
+
+@media(max-width:980px){
+  .landing-nav{
+    top:74px!important;
+    left:14px!important;
+    right:14px!important;
+    margin:0!important;
+    padding:10px!important;
+    gap:4px!important;
+    border-radius:16px!important;
+    background:rgba(255,255,255,.98)!important;
+    box-shadow:0 20px 45px rgba(22,58,77,.14)!important;
+  }
+  .landing-nav a{
+    padding:11px 12px!important;
+    font-size:.84rem!important;
+  }
+  .landing-menu-toggle{
+    min-width:46px;
+    min-height:40px;
+    padding:0 12px!important;
+    border-radius:10px!important;
+  }
+}
+
+@media(max-width:680px){
+  .landing-nav-wrap{min-height:64px!important}
+  .landing-brand img{width:34px!important;height:34px!important}
+  .landing-nav-actions{gap:5px!important}
+  .landing-nav-actions .landing-btn-ghost:not(.landing-support-btn){min-height:38px!important}
+  .landing-chat-fab{
+    right:14px!important;
+    bottom:14px!important;
+    width:58px!important;
+    min-width:58px!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:0!important;
+    border-radius:50%!important;
+    justify-content:center!important;
+  }
+  .landing-chat-fab-icon{
+    width:25px!important;
+    height:25px!important;
+    flex-basis:25px!important;
+  }
+  .landing-chat-fab span{display:none!important}
+}
