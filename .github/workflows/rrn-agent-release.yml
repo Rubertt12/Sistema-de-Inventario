@@ -1,0 +1,57 @@
+name: Build RRN Agent Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'agent/RRN.Agent/**'
+      - 'agent/install.ps1'
+      - 'agent/uninstall.ps1'
+      - '.github/workflows/rrn-agent-release.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Windows x64 single-file agent
+        shell: pwsh
+        run: |
+          dotnet restore agent/RRN.Agent/RRN.Agent.csproj
+          dotnet publish agent/RRN.Agent/RRN.Agent.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false -o dist
+          Copy-Item agent/install.ps1 dist/install.ps1
+          Copy-Item agent/uninstall.ps1 dist/uninstall.ps1
+          Compress-Archive -Path dist/RRN.Agent.exe,dist/install.ps1,dist/uninstall.ps1 -DestinationPath dist/RRN-Agent-Windows-x64.zip -Force
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RRN-Agent-Windows-x64
+          path: |
+            dist/RRN.Agent.exe
+            dist/install.ps1
+            dist/uninstall.ps1
+            dist/RRN-Agent-Windows-x64.zip
+
+      - name: Replace rolling release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete rrn-agent-latest --yes --cleanup-tag || true
+          gh release create rrn-agent-latest \
+            dist/RRN.Agent.exe \
+            dist/install.ps1 \
+            dist/uninstall.ps1 \
+            dist/RRN-Agent-Windows-x64.zip \
+            --title "RRN Agent Windows (latest)" \
+            --notes "Build automático do RRN Agent Windows x64. O instalador registra sincronizações diárias às 08:00 e 18:00."
