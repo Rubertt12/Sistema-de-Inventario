@@ -6,6 +6,16 @@
   const path = location.pathname.toLowerCase();
   if (path === '/' || path.endsWith('/index.html')) return;
 
+  function addStyle(href, marker){if(document.querySelector(`link[${marker}]`))return;const link=document.createElement('link');link.rel='stylesheet';link.href=href;link.setAttribute(marker,'1');document.head.appendChild(link);}
+  function addScript(src, marker){if(document.querySelector(`script[${marker}]`))return;const script=document.createElement('script');script.src=src;script.async=true;script.setAttribute(marker,'1');document.head.appendChild(script);}
+
+  function ensurePageEnhancements(){
+    const portal=/portal\.html$/i.test(path)||Boolean(document.querySelector('.support-portal-body,#supportApp'));
+    const desk=/chamados\.html$/i.test(path)||Boolean(document.querySelector('.desk-body,#deskTicketList'));
+    if(portal){addStyle('/style/support-portal-fullscreen-v2.css','data-rrn-portal-fullscreen-v2');addStyle('/style/support-chat-identities.css','data-rrn-chat-identities');addScript('/js/support-profile-ui.js','data-rrn-support-profile-ui');}
+    else if(desk){addStyle('/style/support-chat-identities.css','data-rrn-chat-identities');addScript('/js/support-profile-ui.js','data-rrn-support-profile-ui');}
+  }
+
   function tenantName() {
     const brand = window.RRN_TENANT_BRANDING || {};
     const session = window.RRN_SESSION || {};
@@ -32,6 +42,7 @@
         <div class="rrn-footer-simple-copy">© ${new Date().getFullYear()} · Todos os direitos reservados a <strong>Rúbertt Ramires</strong></div>
       </div>`;
     document.body.appendChild(footer);
+    ensurePageEnhancements();
   }
 
   const boot = () => setTimeout(render, 0);
