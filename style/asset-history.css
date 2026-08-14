@@ -235,10 +235,485 @@
   margin-top: 18px;
 }
 
+/* --------------------------------------------------------------------------
+   RRN Manager — modal polish / inventário
+   Mantém histórico, edição e detalhes acima da navbar e coerentes nos temas.
+   -------------------------------------------------------------------------- */
+
+.rrn-history-modal,
+#infoModal,
+#modalMaquina,
+#modalSetor,
+#modalTodasManutencoes {
+  z-index: 30000 !important;
+  box-sizing: border-box;
+}
+
+.rrn-history-modal,
+#infoModal.modal,
+#modalMaquina.modal,
+#modalSetor.modal,
+#modalTodasManutencoes.modal {
+  padding: clamp(16px, 4vh, 42px) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(7, 20, 29, .66) !important;
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  overflow: auto !important;
+}
+
+.rrn-history-dialog,
+#infoModal > .modal-content,
+#modalMaquina > .modal-content,
+#modalSetor > .modal-content,
+#modalTodasManutencoes > .modal-content {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+  width: min(820px, calc(100vw - 32px)) !important;
+  max-width: 100% !important;
+  max-height: calc(100dvh - 64px) !important;
+  margin: auto !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.16)) !important;
+  border-radius: 20px !important;
+  background: var(--rrn-surface, #fff) !important;
+  color: var(--rrn-text, #263238) !important;
+  box-shadow: 0 28px 85px rgba(0, 15, 24, .42) !important;
+}
+
+.rrn-history-dialog {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.rrn-history-header {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  flex: 0 0 auto;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--rrn-border, rgba(22,58,77,.12));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--rrn-warning, #F2BF4F) 18%, var(--rrn-surface, #fff)),
+    color-mix(in srgb, var(--rrn-accent, #ED9EF5) 10%, var(--rrn-surface, #fff))
+  );
+}
+
+.rrn-history-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  padding: 22px;
+  background: var(--rrn-surface, #fff);
+}
+
+.rrn-history-header span,
+.rrn-history-header strong,
+.rrn-history-empty strong,
+.rrn-timeline-card strong,
+.rrn-extra-heading,
+.rrn-asset-field label {
+  color: var(--rrn-heading, #163A4D) !important;
+}
+
+.rrn-history-header small,
+.rrn-history-empty,
+.rrn-history-empty small,
+.rrn-timeline-card small,
+.rrn-timeline-meta {
+  color: var(--rrn-muted, #66757F) !important;
+}
+
+.rrn-history-close,
+#infoModal .close-btn,
+#modalMaquina .close-btn,
+#modalSetor .close-btn,
+#modalTodasManutencoes .close-btn {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 8;
+  display: grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--rrn-heading, #163A4D) 25%, transparent) !important;
+  border-radius: 12px !important;
+  background: var(--rrn-heading, #163A4D) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(5, 25, 35, .18) !important;
+  font: 800 1.1rem/1 Inter, system-ui, sans-serif !important;
+  cursor: pointer !important;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease !important;
+}
+
+.rrn-history-close:hover,
+#infoModal .close-btn:hover,
+#modalMaquina .close-btn:hover,
+#modalSetor .close-btn:hover,
+#modalTodasManutencoes .close-btn:hover {
+  transform: translateY(-1px) !important;
+  background: var(--rrn-primary-hover, #0F2F3F) !important;
+  box-shadow: 0 11px 24px rgba(5, 25, 35, .24) !important;
+}
+
+.rrn-history-dialog input,
+.rrn-history-dialog select,
+.rrn-history-dialog textarea,
+#infoModal input,
+#infoModal select,
+#infoModal textarea,
+#modalMaquina input,
+#modalMaquina select,
+#modalMaquina textarea,
+#modalSetor input,
+#modalSetor select,
+#modalSetor textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.18)) !important;
+  border-radius: 10px !important;
+  background: var(--rrn-surface, #fff) !important;
+  color: var(--rrn-text, #263238) !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+.rrn-history-dialog textarea,
+#infoModal textarea,
+#modalMaquina textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.rrn-history-dialog input:focus,
+.rrn-history-dialog select:focus,
+.rrn-history-dialog textarea:focus,
+#infoModal input:focus,
+#infoModal select:focus,
+#infoModal textarea:focus,
+#modalMaquina input:focus,
+#modalMaquina select:focus,
+#modalMaquina textarea:focus {
+  border-color: var(--rrn-secondary, #2F7D78) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rrn-secondary, #2F7D78) 14%, transparent) !important;
+}
+
+#infoModal .rrn-machine-detail-card,
+.rrn-timeline-card,
+.rrn-history-empty,
+#infoModal fieldset,
+#infoModal .rrn-ticket-item {
+  border-color: var(--rrn-border, rgba(22,58,77,.14)) !important;
+  background: var(--rrn-surface-2, #f5f8f9) !important;
+  color: var(--rrn-text, #263238) !important;
+}
+
+#infoModal .rrn-info-row,
+#infoModal .rrn-ticket-text,
+#infoModal fieldset,
+#infoModal fieldset label,
+#infoModal #maintenanceSection > label {
+  color: var(--rrn-text, #263238) !important;
+}
+
+#infoModal .rrn-info-row strong,
+#infoModal h2,
+#infoModal h3,
+#infoModal legend strong,
+#modalMaquina h2,
+#modalSetor h2 {
+  color: var(--rrn-heading, #163A4D) !important;
+}
+
+#infoModal .modal-actions,
+.rrn-edit-asset-actions,
+#modalMaquina .modal-content > div:last-child {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: flex-end !important;
+  gap: 9px !important;
+}
+
+#infoModal button:not(.close-btn),
+#modalMaquina button:not(.close-btn),
+#modalSetor button:not(.close-btn),
+.rrn-edit-asset-actions button,
+.rrn-ticket-actions button,
+.rrn-ticket-reply button {
+  min-height: 38px;
+  padding: 8px 12px !important;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.16)) !important;
+  border-radius: 10px !important;
+  background: var(--rrn-surface-2, #eef3f4) !important;
+  color: var(--rrn-heading, #163A4D) !important;
+  font: 750 .72rem/1.1 Inter, system-ui, sans-serif !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: transform .14s ease, background .14s ease, border-color .14s ease !important;
+}
+
+#infoModal button:not(.close-btn):hover,
+#modalMaquina button:not(.close-btn):hover,
+#modalSetor button:not(.close-btn):hover,
+.rrn-edit-asset-actions button:hover,
+.rrn-ticket-actions button:hover,
+.rrn-ticket-reply button:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--rrn-secondary, #2F7D78) 42%, var(--rrn-border, transparent)) !important;
+  background: color-mix(in srgb, var(--rrn-secondary, #2F7D78) 9%, var(--rrn-surface, #fff)) !important;
+}
+
+#infoModal #maintenanceSection > button,
+#infoModal .rrn-ticket-reply button,
+#modalMaquina .modal-content > div:last-child button:last-child,
+#modalSetor .modal-content > button:last-child,
+.rrn-edit-asset-actions button:last-child {
+  border-color: var(--rrn-secondary, #2F7D78) !important;
+  background: var(--rrn-secondary, #2F7D78) !important;
+  color: #fff !important;
+}
+
+#infoModal #maintenanceBtn {
+  border-color: color-mix(in srgb, #D97745 55%, transparent) !important;
+  background: color-mix(in srgb, #D97745 15%, var(--rrn-surface, #fff)) !important;
+  color: #A84F25 !important;
+}
+
+#infoModal #releaseBtn {
+  border-color: color-mix(in srgb, #2F7D78 55%, transparent) !important;
+  background: color-mix(in srgb, #2F7D78 12%, var(--rrn-surface, #fff)) !important;
+  color: #23615D !important;
+}
+
+#infoModal #close-btn,
+.rrn-edit-asset-actions button:first-child,
+#modalMaquina .modal-content > div:last-child button:first-child {
+  background: transparent !important;
+  color: var(--rrn-muted, #66757F) !important;
+}
+
+#infoModal .rrn-inline-edit {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+}
+
+:root[data-theme="dark"] .rrn-history-modal,
+html[data-theme="dark"] .rrn-history-modal,
+:root[data-theme="dark"] #infoModal,
+html[data-theme="dark"] #infoModal,
+:root[data-theme="dark"] #modalMaquina,
+html[data-theme="dark"] #modalMaquina,
+:root[data-theme="dark"] #modalSetor,
+html[data-theme="dark"] #modalSetor {
+  background: rgba(2, 10, 15, .78) !important;
+}
+
+:root[data-theme="dark"] .rrn-history-dialog,
+html[data-theme="dark"] .rrn-history-dialog,
+:root[data-theme="dark"] #infoModal > .modal-content,
+html[data-theme="dark"] #infoModal > .modal-content,
+:root[data-theme="dark"] #modalMaquina > .modal-content,
+html[data-theme="dark"] #modalMaquina > .modal-content,
+:root[data-theme="dark"] #modalSetor > .modal-content,
+html[data-theme="dark"] #modalSetor > .modal-content {
+  background: var(--rrn-surface, #132129) !important;
+  color: var(--rrn-text, #E7EEF0) !important;
+  border-color: rgba(160, 192, 202, .16) !important;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, .58) !important;
+}
+
+:root[data-theme="dark"] .rrn-history-header,
+html[data-theme="dark"] .rrn-history-header {
+  background: linear-gradient(135deg, #192930, #20272f) !important;
+  border-bottom-color: rgba(173, 199, 208, .12) !important;
+}
+
+:root[data-theme="dark"] .rrn-history-body,
+html[data-theme="dark"] .rrn-history-body {
+  background: var(--rrn-surface, #132129) !important;
+}
+
+:root[data-theme="dark"] .rrn-history-header span,
+html[data-theme="dark"] .rrn-history-header span,
+:root[data-theme="dark"] .rrn-history-header strong,
+html[data-theme="dark"] .rrn-history-header strong,
+:root[data-theme="dark"] .rrn-history-empty strong,
+html[data-theme="dark"] .rrn-history-empty strong,
+:root[data-theme="dark"] .rrn-timeline-card strong,
+html[data-theme="dark"] .rrn-timeline-card strong,
+:root[data-theme="dark"] .rrn-asset-field label,
+html[data-theme="dark"] .rrn-asset-field label,
+:root[data-theme="dark"] #infoModal h2,
+html[data-theme="dark"] #infoModal h2,
+:root[data-theme="dark"] #infoModal h3,
+html[data-theme="dark"] #infoModal h3,
+:root[data-theme="dark"] #infoModal legend strong,
+html[data-theme="dark"] #infoModal legend strong {
+  color: var(--rrn-heading, #D8F0EE) !important;
+}
+
+:root[data-theme="dark"] .rrn-history-header small,
+html[data-theme="dark"] .rrn-history-header small,
+:root[data-theme="dark"] .rrn-history-empty,
+html[data-theme="dark"] .rrn-history-empty,
+:root[data-theme="dark"] .rrn-history-empty small,
+html[data-theme="dark"] .rrn-history-empty small,
+:root[data-theme="dark"] .rrn-timeline-card small,
+html[data-theme="dark"] .rrn-timeline-card small,
+:root[data-theme="dark"] .rrn-timeline-meta,
+html[data-theme="dark"] .rrn-timeline-meta {
+  color: var(--rrn-muted, #9FB0B7) !important;
+}
+
+:root[data-theme="dark"] .rrn-history-dialog input,
+html[data-theme="dark"] .rrn-history-dialog input,
+:root[data-theme="dark"] .rrn-history-dialog select,
+html[data-theme="dark"] .rrn-history-dialog select,
+:root[data-theme="dark"] .rrn-history-dialog textarea,
+html[data-theme="dark"] .rrn-history-dialog textarea,
+:root[data-theme="dark"] #infoModal input,
+html[data-theme="dark"] #infoModal input,
+:root[data-theme="dark"] #infoModal select,
+html[data-theme="dark"] #infoModal select,
+:root[data-theme="dark"] #infoModal textarea,
+html[data-theme="dark"] #infoModal textarea,
+:root[data-theme="dark"] #modalMaquina input,
+html[data-theme="dark"] #modalMaquina input,
+:root[data-theme="dark"] #modalMaquina select,
+html[data-theme="dark"] #modalMaquina select,
+:root[data-theme="dark"] #modalMaquina textarea,
+html[data-theme="dark"] #modalMaquina textarea {
+  background: var(--rrn-surface-2, #0E1A20) !important;
+  color: var(--rrn-text, #E7EEF0) !important;
+  border-color: rgba(160, 192, 202, .18) !important;
+}
+
+:root[data-theme="dark"] #infoModal .rrn-machine-detail-card,
+html[data-theme="dark"] #infoModal .rrn-machine-detail-card,
+:root[data-theme="dark"] .rrn-timeline-card,
+html[data-theme="dark"] .rrn-timeline-card,
+:root[data-theme="dark"] .rrn-history-empty,
+html[data-theme="dark"] .rrn-history-empty,
+:root[data-theme="dark"] #infoModal fieldset,
+html[data-theme="dark"] #infoModal fieldset,
+:root[data-theme="dark"] #infoModal .rrn-ticket-item,
+html[data-theme="dark"] #infoModal .rrn-ticket-item {
+  background: var(--rrn-surface-2, #0E1A20) !important;
+  border-color: rgba(160, 192, 202, .14) !important;
+  color: var(--rrn-text, #E7EEF0) !important;
+}
+
+:root[data-theme="dark"] #infoModal .rrn-info-row,
+html[data-theme="dark"] #infoModal .rrn-info-row,
+:root[data-theme="dark"] #infoModal .rrn-ticket-text,
+html[data-theme="dark"] #infoModal .rrn-ticket-text,
+:root[data-theme="dark"] #infoModal fieldset,
+html[data-theme="dark"] #infoModal fieldset,
+:root[data-theme="dark"] #infoModal fieldset label,
+html[data-theme="dark"] #infoModal fieldset label,
+:root[data-theme="dark"] #infoModal #maintenanceSection > label,
+html[data-theme="dark"] #infoModal #maintenanceSection > label {
+  color: var(--rrn-text, #E7EEF0) !important;
+}
+
+:root[data-theme="dark"] #infoModal button:not(.close-btn),
+html[data-theme="dark"] #infoModal button:not(.close-btn),
+:root[data-theme="dark"] #modalMaquina button:not(.close-btn),
+html[data-theme="dark"] #modalMaquina button:not(.close-btn),
+:root[data-theme="dark"] #modalSetor button:not(.close-btn),
+html[data-theme="dark"] #modalSetor button:not(.close-btn),
+:root[data-theme="dark"] .rrn-edit-asset-actions button,
+html[data-theme="dark"] .rrn-edit-asset-actions button,
+:root[data-theme="dark"] .rrn-ticket-actions button,
+html[data-theme="dark"] .rrn-ticket-actions button,
+:root[data-theme="dark"] .rrn-ticket-reply button,
+html[data-theme="dark"] .rrn-ticket-reply button {
+  background: var(--rrn-surface-2, #17272E) !important;
+  color: var(--rrn-heading, #D8F0EE) !important;
+  border-color: rgba(160, 192, 202, .16) !important;
+}
+
+:root[data-theme="dark"] #infoModal #maintenanceSection > button,
+html[data-theme="dark"] #infoModal #maintenanceSection > button,
+:root[data-theme="dark"] #infoModal .rrn-ticket-reply button,
+html[data-theme="dark"] #infoModal .rrn-ticket-reply button,
+:root[data-theme="dark"] #modalMaquina .modal-content > div:last-child button:last-child,
+html[data-theme="dark"] #modalMaquina .modal-content > div:last-child button:last-child,
+:root[data-theme="dark"] .rrn-edit-asset-actions button:last-child,
+html[data-theme="dark"] .rrn-edit-asset-actions button:last-child {
+  background: var(--rrn-secondary, #4D9A94) !important;
+  border-color: var(--rrn-secondary, #4D9A94) !important;
+  color: #071416 !important;
+}
+
+:root[data-theme="dark"] #infoModal #maintenanceBtn,
+html[data-theme="dark"] #infoModal #maintenanceBtn {
+  background: rgba(217, 119, 69, .16) !important;
+  color: #F0A176 !important;
+  border-color: rgba(240, 161, 118, .32) !important;
+}
+
+:root[data-theme="dark"] #infoModal #releaseBtn,
+html[data-theme="dark"] #infoModal #releaseBtn {
+  background: rgba(77, 154, 148, .16) !important;
+  color: #92D4CF !important;
+  border-color: rgba(146, 212, 207, .28) !important;
+}
+
 @media (max-width: 620px) {
-  .rrn-history-modal { padding: 10px; }
-  .rrn-history-dialog { width: 100%; max-height: 94vh; border-radius: 16px; }
-  .rrn-history-body { max-height: calc(94vh - 90px); padding: 16px; }
+  .rrn-history-modal,
+  #infoModal.modal,
+  #modalMaquina.modal,
+  #modalSetor.modal,
+  #modalTodasManutencoes.modal {
+    padding: 8px !important;
+    align-items: stretch !important;
+  }
+
+  .rrn-history-dialog,
+  #infoModal > .modal-content,
+  #modalMaquina > .modal-content,
+  #modalSetor > .modal-content,
+  #modalTodasManutencoes > .modal-content {
+    width: 100% !important;
+    max-height: calc(100dvh - 16px) !important;
+    border-radius: 16px !important;
+  }
+
+  .rrn-history-header { padding: 15px 16px; }
+  .rrn-history-body { padding: 16px; }
   .rrn-asset-form-grid { grid-template-columns: 1fr; }
   .rrn-asset-field.full { grid-column: auto; }
+
+  #infoModal .rrn-machine-detail-card { grid-template-columns: 1fr !important; }
+  #infoModal .modal-actions,
+  .rrn-edit-asset-actions,
+  #modalMaquina .modal-content > div:last-child {
+    align-items: stretch;
+  }
+  #infoModal .modal-actions button,
+  .rrn-edit-asset-actions button,
+  #modalMaquina .modal-content > div:last-child button {
+    flex: 1 1 auto;
+  }
 }
