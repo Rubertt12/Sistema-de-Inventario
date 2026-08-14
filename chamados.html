@@ -56,7 +56,7 @@
     </section>
   </main>
 
-  <div class="desk-modal" id="deskResolveModal" hidden role="dialog" aria-modal="true" aria-labelledby="deskResolveTitle"><div class="desk-modal-card"><h2 id="deskResolveTitle">Resolver chamado</h2><p>Registre a solução e, se souber, a causa. O solicitante poderá confirmar ou reabrir.</p><form class="desk-resolution-form" id="deskResolveForm"><label>Solução aplicada<textarea id="deskResolutionInput" required placeholder="Ex: Driver reinstalado e conexão validada."></textarea></label><label>Causa<textarea id="deskCauseInput" placeholder="Ex: Driver corrompido."></textarea></label><div class="desk-modal-actions"><button class="desk-btn" type="button" id="deskResolveCancel">Cancelar</button><button class="desk-btn success" type="submit">Finalizar atendimento</button></div></form></div></div>
+  <div class="desk-modal" id="deskResolveModal" hidden role="dialog" aria-modal="true" aria-labelledby="deskResolveTitle"><div class="desk-modal-card"><h2 id="deskResolveTitle">Resolver chamado</h2><p>Registre a solução e, se souber, a causa. O solicitante poderá confirmar ou reabrir.</p><form class="desk-resolution-form" id="deskResolveForm"><label>Solução aplicada<textarea id="deskResolutionInput" required placeholder="Ex: Driver reinstalado e conexão validada."></textarea></label><label>Causa<textarea id="deskCauseInput" placeholder="Ex: Driver corrompido."></textarea></label><div class="desk-modal-actions"><button class="desk-btn" type="button" id="deskResolveCancel">Cancelar</button><button class="desk-btn success" type="submit">Marcar como resolvido</button></div></form></div></div>
   <div class="desk-toast" id="deskToast" hidden role="status"></div>
 
   <script src="/js/supabase-config.js?v=20260814-3"></script>
@@ -70,5 +70,7 @@
   <script src="/js/support-ticket-participation.js"></script>
   <script src="/js/support-desk-priority.js"></script>
   <script src="/js/support-desk-ui-fixes.js?v=20260814-2"></script>
+  <script src="/js/support-desk-close-v2.js?v=20260814-1"></script>
+  <script src="/js/support-desk-queue-toggle.js?v=20260814-1"></script>
 </body>
 </html>
