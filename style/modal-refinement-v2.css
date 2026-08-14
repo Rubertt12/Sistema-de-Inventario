@@ -1,0 +1,514 @@
+/* RRN Manager — refinamento dos modais de inventário */
+
+/* --------------------------------------------------------------------------
+   Informações da máquina — conteúdo mais compacto
+   -------------------------------------------------------------------------- */
+#infoModal > .modal-content {
+  width: min(760px, calc(100vw - 32px)) !important;
+  padding: 18px 20px 20px !important;
+}
+
+#infoModal > .modal-content > h2 {
+  margin: 0 48px 12px 0 !important;
+  font-size: 1.05rem !important;
+  line-height: 1.25 !important;
+  text-align: left !important;
+}
+
+#infoModal .rrn-machine-detail-card {
+  gap: 5px 12px !important;
+  padding: 10px 12px !important;
+}
+
+#infoModal .rrn-info-row {
+  font-size: .7rem !important;
+  line-height: 1.35 !important;
+}
+
+#infoModal #maintenanceSection {
+  margin-top: 14px !important;
+}
+
+#infoModal #maintenanceSection > h3,
+#infoModal #observationsList > h3 {
+  margin: 0 0 7px !important;
+  font-size: .82rem !important;
+  line-height: 1.25 !important;
+  text-align: left !important;
+}
+
+#infoModal #observacao {
+  min-height: 68px !important;
+  padding: 9px 10px !important;
+  font-size: .7rem !important;
+  line-height: 1.4 !important;
+}
+
+#infoModal #maintenanceSection fieldset {
+  margin-top: 8px !important;
+  padding: 8px 10px 10px !important;
+  border-radius: 11px !important;
+}
+
+#infoModal #maintenanceSection legend {
+  width: auto !important;
+  max-width: 100% !important;
+  padding: 0 5px !important;
+  font-size: .69rem !important;
+  line-height: 1.2 !important;
+}
+
+#infoModal #maintenanceSection legend strong {
+  font-size: .69rem !important;
+}
+
+#infoModal #maintenanceSection .arrow {
+  margin-left: 7px !important;
+  float: none !important;
+  font-size: .66rem !important;
+}
+
+#infoModal .checklist-content {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 5px 14px !important;
+  padding-top: 5px !important;
+}
+
+#infoModal .checklist-content br {
+  display: none !important;
+}
+
+#infoModal .checklist-content label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  font-size: .64rem !important;
+  line-height: 1.3 !important;
+  cursor: pointer;
+}
+
+/* Corrige a regra genérica que transformava checkbox em campo de texto gigante. */
+#infoModal .checklist-content input[type="checkbox"],
+#infoModal #maintenanceSection input[type="checkbox"] {
+  appearance: auto !important;
+  -webkit-appearance: checkbox !important;
+  flex: 0 0 15px !important;
+  width: 15px !important;
+  height: 15px !important;
+  min-width: 15px !important;
+  min-height: 15px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+  accent-color: var(--rrn-secondary, #2F7D78);
+}
+
+#infoModal #maintenanceSection > label[for="priority"] {
+  margin-top: 9px !important;
+  font-size: .66rem !important;
+}
+
+#infoModal #priority {
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 6px 9px !important;
+  font-size: .68rem !important;
+}
+
+#infoModal #maintenanceSection > button {
+  min-height: 34px !important;
+  margin-top: 8px !important;
+  padding: 7px 11px !important;
+  font-size: .66rem !important;
+}
+
+#infoModal #observationsList {
+  margin-top: 14px !important;
+}
+
+#infoModal #observationsUl {
+  max-height: 190px !important;
+}
+
+#infoModal .rrn-ticket-item {
+  padding: 9px 10px !important;
+}
+
+#infoModal .modal-actions {
+  margin-top: 12px !important;
+}
+
+#infoModal .modal-actions button {
+  min-height: 34px !important;
+  padding: 7px 11px !important;
+  font-size: .66rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   Transferência — overlay acima da navbar e layout amplo
+   -------------------------------------------------------------------------- */
+#modalTransferencia {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 32000 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  padding: clamp(12px, 3vh, 28px) !important;
+  background: rgba(7, 20, 29, .72) !important;
+  backdrop-filter: blur(10px) saturate(110%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(110%) !important;
+  overflow: auto !important;
+}
+
+/* Modal legado: o do print também fica utilizável caso seja renderizado. */
+#modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) {
+  position: relative !important;
+  width: min(980px, calc(100vw - 32px)) !important;
+  max-width: 100% !important;
+  max-height: calc(100dvh - 48px) !important;
+  margin: auto !important;
+  padding: 20px !important;
+  overflow: auto !important;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.16)) !important;
+  border-radius: 18px !important;
+  background: var(--rrn-surface, #fff) !important;
+  color: var(--rrn-text, #263238) !important;
+  box-shadow: 0 30px 90px rgba(0, 15, 24, .5) !important;
+}
+
+#modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) > h2 {
+  margin: 0 44px 14px 0 !important;
+  color: var(--rrn-heading, #163A4D) !important;
+  font-size: 1.05rem !important;
+  text-align: left !important;
+}
+
+#modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) .close,
+#modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) .btn-fechar {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 11px !important;
+  background: var(--rrn-heading, #163A4D) !important;
+  color: #fff !important;
+  font-size: 1.15rem !important;
+}
+
+#modalTransferencia .pesquisa-transferencia {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-bottom: 12px !important;
+}
+
+#modalTransferencia .pesquisa-transferencia input,
+#modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) input {
+  width: 100% !important;
+  min-height: 40px !important;
+  padding: 8px 10px !important;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.18)) !important;
+  border-radius: 10px !important;
+  background: var(--rrn-surface-2, #f5f8f9) !important;
+  color: var(--rrn-text, #263238) !important;
+}
+
+#modalTransferencia .caixas-transferencia {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+#modalTransferencia .box-setor {
+  min-width: 0 !important;
+  min-height: 300px !important;
+  padding: 13px !important;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.15)) !important;
+  border-radius: 13px !important;
+  background: var(--rrn-surface-2, #f5f8f9) !important;
+}
+
+#modalTransferencia .box-setor h3 {
+  margin: 0 0 9px !important;
+  color: var(--rrn-heading, #163A4D) !important;
+  font-size: .74rem !important;
+  text-align: left !important;
+}
+
+#modalTransferencia .lista-maquinas,
+#modalTransferencia .lista-destino {
+  min-height: 235px !important;
+  max-height: 330px !important;
+  overflow: auto !important;
+}
+
+#modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) .btn-confirmar {
+  display: block !important;
+  width: fit-content !important;
+  min-height: 38px !important;
+  margin: 14px 0 0 auto !important;
+  padding: 8px 14px !important;
+  border: 1px solid var(--rrn-secondary, #2F7D78) !important;
+  border-radius: 10px !important;
+  background: var(--rrn-secondary, #2F7D78) !important;
+  color: #fff !important;
+}
+
+/* Transferência V3 — desktop realmente horizontal. */
+#modalTransferencia .rrn-transfer-v3 {
+  position: relative !important;
+  width: min(1260px, calc(100vw - 40px)) !important;
+  max-width: 100% !important;
+  max-height: calc(100dvh - 48px) !important;
+  margin: auto !important;
+  padding: 20px !important;
+  overflow: auto !important;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.16)) !important;
+  border-radius: 18px !important;
+  background: var(--rrn-surface, #fff) !important;
+  color: var(--rrn-text, #263238) !important;
+  box-shadow: 0 30px 90px rgba(0, 15, 24, .5) !important;
+}
+
+#modalTransferencia .rrn-transfer-head {
+  gap: 16px !important;
+}
+
+#modalTransferencia .rrn-transfer-head h2 {
+  color: var(--rrn-heading, #163A4D) !important;
+  font-size: 1.15rem !important;
+}
+
+#modalTransferencia .rrn-transfer-eyebrow,
+#modalTransferencia .rrn-transfer-step strong,
+#modalTransferencia .rrn-transfer-panel-head strong,
+#modalTransferencia .rrn-transfer-choice-copy strong,
+#modalTransferencia .rrn-transfer-summary-eyebrow,
+#modalTransferencia .rrn-transfer-route strong,
+#modalTransferencia .rrn-transfer-summary-asset strong {
+  color: var(--rrn-heading, #163A4D) !important;
+}
+
+#modalTransferencia .rrn-transfer-head small,
+#modalTransferencia .rrn-transfer-step small,
+#modalTransferencia .rrn-transfer-panel-head small,
+#modalTransferencia .rrn-transfer-choice-copy small,
+#modalTransferencia .rrn-transfer-route small,
+#modalTransferencia .rrn-transfer-summary-asset small,
+#modalTransferencia .rrn-transfer-summary-asset div > span,
+#modalTransferencia .rrn-transfer-empty {
+  color: var(--rrn-muted, #66757F) !important;
+}
+
+#modalTransferencia .rrn-transfer-head .btn-fechar {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  padding: 0 !important;
+  border: 1px solid var(--rrn-border, rgba(22,58,77,.16)) !important;
+  border-radius: 11px !important;
+  background: var(--rrn-heading, #163A4D) !important;
+  color: #fff !important;
+}
+
+#modalTransferencia .rrn-transfer-steps {
+  margin: 15px 0 13px !important;
+  padding: 9px 11px !important;
+  border-color: var(--rrn-border, rgba(22,58,77,.14)) !important;
+  background: var(--rrn-surface-2, #f5f8f9) !important;
+}
+
+#modalTransferencia .rrn-transfer-columns {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 11px !important;
+}
+
+#modalTransferencia .rrn-transfer-panel {
+  min-height: 330px !important;
+  padding: 12px !important;
+  border-color: var(--rrn-border, rgba(22,58,77,.15)) !important;
+  background: var(--rrn-surface-2, #f5f8f9) !important;
+}
+
+#modalTransferencia .rrn-transfer-v3 input[type="search"] {
+  min-height: 38px !important;
+  margin-bottom: 8px !important;
+  border-color: var(--rrn-border, rgba(22,58,77,.18)) !important;
+  background: var(--rrn-surface, #fff) !important;
+  color: var(--rrn-text, #263238) !important;
+}
+
+#modalTransferencia .rrn-transfer-list {
+  min-height: 220px !important;
+  max-height: 290px !important;
+}
+
+#modalTransferencia .rrn-transfer-choice {
+  border-color: var(--rrn-border, rgba(22,58,77,.14)) !important;
+  background: var(--rrn-surface, #fff) !important;
+  color: var(--rrn-text, #263238) !important;
+}
+
+#modalTransferencia .rrn-transfer-choice.is-selected {
+  border-color: var(--rrn-secondary, #2F7D78) !important;
+  background: color-mix(in srgb, var(--rrn-secondary, #2F7D78) 10%, var(--rrn-surface, #fff)) !important;
+}
+
+#modalTransferencia .rrn-transfer-summary,
+#modalTransferencia .rrn-transfer-route > div {
+  border-color: var(--rrn-border, rgba(22,58,77,.14)) !important;
+  background: var(--rrn-surface-2, #f5f8f9) !important;
+}
+
+#modalTransferencia .rrn-transfer-actions {
+  margin-top: 11px !important;
+}
+
+#modalTransferencia .rrn-transfer-actions button {
+  min-height: 36px !important;
+  padding: 7px 12px !important;
+}
+
+#modalTransferencia .rrn-transfer-actions .btn-confirmar {
+  border-color: var(--rrn-secondary, #2F7D78) !important;
+  background: var(--rrn-secondary, #2F7D78) !important;
+  color: #fff !important;
+}
+
+#modalTransferencia .rrn-transfer-cancel {
+  border-color: var(--rrn-border, rgba(22,58,77,.16)) !important;
+  background: transparent !important;
+  color: var(--rrn-muted, #66757F) !important;
+}
+
+/* Dark mode */
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-v3,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-v3,
+html[data-theme="dark"] #modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3),
+:root[data-theme="dark"] #modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) {
+  background: var(--rrn-surface, #132129) !important;
+  color: var(--rrn-text, #E7EEF0) !important;
+  border-color: rgba(160, 192, 202, .16) !important;
+}
+
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-panel,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-panel,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-steps,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-steps,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-summary,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-summary,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-route > div,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-route > div,
+html[data-theme="dark"] #modalTransferencia .box-setor,
+:root[data-theme="dark"] #modalTransferencia .box-setor {
+  background: var(--rrn-surface-2, #0E1A20) !important;
+  border-color: rgba(160, 192, 202, .14) !important;
+}
+
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-choice,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-choice,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-v3 input[type="search"],
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-v3 input[type="search"],
+html[data-theme="dark"] #modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) input,
+:root[data-theme="dark"] #modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) input {
+  background: #101D23 !important;
+  color: var(--rrn-text, #E7EEF0) !important;
+  border-color: rgba(160, 192, 202, .17) !important;
+}
+
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-head h2,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-head h2,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-eyebrow,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-eyebrow,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-step strong,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-step strong,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-panel-head strong,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-panel-head strong,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-choice-copy strong,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-choice-copy strong,
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-route strong,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-route strong,
+html[data-theme="dark"] #modalTransferencia .box-setor h3,
+:root[data-theme="dark"] #modalTransferencia .box-setor h3 {
+  color: var(--rrn-heading, #D8F0EE) !important;
+}
+
+html[data-theme="dark"] #modalTransferencia .rrn-transfer-choice.is-selected,
+:root[data-theme="dark"] #modalTransferencia .rrn-transfer-choice.is-selected {
+  background: rgba(77, 154, 148, .15) !important;
+  border-color: rgba(146, 212, 207, .35) !important;
+}
+
+@media (max-width: 940px) {
+  #modalTransferencia .rrn-transfer-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  #modalTransferencia .rrn-transfer-panel:last-child {
+    grid-column: 1 / -1 !important;
+    min-height: 220px !important;
+  }
+  #modalTransferencia .rrn-transfer-panel:last-child .rrn-transfer-list {
+    min-height: 130px !important;
+    max-height: 190px !important;
+  }
+}
+
+@media (max-width: 700px) {
+  #infoModal > .modal-content {
+    width: 100% !important;
+    padding: 15px !important;
+  }
+
+  #infoModal .checklist-content {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  #modalTransferencia {
+    padding: 8px !important;
+    align-items: stretch !important;
+  }
+
+  #modalTransferencia .rrn-transfer-v3,
+  #modalTransferencia > .modal-transferencia-content:not(.rrn-transfer-v3) {
+    width: 100% !important;
+    max-height: calc(100dvh - 16px) !important;
+    padding: 15px !important;
+    border-radius: 15px !important;
+  }
+
+  #modalTransferencia .rrn-transfer-columns,
+  #modalTransferencia .caixas-transferencia,
+  #modalTransferencia .pesquisa-transferencia {
+    grid-template-columns: 1fr !important;
+  }
+
+  #modalTransferencia .rrn-transfer-panel,
+  #modalTransferencia .box-setor {
+    min-height: 190px !important;
+  }
+
+  #modalTransferencia .rrn-transfer-panel:last-child {
+    grid-column: auto !important;
+  }
+
+  #modalTransferencia .rrn-transfer-list,
+  #modalTransferencia .lista-maquinas,
+  #modalTransferencia .lista-destino {
+    min-height: 110px !important;
+    max-height: 190px !important;
+  }
+}
