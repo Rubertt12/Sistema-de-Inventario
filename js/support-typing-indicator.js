@@ -4,17 +4,18 @@
   window.__RRN_SUPPORT_TYPING_INDICATOR__ = true;
 
   const cfg = window.RRN_SUPABASE || {};
-  if (!cfg.url || !cfg.anonKey || !window.supabase?.createClient) return;
+  const client = window.RRN_SUPABASE_CLIENT || window.RRN_GET_SUPABASE_CLIENT?.() || null;
+  if ((!cfg.url || !cfg.anonKey) && !client) return;
 
-  const client = window.supabase.createClient(cfg.url, cfg.anonKey, {
+  const db = client || (window.supabase?.createClient ? window.supabase.createClient(cfg.url, cfg.anonKey, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
-  });
+  }) : null);
+  if (!db) return;
 
   const isDesk = Boolean(document.getElementById('deskMessageInput'));
   const input = document.getElementById(isDesk ? 'deskMessageInput' : 'supportMessageInput');
   const form = document.getElementById(isDesk ? 'deskMessageForm' : 'supportMessageForm');
-  const chat = document.querySelector(isDesk ? '.desk-chat' : '.support-chat');
-  if (!input || !form || !chat) return;
+  if (!input || !form) return;
 
   let sessionUser = null;
   let identity = { name: isDesk ? 'Suporte' : 'Usuário', avatar_url: '', actor_type: isDesk ? 'support' : 'requester' };
@@ -22,6 +23,7 @@
   let channelTicketId = null;
   let localStopTimer = null;
   let remoteStopTimer = null;
+  let activeCheckTimer = null;
   let lastSentAt = 0;
 
   const style = document.createElement('style');
@@ -45,7 +47,7 @@
   indicator.setAttribute('aria-live', 'polite');
   form.insertAdjacentElement('beforebegin', indicator);
 
-  const activeTicketId = () => document.querySelector('[data-ticket-id].active')?.dataset.ticketId || null;
+  const activeTicketId = () => document.querySelector('#deskTicketList [data-ticket-id].active, #supportTicketList [data-ticket-id].active, .support-ticket-item.active[data-ticket-id]')?.dataset.ticketId || null;
 
   function initials(name) {
     return String(name || '?').trim().split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toUpperCase() || '?';
@@ -53,7 +55,7 @@
 
   function renderRemote(payload) {
     if (!payload || !payload.typing || payload.user_id === sessionUser?.id) {
-      indicator.hidden = true;
+      if (!indicator.hidden) indicator.hidden = true;
       return;
     }
     const name = payload.name || (payload.actor_type === 'support' ? 'Suporte' : 'Usuário');
@@ -67,31 +69,19 @@
   }
 
   async function loadIdentity() {
-    const { data: { session } } = await client.auth.getSession();
+    const { data: { session } } = await db.auth.getSession();
     sessionUser = session?.user || null;
     if (!sessionUser) return;
-
     try {
       if (isDesk) {
         const [{ data: staff }, { data: profile }] = await Promise.all([
-          client.from('support_staff').select('display_name,avatar_url').eq('user_id', sessionUser.id).maybeSingle(),
-          client.from('profiles').select('name,email').eq('user_id', sessionUser.id).maybeSingle()
+          db.from('support_staff').select('display_name,avatar_url').eq('user_id', sessionUser.id).maybeSingle(),
+          db.from('profiles').select('name,email').eq('user_id', sessionUser.id).maybeSingle()
         ]);
-        identity = {
-          name: staff?.display_name || profile?.name || sessionUser.email || 'Suporte',
-          avatar_url: staff?.avatar_url || '',
-          actor_type: 'support'
-        };
+        identity = { name: staff?.display_name || profile?.name || sessionUser.email || 'Suporte', avatar_url: staff?.avatar_url || '', actor_type: 'support' };
       } else {
-        const { data: customer } = await client.from('support_customers')
-          .select('name,email,avatar_url')
-          .eq('user_id', sessionUser.id)
-          .maybeSingle();
-        identity = {
-          name: customer?.name || customer?.email || sessionUser.email || 'Usuário',
-          avatar_url: customer?.avatar_url || '',
-          actor_type: 'requester'
-        };
+        const { data: customer } = await db.from('support_customers').select('name,email,avatar_url').eq('user_id', sessionUser.id).maybeSingle();
+        identity = { name: customer?.name || customer?.email || sessionUser.email || 'Usuário', avatar_url: customer?.avatar_url || '', actor_type: 'requester' };
       }
     } catch (_) {
       identity.name = sessionUser.email || identity.name;
@@ -100,19 +90,20 @@
 
   async function joinTicket(ticketId) {
     if (!ticketId || ticketId === channelTicketId) return;
-    if (channel) {
-      try { await client.removeChannel(channel); } catch (_) {}
-    }
+    const previous = channel;
+    channel = null;
     channelTicketId = ticketId;
     indicator.hidden = true;
-    channel = client.channel(`rrn-support-typing-${ticketId}`, {
-      config: { broadcast: { self: false, ack: false } }
-    });
-    channel.on('broadcast', { event: 'typing' }, ({ payload }) => {
+    if (previous) {
+      try { await db.removeChannel(previous); } catch (_) {}
+    }
+    const next = db.channel(`rrn-support-typing-${ticketId}`, { config: { broadcast: { self: false, ack: false } } });
+    next.on('broadcast', { event: 'typing' }, ({ payload }) => {
       if (payload?.ticket_id !== channelTicketId) return;
       renderRemote(payload);
     });
-    channel.subscribe();
+    channel = next;
+    next.subscribe();
   }
 
   async function sendTyping(typing) {
@@ -121,19 +112,11 @@
     await joinTicket(ticketId);
     if (!channel) return;
     try {
-      await channel.send({
-        type: 'broadcast',
-        event: 'typing',
-        payload: {
-          ticket_id: ticketId,
-          user_id: sessionUser.id,
-          name: identity.name,
-          avatar_url: identity.avatar_url,
-          actor_type: identity.actor_type,
-          typing: Boolean(typing),
-          at: Date.now()
-        }
-      });
+      await channel.send({ type: 'broadcast', event: 'typing', payload: {
+        ticket_id: ticketId, user_id: sessionUser.id, name: identity.name,
+        avatar_url: identity.avatar_url, actor_type: identity.actor_type,
+        typing: Boolean(typing), at: Date.now()
+      }});
     } catch (_) {}
   }
 
@@ -151,32 +134,36 @@
     localStopTimer = setTimeout(() => sendTyping(false), 1250);
   }
 
+  function syncActiveTicket() {
+    const id = activeTicketId();
+    if (id && id !== channelTicketId) joinTicket(id);
+    else if (!id && !indicator.hidden) indicator.hidden = true;
+  }
+
   input.addEventListener('input', onInput);
   input.addEventListener('focus', onInput);
   input.addEventListener('blur', () => sendTyping(false));
   form.addEventListener('submit', () => sendTyping(false), true);
 
   document.addEventListener('click', event => {
-    if (!event.target.closest('[data-ticket-id]')) return;
-    setTimeout(() => joinTicket(activeTicketId()), 80);
+    if (event.target.closest('[data-ticket-id]')) setTimeout(syncActiveTicket, 50);
   });
 
-  const observer = new MutationObserver(() => {
-    const id = activeTicketId();
-    if (id && id !== channelTicketId) joinTicket(id);
-    if (!id) indicator.hidden = true;
-  });
-  observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class','hidden'] });
+  // A Central de Chamados faz muitos rerenders. Um MutationObserver no body inteiro
+  // causava uma tempestade de callbacks. Esta checagem barata roda só 2x por segundo.
+  activeCheckTimer = setInterval(syncActiveTicket, 500);
 
   window.addEventListener('beforeunload', () => {
-    sendTyping(false);
+    clearInterval(activeCheckTimer);
     clearTimeout(localStopTimer);
     clearTimeout(remoteStopTimer);
+    if (channel) {
+      try { db.removeChannel(channel); } catch (_) {}
+    }
   }, { once: true });
 
   (async () => {
     await loadIdentity();
-    const id = activeTicketId();
-    if (id) await joinTicket(id);
+    syncActiveTicket();
   })();
 })();
