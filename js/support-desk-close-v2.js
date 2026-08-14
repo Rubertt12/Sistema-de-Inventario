@@ -179,3 +179,16 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 })();
+
+(() => {
+  const load = (src, marker) => {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.setAttribute(marker, '1');
+    document.head.appendChild(script);
+  };
+  load('/js/support-typing-indicator.js?v=20260814-1', 'data-rrn-typing-indicator');
+  load('/js/support-desk-empty-state.js?v=20260814-1', 'data-rrn-desk-empty-state');
+})();
