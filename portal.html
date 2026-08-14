@@ -15,139 +15,41 @@
 <body class="support-portal-body">
   <div class="support-shell">
     <header class="support-topbar topbar">
-      <a class="support-brand" href="/index.html">
-        <img src="/img/icon-png.png" alt="" />
-        <span><strong>RRN Manager</strong><small>Portal de Suporte</small></span>
-      </a>
-      <div class="support-top-actions">
-        <a class="support-link" href="/login.html">Acesso da equipe</a>
-        <button type="button" class="support-btn ghost" data-rrn-theme-toggle>Modo escuro</button>
-      </div>
+      <a class="support-brand" href="/index.html"><img src="/img/icon-png.png" alt="" /><span><strong>RRN Manager</strong><small>Portal de Suporte</small></span></a>
+      <div class="support-top-actions"><a class="support-link" href="/login.html">Acesso da equipe</a><button type="button" class="support-btn ghost" data-rrn-theme-toggle>Modo escuro</button></div>
     </header>
-
     <main class="support-main">
       <section class="support-auth-wrap" id="supportAuthView">
-        <div class="support-auth-copy">
-          <span class="support-eyebrow">Suporte sem burocracia</span>
-          <h1>Abra seu chamado e acompanhe tudo em uma conversa.</h1>
-          <p>Identifique o equipamento, descreva o problema e fale diretamente com o suporte. Se o ativo já estiver no inventário, o RRN Manager relaciona automaticamente patrimônio, serial e setor.</p>
-          <div class="support-auth-points">
-            <article><strong>Equipamento reconhecido</strong><small>Busca por patrimônio, número de série ou hostname.</small></article>
-            <article><strong>SLA visível</strong><small>Acompanhe o tempo de primeira resposta e resolução.</small></article>
-            <article><strong>Histórico completo</strong><small>Mensagens e solução ficam vinculadas ao chamado.</small></article>
-          </div>
-        </div>
-
+        <div class="support-auth-copy"><span class="support-eyebrow">Suporte sem burocracia</span><h1>Abra seu chamado e acompanhe tudo em uma conversa.</h1><p>Identifique o equipamento, descreva o problema e fale diretamente com o suporte. Se o ativo já estiver no inventário, o RRN Manager relaciona automaticamente patrimônio, serial e setor.</p><div class="support-auth-points"><article><strong>Equipamento reconhecido</strong><small>Busca por patrimônio, número de série ou hostname.</small></article><article><strong>SLA visível</strong><small>Acompanhe o tempo de primeira resposta e resolução.</small></article><article><strong>Histórico completo</strong><small>Mensagens e solução ficam vinculadas ao chamado.</small></article></div></div>
         <section class="support-auth-card" aria-label="Acesso ao portal">
-          <div class="support-tabs">
-            <button type="button" class="active" data-auth-tab="login">Entrar</button>
-            <button type="button" data-auth-tab="register">Primeiro acesso</button>
-          </div>
-
-          <form class="support-form" id="supportLoginForm">
-            <label class="support-field"><span>E-mail</span><input type="email" id="supportLoginEmail" autocomplete="email" required /></label>
-            <label class="support-field"><span>Senha</span><input type="password" id="supportLoginPassword" autocomplete="current-password" required minlength="6" /></label>
-            <button class="support-btn primary" type="submit">Entrar no portal</button>
-            <p class="support-form-note">Esta área é destinada ao colaborador que abre e acompanha chamados. Equipe de suporte usa o acesso interno.</p>
-          </form>
-
-          <form class="support-form" id="supportRegisterForm" hidden>
-            <label class="support-field"><span>Nome completo</span><input type="text" id="supportRegisterName" autocomplete="name" required /></label>
-            <label class="support-field"><span>E-mail</span><input type="email" id="supportRegisterEmail" autocomplete="email" required /></label>
-            <label class="support-field"><span>Senha</span><input type="password" id="supportRegisterPassword" autocomplete="new-password" minlength="6" required /></label>
-            <label class="support-field"><span>Código da empresa</span><input type="text" id="supportRegisterOrg" placeholder="ex: minha-empresa" required /></label>
-            <label class="support-field"><span>Matrícula <small>(opcional)</small></span><input type="text" id="supportRegisterEmployee" /></label>
-            <label class="support-field"><span>Telefone <small>(opcional)</small></span><input type="tel" id="supportRegisterPhone" autocomplete="tel" /></label>
-            <button class="support-btn primary" type="submit">Criar acesso ao suporte</button>
-            <p class="support-form-note" id="supportOrgHint">Use o código fornecido pela sua empresa.</p>
-          </form>
-
+          <div class="support-tabs"><button type="button" class="active" data-auth-tab="login">Entrar</button><button type="button" data-auth-tab="register">Primeiro acesso</button></div>
+          <form class="support-form" id="supportLoginForm"><label class="support-field"><span>E-mail</span><input type="email" id="supportLoginEmail" autocomplete="email" required /></label><label class="support-field"><span>Senha</span><input type="password" id="supportLoginPassword" autocomplete="current-password" required minlength="6" /></label><button class="support-btn primary" type="submit">Entrar no portal</button><p class="support-form-note">Esta área é destinada ao colaborador que abre e acompanha chamados. Equipe de suporte usa o acesso interno.</p></form>
+          <form class="support-form" id="supportRegisterForm" hidden><label class="support-field"><span>Nome completo</span><input type="text" id="supportRegisterName" autocomplete="name" required /></label><label class="support-field"><span>E-mail</span><input type="email" id="supportRegisterEmail" autocomplete="email" required /></label><label class="support-field"><span>Senha</span><input type="password" id="supportRegisterPassword" autocomplete="new-password" minlength="6" required /></label><label class="support-field"><span>Código da empresa</span><input type="text" id="supportRegisterOrg" placeholder="ex: minha-empresa" required /></label><label class="support-field"><span>Matrícula <small>(opcional)</small></span><input type="text" id="supportRegisterEmployee" /></label><label class="support-field"><span>Telefone <small>(opcional)</small></span><input type="tel" id="supportRegisterPhone" autocomplete="tel" /></label><button class="support-btn primary" type="submit">Criar acesso ao suporte</button><p class="support-form-note" id="supportOrgHint">Use o código fornecido pela sua empresa.</p></form>
           <div class="support-alert" id="supportAuthAlert" hidden role="status"></div>
         </section>
       </section>
-
       <section class="support-app" id="supportApp" hidden>
         <div class="support-app-grid">
-          <aside class="support-sidebar">
-            <div class="support-user-card">
-              <small id="supportCompanyName">Portal de suporte</small>
-              <strong id="supportCustomerName">Usuário</strong>
-              <span id="supportCustomerMeta">—</span>
-            </div>
-            <div class="support-sidebar-actions">
-              <button class="support-btn primary" type="button" id="supportNewTicketBtn">+ Abrir chamado</button>
-              <button class="support-btn ghost" type="button" id="supportRefreshBtn" title="Atualizar chamados">↻</button>
-            </div>
-            <div class="support-ticket-list" id="supportTicketList"></div>
-          </aside>
-
+          <aside class="support-sidebar"><div class="support-user-card"><small id="supportCompanyName">Portal de suporte</small><strong id="supportCustomerName">Usuário</strong><span id="supportCustomerMeta">—</span></div><div class="support-sidebar-actions"><button class="support-btn primary" type="button" id="supportNewTicketBtn">+ Abrir chamado</button><button class="support-btn ghost" type="button" id="supportRefreshBtn" title="Atualizar chamados">↻</button></div><div class="support-ticket-list" id="supportTicketList"></div></aside>
           <section class="support-content">
-            <div class="support-empty" id="supportEmptyState">
-              <div><h2>Seus chamados aparecem aqui</h2><p>Abra uma solicitação ou selecione um chamado na lista para acompanhar mensagens, SLA e solução.</p></div>
-            </div>
-
+            <div class="support-empty" id="supportEmptyState"><div><h2>Seus chamados aparecem aqui</h2><p>Abra uma solicitação ou selecione um chamado na lista para acompanhar mensagens, SLA e solução.</p></div></div>
             <article class="support-ticket-view" id="supportTicketView" hidden>
-              <header class="support-ticket-head">
-                <div class="support-ticket-head-top">
-                  <div>
-                    <small id="supportTicketNumber">Chamado</small>
-                    <h2 id="supportTicketTitle">—</h2>
-                  </div>
-                  <div class="support-ticket-head-badges">
-                    <span class="support-status" id="supportTicketStatus">Novo</span>
-                    <span class="support-priority" id="supportTicketPriority">Média</span>
-                  </div>
-                </div>
-                <div class="support-asset-card" id="supportTicketAsset">
-                  <div><strong id="supportAssetName">Equipamento não vinculado</strong><span id="supportAssetMeta">Informe o patrimônio ou serial no chamado para facilitar a identificação.</span></div>
-                  <div class="support-sla"><small id="supportSlaLabel">SLA</small><strong id="supportSlaValue">—</strong></div>
-                </div>
-              </header>
-
-              <div class="support-resolution-box" id="supportResolutionBox" hidden>
-                <h3>Chamado resolvido pelo suporte</h3>
-                <p id="supportResolutionText"></p>
-                <p id="supportCauseText"></p>
-                <div class="support-resolution-actions">
-                  <button class="support-btn success" type="button" id="supportConfirmResolutionBtn">✓ Sim, pode encerrar</button>
-                  <button class="support-btn danger" type="button" id="supportReopenBtn">Ainda não resolveu</button>
-                </div>
-              </div>
-
-              <section class="support-chat">
-                <div class="support-chat-messages" id="supportMessages"></div>
-                <form class="support-chat-compose" id="supportMessageForm">
-                  <input type="text" id="supportMessageInput" placeholder="Digite uma mensagem para o suporte..." autocomplete="off" />
-                  <button class="support-btn primary" type="submit">Enviar</button>
-                </form>
-              </section>
+              <header class="support-ticket-head"><div class="support-ticket-head-top"><div><small id="supportTicketNumber">Chamado</small><h2 id="supportTicketTitle">—</h2></div><div class="support-ticket-head-badges"><span class="support-status" id="supportTicketStatus">Novo</span><span class="support-priority" id="supportTicketPriority">Média</span></div></div><div class="support-asset-card" id="supportTicketAsset"><div><strong id="supportAssetName">Equipamento não vinculado</strong><span id="supportAssetMeta">Informe o patrimônio ou serial no chamado para facilitar a identificação.</span></div><div class="support-sla"><small id="supportSlaLabel">SLA</small><strong id="supportSlaValue">—</strong></div></div></header>
+              <div class="support-resolution-box" id="supportResolutionBox" hidden><h3>Chamado resolvido pelo suporte</h3><p id="supportResolutionText"></p><p id="supportCauseText"></p><div class="support-resolution-actions"><button class="support-btn success" type="button" id="supportConfirmResolutionBtn">✓ Sim, pode encerrar</button><button class="support-btn danger" type="button" id="supportReopenBtn">Ainda não resolveu</button></div></div>
+              <section class="support-chat"><div class="support-chat-messages" id="supportMessages"></div><form class="support-chat-compose" id="supportMessageForm"><input type="text" id="supportMessageInput" placeholder="Digite uma mensagem para o suporte..." autocomplete="off" /><button class="support-btn primary" type="submit">Enviar</button></form></section>
             </article>
           </section>
         </div>
       </section>
     </main>
   </div>
-
-  <div class="support-modal" id="supportNewTicketModal" hidden aria-modal="true" role="dialog" aria-labelledby="supportWizardTitle">
-    <div class="support-modal-card">
-      <div class="support-modal-head">
-        <div><h2 id="supportWizardTitle">Abrir novo chamado</h2><p>O assistente vai coletar apenas o necessário.</p></div>
-        <button type="button" class="support-close" id="supportWizardClose" aria-label="Fechar">×</button>
-      </div>
-      <div class="support-wizard-feed" id="supportWizardFeed"></div>
-      <form class="support-wizard-compose" id="supportWizardForm">
-        <input type="text" id="supportWizardInput" autocomplete="off" placeholder="Digite sua resposta..." />
-        <button class="support-btn primary" type="submit">Enviar</button>
-      </form>
-    </div>
-  </div>
-
+  <div class="support-modal" id="supportNewTicketModal" hidden aria-modal="true" role="dialog" aria-labelledby="supportWizardTitle"><div class="support-modal-card"><div class="support-modal-head"><div><h2 id="supportWizardTitle">Abrir novo chamado</h2><p>O assistente vai coletar apenas o necessário.</p></div><button type="button" class="support-close" id="supportWizardClose" aria-label="Fechar">×</button></div><div class="support-wizard-feed" id="supportWizardFeed"></div><form class="support-wizard-compose" id="supportWizardForm"><input type="text" id="supportWizardInput" autocomplete="off" placeholder="Digite sua resposta..." /><button class="support-btn primary" type="submit">Enviar</button></form></div></div>
   <div class="support-toast" id="supportToast" hidden role="status"></div>
-
   <script src="/js/supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/theme-mode.js"></script>
   <script src="/js/support-portal.js"></script>
   <script src="/js/support-portal-approval-message.js"></script>
+  <script src="/js/support-portal-priority-v2.js"></script>
 </body>
 </html>
