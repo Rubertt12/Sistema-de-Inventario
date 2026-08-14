@@ -12,8 +12,8 @@
   function ensurePageEnhancements(){
     const portal=/portal\.html$/i.test(path)||Boolean(document.querySelector('.support-portal-body,#supportApp'));
     const desk=/chamados\.html$/i.test(path)||Boolean(document.querySelector('.desk-body,#deskTicketList'));
-    if(portal){addStyle('/style/support-portal-fullscreen-v2.css','data-rrn-portal-fullscreen-v2');addStyle('/style/support-chat-identities.css','data-rrn-chat-identities');addScript('/js/support-profile-ui.js','data-rrn-support-profile-ui');}
-    else if(desk){addStyle('/style/support-chat-identities.css','data-rrn-chat-identities');addScript('/js/support-profile-ui.js','data-rrn-support-profile-ui');}
+    if(portal){addStyle('/style/support-portal-fullscreen-v2.css','data-rrn-portal-fullscreen-v2');addStyle('/style/support-chat-identities.css','data-rrn-chat-identities');addStyle('/style/support-profile-modal.css?v=20260814-1','data-rrn-support-profile-modal');addScript('/js/support-profile-ui.js','data-rrn-support-profile-ui');}
+    else if(desk){addStyle('/style/support-chat-identities.css','data-rrn-chat-identities');addStyle('/style/support-profile-modal.css?v=20260814-1','data-rrn-support-profile-modal');addScript('/js/support-profile-ui.js','data-rrn-support-profile-ui');}
   }
 
   function tenantName() {
