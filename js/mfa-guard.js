@@ -12,10 +12,15 @@
 
   async function waitClient() {
     for (let i = 0; i < 50; i += 1) {
+      const shared = window.RRN_GET_SUPABASE_CLIENT?.() || window.RRN_SUPABASE_CLIENT;
+      if (shared) return shared;
+
       if (window.supabase?.createClient && cfg.url && cfg.anonKey) {
-        return window.RRN_SUPABASE_CLIENT || window.supabase.createClient(cfg.url, cfg.anonKey, {
+        const created = window.supabase.createClient(cfg.url, cfg.anonKey, {
           auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
         });
+        window.RRN_SUPABASE_CLIENT = created;
+        return created;
       }
       await sleep(100);
     }
@@ -42,8 +47,6 @@
     if (error || !aal) return;
     if (aal.currentLevel === 'aal2') return;
 
-    // O 2FA é opcional para ativar. Depois que a conta possui um fator
-    // verificado, o segundo fator passa a ser obrigatório nos novos logins.
     if (aal.nextLevel !== 'aal2') return;
 
     const next = `${location.pathname}${location.search}${location.hash}`;
