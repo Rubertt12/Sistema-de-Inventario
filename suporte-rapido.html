@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RRN Manager | Suporte rápido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style/rrn-theme-v2.css" />
+  <link rel="stylesheet" href="/style/support-quick.css" />
+  <link rel="icon" href="/img/icon-png.png" type="image/png" />
+</head>
+<body class="quick-body">
+  <main class="quick-shell">
+    <section class="quick-start" id="quickStart">
+      <div class="quick-logo"><img src="/img/icon-png.png" alt="" /><span><strong>RRN Manager</strong><small>Suporte rápido</small></span></div>
+      <span class="quick-eyebrow">Fale com o suporte</span>
+      <h1>Como você quer continuar?</h1>
+      <p>Você pode entrar com sua conta ou somente se identificar. Sem senha, sem cadastro obrigatório.</p>
+      <div class="quick-choice-grid">
+        <button class="quick-choice primary" id="quickGuestBtn" type="button"><strong>Continuar sem login</strong><span>Informe seus dados e abra o chamado.</span></button>
+        <a class="quick-choice" href="/portal.html"><strong>Entrar com minha conta</strong><span>Acesse seus chamados e histórico completo.</span></a>
+      </div>
+    </section>
+
+    <section class="quick-card" id="quickIdentify" hidden>
+      <button class="quick-back" type="button" data-quick-back>← Voltar</button>
+      <span class="quick-eyebrow">Identificação</span>
+      <h2>Só precisamos saber quem está falando.</h2>
+      <form id="quickIdentifyForm" class="quick-form">
+        <label><span>Nome completo</span><input id="quickName" required autocomplete="name" /></label>
+        <label><span>Código da empresa</span><input id="quickOrg" required placeholder="ex: minha-empresa" /></label>
+        <label><span>E-mail</span><input id="quickEmail" type="email" autocomplete="email" placeholder="voce@empresa.com" /></label>
+        <label><span>Telefone</span><input id="quickPhone" type="tel" autocomplete="tel" placeholder="(51) 99999-9999" /></label>
+        <label><span>Matrícula <small>(opcional)</small></span><input id="quickEmployee" /></label>
+        <p class="quick-hint">Informe pelo menos e-mail ou telefone para facilitar o retorno.</p>
+        <button class="quick-btn primary" type="submit">Continuar</button>
+      </form>
+      <div class="quick-alert" id="quickIdentifyAlert" hidden></div>
+    </section>
+
+    <section class="quick-card" id="quickOpenTicket" hidden>
+      <div class="quick-user"><div><small id="quickCompany">Suporte</small><strong id="quickUserName">Usuário</strong></div><button class="quick-link-btn" id="quickChangeIdentity" type="button">Trocar identificação</button></div>
+      <span class="quick-eyebrow">Novo chamado</span>
+      <h2>O que está acontecendo?</h2>
+      <form id="quickTicketForm" class="quick-form">
+        <label><span>Equipamento</span><input id="quickMachine" placeholder="Patrimônio, serial ou hostname" /></label>
+        <label><span>Problema</span><textarea id="quickProblem" required rows="5" placeholder="Descreva o problema com o máximo de clareza."></textarea></label>
+        <div class="quick-info">A prioridade será definida pela equipe de suporte após a triagem.</div>
+        <button class="quick-btn primary" type="submit">Abrir chamado</button>
+      </form>
+      <div class="quick-alert" id="quickTicketAlert" hidden></div>
+    </section>
+
+    <section class="quick-chat" id="quickChat" hidden>
+      <header class="quick-chat-head"><div><small id="quickTicketNumber">Chamado</small><strong id="quickTicketTitle">Atendimento</strong></div><span id="quickTicketStatus">Novo</span></header>
+      <div class="quick-chat-meta" id="quickTicketMeta"></div>
+      <div class="quick-messages" id="quickMessages"></div>
+      <form class="quick-compose" id="quickMessageForm"><input id="quickMessageInput" autocomplete="off" placeholder="Digite sua mensagem..." /><button class="quick-btn primary" type="submit">Enviar</button></form>
+    </section>
+  </main>
+
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/support-quick.js"></script>
+</body>
+</html>
