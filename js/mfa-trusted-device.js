@@ -8,6 +8,8 @@
   let patched = false;
   let trustedCache = { userId: null, value: false, checkedAt: 0 };
 
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
   function randomToken() {
     const bytes = new Uint8Array(32);
     crypto.getRandomValues(bytes);
@@ -46,17 +48,29 @@
 
   async function trustCurrentDevice() {
     if (!client) return false;
-    try {
-      const { data, error } = await client.rpc('register_mfa_trusted_device', { p_token: token() });
-      if (error) throw error;
-      const userId = await currentUserId();
-      trustedCache = { userId, value: true, checkedAt: Date.now() };
-      window.dispatchEvent(new CustomEvent('rrn:mfa-device-trusted', { detail: { expiresAt: data } }));
-      return true;
-    } catch (error) {
-      console.warn('RRN MFA trusted device:', error);
-      return false;
+    let lastError = null;
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      try {
+        if (attempt > 0) await client.auth.refreshSession().catch(() => undefined);
+        const { data: aal } = await client.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (aal?.currentLevel !== 'aal2' && !aal?.rrnTrustedDevice) {
+          await wait(120 * (attempt + 1));
+          continue;
+        }
+        const { data, error } = await client.rpc('register_mfa_trusted_device', { p_token: token() });
+        if (error) throw error;
+        const userId = await currentUserId();
+        trustedCache = { userId, value: true, checkedAt: Date.now() };
+        localStorage.setItem('rrn_mfa_trusted_until_hint', String(new Date(data).getTime()));
+        window.dispatchEvent(new CustomEvent('rrn:mfa-device-trusted', { detail: { expiresAt: data } }));
+        return true;
+      } catch (error) {
+        lastError = error;
+        await wait(120 * (attempt + 1));
+      }
     }
+    console.warn('RRN MFA trusted device:', lastError);
+    return false;
   }
 
   function patch(target) {
@@ -68,7 +82,10 @@
 
     mfa.challengeAndVerify = async (...args) => {
       const result = await originalChallengeAndVerify(...args);
-      if (!result?.error) await trustCurrentDevice();
+      if (!result?.error) {
+        await wait(80);
+        await trustCurrentDevice();
+      }
       return result;
     };
 
@@ -86,10 +103,10 @@
   }
 
   async function boot() {
-    for (let i = 0; i < 200; i += 1) {
+    for (let i = 0; i < 400; i += 1) {
       const target = window.RRN_GET_SUPABASE_CLIENT?.() || window.RRN_SUPABASE_CLIENT || null;
       if (target && patch(target)) return;
-      await new Promise(resolve => setTimeout(resolve, 25));
+      await wait(25);
     }
   }
 
