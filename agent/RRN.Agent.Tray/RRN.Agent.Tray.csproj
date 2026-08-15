@@ -7,10 +7,11 @@
     <Nullable>enable</Nullable>
     <AssemblyName>RRN.Agent.Tray</AssemblyName>
     <RootNamespace>RRN.Agent.Tray</RootNamespace>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
+    <ApplicationIcon Condition="Exists('rrn.ico')">rrn.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>
