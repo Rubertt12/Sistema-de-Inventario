@@ -32,6 +32,7 @@
     await load('/js/footer-v2.js');
     await load('/js/admin-branding-overlay-v2.js');
     await load('/js/admin-company-ux-v2.js');
+    await load('/js/admin-company-create.js?v=20260814-1');
     await load('/js/admin-registration-approval.js');
     await load('/js/support-admin-permissions.js');
     await load('/js/collaborator-management.js');
