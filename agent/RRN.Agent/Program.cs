@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Win32;
@@ -13,11 +14,14 @@ namespace RRN.Agent;
 internal static class Program
 {
     private const string DefaultEndpoint = "https://tvfiicmwkddpswgbjyok.supabase.co/functions/v1/rrn-agent";
+    private const string UserRegistryPath = @"Software\RRN Manager Agent";
+    private const string PreciseLocationValue = "PreciseLocationJson";
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(35) };
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { WriteIndented = true };
-    private static readonly string AgentVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.1.0";
+    private static readonly string AgentVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.3.0";
     private static readonly string ConfigDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "RRN Manager Agent");
     private static readonly string ConfigPath = Path.Combine(ConfigDirectory, "agent.json");
+    private static readonly string StatusPath = Path.Combine(ConfigDirectory, "status.json");
 
     private sealed record AgentConfig(string Endpoint, string DeviceId, string SecretProtected);
     private sealed record EnrollmentResponse(bool Ok, string? DeviceId, string? AgentSecret, string? TenantId, string? AssetId, string? LocationMode);
@@ -37,6 +41,7 @@ internal static class Program
         }
         catch (Exception ex)
         {
+            WriteStatus("error", ex.Message, null);
             Console.Error.WriteLine($"RRN Agent: {ex.Message}");
             return 1;
         }
@@ -61,7 +66,10 @@ internal static class Program
         }
         Console.WriteLine($"Dispositivo: {config.DeviceId}");
         Console.WriteLine($"Endpoint: {config.Endpoint}");
+        Console.WriteLine($"Versão: {AgentVersion}");
         Console.WriteLine($"Configuração: {ConfigPath}");
+        var location = LoadFreshPreciseLocation();
+        Console.WriteLine(location is null ? "Localização precisa: indisponível ou desatualizada" : $"Localização precisa: {location["source"]} · {location["latitude"]}, {location["longitude"]}");
         return 0;
     }
 
@@ -71,6 +79,7 @@ internal static class Program
         if (string.IsNullOrWhiteSpace(code)) throw new InvalidOperationException("Informe o código de instalação com --code.");
         var endpoint = Arg(args, "--endpoint")?.Trim() ?? DefaultEndpoint;
         var inventory = CollectInventory();
+        var location = LoadFreshPreciseLocation();
         var payload = new Dictionary<string, object?>
         {
             ["action"] = "enroll",
@@ -79,6 +88,7 @@ internal static class Program
             ["agent_version"] = AgentVersion,
             ["inventory"] = inventory
         };
+        if (location is not null) payload["location"] = location;
 
         using var response = await Http.PostAsJsonAsync(endpoint, payload, Json);
         var raw = await response.Content.ReadAsStringAsync();
@@ -89,6 +99,7 @@ internal static class Program
             throw new InvalidOperationException("O servidor não retornou as credenciais do dispositivo.");
 
         SaveConfig(endpoint, result.DeviceId, result.AgentSecret);
+        WriteStatus("ok", "Agente vinculado e inventário inicial enviado.", location);
         Console.WriteLine($"RRN Agent vinculado com sucesso. Device ID: {result.DeviceId}");
         Console.WriteLine("Inventário inicial enviado ao RRN Manager.");
         return 0;
@@ -99,6 +110,7 @@ internal static class Program
         var config = LoadConfig() ?? throw new InvalidOperationException("Agente não vinculado. Execute o instalador novamente com um código válido.");
         var secret = Unprotect(config.SecretProtected);
         var inventory = CollectInventory();
+        var location = LoadFreshPreciseLocation();
         var kind = Arg(args, "--kind")?.Trim() ?? "scheduled";
         var payload = new Dictionary<string, object?>
         {
@@ -108,6 +120,7 @@ internal static class Program
             ["agent_version"] = AgentVersion,
             ["inventory"] = inventory
         };
+        if (location is not null) payload["location"] = location;
 
         using var request = new HttpRequestMessage(HttpMethod.Post, config.Endpoint);
         request.Headers.Add("x-rrn-device-id", config.DeviceId);
@@ -116,6 +129,7 @@ internal static class Program
         using var response = await Http.SendAsync(request);
         var raw = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode) throw new InvalidOperationException($"Heartbeat recusado ({(int)response.StatusCode}): {raw}");
+        WriteStatus("ok", location is null ? "Inventário sincronizado. Localização precisa indisponível; backend usou fallback quando possível." : "Inventário e localização precisa sincronizados.", location);
         Console.WriteLine($"RRN Agent sincronizado em {DateTimeOffset.Now:dd/MM/yyyy HH:mm:ss}.");
         return 0;
     }
@@ -161,6 +175,79 @@ internal static class Program
             ["timezone"] = TimeZoneInfo.Local.Id,
             ["collected_at"] = DateTimeOffset.UtcNow
         };
+    }
+
+    private static Dictionary<string, object?>? LoadFreshPreciseLocation()
+    {
+        try
+        {
+            var raw = ReadPreciseLocationJson();
+            if (string.IsNullOrWhiteSpace(raw)) return null;
+            using var doc = JsonDocument.Parse(raw);
+            var root = doc.RootElement;
+            if (!root.TryGetProperty("latitude", out var latEl) || !latEl.TryGetDouble(out var lat) || lat is < -90 or > 90) return null;
+            if (!root.TryGetProperty("longitude", out var lonEl) || !lonEl.TryGetDouble(out var lon) || lon is < -180 or > 180) return null;
+            var capturedRaw = root.TryGetProperty("captured_at", out var capturedEl) ? capturedEl.GetString() : null;
+            if (!DateTimeOffset.TryParse(capturedRaw, out var captured)) return null;
+            if (DateTimeOffset.UtcNow - captured.ToUniversalTime() > TimeSpan.FromMinutes(90)) return null;
+            var accuracy = root.TryGetProperty("accuracy_m", out var accEl) && accEl.TryGetDouble(out var parsedAccuracy) ? Math.Max(0, parsedAccuracy) : 0d;
+            var source = root.TryGetProperty("source", out var sourceEl) ? sourceEl.GetString() : "windows";
+            var windowsSource = root.TryGetProperty("windows_source", out var winEl) ? winEl.GetString() : null;
+            return new Dictionary<string, object?>
+            {
+                ["source"] = string.IsNullOrWhiteSpace(source) ? "windows" : source,
+                ["windows_source"] = windowsSource,
+                ["latitude"] = lat,
+                ["longitude"] = lon,
+                ["accuracy_m"] = accuracy,
+                ["captured_at"] = captured.ToUniversalTime().ToString("O")
+            };
+        }
+        catch { return null; }
+    }
+
+    private static string? ReadPreciseLocationJson()
+    {
+        try
+        {
+            using var current = Registry.CurrentUser.OpenSubKey(UserRegistryPath);
+            var rawCurrent = current?.GetValue(PreciseLocationValue)?.ToString();
+            if (!string.IsNullOrWhiteSpace(rawCurrent)) return rawCurrent;
+        }
+        catch { }
+
+        try
+        {
+            var user = WmiFirst("SELECT UserName FROM Win32_ComputerSystem", "UserName").GetValueOrDefault("UserName");
+            if (string.IsNullOrWhiteSpace(user)) return null;
+            var account = new NTAccount(user);
+            var sid = (SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
+            using var key = Registry.Users.OpenSubKey($@"{sid.Value}\{UserRegistryPath}");
+            return key?.GetValue(PreciseLocationValue)?.ToString();
+        }
+        catch { return null; }
+    }
+
+    private static void WriteStatus(string result, string message, Dictionary<string, object?>? location)
+    {
+        try
+        {
+            Directory.CreateDirectory(ConfigDirectory);
+            var payload = new Dictionary<string, object?>
+            {
+                ["lastResult"] = result,
+                ["lastSyncAt"] = DateTimeOffset.UtcNow.ToString("O"),
+                ["lastMessage"] = message,
+                ["agentVersion"] = AgentVersion
+            };
+            if (location is not null)
+            {
+                payload["locationSource"] = location.GetValueOrDefault("source");
+                payload["locationAccuracyM"] = location.GetValueOrDefault("accuracy_m");
+            }
+            File.WriteAllText(StatusPath, JsonSerializer.Serialize(payload, Json), Encoding.UTF8);
+        }
+        catch { }
     }
 
     private static string DetectEquipmentType(string? model)
@@ -215,7 +302,7 @@ internal static class Program
                 {
                     if (address.Address.AddressFamily is AddressFamily.InterNetwork or AddressFamily.InterNetworkV6)
                     {
-                        if (!IPAddressIsLoopback(address.Address)) ips.Add(address.Address.ToString());
+                        if (!System.Net.IPAddress.IsLoopback(address.Address)) ips.Add(address.Address.ToString());
                     }
                 }
             }
@@ -223,8 +310,6 @@ internal static class Program
         catch { }
         return (macs.ToList(), ips.ToList());
     }
-
-    private static bool IPAddressIsLoopback(System.Net.IPAddress address) => System.Net.IPAddress.IsLoopback(address);
 
     private static Dictionary<string, string?> WmiFirst(string query, params string[] properties)
     {

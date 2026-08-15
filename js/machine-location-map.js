@@ -8,11 +8,10 @@
   let leafletPromise = null;
   let miniMap = null;
   let bigMap = null;
-  let lastMachine = null;
   let historyCache = [];
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[ch]));
 
   function db() {
@@ -38,15 +37,12 @@
     style.id = 'rrn-machine-location-map-style';
     style.textContent = `
       .rrn-agent-location-card{grid-column:1/-1;margin-top:8px;padding:12px;border:1px solid rgba(41,89,145,.18);border-radius:12px;background:rgba(255,255,255,.58)}
-      .rrn-agent-location-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:9px}
-      .rrn-agent-location-head h3{margin:0;color:#295991;font-size:.86rem}.rrn-agent-location-head p{margin:3px 0 0;color:#687587;font-size:.68rem}
-      .rrn-agent-location-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:9px}
-      .rrn-agent-location-meta div{padding:8px;border-radius:9px;background:rgba(41,89,145,.06)}.rrn-agent-location-meta span{display:block;color:#737b89;font-size:.61rem;font-weight:700}.rrn-agent-location-meta strong{display:block;margin-top:2px;color:#35445a;font-size:.7rem;overflow-wrap:anywhere}
-      .rrn-agent-mini-map{height:220px;border-radius:11px;overflow:hidden;border:1px solid rgba(41,89,145,.16);background:#eef2f3}
-      .rrn-agent-location-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.rrn-agent-location-actions button,.rrn-agent-location-actions a{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border:1px solid rgba(41,89,145,.2);border-radius:9px;background:#fff;color:#295991;font-size:.68rem;font-weight:700;text-decoration:none;cursor:pointer}
+      .rrn-agent-location-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:9px}.rrn-agent-location-head h3{margin:0;color:#295991;font-size:.86rem}.rrn-agent-location-head p{margin:3px 0 0;color:#687587;font-size:.68rem}
+      .rrn-agent-location-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:9px}.rrn-agent-location-meta div{padding:8px;border-radius:9px;background:rgba(41,89,145,.06)}.rrn-agent-location-meta span{display:block;color:#737b89;font-size:.61rem;font-weight:700}.rrn-agent-location-meta strong{display:block;margin-top:2px;color:#35445a;font-size:.7rem;overflow-wrap:anywhere}
+      .rrn-agent-mini-map{height:240px;border-radius:11px;overflow:hidden;border:1px solid rgba(41,89,145,.16);background:#eef2f3}.rrn-agent-location-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.rrn-agent-location-actions button,.rrn-agent-location-actions a{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border:1px solid rgba(41,89,145,.2);border-radius:9px;background:#fff;color:#295991;font-size:.68rem;font-weight:700;text-decoration:none;cursor:pointer}
       .rrn-agent-history{margin-top:10px}.rrn-agent-history summary{cursor:pointer;color:#295991;font-size:.7rem;font-weight:800}.rrn-agent-history-list{display:grid;gap:6px;margin-top:7px}.rrn-agent-history-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:7px 9px;border-left:3px solid rgba(41,89,145,.3);background:rgba(41,89,145,.045);border-radius:7px}.rrn-agent-history-row strong{font-size:.68rem;color:#35445a}.rrn-agent-history-row small{font-size:.6rem;color:#737b89;white-space:nowrap}
       .rrn-agent-map-modal{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(12,22,30,.72)}.rrn-agent-map-modal.open{display:flex}.rrn-agent-map-dialog{width:min(980px,96vw);height:min(760px,92vh);display:grid;grid-template-rows:auto 1fr auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.3)}.rrn-agent-map-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid #e5eaee}.rrn-agent-map-dialog-head h2{margin:0;font-size:1rem;color:#24384d}.rrn-agent-map-close{border:0;background:transparent;font-size:1.4rem;cursor:pointer}.rrn-agent-big-map{min-height:420px}.rrn-agent-map-footer{padding:10px 14px;color:#687587;font-size:.67rem;border-top:1px solid #e5eaee}
-      @media(max-width:650px){.rrn-agent-location-meta{grid-template-columns:1fr}.rrn-agent-mini-map{height:190px}.rrn-agent-map-dialog{width:100%;height:88vh}.rrn-agent-history-row{grid-template-columns:1fr}.rrn-agent-history-row small{white-space:normal}}
+      @media(max-width:760px){.rrn-agent-location-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.rrn-agent-location-meta{grid-template-columns:1fr}.rrn-agent-mini-map{height:200px}.rrn-agent-map-dialog{width:100%;height:88vh}.rrn-agent-history-row{grid-template-columns:1fr}.rrn-agent-history-row small{white-space:normal}}
     `;
     document.head.appendChild(style);
   }
@@ -82,6 +78,30 @@
     return null;
   }
 
+  function sourceLabel(source) {
+    switch (String(source || '').toLowerCase()) {
+      case 'gps': return 'GPS / GNSS';
+      case 'wifi': return 'Wi-Fi do Windows';
+      case 'cellular': return 'Rede celular';
+      case 'windows_ip': return 'IP via Windows';
+      case 'windows_default': return 'Local definido no Windows';
+      case 'windows_coarse': return 'Localização aproximada do Windows';
+      case 'ip': return 'IP público';
+      default: return 'Serviço de localização do Windows';
+    }
+  }
+
+  function isPreciseSource(source) {
+    return ['gps','wifi','cellular','windows','windows_default'].includes(String(source || '').toLowerCase());
+  }
+
+  function accuracyLabel(value) {
+    const meters = Number(value);
+    if (!Number.isFinite(meters) || meters <= 0) return 'Não informada';
+    if (meters < 1000) return `±${Math.max(1, Math.round(meters))} m`;
+    return `±${(meters / 1000).toFixed(1)} km`;
+  }
+
   function locationOf(machine) {
     const loc = machine?.ultimaLocalizacao || {};
     const latitude = Number(loc.latitude ?? machine?.latitude);
@@ -94,12 +114,13 @@
       region: loc.region || loc.estado || '',
       country: loc.country || loc.pais || '',
       source: String(loc.source || machine?.locationSource || 'ip').toLowerCase(),
+      accuracyM: Number(loc.accuracy_m ?? loc.accuracyM ?? machine?.locationAccuracyM),
       capturedAt: loc.captured_at || loc.capturedAt || machine?.agentLastSeenAt || machine?.atualizadoEm || null
     };
   }
 
   function formatPlace(loc) {
-    return [loc?.city, loc?.region, loc?.country].filter(Boolean).join(', ') || 'Localização registrada';
+    return [loc?.city, loc?.region, loc?.country].filter(Boolean).join(', ') || `${Number(loc?.latitude).toFixed(6)}, ${Number(loc?.longitude).toFixed(6)}`;
   }
 
   function formatDate(value) {
@@ -112,6 +133,16 @@
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`;
   }
 
+  function zoomFor(loc) {
+    const a = Number(loc?.accuracyM);
+    if (!Number.isFinite(a) || a <= 0) return isPreciseSource(loc?.source) ? 16 : 12;
+    if (a <= 25) return 18;
+    if (a <= 100) return 16;
+    if (a <= 500) return 14;
+    if (a <= 5000) return 12;
+    return 10;
+  }
+
   function ensureBigModal() {
     let host = document.getElementById('rrnAgentMapModal');
     if (host) return host;
@@ -119,7 +150,7 @@
     host.id = 'rrnAgentMapModal';
     host.className = 'rrn-agent-map-modal';
     host.setAttribute('aria-hidden', 'true');
-    host.innerHTML = `<div class="rrn-agent-map-dialog" role="dialog" aria-modal="true" aria-label="Mapa da máquina"><div class="rrn-agent-map-dialog-head"><h2 id="rrnAgentMapTitle">Localização da máquina</h2><button type="button" class="rrn-agent-map-close" aria-label="Fechar">×</button></div><div id="rrnAgentBigMap" class="rrn-agent-big-map"></div><div class="rrn-agent-map-footer">Localização aproximada quando obtida pelo IP público. O ponto pode representar a região do provedor e não a posição física exata do equipamento.</div></div>`;
+    host.innerHTML = `<div class="rrn-agent-map-dialog" role="dialog" aria-modal="true" aria-label="Mapa da máquina"><div class="rrn-agent-map-dialog-head"><h2 id="rrnAgentMapTitle">Localização da máquina</h2><button type="button" class="rrn-agent-map-close" aria-label="Fechar">×</button></div><div id="rrnAgentBigMap" class="rrn-agent-big-map"></div><div id="rrnAgentMapFooter" class="rrn-agent-map-footer"></div></div>`;
     document.body.appendChild(host);
     const close = () => {
       host.classList.remove('open');
@@ -133,10 +164,13 @@
   }
 
   function addTiles(L, map) {
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+  }
+
+  function addAccuracyCircle(L, map, loc) {
+    const meters = Number(loc?.accuracyM);
+    if (!Number.isFinite(meters) || meters <= 0) return;
+    L.circle([loc.latitude, loc.longitude], { radius: meters, weight: 1, fillOpacity: .08, opacity: .5 }).addTo(map);
   }
 
   async function renderMiniMap(loc, history) {
@@ -145,14 +179,12 @@
       const el = document.getElementById('rrnAgentMiniMap');
       if (!el || !document.body.contains(el)) return;
       if (miniMap) { miniMap.remove(); miniMap = null; }
-      miniMap = L.map(el, { zoomControl: true, attributionControl: true }).setView([loc.latitude, loc.longitude], 12);
+      miniMap = L.map(el, { zoomControl: true, attributionControl: true }).setView([loc.latitude, loc.longitude], zoomFor(loc));
       addTiles(L, miniMap);
-      L.marker([loc.latitude, loc.longitude]).addTo(miniMap).bindPopup(`${esc(formatPlace(loc))}<br>${esc(formatDate(loc.capturedAt))}`);
+      addAccuracyCircle(L, miniMap, loc);
+      L.marker([loc.latitude, loc.longitude]).addTo(miniMap).bindPopup(`${esc(formatPlace(loc))}<br>${esc(sourceLabel(loc.source))} · ${esc(accuracyLabel(loc.accuracyM))}<br>${esc(formatDate(loc.capturedAt))}`);
       const points = history.filter(p => Number.isFinite(Number(p.latitude)) && Number.isFinite(Number(p.longitude))).slice().reverse();
-      if (points.length > 1) {
-        const latlngs = points.map(p => [Number(p.latitude), Number(p.longitude)]);
-        L.polyline(latlngs, { weight: 3, opacity: .6 }).addTo(miniMap);
-      }
+      if (points.length > 1) L.polyline(points.map(p => [Number(p.latitude), Number(p.longitude)]), { weight: 3, opacity: .55 }).addTo(miniMap);
       setTimeout(() => miniMap?.invalidateSize(), 80);
     } catch (error) {
       console.warn('RRN mapa:', error);
@@ -166,25 +198,55 @@
     host.classList.add('open');
     host.setAttribute('aria-hidden', 'false');
     document.getElementById('rrnAgentMapTitle').textContent = `${machine?.hostname || machine?.nome || 'Máquina'} · ${formatPlace(loc)}`;
+    const footer = document.getElementById('rrnAgentMapFooter');
+    if (footer) footer.textContent = isPreciseSource(loc.source)
+      ? `Fonte: ${sourceLabel(loc.source)}. Precisão estimada pelo Windows: ${accuracyLabel(loc.accuracyM)}. O círculo ao redor do marcador representa essa margem.`
+      : `Fonte: ${sourceLabel(loc.source)}. Esta posição é aproximada e pode representar a região do provedor, não o ponto físico exato.`;
     try {
       const L = await loadLeaflet();
       if (bigMap) bigMap.remove();
-      bigMap = L.map('rrnAgentBigMap').setView([loc.latitude, loc.longitude], 12);
+      bigMap = L.map('rrnAgentBigMap').setView([loc.latitude, loc.longitude], zoomFor(loc));
       addTiles(L, bigMap);
+      addAccuracyCircle(L, bigMap, loc);
       const points = history.filter(p => Number.isFinite(Number(p.latitude)) && Number.isFinite(Number(p.longitude))).slice().reverse();
       if (points.length) {
         const latlngs = points.map(p => [Number(p.latitude), Number(p.longitude)]);
-        if (latlngs.length > 1) L.polyline(latlngs, { weight: 4, opacity: .7 }).addTo(bigMap);
+        if (latlngs.length > 1) L.polyline(latlngs, { weight: 4, opacity: .65 }).addTo(bigMap);
         points.forEach((p, i) => {
+          const accuracy = accuracyLabel(p.accuracy_m);
           L.circleMarker([Number(p.latitude), Number(p.longitude)], { radius: i === points.length - 1 ? 7 : 4, weight: 2, fillOpacity: .8 })
             .addTo(bigMap)
-            .bindPopup(`${esc([p.location_city,p.location_region,p.location_country].filter(Boolean).join(', ') || 'Localização')}<br>${esc(formatDate(p.occurred_at))}`);
+            .bindPopup(`${esc([p.location_city,p.location_region,p.location_country].filter(Boolean).join(', ') || 'Localização')}<br>${esc(sourceLabel(p.location_source))} · ${esc(accuracy)}<br>${esc(formatDate(p.occurred_at))}`);
         });
-        if (latlngs.length > 1) bigMap.fitBounds(latlngs, { padding: [35, 35], maxZoom: 14 });
+        if (latlngs.length > 1 && !isPreciseSource(loc.source)) bigMap.fitBounds(latlngs, { padding: [35, 35], maxZoom: 14 });
       }
-      L.marker([loc.latitude, loc.longitude]).addTo(bigMap).bindPopup(`Última posição<br>${esc(formatDate(loc.capturedAt))}`).openPopup();
+      L.marker([loc.latitude, loc.longitude]).addTo(bigMap).bindPopup(`Última posição<br>${esc(sourceLabel(loc.source))} · ${esc(accuracyLabel(loc.accuracyM))}<br>${esc(formatDate(loc.capturedAt))}`).openPopup();
       setTimeout(() => bigMap?.invalidateSize(), 80);
     } catch (error) { console.warn('RRN mapa ampliado:', error); }
+  }
+
+  async function loadCurrentLocation(machine) {
+    if (!machine?.agentDeviceId) return locationOf(machine);
+    const client = db();
+    if (!client) return locationOf(machine);
+    try {
+      const { data, error } = await client.from('agent_devices')
+        .select('location_source,location_city,location_region,location_country,latitude,longitude,location_accuracy_m,last_location_at,last_seen_at')
+        .eq('id', machine.agentDeviceId)
+        .maybeSingle();
+      if (error) throw error;
+      if (data && Number.isFinite(Number(data.latitude)) && Number.isFinite(Number(data.longitude))) {
+        machine.ultimaLocalizacao = {
+          source: data.location_source || '', city: data.location_city || '', region: data.location_region || '', country: data.location_country || '',
+          latitude: data.latitude, longitude: data.longitude, accuracy_m: data.location_accuracy_m,
+          captured_at: data.last_location_at || data.last_seen_at || null
+        };
+        machine.locationSource = data.location_source || machine.locationSource;
+        machine.locationAccuracyM = data.location_accuracy_m;
+        machine.agentLastSeenAt = data.last_seen_at || machine.agentLastSeenAt;
+      }
+    } catch (error) { console.warn('RRN localização atual:', error); }
+    return locationOf(machine);
   }
 
   async function loadHistory(deviceId) {
@@ -194,7 +256,7 @@
     const since = new Date(Date.now() - 30 * 86400000).toISOString();
     try {
       const { data, error } = await client.from('agent_heartbeats')
-        .select('occurred_at,location_source,location_city,location_region,location_country,latitude,longitude')
+        .select('occurred_at,location_source,location_city,location_region,location_country,latitude,longitude,accuracy_m')
         .eq('device_id', deviceId)
         .gte('occurred_at', since)
         .not('latitude', 'is', null)
@@ -211,26 +273,28 @@
 
   function historyHtml(history) {
     if (!history.length) return '<div class="rrn-agent-history-row"><strong>Nenhum ponto histórico disponível.</strong><small>—</small></div>';
-    return history.slice(0, 12).map(p => `<div class="rrn-agent-history-row"><strong>${esc([p.location_city,p.location_region,p.location_country].filter(Boolean).join(', ') || `${Number(p.latitude).toFixed(4)}, ${Number(p.longitude).toFixed(4)}`)}</strong><small>${esc(formatDate(p.occurred_at))}</small></div>`).join('');
+    return history.slice(0, 12).map(p => `<div class="rrn-agent-history-row"><strong>${esc([p.location_city,p.location_region,p.location_country].filter(Boolean).join(', ') || `${Number(p.latitude).toFixed(5)}, ${Number(p.longitude).toFixed(5)}`)}<br><span style="font-weight:500;color:#687587">${esc(sourceLabel(p.location_source))} · ${esc(accuracyLabel(p.accuracy_m))}</span></strong><small>${esc(formatDate(p.occurred_at))}</small></div>`).join('');
   }
 
   async function enhance(machine) {
     const container = document.querySelector('#modalText .rrn-machine-detail-card');
     if (!container || !machine?.agentDeviceId) return;
-    const loc = locationOf(machine);
-    if (!loc) return;
-    lastMachine = machine;
+    const loc = await loadCurrentLocation(machine);
+    if (!loc || !document.body.contains(container)) return;
     historyCache = await loadHistory(machine.agentDeviceId);
     if (!document.body.contains(container)) return;
 
+    container.querySelector('[data-rrn-agent-location]')?.remove();
     container.querySelector('.rrn-agent-location-card')?.remove();
+    const precise = isPreciseSource(loc.source);
     const card = document.createElement('section');
     card.className = 'rrn-agent-location-card';
     card.innerHTML = `
-      <div class="rrn-agent-location-head"><div><h3>Localização do RRN Agent</h3><p>${loc.source === 'ip' ? 'Localização aproximada por IP público' : 'Última localização coletada pelo agente'}</p></div></div>
+      <div class="rrn-agent-location-head"><div><h3>Localização do RRN Agent</h3><p>${precise ? `Localização coletada pelo Windows · ${esc(sourceLabel(loc.source))}` : 'Localização aproximada por rede/IP'}</p></div></div>
       <div class="rrn-agent-location-meta">
         <div><span>Local</span><strong>${esc(formatPlace(loc))}</strong></div>
-        <div><span>Coordenadas</span><strong>${loc.latitude.toFixed(6)}, ${loc.longitude.toFixed(6)}</strong></div>
+        <div><span>Fonte</span><strong>${esc(sourceLabel(loc.source))}</strong></div>
+        <div><span>Precisão estimada</span><strong>${esc(accuracyLabel(loc.accuracyM))}</strong></div>
         <div><span>Última coleta</span><strong>${esc(formatDate(loc.capturedAt))}</strong></div>
       </div>
       <div id="rrnAgentMiniMap" class="rrn-agent-mini-map" aria-label="Mapa da última localização da máquina"></div>
