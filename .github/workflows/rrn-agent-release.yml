@@ -63,7 +63,15 @@ jobs:
           Copy-Item img/icon-png.png package/rrn-logo.png
           Copy-Item agent/install.ps1 package/install.ps1
           Copy-Item agent/uninstall.ps1 package/uninstall.ps1
-          Compress-Archive -Path package/RRN.Agent.exe,package/RRN.Agent.Tray.exe,package/RRN.Agent.Setup.exe,package/rrn-logo.png,package/install.ps1,package/uninstall.ps1 -DestinationPath package/RRN-Agent-Windows-x64.zip -Force
+
+          foreach ($name in @('RRN.Agent.exe','RRN.Agent.Tray.exe','RRN.Agent.Setup.exe')) {
+            $hash = (Get-FileHash -Algorithm SHA256 (Join-Path 'package' $name)).Hash.ToLowerInvariant()
+            Set-Content -NoNewline -Path (Join-Path 'package' ($name + '.sha256')) -Value $hash
+          }
+
+          Compress-Archive -Path package/RRN.Agent.exe,package/RRN.Agent.exe.sha256,package/RRN.Agent.Tray.exe,package/RRN.Agent.Tray.exe.sha256,package/RRN.Agent.Setup.exe,package/RRN.Agent.Setup.exe.sha256,package/rrn-logo.png,package/install.ps1,package/uninstall.ps1 -DestinationPath package/RRN-Agent-Windows-x64.zip -Force
+          $zipHash = (Get-FileHash -Algorithm SHA256 package/RRN-Agent-Windows-x64.zip).Hash.ToLowerInvariant()
+          Set-Content -NoNewline -Path package/RRN-Agent-Windows-x64.zip.sha256 -Value $zipHash
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
@@ -71,12 +79,16 @@ jobs:
           name: RRN-Agent-Windows-x64
           path: |
             package/RRN.Agent.exe
+            package/RRN.Agent.exe.sha256
             package/RRN.Agent.Tray.exe
+            package/RRN.Agent.Tray.exe.sha256
             package/RRN.Agent.Setup.exe
+            package/RRN.Agent.Setup.exe.sha256
             package/rrn-logo.png
             package/install.ps1
             package/uninstall.ps1
             package/RRN-Agent-Windows-x64.zip
+            package/RRN-Agent-Windows-x64.zip.sha256
 
       - name: Replace rolling release
         shell: bash
@@ -86,11 +98,15 @@ jobs:
           gh release delete rrn-agent-latest --yes --cleanup-tag || true
           gh release create rrn-agent-latest \
             package/RRN.Agent.exe \
+            package/RRN.Agent.exe.sha256 \
             package/RRN.Agent.Tray.exe \
+            package/RRN.Agent.Tray.exe.sha256 \
             package/RRN.Agent.Setup.exe \
+            package/RRN.Agent.Setup.exe.sha256 \
             package/rrn-logo.png \
             package/install.ps1 \
             package/uninstall.ps1 \
             package/RRN-Agent-Windows-x64.zip \
+            package/RRN-Agent-Windows-x64.zip.sha256 \
             --title "RRN Agent Windows (latest)" \
-            --notes "RRN Agent Windows x64 v0.3.0 com instalador gráfico nativo. O cadastro, vínculo, instalação, tarefas das 08:00/18:00 e aplicativo da bandeja são configurados diretamente pelo RRN.Agent.Setup.exe, sem exigir PowerShell do usuário."
+            --notes "RRN Agent Windows x64 v0.3.1 com hardening de rede: bloqueio explícito de conexões de entrada no Windows Firewall, auditoria fail-closed contra portas TCP em LISTENING, validação do endpoint autorizado, proteção de ACL dos dados locais e hashes SHA-256 publicados para os executáveis."

@@ -1,5 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
+$ruleCore = 'RRN Agent - Block inbound core'
+$ruleTray = 'RRN Agent - Block inbound tray'
+
 function Test-Administrator {
   $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
   $principal = New-Object Security.Principal.WindowsPrincipal($identity)
@@ -15,6 +18,9 @@ if (-not (Test-Administrator)) {
 schtasks.exe /Delete /TN 'RRN Agent - 08h' /F 2>$null | Out-Null
 schtasks.exe /Delete /TN 'RRN Agent - 18h' /F 2>$null | Out-Null
 
+& netsh.exe advfirewall firewall delete rule name="$ruleCore" 2>$null | Out-Null
+& netsh.exe advfirewall firewall delete rule name="$ruleTray" 2>$null | Out-Null
+
 $runKey = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
 Remove-ItemProperty -Path $runKey -Name 'RRN Agent' -ErrorAction SilentlyContinue
 Get-Process 'RRN.Agent.Tray' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
@@ -26,4 +32,4 @@ $configDir = Join-Path $env:ProgramData 'RRN Manager Agent'
 if (Test-Path $installDir) { Remove-Item -Recurse -Force $installDir }
 if (Test-Path $configDir) { Remove-Item -Recurse -Force $configDir }
 
-Write-Host 'RRN Agent removido desta máquina.' -ForegroundColor Green
+Write-Host 'RRN Agent removido desta máquina, incluindo as regras de hardening do Firewall.' -ForegroundColor Green
