@@ -103,10 +103,132 @@
     return true;
   }
 
+  function normalizeCountry(value) {
+    const text = String(value || '').trim();
+    return /^brazil$/i.test(text) ? 'Brasil' : text;
+  }
+
+  function locationText(location) {
+    if (!location || typeof location !== 'object') return '';
+    return [location.city, location.region, normalizeCountry(location.country)].filter(Boolean).join(', ');
+  }
+
+  function formatDate(value) {
+    if (!value) return '—';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString('pt-BR', { dateStyle:'short', timeStyle:'short' });
+  }
+
+  function renderLocation(machine) {
+    const host = document.querySelector('#modalText .rrn-machine-detail-card');
+    if (!host) return;
+    host.querySelector('[data-rrn-agent-location]')?.remove();
+
+    const location = machine?.ultimaLocalizacao && typeof machine.ultimaLocalizacao === 'object'
+      ? machine.ultimaLocalizacao
+      : null;
+    const hasAgent = Boolean(deviceId(machine));
+    if (!hasAgent && !location) return;
+
+    const text = locationText(location) || String(machine?.localizacao || '').trim();
+    const lat = Number(location?.latitude);
+    const lon = Number(location?.longitude);
+    const coords = Number.isFinite(lat) && Number.isFinite(lon) ? `${lat.toFixed(6)}, ${lon.toFixed(6)}` : '';
+    const captured = location?.captured_at || location?.capturadoEm || machine?.agentLastSeenAt || machine?.atualizadoEm;
+    const source = String(location?.source || '').toLowerCase();
+
+    const card = document.createElement('div');
+    card.dataset.rrnAgentLocation = '1';
+    card.style.gridColumn = '1 / -1';
+    card.style.marginTop = '6px';
+    card.style.padding = '10px 12px';
+    card.style.border = '1px solid rgba(47,125,120,.22)';
+    card.style.borderRadius = '10px';
+    card.style.background = 'rgba(47,125,120,.08)';
+
+    const title = document.createElement('strong');
+    title.textContent = 'Localização do RRN Agent';
+    title.style.display = 'block';
+    title.style.color = 'var(--rrn-secondary,#2F7D78)';
+    title.style.marginBottom = '5px';
+    card.appendChild(title);
+
+    const rows = [
+      ['Última localização', text || 'Ainda não recebida'],
+      ['Precisão', source === 'ip' ? 'Aproximada por IP público' : (source || 'Não informada')],
+      ['Coordenadas', coords],
+      ['Atualizada em', captured ? formatDate(captured) : '—']
+    ].filter(([, value]) => value);
+
+    rows.forEach(([label, value]) => {
+      const row = document.createElement('div');
+      row.className = 'rrn-info-row';
+      const strong = document.createElement('strong');
+      strong.textContent = `${label}:`;
+      const span = document.createElement('span');
+      span.textContent = ` ${value}`;
+      row.append(strong, span);
+      card.appendChild(row);
+    });
+
+    host.appendChild(card);
+  }
+
+  async function refreshLocation(sectorIndex, assetIndex) {
+    const machine = sectors()[sectorIndex]?.maquinas?.[assetIndex];
+    const id = deviceId(machine);
+    if (!machine) return;
+    renderLocation(machine);
+    if (!id) return;
+
+    const client = db();
+    if (!client) return;
+    try {
+      const { data, error } = await client.from('agent_devices')
+        .select('location_source,location_city,location_region,location_country,latitude,longitude,last_location_at,last_seen_at')
+        .eq('id', id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) return;
+
+      const location = {
+        source: data.location_source || '',
+        city: data.location_city || '',
+        region: data.location_region || '',
+        country: data.location_country || '',
+        latitude: data.latitude,
+        longitude: data.longitude,
+        captured_at: data.last_location_at || data.last_seen_at || null
+      };
+      machine.ultimaLocalizacao = location;
+      const text = locationText(location);
+      if (text) machine.localizacao = text;
+      machine.agentLastSeenAt = data.last_seen_at || machine.agentLastSeenAt;
+      renderLocation(machine);
+    } catch (error) {
+      console.warn('RRN Agent localização:', error?.message || error);
+    }
+  }
+
+  function wrapShowInfo() {
+    if (wrapped.has('showInfo') || typeof window.showInfo !== 'function') return false;
+    const original = window.showInfo;
+    window.showInfo = function(...args) {
+      const result = original.apply(this, args);
+      const sectorIndex = Number(args[0]);
+      const assetIndex = Number(args[1]);
+      setTimeout(() => refreshLocation(sectorIndex, assetIndex), 0);
+      return result;
+    };
+    wrapped.add('showInfo');
+    return true;
+  }
+
   function install() {
     wrapRemoveMachine();
     wrapRemoveSector();
     wrapDeleteAll();
+    wrapShowInfo();
   }
 
   install();
@@ -115,6 +237,6 @@
   const timer = setInterval(() => {
     attempts += 1;
     install();
-    if (attempts > 80 || (wrapped.has('removeMaquina') && wrapped.has('removeSetor'))) clearInterval(timer);
+    if (attempts > 80 || (wrapped.has('removeMaquina') && wrapped.has('removeSetor') && wrapped.has('showInfo'))) clearInterval(timer);
   }, 125);
 })();
