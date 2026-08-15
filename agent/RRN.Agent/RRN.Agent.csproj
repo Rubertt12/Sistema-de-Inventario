@@ -6,12 +6,13 @@
     <Nullable>enable</Nullable>
     <AssemblyName>RRN.Agent</AssemblyName>
     <RootNamespace>RRN.Agent</RootNamespace>
-    <Version>0.1.0</Version>
+    <Version>0.2.1</Version>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
     <InvariantGlobalization>false</InvariantGlobalization>
+    <ApplicationIcon Condition="Exists('rrn.ico')">rrn.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Management" Version="8.0.0" />
