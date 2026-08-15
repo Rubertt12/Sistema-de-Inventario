@@ -25,6 +25,22 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Build Windows icon from RRN logo
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check pillow
+          @'
+          from PIL import Image
+          from pathlib import Path
+
+          src = Path('img/icon-png.png')
+          image = Image.open(src).convert('RGBA')
+          sizes = [(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)]
+          for target in [Path('agent/RRN.Agent/rrn.ico'), Path('agent/RRN.Agent.Tray/rrn.ico')]:
+              target.parent.mkdir(parents=True, exist_ok=True)
+              image.save(target, format='ICO', sizes=sizes)
+          '@ | python -
+
       - name: Publish Windows x64 agent and tray
         shell: pwsh
         run: |
@@ -66,4 +82,4 @@ jobs:
             package/uninstall.ps1 \
             package/RRN-Agent-Windows-x64.zip \
             --title "RRN Agent Windows (latest)" \
-            --notes "Build automático do RRN Agent Windows x64 com aplicativo de bandeja, sincronização manual e atualização do agente. O inventário automático continua às 08:00 e 18:00."
+            --notes "RRN Agent Windows x64 v0.2.1 com ícone RRN embutido, aplicativo de bandeja, sincronização manual e atualização do agente. O inventário automático continua às 08:00 e 18:00."
