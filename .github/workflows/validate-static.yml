@@ -24,6 +24,7 @@ jobs:
           set -euo pipefail
           files=(
             js/auth-v2.js
+            js/auth-email-fallback.js
             js/index.js
             js/script.js
             js/tenant-runtime.js
