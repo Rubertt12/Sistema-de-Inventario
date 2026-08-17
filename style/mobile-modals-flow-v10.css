@@ -1,0 +1,162 @@
+/* RRN Manager — correção de fluxo/rolagem para modais fullscreen mobile */
+@media (max-width: 700px) {
+  /* O modal de informações precisa ser uma única página rolável, sem camadas que cubram o conteúdo. */
+  #infoModal.modal[aria-hidden="false"] {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    background: var(--rrn-surface,#fff) !important;
+  }
+
+  #infoModal > .modal-content {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 14px calc(18px + env(safe-area-inset-bottom,0px)) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+    border-radius: 0 !important;
+  }
+
+  #infoModal > .modal-content > h2 {
+    flex: 0 0 auto !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+  }
+
+  #infoModal > .modal-content > #modalText,
+  #infoModal > .modal-content > #maintenanceSection,
+  #infoModal > .modal-content > #observationsList,
+  #infoModal > .modal-content > #maintenanceMessage,
+  #infoModal > .modal-content > .modal-actions {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+    contain: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #infoModal #modalText,
+  #infoModal .rrn-machine-detail-card,
+  #infoModal .rrn-machine-modal-shell,
+  #infoModal .rrn-machine-modal-columns,
+  #infoModal .rrn-machine-modal-left,
+  #infoModal .rrn-machine-modal-right,
+  #infoModal .rrn-related-assets,
+  #infoModal .rrn-agent-location-card,
+  #infoModal .rrn-agent-location-meta,
+  #infoModal .rrn-agent-location-actions,
+  #infoModal .rrn-agent-history,
+  #infoModal #maintenanceSection,
+  #infoModal #observationsList,
+  #infoModal #observationsUl,
+  #infoModal .modal-actions {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #infoModal .rrn-agent-mini-map,
+  #infoModal #rrnAgentMiniMap {
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 220px !important;
+    overflow: hidden !important;
+  }
+
+  #infoModal #maintenanceSection {
+    display: block !important;
+    margin-top: 16px !important;
+    padding-bottom: 4px !important;
+    background: transparent !important;
+  }
+
+  #infoModal #observacao {
+    display: block !important;
+    width: 100% !important;
+    min-height: 96px !important;
+    height: 96px !important;
+    max-height: 180px !important;
+    box-sizing: border-box !important;
+  }
+
+  #infoModal #maintenanceSection fieldset,
+  #infoModal .checklist-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #infoModal #observationsList {
+    display: block !important;
+    margin-top: 16px !important;
+  }
+
+  #infoModal .modal-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom,0px)) !important;
+    background: transparent !important;
+  }
+
+  /* Nenhum rodapé/controle da dashboard pode formar uma camada branca sobre o modal. */
+  body:has(#infoModal[aria-hidden="false"]) > footer,
+  body:has(#infoModal[aria-hidden="false"]) > .rrn-footer,
+  body:has(#infoModal[aria-hidden="false"]) > .rrn-maintenance-handle,
+  body:has(#infoModal[aria-hidden="false"]) > #painelManutencao,
+  body:has(#infoModal[aria-hidden="false"]) > main,
+  body:has(#infoModal[aria-hidden="false"]) > .dashboard-actions,
+  body:has(#infoModal[aria-hidden="false"]) > .navbar {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body:has(#infoModal[aria-hidden="false"]) #infoModal,
+  body:has(#infoModal[aria-hidden="false"]) #infoModal * {
+    visibility: visible !important;
+  }
+
+  /* Demais modais fullscreen: garante que o painel realmente use toda a viewport e role por inteiro. */
+  #modalSetor > .modal-content,
+  #modalMaquina > .modal-content,
+  #modalTransferencia > .modal-transferencia-content,
+  #modalTransferencia .rrn-transfer-v3,
+  #modalEditarUsuario > *,
+  #modalScanner > div,
+  #rrnEditAssetModal > .rrn-history-dialog,
+  .rrn-stock-modal > .rrn-stock-dialog,
+  .rrn-agent-delete-choice > .rrn-agent-delete-dialog,
+  .rrn-agent-map-modal > .rrn-agent-map-dialog {
+    min-height: 100dvh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+  }
+}
