@@ -4,7 +4,7 @@
   window.__RRN_AGENT_MANAGEMENT__ = true;
 
   const state = { devices: [], token: null, command: '', loading: false };
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const siteBase = `${location.origin}`;
 
   function client() {
