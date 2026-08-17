@@ -1,57 +1,21 @@
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 
 namespace RRN.Agent.Tray;
 
 internal static class SecurityGuard
 {
-    private const string AllowedHost = "tvfiicmwkddpswgbjyok.supabase.co";
-    private const string AllowedPath = "/functions/v1/rrn-agent";
-    private static readonly string ConfigPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-        "RRN Manager Agent",
-        "agent.json");
     private static System.Threading.Timer? _auditTimer;
 
     [ModuleInitializer]
     internal static void Initialize()
     {
-        ValidatePersistedEndpoint();
+        // O Tray roda no contexto do usuário padrão e, por projeto, não deve ler
+        // o agent.json, que contém a credencial protegida para SYSTEM/Administradores.
+        // A validação do endpoint permanece no Core, executado pela tarefa protegida.
         AuditOrTerminate();
         _auditTimer = new System.Threading.Timer(_ => AuditOrTerminate(), null, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(10));
-    }
-
-    private static void ValidatePersistedEndpoint()
-    {
-        try
-        {
-            if (!File.Exists(ConfigPath)) return;
-            using var doc = JsonDocument.Parse(File.ReadAllText(ConfigPath));
-            var root = doc.RootElement;
-            if (root.TryGetProperty("endpoint", out var endpoint) || root.TryGetProperty("Endpoint", out endpoint))
-                EnsureAllowedEndpoint(endpoint.GetString());
-        }
-        catch (Exception ex)
-        {
-            Terminate($"Configuração de rede inválida: {ex.Message}");
-        }
-    }
-
-    private static void EnsureAllowedEndpoint(string? value)
-    {
-        if (!Uri.TryCreate(value, UriKind.Absolute, out var uri)
-            || !string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)
-            || !string.Equals(uri.Host, AllowedHost, StringComparison.OrdinalIgnoreCase)
-            || (!uri.IsDefaultPort && uri.Port != 443)
-            || !string.Equals(uri.AbsolutePath.TrimEnd('/'), AllowedPath, StringComparison.Ordinal)
-            || !string.IsNullOrEmpty(uri.Query)
-            || !string.IsNullOrEmpty(uri.Fragment)
-            || !string.IsNullOrEmpty(uri.UserInfo))
-        {
-            Terminate("O endpoint configurado não pertence ao backend autorizado do RRN Manager.");
-        }
     }
 
     private static void AuditOrTerminate()
