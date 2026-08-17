@@ -1,0 +1,138 @@
+/* RRN Manager — correção estrutural do fluxo do modal de informações no mobile */
+@media (max-width: 700px) {
+  #infoModal.modal[aria-hidden="false"] {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  #infoModal > .modal-content {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0 14px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+    contain: none !important;
+    clip-path: none !important;
+    mask: none !important;
+  }
+
+  /* Remove do mobile qualquer estrutura horizontal/altura fixa herdada do desktop. */
+  #infoModal #modalText,
+  #infoModal .rrn-machine-detail-card,
+  #infoModal .rrn-machine-modal-shell,
+  #infoModal .rrn-machine-modal-columns,
+  #infoModal .rrn-machine-modal-left,
+  #infoModal .rrn-machine-modal-right,
+  #infoModal .rrn-related-assets,
+  #infoModal .rrn-agent-location-card,
+  #infoModal .rrn-agent-history,
+  #infoModal #maintenanceSection,
+  #infoModal #observationsList,
+  #infoModal #observationsUl,
+  #infoModal .modal-actions {
+    position: static !important;
+    display: block !important;
+    float: none !important;
+    clear: both !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    transform: none !important;
+    contain: none !important;
+    clip-path: none !important;
+    mask: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #infoModal .rrn-machine-detail-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  #infoModal .rrn-agent-location-meta {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #infoModal #maintenanceSection,
+  #infoModal #maintenanceSection fieldset,
+  #infoModal #maintenanceSection .checklist-content,
+  #infoModal #maintenanceSection .checklist-content label,
+  #infoModal #observationsList,
+  #infoModal #observationsUl,
+  #infoModal #pagination {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    clip-path: none !important;
+    contain: none !important;
+  }
+
+  #infoModal #maintenanceSection .checklist-content {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  #infoModal .rrn-agent-mini-map,
+  #infoModal #rrnAgentMiniMap {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 220px !important;
+    overflow: hidden !important;
+  }
+
+  #infoModal #observacao {
+    height: 96px !important;
+    min-height: 96px !important;
+    max-height: 180px !important;
+    overflow: auto !important;
+  }
+
+  #infoModal .modal-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* O único elemento sticky é o cabeçalho. */
+  #infoModal > .modal-content > h2 {
+    position: sticky !important;
+    top: 0 !important;
+  }
+
+  #infoModal > .modal-content::after,
+  #infoModal .rrn-machine-modal-shell::after,
+  #infoModal .rrn-machine-modal-columns::after,
+  #infoModal .rrn-machine-modal-right::after,
+  #infoModal #maintenanceSection::after {
+    content: none !important;
+    display: none !important;
+  }
+}
