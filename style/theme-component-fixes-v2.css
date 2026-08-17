@@ -227,3 +227,121 @@ html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn:hover
 :root[data-theme="dark"] #infoModal .rrn-related-assets{
   background:#111A20!important;
 }
+
+/* --------------------------------------------------------------------------
+   Modal de setor — contraste correto no tema claro/escuro.
+   Regras antigas deixavam descrições/labels brancos sobre fundo claro.
+   -------------------------------------------------------------------------- */
+#modalSetor > .modal-content{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border:1px solid var(--rrn-border)!important;
+}
+#modalSetor > .modal-content h2{
+  color:var(--rrn-heading)!important;
+  -webkit-text-fill-color:var(--rrn-heading)!important;
+}
+#modalSetor > .modal-content label,
+#modalSetor > .modal-content p,
+#modalSetor > .modal-content small,
+#modalSetor > .modal-content .modal-description,
+#modalSetor > .modal-content .rrn-modal-description{
+  color:var(--rrn-text)!important;
+  opacity:1!important;
+  -webkit-text-fill-color:var(--rrn-text)!important;
+}
+#modalSetor > .modal-content input{
+  background:var(--rrn-input,var(--rrn-surface-2))!important;
+  color:var(--rrn-text)!important;
+  border:1px solid var(--rrn-border)!important;
+  -webkit-text-fill-color:var(--rrn-text)!important;
+}
+#modalSetor > .modal-content input::placeholder{
+  color:var(--rrn-muted)!important;
+  opacity:1!important;
+}
+
+/* --------------------------------------------------------------------------
+   Editar equipamento — modal compacto e sem dupla rolagem.
+   O overlay nunca rola; somente o corpo passa a rolar quando a altura realmente
+   não comporta o formulário. Em desktop normal todo o formulário cabe inteiro.
+   -------------------------------------------------------------------------- */
+#rrnEditAssetModal.rrn-history-modal{
+  align-items:center!important;
+  justify-content:center!important;
+  padding:clamp(16px,2.5vh,28px)!important;
+  overflow:hidden!important;
+}
+#rrnEditAssetModal .rrn-history-dialog{
+  width:min(900px,calc(100vw - 32px))!important;
+  max-width:900px!important;
+  max-height:calc(100dvh - 44px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  margin:auto!important;
+}
+#rrnEditAssetModal .rrn-history-header{
+  position:relative!important;
+  top:auto!important;
+  flex:0 0 auto!important;
+  padding:16px 20px!important;
+}
+#rrnEditAssetModal .rrn-history-body{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+  scrollbar-width:thin!important;
+  padding:18px 20px 20px!important;
+}
+#rrnEditAssetModal .rrn-asset-form-grid{
+  margin-top:0!important;
+  gap:10px 14px!important;
+}
+#rrnEditAssetModal .rrn-asset-field{
+  gap:4px!important;
+}
+#rrnEditAssetModal .rrn-asset-field input,
+#rrnEditAssetModal .rrn-asset-field select{
+  min-height:40px!important;
+  padding:8px 10px!important;
+}
+#rrnEditAssetModal .rrn-asset-field textarea{
+  min-height:82px!important;
+  max-height:130px!important;
+  padding:9px 10px!important;
+}
+#rrnEditAssetModal .rrn-edit-asset-actions{
+  margin-top:14px!important;
+  padding-top:12px!important;
+  border-top:1px solid var(--rrn-border)!important;
+  background:var(--rrn-surface)!important;
+}
+#rrnEditAssetModal .rrn-history-close{
+  position:static!important;
+  flex:0 0 40px!important;
+}
+
+@media (max-width:700px){
+  #rrnEditAssetModal.rrn-history-modal{
+    padding:10px!important;
+  }
+  #rrnEditAssetModal .rrn-history-dialog{
+    width:100%!important;
+    max-height:calc(100dvh - 20px)!important;
+    border-radius:16px!important;
+  }
+  #rrnEditAssetModal .rrn-history-body{
+    padding:14px!important;
+  }
+  #rrnEditAssetModal .rrn-asset-form-grid{
+    grid-template-columns:1fr!important;
+  }
+  #rrnEditAssetModal .rrn-asset-field.full{
+    grid-column:auto!important;
+  }
+}
