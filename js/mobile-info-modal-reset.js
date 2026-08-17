@@ -13,13 +13,33 @@
   const open = () => modal()?.getAttribute('aria-hidden') === 'false';
   const imp = (el, prop, value) => el?.style?.setProperty(prop, value, 'important');
 
+  function ensureMobileBody() {
+    const content = panel();
+    if (!content || !mobile()) return null;
+    let body = content.querySelector(':scope > .rrn-mobile-info-body');
+    if (!body) {
+      body = document.createElement('div');
+      body.className = 'rrn-mobile-info-body';
+      const movable = [
+        document.getElementById('modalText'),
+        document.getElementById('maintenanceSection'),
+        document.getElementById('observationsList'),
+        document.getElementById('maintenanceMessage'),
+        content.querySelector(':scope > .modal-actions')
+      ].filter(Boolean);
+      movable.forEach(node => body.appendChild(node));
+      content.appendChild(body);
+    }
+    return body;
+  }
+
   function enforceLayout() {
     if (!mobile() || !open()) return;
     const host = modal();
     const content = panel();
-    if (!host || !content) return;
+    const body = ensureMobileBody();
+    if (!host || !content || !body) return;
 
-    /* Não depende da ordem dos CSS: o runtime aplica a geometria final. */
     [
       ['position','fixed'], ['inset','0'], ['top','0'], ['right','0'], ['bottom','0'], ['left','0'],
       ['width','100vw'], ['height','100dvh'], ['min-height','100dvh'], ['max-height','100dvh'],
@@ -28,61 +48,66 @@
     ].forEach(([p,v]) => imp(host,p,v));
 
     [
-      ['position','fixed'], ['inset','0'], ['top','0'], ['right','0'], ['bottom','0'], ['left','0'],
-      ['box-sizing','border-box'], ['width','100vw'], ['max-width','100vw'], ['min-width','0'],
-      ['height','100dvh'], ['min-height','100dvh'], ['max-height','100dvh'],
-      ['margin','0'], ['padding','0 14px calc(18px + env(safe-area-inset-bottom, 0px))'],
-      ['overflow-y','auto'], ['overflow-x','hidden'], ['overscroll-behavior-y','contain'],
-      ['-webkit-overflow-scrolling','touch'], ['transform','none'], ['contain','none'], ['clip-path','none'],
-      ['border-radius','0'], ['background','var(--rrn-surface, #fff)']
+      ['position','fixed'], ['inset','0'], ['box-sizing','border-box'], ['width','100vw'], ['max-width','100vw'],
+      ['height','100dvh'], ['min-height','100dvh'], ['max-height','100dvh'], ['margin','0'], ['padding','0'],
+      ['display','grid'], ['grid-template-rows','auto minmax(0, 1fr)'], ['overflow','hidden'],
+      ['transform','none'], ['contain','none'], ['clip-path','none'], ['border-radius','0'],
+      ['background','var(--rrn-surface, #fff)']
     ].forEach(([p,v]) => imp(content,p,v));
 
     const header = content.querySelector(':scope > h2');
     if (header) {
-      [['position','sticky'],['top','0'],['z-index','100'],['margin','0 -14px 12px'],
-       ['padding','14px 58px 11px 14px'],['background','var(--rrn-surface, #fff)'],
-       ['border-bottom','1px solid var(--rrn-border, #d7e0e4)']].forEach(([p,v]) => imp(header,p,v));
+      [['position','relative'],['top','auto'],['z-index','100'],['margin','0'],['padding','14px 58px 11px 14px'],
+       ['background','var(--rrn-surface, #fff)'],['border-bottom','1px solid var(--rrn-border, #d7e0e4)']]
+        .forEach(([p,v]) => imp(header,p,v));
     }
 
     const close = content.querySelector(':scope > .close-btn, :scope > .close');
     if (close) {
-      [['position','fixed'],['top','8px'],['right','10px'],['z-index','2147483647'],
-       ['width','40px'],['height','40px'],['margin','0']].forEach(([p,v]) => imp(close,p,v));
+      [['position','fixed'],['top','8px'],['right','10px'],['z-index','2147483647'],['width','40px'],['height','40px'],['margin','0']]
+        .forEach(([p,v]) => imp(close,p,v));
     }
+
+    [
+      ['position','relative'], ['min-height','0'], ['height','auto'], ['max-height','none'], ['width','100%'],
+      ['box-sizing','border-box'], ['padding','12px 14px calc(22px + env(safe-area-inset-bottom, 0px))'],
+      ['overflow-y','auto'], ['overflow-x','hidden'], ['overscroll-behavior-y','contain'],
+      ['-webkit-overflow-scrolling','touch'], ['contain','none'], ['clip-path','none']
+    ].forEach(([p,v]) => imp(body,p,v));
 
     const flowSelectors = [
       '#modalText', '.rrn-machine-detail-card', '.rrn-machine-modal-shell', '.rrn-machine-modal-columns',
       '.rrn-machine-modal-left', '.rrn-machine-modal-right', '.rrn-related-assets', '.rrn-agent-location-card',
       '.rrn-agent-location-meta', '.rrn-agent-location-actions', '.rrn-agent-history', '#maintenanceSection',
-      '#observationsList', '#observationsUl', '.modal-actions'
+      '#observationsList', '#observationsUl', '.modal-actions', '#maintenanceMessage'
     ].join(',');
 
-    content.querySelectorAll(flowSelectors).forEach(el => {
-      [['position','relative'],['inset','auto'],['width','100%'],['max-width','100%'],['min-width','0'],
-       ['height','auto'],['min-height','0'],['max-height','none'],['overflow','visible'],
-       ['transform','none'],['contain','none'],['clip-path','none']].forEach(([p,v]) => imp(el,p,v));
+    body.querySelectorAll(flowSelectors).forEach(el => {
+      [['position','relative'],['inset','auto'],['display','block'],['float','none'],['clear','both'],['width','100%'],
+       ['max-width','100%'],['min-width','0'],['height','auto'],['min-height','0'],['max-height','none'],
+       ['overflow','visible'],['transform','none'],['contain','none'],['clip-path','none'],['box-sizing','border-box']]
+        .forEach(([p,v]) => imp(el,p,v));
     });
 
-    content.querySelectorAll('.rrn-machine-modal-columns, .rrn-agent-location-meta').forEach(el => {
-      imp(el,'grid-template-columns','1fr');
+    body.querySelectorAll('.rrn-machine-modal-columns, .rrn-agent-location-meta').forEach(el => {
+      imp(el,'display','grid'); imp(el,'grid-template-columns','1fr');
     });
 
-    const map = content.querySelector('.rrn-agent-mini-map, #rrnAgentMiniMap');
+    const map = body.querySelector('.rrn-agent-mini-map, #rrnAgentMiniMap');
     if (map) {
-      [['position','relative'],['width','100%'],['height','220px'],['min-height','220px'],['max-height','220px'],
-       ['overflow','hidden'],['transform','none'],['contain','none'],['clip-path','none']].forEach(([p,v]) => imp(map,p,v));
+      [['position','relative'],['display','block'],['width','100%'],['height','220px'],['min-height','220px'],
+       ['max-height','220px'],['overflow','hidden'],['transform','none'],['contain','none'],['clip-path','none']]
+        .forEach(([p,v]) => imp(map,p,v));
     }
   }
 
   function forceTop() {
     if (!mobile() || !open() || userInteracted) return;
     enforceLayout();
-    const host = modal();
-    const content = panel();
-    if (!host || !content) return;
-    host.scrollTop = 0;
-    content.scrollTop = 0;
-    content.scrollTo?.({ top: 0, left: 0, behavior: 'instant' });
+    const body = panel()?.querySelector(':scope > .rrn-mobile-info-body');
+    if (!body) return;
+    body.scrollTop = 0;
+    body.scrollTo?.({ top: 0, left: 0, behavior: 'instant' });
   }
 
   function pinLoop() {
@@ -98,14 +123,11 @@
   function beginResetWindow() {
     if (!mobile()) return;
     userInteracted = false;
-    keepPinnedUntil = performance.now() + 5000;
+    keepPinnedUntil = performance.now() + 2500;
     enforceLayout();
     forceTop();
     pinLoop();
-    [30,80,150,300,600,1000,1600,2400,3400,4600].forEach(ms => setTimeout(() => {
-      enforceLayout();
-      forceTop();
-    }, ms));
+    [30,80,150,300,600,1000,1600,2200].forEach(ms => setTimeout(() => { enforceLayout(); forceTop(); }, ms));
   }
 
   function markUserInteraction(event) {
@@ -118,6 +140,7 @@
   function boot() {
     const host = modal();
     if (!host) return;
+    ensureMobileBody();
 
     new MutationObserver(records => {
       if (records.some(record => record.attributeName === 'aria-hidden') && open()) beginResetWindow();
@@ -129,12 +152,6 @@
       if (performance.now() < keepPinnedUntil && !userInteracted) forceTop();
     }).observe(host, { childList: true, subtree: true, characterData: true });
 
-    document.addEventListener('click', event => {
-      if (event.target.closest?.('[onclick*="showInfo("], [data-rrn-info], .rrn-info-btn, .rrn-machine-item button')) {
-        setTimeout(beginResetWindow, 0);
-      }
-    }, true);
-
     ['touchstart','pointerdown','wheel','keydown'].forEach(type => {
       host.addEventListener(type, markUserInteraction, { passive: type !== 'keydown', capture: true });
     });
@@ -142,7 +159,6 @@
     window.addEventListener('rrn:machine-location-rendered', () => {
       if (!open()) return;
       enforceLayout();
-      if (performance.now() < keepPinnedUntil && !userInteracted) forceTop();
     });
   }
 
