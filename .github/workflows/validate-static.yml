@@ -25,6 +25,7 @@ jobs:
           files=(
             js/auth-v2.js
             js/auth-email-fallback.js
+            js/auth-email-fallback-return.js
             js/index.js
             js/script.js
             js/tenant-runtime.js
