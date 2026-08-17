@@ -122,7 +122,7 @@
 
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
-    await load('/js/theme-mode.js');
+    await load('/js/theme-mode.js?v=20260817-0930');
     await load('/js/footer-v2.js');
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
@@ -138,9 +138,9 @@
       await load('/js/maintenance-mobile-gesture-v3.js?v=20260814-1');
       await load('/js/scanner.js');
       await load('/js/transfer-v2.js');
-      await load('/js/machine-details-v2.js');
+      await load('/js/machine-details-v2.js?v=20260817-0930');
       await load('/js/user-rename-modal-layer-fix.js');
-      await load('/js/machine-location-map.js?v=20260815-1');
+      await load('/js/machine-location-map.js?v=20260817-0930');
       await load('/js/ticket-author-bridge.js');
       await load('/js/asset-history.js');
       await load('/js/dashboard-hotfix.js');
@@ -155,7 +155,7 @@
       await load('/js/production-stability.js');
       await load('/js/grid-machine-details.js');
       await load('/js/compact-grid-actions.js');
-      await load('/js/user-asset-linking.js');
+      await load('/js/user-asset-linking.js?v=20260817-0930');
       await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
       await load('/js/stock-inventory-v2.js?v=20260814-2');
