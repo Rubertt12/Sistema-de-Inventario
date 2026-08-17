@@ -40,11 +40,11 @@
 
     if (haystack.includes('monitor')) return 'monitors';
     if (haystack.includes('impress') || haystack.includes('printer')) return 'printers';
+    if (haystack.includes('notebook') || haystack.includes('laptop')) return 'notebooks';
+    if (haystack.includes('workstation')) return 'workstations';
+    if (haystack.includes('desktop')) return 'desktops';
     if (
-      haystack.includes('notebook') ||
-      haystack.includes('desktop') ||
       haystack.includes('computador') ||
-      haystack.includes('workstation') ||
       haystack.includes('maquina') ||
       /(^|\s)pc(\s|$)/.test(haystack)
     ) return 'computers';
@@ -53,13 +53,24 @@
   }
 
   function categoryCounts(assets) {
-    const counts = { computers: 0, monitors: 0, printers: 0, others: 0 };
+    const counts = {
+      notebooks: 0,
+      desktops: 0,
+      workstations: 0,
+      computers: 0,
+      monitors: 0,
+      printers: 0,
+      others: 0
+    };
     assets.forEach(asset => { counts[categoryFor(asset)] += 1; });
     return counts;
   }
 
   function categoryLabel(category) {
     return ({
+      notebooks: 'Notebooks',
+      desktops: 'Desktops',
+      workstations: 'Workstations',
       computers: 'Computadores',
       monitors: 'Monitores',
       printers: 'Impressoras',
@@ -72,7 +83,8 @@
     const value = normalize(type);
     if (value.includes('monitor')) return 'monitor';
     if (value.includes('impress') || value.includes('printer')) return 'printer';
-    if (value.includes('notebook')) return 'laptop';
+    if (value.includes('notebook') || value.includes('laptop')) return 'laptop';
+    if (value.includes('workstation')) return 'workstation';
     return 'monitor';
   }
 
@@ -104,6 +116,9 @@
 
     const counts = categoryCounts(assets);
     const options = [
+      ['notebooks', 'Notebooks', counts.notebooks],
+      ['desktops', 'Desktops', counts.desktops],
+      ['workstations', 'Workstations', counts.workstations],
       ['computers', 'Computadores', counts.computers],
       ['monitors', 'Monitores', counts.monitors],
       ['printers', 'Impressoras', counts.printers],
