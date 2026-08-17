@@ -24,6 +24,7 @@ internal sealed class TrayContext : ApplicationContext
     private const string LocationValue = "PreciseLocationJson";
     private const string LocationEnabledValue = "PreciseLocationEnabled";
     private const string LocationPromptedValue = "PreciseLocationPrompted";
+
     private static readonly string InstallDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "RRN Manager Agent");
     private static readonly string ProgramDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "RRN Manager Agent");
     private static readonly string CoreExe = Path.Combine(InstallDir, "RRN.Agent.exe");
@@ -43,7 +44,13 @@ internal sealed class TrayContext : ApplicationContext
     private bool _syncing;
     private bool _locationRefreshing;
 
-    private sealed record LocationSnapshot(string Source, string WindowsSource, double Latitude, double Longitude, double AccuracyM, DateTimeOffset CapturedAt);
+    private sealed record LocationSnapshot(
+        string Source,
+        string WindowsSource,
+        double Latitude,
+        double Longitude,
+        double AccuracyM,
+        DateTimeOffset CapturedAt);
 
     public TrayContext()
     {
@@ -59,7 +66,7 @@ internal sealed class TrayContext : ApplicationContext
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Abrir RRN Manager", null, (_, _) => OpenManager());
         menu.Items.Add("Sincronizar agora", null, async (_, _) => await SynchronizeNowAsync());
-        menu.Items.Add("Ativar / atualizar localização precisa", null, async (_, _) => await CapturePreciseLocationAsync(requestAccess: true, showFeedback: true));
+        menu.Items.Add("Ativar / atualizar localização precisa", null, async (_, _) => await CapturePreciseLocationAsync(true, true));
         menu.Items.Add("Configurações de localização do Windows", null, (_, _) => OpenLocationSettings());
         menu.Items.Add("Atualizar agente", null, (_, _) => StartSelfUpdate());
         menu.Items.Add("Sobre / Status", null, (_, _) => ShowStatusWindow());
@@ -85,7 +92,7 @@ internal sealed class TrayContext : ApplicationContext
             _locationTimer.Stop();
             _locationTimer.Interval = 15 * 60 * 1000;
             _locationTimer.Start();
-            if (IsPreciseLocationEnabled()) await CapturePreciseLocationAsync(requestAccess: false, showFeedback: false);
+            if (IsPreciseLocationEnabled()) await CapturePreciseLocationAsync(false, false);
         };
         _locationTimer.Start();
 
@@ -100,7 +107,7 @@ internal sealed class TrayContext : ApplicationContext
                 "RRN Agent · Localização precisa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Information);
-            if (answer == DialogResult.Yes) await CapturePreciseLocationAsync(requestAccess: true, showFeedback: true);
+            if (answer == DialogResult.Yes) await CapturePreciseLocationAsync(true, true);
         };
         _promptTimer.Start();
 
@@ -221,7 +228,10 @@ internal sealed class TrayContext : ApplicationContext
             if (showFeedback) ShowBalloon("RRN Agent · Localização", $"Não foi possível obter a posição agora: {ex.Message}", ToolTipIcon.Warning);
             return null;
         }
-        finally { _locationRefreshing = false; }
+        finally
+        {
+            _locationRefreshing = false;
+        }
     }
 
     private static string NormalizeSource(PositionSource source) => source switch
@@ -255,18 +265,22 @@ internal sealed class TrayContext : ApplicationContext
 
     private static void SavePreciseLocation(LocationSnapshot snapshot)
     {
-        using var key = Registry.CurrentUser.CreateSubKey(RegistryPath, writable: true);
-        var payload = new Dictionary<string, object?>
+        try
         {
-            ["source"] = snapshot.Source,
-            ["windows_source"] = snapshot.WindowsSource,
-            ["latitude"] = snapshot.Latitude,
-            ["longitude"] = snapshot.Longitude,
-            ["accuracy_m"] = snapshot.AccuracyM,
-            ["captured_at"] = snapshot.CapturedAt.ToUniversalTime().ToString("O")
-        };
-        key?.SetValue(LocationValue, JsonSerializer.Serialize(payload), RegistryValueKind.String);
-        key?.SetValue(LocationEnabledValue, 1, RegistryValueKind.DWord);
+            using var key = Registry.CurrentUser.CreateSubKey(RegistryPath, writable: true);
+            var payload = new Dictionary<string, object?>
+            {
+                ["source"] = snapshot.Source,
+                ["windows_source"] = snapshot.WindowsSource,
+                ["latitude"] = snapshot.Latitude,
+                ["longitude"] = snapshot.Longitude,
+                ["accuracy_m"] = snapshot.AccuracyM,
+                ["captured_at"] = snapshot.CapturedAt.ToUniversalTime().ToString("O")
+            };
+            key?.SetValue(LocationValue, JsonSerializer.Serialize(payload), RegistryValueKind.String);
+            key?.SetValue(LocationEnabledValue, 1, RegistryValueKind.DWord);
+        }
+        catch { }
     }
 
     private static LocationSnapshot? ReadPreciseLocation()
@@ -278,9 +292,9 @@ internal sealed class TrayContext : ApplicationContext
             if (string.IsNullOrWhiteSpace(raw)) return null;
             using var doc = JsonDocument.Parse(raw);
             var root = doc.RootElement;
-            if (!root.TryGetProperty("latitude", out var latEl) || !latEl.TryGetDouble(out var lat)) return null;
-            if (!root.TryGetProperty("longitude", out var lonEl) || !lonEl.TryGetDouble(out var lon)) return null;
-            var accuracy = root.TryGetProperty("accuracy_m", out var accEl) && accEl.TryGetDouble(out var acc) ? acc : 0d;
+            if (!root.TryGetProperty("latitude", out var latEl) || !latEl.TryGetDouble(out var lat) || lat is < -90 or > 90) return null;
+            if (!root.TryGetProperty("longitude", out var lonEl) || !lonEl.TryGetDouble(out var lon) || lon is < -180 or > 180) return null;
+            var accuracy = root.TryGetProperty("accuracy_m", out var accEl) && accEl.TryGetDouble(out var acc) ? Math.Max(0, acc) : 0d;
             var source = root.TryGetProperty("source", out var sourceEl) ? sourceEl.GetString() ?? "windows" : "windows";
             var windowsSource = root.TryGetProperty("windows_source", out var winEl) ? winEl.GetString() ?? "Unknown" : "Unknown";
             var capturedRaw = root.TryGetProperty("captured_at", out var capEl) ? capEl.GetString() : null;
@@ -342,7 +356,7 @@ internal sealed class TrayContext : ApplicationContext
         _syncing = true;
         try
         {
-            if (IsPreciseLocationEnabled()) await CapturePreciseLocationAsync(requestAccess: false, showFeedback: false);
+            if (IsPreciseLocationEnabled()) await CapturePreciseLocationAsync(false, false);
             var psi = new ProcessStartInfo(CoreExe, "run --kind manual")
             {
                 UseShellExecute = false,
@@ -364,8 +378,14 @@ internal sealed class TrayContext : ApplicationContext
             else
                 ShowBalloon("RRN Agent", string.IsNullOrWhiteSpace(stderr) ? "Falha ao sincronizar o inventário." : stderr.Trim(), ToolTipIcon.Error);
         }
-        catch (Exception ex) { ShowBalloon("RRN Agent", ex.Message, ToolTipIcon.Error); }
-        finally { _syncing = false; }
+        catch (Exception ex)
+        {
+            ShowBalloon("RRN Agent", ex.Message, ToolTipIcon.Error);
+        }
+        finally
+        {
+            _syncing = false;
+        }
     }
 
     private void ShowStatusWindow()
@@ -375,79 +395,114 @@ internal sealed class TrayContext : ApplicationContext
         var deviceId = ReadString(config, "deviceId") ?? ReadString(config, "DeviceId") ?? "Não vinculado";
         var lastSync = ReadDate(status, "lastSyncAt") ?? ReadDate(status, "LastSyncAt");
         var lastMessage = ReadString(status, "lastMessage") ?? ReadString(status, "LastMessage") ?? "—";
-        var version = typeof(TrayContext).Assembly.GetName().Version?.ToString(3) ?? "0.3.0";
+        var version = typeof(TrayContext).Assembly.GetName().Version?.ToString(3) ?? "0.4.0";
         var nextSync = NextScheduledSync();
         var location = ReadPreciseLocation();
         var locationText = location is null
             ? (IsPreciseLocationEnabled() ? "Aguardando posição" : "Desativada")
             : $"{SourceLabel(location.Source)} · ±{FormatAccuracy(location.AccuracyM)}\nCoordenadas: {location.Latitude:F6}, {location.Longitude:F6}\nAtualizada: {location.CapturedAt.LocalDateTime:dd/MM/yyyy HH:mm}";
 
-        using var form = new Form
-        {
-            Text = "RRN Agent",
-            StartPosition = FormStartPosition.CenterScreen,
-            FormBorderStyle = FormBorderStyle.FixedDialog,
-            MaximizeBox = false,
-            MinimizeBox = false,
-            Width = 500,
-            Height = 455,
-            BackColor = Color.FromArgb(248, 250, 250),
-            Font = new Font("Segoe UI", 10F)
-        };
-        if (_notifyIcon.Icon is not null) form.Icon = _notifyIcon.Icon;
-
-        var title = new Label { Text = "RRN Agent", Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold), ForeColor = Color.FromArgb(22, 58, 77), AutoSize = true, Left = 28, Top = 24 };
-        var subtitle = new Label { Text = File.Exists(ConfigPath) ? "● Conectado ao RRN Manager" : "● Não vinculado", ForeColor = File.Exists(ConfigPath) ? Color.FromArgb(47, 125, 120) : Color.FromArgb(190, 70, 70), AutoSize = true, Left = 30, Top = 66 };
-        var info = new Label
-        {
-            Text = $"Dispositivo: {deviceId}\nVersão: {version}\nÚltima sincronização: {(lastSync.HasValue ? lastSync.Value.LocalDateTime.ToString("dd/MM/yyyy HH:mm") : "—")}\nPróxima sincronização: {nextSync:dd/MM/yyyy HH:mm}\nÚltimo status: {lastMessage}\n\nLocalização: {locationText}",
-            Left = 30, Top = 108, Width = 430, Height = 190, ForeColor = Color.FromArgb(38, 50, 56)
-        };
-
-        var sync = new Button { Text = "Sincronizar agora", Left = 30, Top = 320, Width = 135, Height = 38 };
-        sync.Click += async (_, _) => { form.Hide(); await SynchronizeNowAsync(); form.Close(); };
-        var locate = new Button { Text = "Atualizar localização", Left = 175, Top = 320, Width = 145, Height = 38 };
-        locate.Click += async (_, _) => { await CapturePreciseLocationAsync(requestAccess: true, showFeedback: true); form.Close(); };
-        var open = new Button { Text = "Abrir RRN Manager", Left = 330, Top = 320, Width = 130, Height = 38 };
-        open.Click += (_, _) => OpenManager();
-        var close = new Button { Text = "Fechar", Left = 390, Top = 370, Width = 70, Height = 32 };
-        close.Click += (_, _) => form.Close();
-
-        form.Controls.AddRange([title, subtitle, info, sync, locate, open, close]);
-        form.ShowDialog();
+        MessageBox.Show(
+            $"Dispositivo: {deviceId}\nVersão: {version}\nÚltima sincronização: {(lastSync.HasValue ? lastSync.Value.LocalDateTime.ToString("dd/MM/yyyy HH:mm") : "—")}\nPróxima sincronização: {nextSync:dd/MM/yyyy HH:mm}\nÚltimo status: {lastMessage}\n\nLocalização: {locationText}\n\nSegurança: entrada de rede bloqueada; atualizações verificadas por SHA-256.",
+            "RRN Agent · Status",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
     }
 
     private void StartSelfUpdate()
     {
-        var answer = MessageBox.Show("O RRN Agent vai baixar a versão mais recente e reiniciar o ícone da bandeja. Continuar?", "Atualizar RRN Agent", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        var answer = MessageBox.Show(
+            "O RRN Agent vai baixar a versão mais recente, verificar a integridade dos executáveis e reiniciar o ícone da bandeja. Continuar?",
+            "Atualizar RRN Agent",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
         if (answer != DialogResult.Yes) return;
 
         try
         {
-            var scriptPath = Path.Combine(Path.GetTempPath(), "rrn-agent-update.ps1");
+            var scriptPath = Path.Combine(Path.GetTempPath(), $"rrn-agent-update-{Guid.NewGuid():N}.ps1");
             var script = $$"""
 param([string]$InstallDir,[int]$TrayPid)
 $ErrorActionPreference='Stop'
+$ProgressPreference='SilentlyContinue'
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $base='{{ReleaseBase}}'
 $temp=Join-Path $env:TEMP ('rrn-agent-update-' + [guid]::NewGuid().ToString('N'))
-New-Item -ItemType Directory -Force -Path $temp | Out-Null
-Invoke-WebRequest "$base/RRN.Agent.exe" -OutFile (Join-Path $temp 'RRN.Agent.exe')
-Invoke-WebRequest "$base/RRN.Agent.Tray.exe" -OutFile (Join-Path $temp 'RRN.Agent.Tray.exe')
-try { Invoke-WebRequest "$base/rrn-logo.png" -OutFile (Join-Path $temp 'rrn-logo.png') } catch {}
-try { Wait-Process -Id $TrayPid -Timeout 20 -ErrorAction SilentlyContinue } catch {}
-Copy-Item (Join-Path $temp 'RRN.Agent.exe') (Join-Path $InstallDir 'RRN.Agent.exe') -Force
-Copy-Item (Join-Path $temp 'RRN.Agent.Tray.exe') (Join-Path $InstallDir 'RRN.Agent.Tray.exe') -Force
-if (Test-Path (Join-Path $temp 'rrn-logo.png')) { Copy-Item (Join-Path $temp 'rrn-logo.png') (Join-Path $InstallDir 'rrn-logo.png') -Force }
-Remove-Item $temp -Recurse -Force -ErrorAction SilentlyContinue
-Start-Process (Join-Path $InstallDir 'RRN.Agent.Tray.exe')
+$logDir=Join-Path $env:ProgramData 'RRN Manager Agent'
+$logPath=Join-Path $logDir 'update-security.log'
+New-Item -ItemType Directory -Force -Path $temp,$logDir | Out-Null
+
+function Write-UpdateLog([string]$Message) {
+  Add-Content -Path $logPath -Value ((Get-Date).ToString('o') + ' ' + $Message) -Encoding UTF8
+}
+
+function Get-VerifiedReleaseFile([string]$Name) {
+  $target=Join-Path $temp $Name
+  $hashFile=Join-Path $temp ($Name + '.sha256')
+  Invoke-WebRequest -UseBasicParsing -Uri ($base + '/' + $Name) -OutFile $target
+  Invoke-WebRequest -UseBasicParsing -Uri ($base + '/' + $Name + '.sha256') -OutFile $hashFile
+  $expected=(Get-Content -Raw $hashFile).Trim().ToLowerInvariant()
+  if ($expected -notmatch '^[a-f0-9]{64}$') { throw ('Hash publicado inválido para ' + $Name) }
+  $actual=(Get-FileHash -Algorithm SHA256 -Path $target).Hash.ToLowerInvariant()
+  if ($actual -ne $expected) { throw ('Falha de integridade em ' + $Name + '. Atualização cancelada.') }
+  return $target
+}
+
+function Get-SafeVersion([string]$Path) {
+  try {
+    $raw=(Get-Item $Path).VersionInfo.FileVersion
+    if ([string]::IsNullOrWhiteSpace($raw)) { return [version]'0.0.0.0' }
+    return [version](($raw -split '[^0-9\.]')[0])
+  } catch { return [version]'0.0.0.0' }
+}
+
+$coreNew=Get-VerifiedReleaseFile 'RRN.Agent.exe'
+$trayNew=Get-VerifiedReleaseFile 'RRN.Agent.Tray.exe'
+try { Invoke-WebRequest -UseBasicParsing -Uri ($base + '/rrn-logo.png') -OutFile (Join-Path $temp 'rrn-logo.png') } catch {}
+
+$coreCurrent=Join-Path $InstallDir 'RRN.Agent.exe'
+$trayCurrent=Join-Path $InstallDir 'RRN.Agent.Tray.exe'
+if ((Test-Path $coreCurrent) -and ((Get-SafeVersion $coreNew) -lt (Get-SafeVersion $coreCurrent))) { throw 'Downgrade do RRN.Agent.exe recusado.' }
+if ((Test-Path $trayCurrent) -and ((Get-SafeVersion $trayNew) -lt (Get-SafeVersion $trayCurrent))) { throw 'Downgrade do RRN.Agent.Tray.exe recusado.' }
+
+$coreBackup=Join-Path $temp 'RRN.Agent.exe.bak'
+$trayBackup=Join-Path $temp 'RRN.Agent.Tray.exe.bak'
+if (Test-Path $coreCurrent) { Copy-Item $coreCurrent $coreBackup -Force }
+if (Test-Path $trayCurrent) { Copy-Item $trayCurrent $trayBackup -Force }
+
+try {
+  try { Wait-Process -Id $TrayPid -Timeout 20 -ErrorAction SilentlyContinue } catch {}
+  Copy-Item $coreNew $coreCurrent -Force
+  Copy-Item $trayNew $trayCurrent -Force
+  if (Test-Path (Join-Path $temp 'rrn-logo.png')) { Copy-Item (Join-Path $temp 'rrn-logo.png') (Join-Path $InstallDir 'rrn-logo.png') -Force }
+  Write-UpdateLog 'Atualização concluída com hashes SHA-256 validados.'
+} catch {
+  Write-UpdateLog ('Falha na atualização: ' + $_.Exception.Message)
+  if (Test-Path $coreBackup) { Copy-Item $coreBackup $coreCurrent -Force -ErrorAction SilentlyContinue }
+  if (Test-Path $trayBackup) { Copy-Item $trayBackup $trayCurrent -Force -ErrorAction SilentlyContinue }
+  throw
+} finally {
+  Remove-Item $temp -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+Start-Process $trayCurrent
+Remove-Item $PSCommandPath -Force -ErrorAction SilentlyContinue
 """;
             File.WriteAllText(scriptPath, script);
-            var psi = new ProcessStartInfo("powershell.exe") { UseShellExecute = true, Verb = "runas", Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\" -InstallDir \"{InstallDir}\" -TrayPid {Environment.ProcessId}" };
+            var psi = new ProcessStartInfo("powershell.exe")
+            {
+                UseShellExecute = true,
+                Verb = "runas",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\" -InstallDir \"{InstallDir}\" -TrayPid {Environment.ProcessId}"
+            };
             Process.Start(psi);
-            ShowBalloon("RRN Agent", "Atualização iniciada.", ToolTipIcon.Info);
+            ShowBalloon("RRN Agent", "Atualização segura iniciada. Os hashes serão validados antes da substituição.", ToolTipIcon.Info);
             Application.Exit();
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "RRN Agent", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "RRN Agent", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private static DateTime NextScheduledSync()
@@ -500,7 +555,11 @@ Start-Process (Join-Path $InstallDir 'RRN.Agent.Tray.exe')
 
     private void ExitTray()
     {
-        var answer = MessageBox.Show("Fechar apenas o ícone do RRN Agent? As sincronizações automáticas de 08:00 e 18:00 continuarão ativas.", "Sair do RRN Agent", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        var answer = MessageBox.Show(
+            "Fechar apenas o ícone do RRN Agent? As sincronizações automáticas de 08:00 e 18:00 continuarão ativas.",
+            "Sair do RRN Agent",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
         if (answer != DialogResult.Yes) return;
         ExitThread();
     }
