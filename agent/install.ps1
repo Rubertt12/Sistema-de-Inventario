@@ -56,12 +56,12 @@ function Set-RrnDataPermissions {
   if ($LASTEXITCODE -ne 0) { throw 'Não foi possível proteger a pasta de configuração do RRN Agent.' }
 
   if (Test-Path $configPath) {
-    & icacls.exe $configPath /inheritance:r /grant:r '*S-1-5-18:F' '*S-1-5-32-544:F' '*S-1-5-32-545:R' | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw 'Não foi possível proteger o arquivo agent.json.' }
+    & icacls.exe $configPath /inheritance:r /grant:r '*S-1-5-18:F' '*S-1-5-32-544:F' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'Não foi possível isolar o arquivo agent.json para SYSTEM e Administradores.' }
   }
 
   if (Test-Path $statusPath) {
-    & icacls.exe $statusPath /inheritance:r /grant:r '*S-1-5-18:F' '*S-1-5-32-544:F' '*S-1-5-32-545:M' | Out-Null
+    & icacls.exe $statusPath /inheritance:r /grant:r '*S-1-5-18:F' '*S-1-5-32-544:F' '*S-1-5-32-545:R' | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Não foi possível proteger o arquivo status.json.' }
   }
 }
@@ -83,7 +83,7 @@ $exePath = Join-Path $installDir 'RRN.Agent.exe'
 $trayPath = Join-Path $installDir 'RRN.Agent.Tray.exe'
 $logoPath = Join-Path $installDir 'rrn-logo.png'
 
-Write-Host 'Instalando RRN Agent com hardening de rede...' -ForegroundColor Cyan
+Write-Host 'Instalando RRN Agent com hardening de rede e credenciais...' -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 
 try {
@@ -122,6 +122,8 @@ Write-Host ''
 Write-Host 'RRN Agent instalado com sucesso.' -ForegroundColor Green
 Write-Host 'Proteção de entrada: BLOQUEADA no Firewall do Windows para Core e Tray'
 Write-Host 'Integridade dos executáveis: verificada por SHA-256'
+Write-Host 'Credencial local: somente SYSTEM e Administradores'
+Write-Host 'Status operacional: somente leitura para usuários padrão'
 Write-Host 'Inventário inicial: enviado agora'
 Write-Host 'Próximas sincronizações: todos os dias às 08:00 e 18:00'
 Write-Host 'Ícone de bandeja: iniciado e configurado para abrir com o Windows'
