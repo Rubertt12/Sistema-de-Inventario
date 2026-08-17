@@ -36,17 +36,15 @@ html:has(#rrnEditAssetModal.is-open),body:has(#rrnEditAssetModal.is-open){overfl
 @media(max-width:700px){
   html,body{max-width:100%;overflow-x:hidden}
 
-  /* overlays: sempre acima da navbar, sem scroll duplo */
   #infoModal.modal,#modalSetor.modal,#modalTransferencia,#modalEditarUsuario,
   #rrnEditAssetModal.rrn-history-modal,.rrn-history-modal,.rrn-stock-modal,
   .rrn-agent-delete-choice{
     position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;
     margin:0!important;padding:0!important;align-items:flex-end!important;justify-content:center!important;
     overflow:hidden!important;overscroll-behavior:none!important;z-index:2147483000!important;
-    background:rgba(7,20,29,.72)!important;backdrop-filter:blur(7px)!important;-webkit-backdrop-filter:blur(7px)!important;
+    background:rgba(7,20,29,.78)!important;backdrop-filter:blur(7px)!important;-webkit-backdrop-filter:blur(7px)!important;
   }
 
-  /* painel padrão: bottom sheet/tela quase cheia */
   #infoModal>.modal-content,#modalSetor>.modal-content,#modalTransferencia>.modal-transferencia-content,
   #modalTransferencia .rrn-transfer-v3,#modalEditarUsuario>*,#rrnEditAssetModal>.rrn-history-dialog,
   .rrn-history-modal>.rrn-history-dialog,.rrn-stock-modal>.rrn-stock-dialog,
@@ -58,26 +56,45 @@ html:has(#rrnEditAssetModal.is-open),body:has(#rrnEditAssetModal.is-open){overfl
     box-shadow:0 -18px 55px rgba(0,0,0,.32)!important;
   }
 
-  /* modal de informações: não fica estreito nem com duas barras de rolagem */
-  #infoModal>.modal-content{display:flex!important;flex-direction:column!important;padding:0!important;max-height:96dvh!important}
-  #infoModal>.modal-content>h2{flex:0 0 auto!important;margin:0!important;padding:16px 58px 12px 16px!important;font-size:1rem!important;border-bottom:1px solid var(--rrn-border,#d7e0e4)!important;background:var(--rrn-surface,#fff)!important}
-  #infoModal>.modal-content>.close,#infoModal>.modal-content>.close-btn{position:absolute!important;top:10px!important;right:12px!important;z-index:5!important;width:40px!important;height:40px!important;margin:0!important}
-  #infoModal #modalText{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px))!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+  /* Informações da máquina: um único scroll para TODO o conteúdo do modal. */
+  html:has(#infoModal[aria-hidden="false"]),body:has(#infoModal[aria-hidden="false"]){overflow:hidden!important}
+  #infoModal>.modal-content{
+    display:block!important;position:relative!important;height:96dvh!important;max-height:96dvh!important;
+    padding:0 14px calc(18px + env(safe-area-inset-bottom,0px))!important;
+    overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;background:var(--rrn-surface,#fff)!important;
+  }
+  #infoModal>.modal-content>h2{
+    position:sticky!important;top:0!important;z-index:20!important;margin:0 -14px 12px!important;
+    padding:16px 58px 13px 16px!important;font-size:1rem!important;border-bottom:1px solid var(--rrn-border,#d7e0e4)!important;
+    background:var(--rrn-surface,#fff)!important;color:var(--rrn-heading,#163A4D)!important;
+  }
+  #infoModal>.modal-content>.close,#infoModal>.modal-content>.close-btn{
+    position:sticky!important;float:right!important;top:9px!important;right:0!important;z-index:30!important;
+    width:40px!important;height:40px!important;margin:0!important;transform:translateY(0)!important;
+  }
+  #infoModal #modalText{
+    display:block!important;width:100%!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:0!important;
+  }
   #infoModal .rrn-machine-detail-card{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;padding:10px!important}
-  #infoModal .rrn-machine-modal-shell,#infoModal .rrn-machine-modal-columns{display:block!important;overflow:visible!important;max-height:none!important}
-  #infoModal .rrn-machine-modal-left,#infoModal .rrn-machine-modal-right{width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:0!important}
+  #infoModal .rrn-machine-modal-shell,#infoModal .rrn-machine-modal-columns{display:block!important;overflow:visible!important;max-height:none!important;height:auto!important}
+  #infoModal .rrn-machine-modal-left,#infoModal .rrn-machine-modal-right{display:block!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:0!important}
+  #infoModal .rrn-agent-location-card{position:relative!important;z-index:1!important;width:100%!important;max-width:100%!important;margin:12px 0!important;box-sizing:border-box!important;overflow:hidden!important}
+  #infoModal .rrn-agent-location-meta{grid-template-columns:1fr!important}
+  #infoModal .rrn-agent-mini-map{position:relative!important;z-index:1!important;width:100%!important;height:220px!important;max-width:100%!important;overflow:hidden!important;border-radius:12px!important}
+  #infoModal .leaflet-container{z-index:1!important;max-width:100%!important}
   #infoModal .checklist-content{grid-template-columns:1fr!important;gap:7px!important}
-  #infoModal #observationsUl{max-height:none!important}
-  #infoModal .modal-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;position:static!important}
+  #infoModal #maintenanceSection,#infoModal #observationsList,#infoModal .modal-actions{position:relative!important;z-index:2!important;background:var(--rrn-surface,#fff)!important}
+  #infoModal #observationsUl{max-height:none!important;overflow:visible!important}
+  #infoModal .modal-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-bottom:8px!important}
   #infoModal .modal-actions button,#infoModal #maintenanceSection>button{width:100%!important;min-height:44px!important}
 
-  /* adicionar setor */
   #modalSetor>.modal-content{display:flex!important;flex-direction:column!important;gap:10px!important;padding:22px 16px calc(18px + env(safe-area-inset-bottom,0px))!important}
   #modalSetor>.modal-content>h2{margin:0 48px 4px 0!important}
   #modalSetor>.modal-content>input,#modalSetor>.modal-content>button:not(.close-btn){width:100%!important;min-height:46px!important}
   #modalSetor>.modal-content>.close-btn{top:12px!important;right:12px!important}
 
-  /* editar equipamento */
   #rrnEditAssetModal.rrn-history-modal{padding:0!important}
   #rrnEditAssetModal>.rrn-history-dialog{height:96dvh!important;max-height:96dvh!important}
   #rrnEditAssetModal .rrn-history-header{padding:13px 14px!important}
@@ -89,7 +106,6 @@ html:has(#rrnEditAssetModal.is-open),body:has(#rrnEditAssetModal.is-open){overfl
   #rrnEditAssetModal .rrn-edit-asset-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin:12px -14px 0!important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))!important}
   #rrnEditAssetModal .rrn-edit-asset-actions button{width:100%!important;min-height:44px!important}
 
-  /* transferência: uma coluna, listas com altura controlada */
   #modalTransferencia>.modal-transferencia-content,#modalTransferencia .rrn-transfer-v3{max-height:96dvh!important;padding:14px!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important}
   #modalTransferencia .pesquisa-transferencia,#modalTransferencia .caixas-transferencia,#modalTransferencia .rrn-transfer-columns{grid-template-columns:1fr!important}
   #modalTransferencia .box-setor,#modalTransferencia .rrn-transfer-panel{min-height:0!important}
@@ -97,25 +113,20 @@ html:has(#rrnEditAssetModal.is-open),body:has(#rrnEditAssetModal.is-open){overfl
   #modalTransferencia .rrn-transfer-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;position:sticky!important;bottom:0!important;background:var(--rrn-surface,#fff)!important;padding:10px 0 calc(6px + env(safe-area-inset-bottom,0px))!important}
   #modalTransferencia .rrn-transfer-actions button,#modalTransferencia .btn-confirmar{width:100%!important;min-height:44px!important;margin:0!important}
 
-  /* renomear responsável */
   #modalEditarUsuario{padding:0!important;align-items:flex-end!important}
   #modalEditarUsuario>*{padding:20px 16px calc(18px + env(safe-area-inset-bottom,0px))!important}
   #modalEditarUsuario input,#modalEditarUsuario select,#modalEditarUsuario textarea{font-size:16px!important;min-height:44px!important}
   #modalEditarUsuario button{min-height:44px!important}
 
-  /* histórico, estoque e escolha do agent */
   .rrn-history-modal>.rrn-history-dialog,.rrn-stock-modal>.rrn-stock-dialog{height:min(94dvh,900px)!important;max-height:94dvh!important;display:flex!important;flex-direction:column!important}
-  .rrn-history-modal .rrn-history-body,.rrn-stock-modal .rrn-stock-modal-body,.rrn-stock-modal .rrn-stock-body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
-  .rrn-agent-delete-choice>.rrn-agent-delete-dialog{padding:20px 16px calc(18px + env(safe-area-inset-bottom,0px))!important}
+  .rrn-history-modal .rrn-history-body,.rrn-stock-modal .rrn-stock-dialog{overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
   .rrn-agent-delete-options{grid-template-columns:1fr!important}
   .rrn-agent-delete-option{min-height:auto!important}
 
-  /* evita zoom automático em iOS e cortes de formulário */
-  #infoModal input,#infoModal select,#infoModal textarea,#modalSetor input,#modalTransferencia input,#modalTransferencia select,#modalTransferencia textarea,#modalEditarUsuario input,#rrnEditAssetModal input,#rrnEditAssetModal select,#rrnEditAssetModal textarea{font-size:16px!important;max-width:100%!important;box-sizing:border-box!important}
+  input,select,textarea{max-width:100%}
 }
 
 @media(max-width:430px){
-  #infoModal>.modal-content,#rrnEditAssetModal>.rrn-history-dialog,.rrn-history-modal>.rrn-history-dialog,.rrn-stock-modal>.rrn-stock-dialog{border-radius:14px 14px 0 0!important}
-  #infoModal #modalText{padding-left:10px!important;padding-right:10px!important}
-  #modalTransferencia>.modal-transferencia-content,#modalTransferencia .rrn-transfer-v3{padding:12px!important}
+  #infoModal>.modal-content,#rrnEditAssetModal>.rrn-history-dialog,.rrn-history-modal>.rrn-history-dialog,.rrn-stock-modal>.rrn-stock-dialog{height:100dvh!important;max-height:100dvh!important;border-radius:0!important}
+  #infoModal .rrn-agent-mini-map{height:200px!important}
 }
