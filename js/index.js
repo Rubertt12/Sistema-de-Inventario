@@ -145,6 +145,7 @@
       await load('/js/asset-history.js');
       await load('/js/dashboard-hotfix.js');
       await load('/js/equipment-list-performance.js');
+      await load('/js/category-navigation-fix.js');
       await load('/js/sector-category-guard.js');
       await load('/js/trash-v2.js');
       await load('/js/trash-audit-bridge.js');
