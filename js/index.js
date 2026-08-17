@@ -139,6 +139,7 @@
       await load('/js/scanner.js');
       await load('/js/transfer-v2.js');
       await load('/js/machine-details-v2.js');
+      await load('/js/user-rename-modal-layer-fix.js');
       await load('/js/machine-location-map.js?v=20260815-1');
       await load('/js/ticket-author-bridge.js');
       await load('/js/asset-history.js');
