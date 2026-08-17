@@ -41,57 +41,76 @@
     if (!host || !content || !body) return;
 
     [
-      ['position','fixed'], ['inset','0'], ['top','0'], ['right','0'], ['bottom','0'], ['left','0'],
-      ['width','100vw'], ['height','100dvh'], ['min-height','100dvh'], ['max-height','100dvh'],
-      ['margin','0'], ['padding','0'], ['overflow','hidden'], ['display','block'],
-      ['transform','none'], ['contain','none'], ['clip-path','none'], ['z-index','2147483646']
+      ['position','fixed'],['inset','0'],['width','100vw'],['height','100dvh'],['min-height','100dvh'],['max-height','100dvh'],
+      ['margin','0'],['padding','0'],['overflow','hidden'],['display','block'],['transform','none'],['contain','none'],
+      ['clip-path','none'],['z-index','2147483646']
     ].forEach(([p,v]) => imp(host,p,v));
 
     [
-      ['position','fixed'], ['inset','0'], ['box-sizing','border-box'], ['width','100vw'], ['max-width','100vw'],
-      ['height','100dvh'], ['min-height','100dvh'], ['max-height','100dvh'], ['margin','0'], ['padding','0'],
-      ['display','grid'], ['grid-template-rows','auto minmax(0, 1fr)'], ['overflow','hidden'],
-      ['transform','none'], ['contain','none'], ['clip-path','none'], ['border-radius','0'],
-      ['background','var(--rrn-surface, #fff)']
+      ['position','fixed'],['inset','0'],['box-sizing','border-box'],['width','100vw'],['max-width','100vw'],
+      ['height','100dvh'],['min-height','100dvh'],['max-height','100dvh'],['margin','0'],['padding','0'],
+      ['display','block'],['overflow','hidden'],['transform','none'],['contain','none'],['clip-path','none'],
+      ['border-radius','0'],['background','var(--rrn-surface, #fff)']
     ].forEach(([p,v]) => imp(content,p,v));
 
     const header = content.querySelector(':scope > h2');
     if (header) {
-      [['position','relative'],['top','auto'],['z-index','100'],['margin','0'],['padding','14px 58px 11px 14px'],
-       ['background','var(--rrn-surface, #fff)'],['border-bottom','1px solid var(--rrn-border, #d7e0e4)']]
+      [['position','absolute'],['top','0'],['left','0'],['right','0'],['height','56px'],['box-sizing','border-box'],
+       ['z-index','100'],['margin','0'],['padding','14px 58px 11px 14px'],['background','var(--rrn-surface, #fff)'],
+       ['border-bottom','1px solid var(--rrn-border, #d7e0e4)'],['overflow','hidden']]
         .forEach(([p,v]) => imp(header,p,v));
     }
 
     const close = content.querySelector(':scope > .close-btn, :scope > .close');
     if (close) {
-      [['position','fixed'],['top','8px'],['right','10px'],['z-index','2147483647'],['width','40px'],['height','40px'],['margin','0']]
+      [['position','absolute'],['top','8px'],['right','10px'],['z-index','101'],['width','40px'],['height','40px'],['margin','0']]
         .forEach(([p,v]) => imp(close,p,v));
     }
 
     [
-      ['position','relative'], ['min-height','0'], ['height','auto'], ['max-height','none'], ['width','100%'],
-      ['box-sizing','border-box'], ['padding','12px 14px calc(22px + env(safe-area-inset-bottom, 0px))'],
-      ['overflow-y','auto'], ['overflow-x','hidden'], ['overscroll-behavior-y','contain'],
-      ['-webkit-overflow-scrolling','touch'], ['contain','none'], ['clip-path','none']
+      ['position','absolute'],['top','56px'],['right','0'],['bottom','0'],['left','0'],['width','auto'],['height','auto'],
+      ['min-height','0'],['max-height','none'],['box-sizing','border-box'],
+      ['padding','12px 14px calc(28px + env(safe-area-inset-bottom, 0px))'],['overflow-y','auto'],['overflow-x','hidden'],
+      ['overscroll-behavior-y','contain'],['-webkit-overflow-scrolling','touch'],['contain','none'],['clip-path','none'],
+      ['background','var(--rrn-surface, #fff)']
     ].forEach(([p,v]) => imp(body,p,v));
 
     const flowSelectors = [
-      '#modalText', '.rrn-machine-detail-card', '.rrn-machine-modal-shell', '.rrn-machine-modal-columns',
-      '.rrn-machine-modal-left', '.rrn-machine-modal-right', '.rrn-related-assets', '.rrn-agent-location-card',
-      '.rrn-agent-location-meta', '.rrn-agent-location-actions', '.rrn-agent-history', '#maintenanceSection',
-      '#observationsList', '#observationsUl', '.modal-actions', '#maintenanceMessage'
+      '#modalText','.rrn-machine-detail-card','.rrn-machine-modal-shell','.rrn-machine-modal-columns',
+      '.rrn-machine-modal-left','.rrn-machine-modal-right','.rrn-related-assets','.rrn-agent-location-card',
+      '.rrn-agent-location-meta','.rrn-agent-location-actions','.rrn-agent-history','#maintenanceSection',
+      '#observationsList','#observationsUl','.modal-actions','#maintenanceMessage'
     ].join(',');
 
     body.querySelectorAll(flowSelectors).forEach(el => {
-      [['position','relative'],['inset','auto'],['display','block'],['float','none'],['clear','both'],['width','100%'],
-       ['max-width','100%'],['min-width','0'],['height','auto'],['min-height','0'],['max-height','none'],
-       ['overflow','visible'],['transform','none'],['contain','none'],['clip-path','none'],['box-sizing','border-box']]
+      [['position','relative'],['inset','auto'],['float','none'],['clear','both'],['width','100%'],['max-width','100%'],
+       ['min-width','0'],['height','auto'],['min-height','0'],['max-height','none'],['overflow','visible'],['transform','none'],
+       ['contain','none'],['clip-path','none'],['box-sizing','border-box']]
         .forEach(([p,v]) => imp(el,p,v));
     });
 
     body.querySelectorAll('.rrn-machine-modal-columns, .rrn-agent-location-meta').forEach(el => {
-      imp(el,'display','grid'); imp(el,'grid-template-columns','1fr');
+      imp(el,'display','grid');
+      imp(el,'grid-template-columns','1fr');
     });
+
+    const maintenance = body.querySelector('#maintenanceSection');
+    if (maintenance) {
+      imp(maintenance,'display','block');
+      imp(maintenance,'margin-top','16px');
+    }
+    const observations = body.querySelector('#observationsList');
+    if (observations) {
+      imp(observations,'display','block');
+      imp(observations,'margin-top','18px');
+    }
+    const actions = body.querySelector('.modal-actions');
+    if (actions) {
+      imp(actions,'display','grid');
+      imp(actions,'grid-template-columns','1fr');
+      imp(actions,'gap','8px');
+      imp(actions,'margin-top','18px');
+    }
 
     const map = body.querySelector('.rrn-agent-mini-map, #rrnAgentMiniMap');
     if (map) {
@@ -123,11 +142,11 @@
   function beginResetWindow() {
     if (!mobile()) return;
     userInteracted = false;
-    keepPinnedUntil = performance.now() + 2500;
+    keepPinnedUntil = performance.now() + 1800;
     enforceLayout();
     forceTop();
     pinLoop();
-    [30,80,150,300,600,1000,1600,2200].forEach(ms => setTimeout(() => { enforceLayout(); forceTop(); }, ms));
+    [40,120,300,600,1000,1600].forEach(ms => setTimeout(() => { enforceLayout(); forceTop(); }, ms));
   }
 
   function markUserInteraction(event) {
@@ -149,7 +168,6 @@
     new MutationObserver(() => {
       if (!open()) return;
       enforceLayout();
-      if (performance.now() < keepPinnedUntil && !userInteracted) forceTop();
     }).observe(host, { childList: true, subtree: true, characterData: true });
 
     ['touchstart','pointerdown','wheel','keydown'].forEach(type => {
@@ -157,9 +175,10 @@
     });
 
     window.addEventListener('rrn:machine-location-rendered', () => {
-      if (!open()) return;
-      enforceLayout();
+      if (open()) enforceLayout();
     });
+    window.addEventListener('resize', () => { if (open()) enforceLayout(); });
+    window.visualViewport?.addEventListener('resize', () => { if (open()) enforceLayout(); });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
