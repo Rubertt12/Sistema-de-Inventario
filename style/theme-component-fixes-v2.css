@@ -1,0 +1,229 @@
+/* RRN Manager — ajustes finais de contraste para componentes dinâmicos.
+   Carregado depois dos scripts que injetam CSS para garantir consistência. */
+
+/* Ficha da máquina */
+#infoModal > .modal-content{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal > .modal-content > h2,
+#infoModal #maintenanceSection > h3,
+#infoModal #observationsList > h3{
+  color:var(--rrn-heading)!important;
+}
+#infoModal .rrn-machine-detail-card{
+  background:transparent!important;
+  border-color:transparent!important;
+}
+#infoModal .rrn-info-row{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-text)!important;
+  border:1px solid var(--rrn-border)!important;
+  box-shadow:none!important;
+}
+#infoModal .rrn-info-row strong{color:var(--rrn-muted)!important}
+#infoModal .rrn-info-row span{color:var(--rrn-heading)!important}
+#infoModal .rrn-info-note{
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal .rrn-inline-edit{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-secondary)!important;
+  border:1px solid var(--rrn-border)!important;
+}
+#infoModal .rrn-inline-edit:hover{
+  background:var(--rrn-surface-soft)!important;
+  border-color:color-mix(in srgb,var(--rrn-secondary) 38%,var(--rrn-border))!important;
+}
+
+/* Ativos vinculados ao mesmo usuário */
+#infoModal .rrn-related-assets{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal .rrn-related-assets-head strong{color:var(--rrn-heading)!important}
+#infoModal .rrn-related-assets-head small{color:var(--rrn-muted)!important}
+#infoModal .rrn-related-asset{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal .rrn-related-asset.is-current{
+  background:color-mix(in srgb,var(--rrn-accent) 10%,var(--rrn-surface))!important;
+  border-color:color-mix(in srgb,var(--rrn-accent) 48%,var(--rrn-border))!important;
+}
+#infoModal .rrn-related-asset-copy strong{color:var(--rrn-heading)!important}
+#infoModal .rrn-related-asset-copy small{color:var(--rrn-muted)!important}
+#infoModal .rrn-related-asset button{
+  background:var(--rrn-primary)!important;
+  color:var(--rrn-on-primary)!important;
+  border-color:var(--rrn-primary)!important;
+}
+#infoModal .rrn-related-asset button:hover{
+  background:var(--rrn-primary-hover)!important;
+  border-color:var(--rrn-primary-hover)!important;
+}
+
+/* Localização do Agent */
+#infoModal .rrn-agent-location-card{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal .rrn-agent-location-card h3,
+#infoModal .rrn-agent-location-card strong{color:var(--rrn-heading)!important}
+#infoModal .rrn-agent-location-card p,
+#infoModal .rrn-agent-location-card small{color:var(--rrn-muted)!important}
+#infoModal .rrn-agent-location-stat{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal .rrn-agent-location-stat strong{color:var(--rrn-heading)!important}
+
+/* Chamados e manutenção */
+#infoModal #maintenanceSection,
+#infoModal #observationsList{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+  box-shadow:none!important;
+}
+#infoModal #maintenanceSection fieldset{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal #maintenanceSection legend,
+#infoModal #maintenanceSection legend strong,
+#infoModal #maintenanceSection .checklist-content label,
+#infoModal #maintenanceSection > label{
+  color:var(--rrn-text)!important;
+}
+#infoModal #maintenanceSection legend strong{color:var(--rrn-heading)!important}
+#infoModal textarea,
+#infoModal select{
+  background:var(--rrn-input)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal textarea::placeholder{color:var(--rrn-muted)!important}
+#infoModal #maintenanceSection > button{
+  background:var(--rrn-primary)!important;
+  color:var(--rrn-on-primary)!important;
+  border-color:var(--rrn-primary)!important;
+}
+#infoModal #maintenanceSection > button:hover{
+  background:var(--rrn-primary-hover)!important;
+  border-color:var(--rrn-primary-hover)!important;
+}
+#infoModal .rrn-ticket-item{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal .rrn-ticket-top strong,
+#infoModal .rrn-ticket-text{color:var(--rrn-heading)!important}
+#infoModal .rrn-ticket-top small{color:var(--rrn-muted)!important}
+#infoModal .rrn-ticket-empty{
+  background:color-mix(in srgb,var(--rrn-warning) 13%,var(--rrn-surface))!important;
+  color:var(--rrn-warning)!important;
+  border:1px solid color-mix(in srgb,var(--rrn-warning) 28%,var(--rrn-border))!important;
+}
+
+/* Ações inferiores do modal */
+#infoModal .modal-actions #maintenanceBtn{
+  background:color-mix(in srgb,var(--rrn-warning) 11%,var(--rrn-surface))!important;
+  color:var(--rrn-warning)!important;
+  border-color:color-mix(in srgb,var(--rrn-warning) 42%,var(--rrn-border))!important;
+}
+#infoModal .modal-actions #maintenanceBtn:hover{
+  background:color-mix(in srgb,var(--rrn-warning) 18%,var(--rrn-surface))!important;
+}
+#infoModal .modal-actions #releaseBtn{
+  background:color-mix(in srgb,var(--rrn-success) 11%,var(--rrn-surface))!important;
+  color:var(--rrn-success)!important;
+  border-color:color-mix(in srgb,var(--rrn-success) 42%,var(--rrn-border))!important;
+}
+#infoModal .modal-actions #releaseBtn:hover{
+  background:color-mix(in srgb,var(--rrn-success) 18%,var(--rrn-surface))!important;
+}
+#infoModal .modal-actions #close-btn{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-muted)!important;
+  border-color:var(--rrn-border)!important;
+}
+#infoModal .modal-actions #close-btn:hover{
+  background:var(--rrn-surface-soft)!important;
+  color:var(--rrn-heading)!important;
+}
+#infoModal > .modal-content > .close-btn{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-heading)!important;
+  border:1px solid var(--rrn-border)!important;
+}
+#infoModal > .modal-content > .close-btn:hover{
+  background:color-mix(in srgb,var(--rrn-danger) 12%,var(--rrn-surface))!important;
+  color:var(--rrn-danger)!important;
+}
+
+/* Checkboxes nativos com contraste adequado */
+#infoModal input[type="checkbox"]{
+  accent-color:var(--rrn-secondary)!important;
+}
+:root[data-theme="dark"] #infoModal input[type="checkbox"]{
+  filter:none!important;
+}
+
+/* Ações compactas dos cards — substitui azul/lilás/amarelo hardcoded. */
+html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn{
+  border:1px solid var(--rrn-border)!important;
+  box-shadow:none!important;
+}
+html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn-history{
+  background:color-mix(in srgb,var(--rrn-secondary) 9%,var(--rrn-surface))!important;
+  color:var(--rrn-secondary)!important;
+  border-color:color-mix(in srgb,var(--rrn-secondary) 26%,var(--rrn-border))!important;
+}
+html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn-edit-asset{
+  background:color-mix(in srgb,var(--rrn-primary) 9%,var(--rrn-surface))!important;
+  color:var(--rrn-primary)!important;
+  border-color:color-mix(in srgb,var(--rrn-primary) 26%,var(--rrn-border))!important;
+}
+html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn-info{
+  background:color-mix(in srgb,var(--rrn-accent) 12%,var(--rrn-surface))!important;
+  color:var(--rrn-accent)!important;
+  border-color:color-mix(in srgb,var(--rrn-accent) 30%,var(--rrn-border))!important;
+}
+html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn-danger{
+  background:color-mix(in srgb,var(--rrn-danger) 10%,var(--rrn-surface))!important;
+  color:var(--rrn-danger)!important;
+  border-color:color-mix(in srgb,var(--rrn-danger) 28%,var(--rrn-border))!important;
+}
+html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn:hover{
+  background:var(--rrn-surface-soft)!important;
+}
+
+/* Light: sem cinzas lavados; Dark: sem ilhas brancas. */
+:root:not([data-theme="dark"]) #infoModal #maintenanceSection,
+:root:not([data-theme="dark"]) #infoModal #observationsList,
+:root:not([data-theme="dark"]) #infoModal .rrn-agent-location-card,
+:root:not([data-theme="dark"]) #infoModal .rrn-related-assets{
+  background:#F7FAFA!important;
+}
+:root[data-theme="dark"] #infoModal .rrn-info-row,
+:root[data-theme="dark"] #infoModal #maintenanceSection fieldset,
+:root[data-theme="dark"] #infoModal .rrn-related-asset,
+:root[data-theme="dark"] #infoModal .rrn-agent-location-stat,
+:root[data-theme="dark"] #infoModal .rrn-ticket-item{
+  background:#172229!important;
+}
+:root[data-theme="dark"] #infoModal #maintenanceSection,
+:root[data-theme="dark"] #infoModal #observationsList,
+:root[data-theme="dark"] #infoModal .rrn-agent-location-card,
+:root[data-theme="dark"] #infoModal .rrn-related-assets{
+  background:#111A20!important;
+}
