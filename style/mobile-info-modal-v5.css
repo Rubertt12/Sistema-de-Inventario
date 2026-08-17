@@ -14,8 +14,8 @@
     min-height: 100dvh !important;
     margin: 0 !important;
     padding: 0 !important;
-    align-items: stretch !important;
-    justify-content: stretch !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
     overflow: hidden !important;
     background: rgba(7, 20, 29, .76) !important;
     backdrop-filter: blur(8px) !important;
@@ -33,8 +33,8 @@
     display: block !important;
     width: 100vw !important;
     max-width: 100vw !important;
-    height: 100dvh !important;
-    max-height: 100dvh !important;
+    height: 92dvh !important;
+    max-height: 92dvh !important;
     margin: 0 !important;
     padding: 0 14px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
     overflow-y: auto !important;
@@ -42,11 +42,24 @@
     overscroll-behavior: contain !important;
     -webkit-overflow-scrolling: touch !important;
     border: 0 !important;
-    border-radius: 0 !important;
+    border-radius: 22px 22px 0 0 !important;
     background: var(--rrn-surface, #fff) !important;
     color: var(--rrn-text, #263238) !important;
-    box-shadow: none !important;
+    box-shadow: 0 -18px 55px rgba(0, 0, 0, .30) !important;
     box-sizing: border-box !important;
+  }
+
+  #infoModal > .modal-content::before {
+    content: '' !important;
+    position: sticky !important;
+    top: 6px !important;
+    z-index: 25 !important;
+    display: block !important;
+    width: 42px !important;
+    height: 4px !important;
+    margin: 7px auto -11px !important;
+    border-radius: 999px !important;
+    background: color-mix(in srgb, var(--rrn-muted, #72808a) 42%, transparent) !important;
   }
 
   #infoModal > .modal-content > h2 {
@@ -54,8 +67,8 @@
     top: 0 !important;
     z-index: 20 !important;
     margin: 0 -14px 12px !important;
-    padding: calc(14px + env(safe-area-inset-top, 0px)) 60px 12px 14px !important;
-    min-height: 54px !important;
+    padding: 24px 60px 12px 14px !important;
+    min-height: 60px !important;
     background: var(--rrn-surface, #fff) !important;
     border-bottom: 1px solid var(--rrn-border, #d7e0e4) !important;
     color: var(--rrn-heading, #163A4D) !important;
@@ -66,9 +79,10 @@
 
   #infoModal > .modal-content > .close-btn,
   #infoModal > .modal-content > .close {
-    position: fixed !important;
-    top: calc(8px + env(safe-area-inset-top, 0px)) !important;
-    right: 10px !important;
+    position: sticky !important;
+    float: right !important;
+    top: 11px !important;
+    right: 0 !important;
     z-index: 30 !important;
     display: grid !important;
     place-items: center !important;
@@ -76,7 +90,7 @@
     height: 40px !important;
     min-width: 40px !important;
     min-height: 40px !important;
-    margin: 0 !important;
+    margin: 7px 0 -47px auto !important;
     padding: 0 !important;
     border: 1px solid var(--rrn-border, #d7e0e4) !important;
     border-radius: 11px !important;
@@ -214,7 +228,6 @@
     min-height: 44px !important;
   }
 
-  /* Evita que cards do inventário por baixo do modal apareçam sobre o mapa. */
   body:has(#infoModal[aria-hidden="false"]) #setoresContainer,
   body:has(#infoModal[aria-hidden="false"]) .rrn-stock-view,
   body:has(#infoModal[aria-hidden="false"]) .rrn-dashboard-home,
