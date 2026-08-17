@@ -30,6 +30,17 @@
     return [];
   }
 
+  function keepSectorOpen(sectorIndex) {
+    const index = Number(sectorIndex);
+    if (!Number.isInteger(index) || index < 0) return;
+
+    try {
+      if (typeof setoresVisiveis !== 'undefined' && Array.isArray(setoresVisiveis)) {
+        setoresVisiveis[index] = true;
+      }
+    } catch {}
+  }
+
   function strictCategory(asset) {
     const explicitType = normalize(asset?.tipo);
 
@@ -86,17 +97,23 @@
   }
 
   function restoreCategoryChooser(sectorIndex) {
-    const card = document.querySelector(`.rrn-setor-card[data-setor-index="${sectorIndex}"]`);
+    const index = Number(sectorIndex);
+    keepSectorOpen(index);
+
+    const card = document.querySelector(`.rrn-setor-card[data-setor-index="${index}"]`);
     if (!card) return;
 
     card.querySelector('.rrn-category-backbar')?.remove();
-    hideAllCards(sectorIndex);
+    hideAllCards(index);
 
-    const shell = card.querySelector(`[data-sector-category-shell="${sectorIndex}"]`);
+    const shell = card.querySelector(`[data-sector-category-shell="${index}"]`);
     if (shell) {
       shell.style.removeProperty('display');
       shell.hidden = false;
     }
+
+    const list = document.getElementById(`maquinas-${index}`);
+    if (list) list.style.display = 'grid';
   }
 
   function ensureBackButton(sectorIndex, category) {
@@ -131,6 +148,7 @@
         event.stopPropagation();
 
         const index = Number(sectorIndex);
+        keepSectorOpen(index);
         activeBySector.delete(index);
         choiceModeBySector.add(index);
         window.RRN_SECTOR_CATEGORIES?.back?.(index);
@@ -145,6 +163,7 @@
     const index = Number(sectorIndex);
 
     if (choiceModeBySector.has(index)) {
+      keepSectorOpen(index);
       restoreCategoryChooser(index);
       return;
     }
@@ -208,6 +227,7 @@
       const card = backButton.closest('.rrn-setor-card');
       const sectorIndex = Number(card?.dataset?.setorIndex);
       if (Number.isInteger(sectorIndex)) {
+        keepSectorOpen(sectorIndex);
         activeBySector.delete(sectorIndex);
         choiceModeBySector.add(sectorIndex);
         [0, 40, 140, 300].forEach(delay => {
