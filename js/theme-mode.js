@@ -21,7 +21,10 @@
     if (isDashboard) addStylesheet('/style/dark-inventory-fix.css', 'data-rrn-dark-inventory-fix');
     addStylesheet('/style/theme-consistency-v1.css?v=20260817-1', 'data-rrn-theme-consistency-v1');
     addStylesheet('/style/theme-consistency-final.css?v=20260817-1', 'data-rrn-theme-consistency-final');
-    if (isDashboard) addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-2', 'data-rrn-theme-component-fixes-v2');
+    if (isDashboard) {
+      addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-3', 'data-rrn-theme-component-fixes-v2');
+      addStylesheet('/style/ui-fixes-v3.css?v=20260817-1', 'data-rrn-ui-fixes-v3');
+    }
   }
 
   function ensureFooter() {
