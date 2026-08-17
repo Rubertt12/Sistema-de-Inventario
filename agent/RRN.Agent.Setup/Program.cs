@@ -133,11 +133,13 @@ internal sealed class SetupForm : Form
             StopTray();
 
             using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(4) };
-            await DownloadAsync(http, $"{ReleaseBase}/RRN.Agent.exe", Path.Combine(temp, "RRN.Agent.exe"), 18, "Baixando agente principal...");
-            await DownloadAsync(http, $"{ReleaseBase}/RRN.Agent.Tray.exe", Path.Combine(temp, "RRN.Agent.Tray.exe"), 35, "Baixando aplicativo da bandeja...");
+            SetStep(18, "Baixando e verificando agente principal...");
+            await VerifiedDownload.DownloadAsync(http, ReleaseBase, "RRN.Agent.exe", Path.Combine(temp, "RRN.Agent.exe"));
+            SetStep(35, "Baixando e verificando aplicativo da bandeja...");
+            await VerifiedDownload.DownloadAsync(http, ReleaseBase, "RRN.Agent.Tray.exe", Path.Combine(temp, "RRN.Agent.Tray.exe"));
             await DownloadAsync(http, $"{ReleaseBase}/rrn-logo.png", Path.Combine(temp, "rrn-logo.png"), 46, "Baixando identidade visual...");
 
-            SetStep(54, "Instalando arquivos do RRN Agent...");
+            SetStep(54, "Instalando arquivos verificados do RRN Agent...");
             File.Copy(Path.Combine(temp, "RRN.Agent.exe"), CoreExe, true);
             File.Copy(Path.Combine(temp, "RRN.Agent.Tray.exe"), TrayExe, true);
             File.Copy(Path.Combine(temp, "rrn-logo.png"), LogoPng, true);
@@ -165,7 +167,7 @@ internal sealed class SetupForm : Form
             SetStep(100, "Instalação concluída.");
             _status.Text = "✓ RRN Agent instalado, vinculado e sincronizado com sucesso.";
             _install.Text = "Reinstalar / atualizar";
-            MessageBox.Show("RRN Agent instalado com sucesso. A máquina já foi cadastrada no RRN Manager e o aplicativo ficará disponível perto do relógio.", "RRN Agent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("RRN Agent instalado com sucesso. A integridade dos executáveis foi validada antes da instalação e a máquina já foi cadastrada no RRN Manager.", "RRN Agent", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
@@ -233,7 +235,7 @@ internal sealed class SetupForm : Form
     {
         using var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\RRN Manager Agent", true);
         if (key is null) return;
-        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.3.0";
+        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.4.0";
         key.SetValue("DisplayName", "RRN Manager Agent");
         key.SetValue("DisplayVersion", version);
         key.SetValue("Publisher", "RRN Manager");
