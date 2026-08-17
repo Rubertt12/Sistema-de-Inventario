@@ -33,13 +33,8 @@
     if (isDashboard) {
       addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-3', 'data-rrn-theme-component-fixes-v2');
       addStylesheet('/style/ui-fixes-v3.css?v=20260817-2', 'data-rrn-ui-fixes-v3');
-      addStylesheet('/style/mobile-info-modal-v5.css?v=20260817-2', 'data-rrn-mobile-info-modal-v5');
-      addStylesheet('/style/mobile-info-modal-v6.css?v=20260817-2', 'data-rrn-mobile-info-modal-v6');
-      addStylesheet('/style/mobile-info-modal-position-v7.css?v=20260817-1', 'data-rrn-mobile-info-modal-position-v7');
-      addStylesheet('/style/mobile-info-modal-v8.css?v=20260817-1', 'data-rrn-mobile-info-modal-v8');
-      addStylesheet('/style/mobile-modals-fullscreen-v9.css?v=20260817-1', 'data-rrn-mobile-modals-fullscreen-v9');
-      addStylesheet('/style/mobile-modals-flow-v10.css?v=20260817-1', 'data-rrn-mobile-modals-flow-v10');
-      addScript('/js/mobile-info-modal-reset.js?v=20260817-1', 'data-rrn-mobile-info-modal-reset');
+      addStylesheet('/style/mobile-modals-v11.css?v=20260817-1', 'data-rrn-mobile-modals-v11');
+      addScript('/js/mobile-info-modal-reset.js?v=20260817-2', 'data-rrn-mobile-info-modal-reset');
     }
   }
 
