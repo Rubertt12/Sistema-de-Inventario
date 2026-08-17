@@ -1,0 +1,388 @@
+/* RRN Manager — authoritative modal system
+   Loaded last to normalize all dashboard dialogs and mobile sheets. */
+
+:root {
+  --rrn-modal-top-safe: calc(20px + env(safe-area-inset-top, 0px));
+  --rrn-modal-bottom-safe: env(safe-area-inset-bottom, 0px);
+  --rrn-modal-surface: var(--rrn-surface, #fff);
+  --rrn-modal-page: var(--rrn-surface-2, #f4f7f9);
+  --rrn-modal-text: var(--rrn-text, #263238);
+  --rrn-modal-heading: var(--rrn-heading, #163a4d);
+  --rrn-modal-muted: var(--rrn-muted, #66757f);
+  --rrn-modal-border: var(--rrn-border, rgba(22,58,77,.14));
+}
+
+/* Base consistency ------------------------------------------------------- */
+#modalSetor.modal,
+#modalMaquina.modal,
+#infoModal.modal,
+#modalTodasManutencoes.modal,
+#modalTransferencia.modal-transferencia,
+#modalScanner,
+.rrn-history-modal,
+#configModal.config-modal {
+  box-sizing: border-box !important;
+}
+
+#modalSetor .modal-content,
+#modalMaquina .modal-content,
+#infoModal .modal-content,
+#modalTodasManutencoes .modal-content,
+#modalTransferencia .modal-transferencia-content,
+#modalScanner > div,
+.rrn-history-dialog,
+#configModal.config-modal {
+  box-sizing: border-box !important;
+  color: var(--rrn-modal-text) !important;
+}
+
+#modalSetor input,
+#modalMaquina input,
+#modalMaquina select,
+#infoModal input,
+#infoModal select,
+#infoModal textarea,
+#modalTransferencia input,
+#configModal input,
+#configModal select,
+#configModal textarea,
+.rrn-history-dialog input,
+.rrn-history-dialog select,
+.rrn-history-dialog textarea {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+/* Mobile: every dialog behaves as a proper phone screen ---------------- */
+@media (max-width: 700px) {
+  html.rrn-any-modal-open,
+  body.rrn-any-modal-open {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  /* Shared overlay geometry */
+  #modalSetor.modal,
+  #modalMaquina.modal,
+  #infoModal.modal,
+  #modalTodasManutencoes.modal,
+  #modalTransferencia.modal-transferencia,
+  #modalScanner,
+  .rrn-history-modal.is-open {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-items: initial !important;
+    justify-content: initial !important;
+    overflow: hidden !important;
+    background: rgba(7,20,29,.72) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    z-index: 2147483600 !important;
+  }
+
+  /* Standard content panel */
+  #modalSetor > .modal-content,
+  #modalMaquina > .modal-content,
+  #infoModal > .modal-content,
+  #modalTodasManutencoes > .modal-content,
+  #modalTransferencia > .modal-transferencia-content,
+  #modalScanner > div,
+  .rrn-history-modal.is-open > .rrn-history-dialog {
+    position: fixed !important;
+    top: var(--rrn-modal-top-safe) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    display: block !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100dvh - var(--rrn-modal-top-safe)) !important;
+    min-height: 0 !important;
+    max-height: calc(100dvh - var(--rrn-modal-top-safe)) !important;
+    margin: 0 !important;
+    padding: 0 14px calc(24px + var(--rrn-modal-bottom-safe)) !important;
+    border: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+    background: var(--rrn-modal-surface) !important;
+    color: var(--rrn-modal-text) !important;
+    box-shadow: 0 -10px 36px rgba(0,15,24,.24) !important;
+    transform: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: auto !important;
+    overflow-anchor: none !important;
+  }
+
+  /* Header/title area remains visible */
+  #modalSetor > .modal-content > h2,
+  #modalMaquina > .modal-content > h2,
+  #infoModal > .modal-content > h2,
+  #modalTodasManutencoes > .modal-content > h2,
+  #modalTransferencia > .modal-transferencia-content > h2,
+  #modalScanner > div > h3 {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    display: flex !important;
+    align-items: center !important;
+    min-height: 68px !important;
+    margin: 0 -14px 14px !important;
+    padding: 12px 62px 12px 16px !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid var(--rrn-modal-border) !important;
+    background: var(--rrn-modal-surface) !important;
+    color: var(--rrn-modal-heading) !important;
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Close buttons: always reachable */
+  #modalSetor > .modal-content > .close-btn,
+  #modalMaquina > .modal-content > .close-btn,
+  #infoModal > .modal-content > .close-btn,
+  #modalTodasManutencoes > .modal-content > .close-btn,
+  #modalTransferencia .close,
+  .rrn-history-modal.is-open .rrn-history-close,
+  #configModal > .close-btn {
+    position: fixed !important;
+    top: calc(var(--rrn-modal-top-safe) + 12px) !important;
+    right: 12px !important;
+    z-index: 2147483646 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    float: none !important;
+    transform: none !important;
+  }
+
+  /* Forms */
+  #modalSetor input,
+  #modalMaquina input,
+  #modalMaquina select,
+  #infoModal input,
+  #infoModal select,
+  #infoModal textarea,
+  #modalTransferencia input,
+  #configModal input:not([type="color"]):not([type="file"]),
+  #configModal select,
+  #configModal textarea,
+  .rrn-history-dialog input,
+  .rrn-history-dialog select,
+  .rrn-history-dialog textarea {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 46px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 10px 12px !important;
+    font-size: 16px !important;
+    border-radius: 10px !important;
+  }
+
+  #modalSetor label,
+  #modalMaquina label,
+  #infoModal label,
+  #configModal label {
+    display: block !important;
+    margin: 10px 0 6px !important;
+  }
+
+  #modalSetor .modal-content > button:not(.close-btn),
+  #modalMaquina button:not(.close-btn),
+  #infoModal button:not(.close-btn),
+  #modalTodasManutencoes button:not(.close-btn),
+  #modalTransferencia button:not(.close),
+  #modalScanner button,
+  #configModal button:not(.close-btn),
+  .rrn-history-dialog button:not(.rrn-history-close) {
+    min-height: 46px !important;
+    box-sizing: border-box !important;
+    touch-action: manipulation !important;
+  }
+
+  /* Add sector */
+  #modalSetor > .modal-content {
+    background: var(--rrn-modal-surface) !important;
+  }
+  #modalSetor .modal-content > button:not(.close-btn) {
+    width: 100% !important;
+    margin: 14px 0 0 !important;
+  }
+
+  /* Add equipment */
+  #modalMaquina #camposMaquina,
+  #modalMaquina #camposMonitor,
+  #modalMaquina #camposPrinter,
+  #modalMaquina .rrn-extra-asset-fields,
+  #modalMaquina .rrn-asset-form-grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: 1fr !important;
+  }
+  #modalMaquina .modal-content > div:last-child {
+    position: sticky !important;
+    bottom: calc(-24px - var(--rrn-modal-bottom-safe)) !important;
+    z-index: 25 !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: calc(100% + 28px) !important;
+    margin: 18px -14px calc(-24px - var(--rrn-modal-bottom-safe)) !important;
+    padding: 10px 14px calc(10px + var(--rrn-modal-bottom-safe)) !important;
+    border-top: 1px solid var(--rrn-modal-border) !important;
+    background: var(--rrn-modal-surface) !important;
+  }
+  #modalMaquina .modal-content > div:last-child button { width: 100% !important; margin: 0 !important; }
+
+  /* Maintenance list */
+  #modalTodasManutencoes #listaTodasManutencoes {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Transfer flow */
+  #modalTransferencia .pesquisa-transferencia,
+  #modalTransferencia .caixas-transferencia {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+  #modalTransferencia .box-setor,
+  #modalTransferencia .lista-maquinas,
+  #modalTransferencia .lista-destino {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  #modalTransferencia .btn-confirmar { width: 100% !important; margin-top: 12px !important; }
+
+  /* Scanner */
+  #modalScanner > div {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+  #modalScanner #reader {
+    width: min(100%, 360px) !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+  #modalScanner video,
+  #modalScanner canvas { max-width: 100% !important; height: auto !important; }
+  #modalScanner button { width: 100% !important; }
+
+  /* Settings modal: dedicated full phone page */
+  #configModal.config-modal:not([hidden]) {
+    position: fixed !important;
+    top: var(--rrn-modal-top-safe) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 2147483620 !important;
+    display: block !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100dvh - var(--rrn-modal-top-safe)) !important;
+    max-height: calc(100dvh - var(--rrn-modal-top-safe)) !important;
+    margin: 0 !important;
+    padding: 0 14px calc(24px + var(--rrn-modal-bottom-safe)) !important;
+    border-radius: 18px 18px 0 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: var(--rrn-modal-surface) !important;
+    box-shadow: 0 -10px 36px rgba(0,15,24,.24) !important;
+  }
+  #configModal > .modal-title {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    min-height: 68px !important;
+    margin: 0 -14px 14px !important;
+    padding: 18px 62px 12px 16px !important;
+    border-bottom: 1px solid var(--rrn-modal-border) !important;
+    background: var(--rrn-modal-surface) !important;
+  }
+  #configModal .modal-left,
+  #configModal .modal-right,
+  #configModal .box-bg-selector {
+    float: none !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 0 14px !important;
+    box-sizing: border-box !important;
+  }
+  #configModal .save-btn {
+    position: sticky !important;
+    bottom: calc(-24px - var(--rrn-modal-bottom-safe)) !important;
+    z-index: 30 !important;
+    width: calc(100% + 28px) !important;
+    margin: 18px -14px calc(-24px - var(--rrn-modal-bottom-safe)) !important;
+    padding-bottom: calc(10px + var(--rrn-modal-bottom-safe)) !important;
+  }
+
+  /* History/Edit already use their own DOM header/body; normalize geometry. */
+  .rrn-history-modal.is-open > .rrn-history-dialog {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  .rrn-history-modal.is-open .rrn-history-header {
+    position: relative !important;
+    flex: 0 0 auto !important;
+    min-height: 72px !important;
+    padding: 14px 62px 12px 16px !important;
+    background: var(--rrn-modal-surface) !important;
+  }
+  .rrn-history-modal.is-open .rrn-history-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 14px 12px calc(24px + var(--rrn-modal-bottom-safe)) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Detail standalone page */
+  .rrn-mobile-asset-page {
+    top: 0 !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+  .rrn-mobile-asset-page > .modal-content {
+    top: var(--rrn-modal-top-safe) !important;
+    height: calc(100dvh - var(--rrn-modal-top-safe)) !important;
+    max-height: calc(100dvh - var(--rrn-modal-top-safe)) !important;
+  }
+
+  :root[data-theme="dark"] #modalSetor > .modal-content,
+  :root[data-theme="dark"] #modalMaquina > .modal-content,
+  :root[data-theme="dark"] #infoModal > .modal-content,
+  :root[data-theme="dark"] #modalTodasManutencoes > .modal-content,
+  :root[data-theme="dark"] #modalTransferencia > .modal-transferencia-content,
+  :root[data-theme="dark"] #modalScanner > div,
+  :root[data-theme="dark"] #configModal.config-modal:not([hidden]),
+  :root[data-theme="dark"] .rrn-history-modal.is-open > .rrn-history-dialog {
+    background: var(--rrn-surface, #132129) !important;
+    color: var(--rrn-text, #e7eef0) !important;
+  }
+}
