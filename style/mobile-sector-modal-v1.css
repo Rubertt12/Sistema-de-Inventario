@@ -1,0 +1,132 @@
+/* RRN Manager — modal Adicionar Setor otimizado para telefone */
+@media (max-width: 700px) {
+  #modalSetor.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483642 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    overflow: hidden !important;
+    background: rgba(7, 20, 29, .72) !important;
+    backdrop-filter: blur(8px) saturate(110%);
+    -webkit-backdrop-filter: blur(8px) saturate(110%);
+  }
+
+  #modalSetor > .modal-content {
+    position: fixed !important;
+    top: calc(24px + env(safe-area-inset-top, 0px)) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100dvh - 24px - env(safe-area-inset-top, 0px)) !important;
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px)) !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 16px calc(22px + env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    border: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+    background: var(--rrn-surface, #fff) !important;
+    color: var(--rrn-text, #263238) !important;
+    box-shadow: 0 -10px 36px rgba(0, 15, 24, .26) !important;
+    transform: none !important;
+  }
+
+  #modalSetor > .modal-content > h2 {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+    display: flex !important;
+    align-items: center !important;
+    min-height: 68px !important;
+    margin: 0 -16px 20px !important;
+    padding: 12px 64px 12px 16px !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid var(--rrn-border, rgba(22,58,77,.14)) !important;
+    background: var(--rrn-surface, #fff) !important;
+    color: var(--rrn-heading, #163a4d) !important;
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+  }
+
+  #modalSetor > .modal-content > .close-btn {
+    position: fixed !important;
+    top: calc(36px + env(safe-area-inset-top, 0px)) !important;
+    right: 12px !important;
+    z-index: 2147483646 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    border-radius: 12px !important;
+    background: var(--rrn-heading, #163a4d) !important;
+    color: #fff !important;
+    font-size: 1.35rem !important;
+    line-height: 1 !important;
+  }
+
+  #modalSetor > .modal-content > label {
+    display: block !important;
+    margin: 0 0 7px !important;
+    color: var(--rrn-heading, #163a4d) !important;
+    font-size: .8rem !important;
+    font-weight: 700 !important;
+  }
+
+  #modalSetor #inputSetorNome {
+    width: 100% !important;
+    min-height: 50px !important;
+    margin: 0 !important;
+    padding: 0 14px !important;
+    box-sizing: border-box !important;
+    border: 1px solid var(--rrn-border, rgba(22,58,77,.18)) !important;
+    border-radius: 12px !important;
+    background: var(--rrn-surface-2, #f5f8f9) !important;
+    color: var(--rrn-text, #263238) !important;
+    font-size: 16px !important;
+    outline: none !important;
+  }
+
+  #modalSetor #inputSetorNome:focus {
+    border-color: var(--rrn-secondary, #2F7D78) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--rrn-secondary, #2F7D78) 14%, transparent) !important;
+  }
+
+  #modalSetor > .modal-content > button:not(.close-btn) {
+    width: 100% !important;
+    min-height: 50px !important;
+    margin: 16px 0 0 !important;
+    padding: 12px 16px !important;
+    border: 1px solid var(--rrn-secondary, #2F7D78) !important;
+    border-radius: 12px !important;
+    background: var(--rrn-secondary, #2F7D78) !important;
+    color: #fff !important;
+    font-size: .9rem !important;
+    font-weight: 800 !important;
+    touch-action: manipulation !important;
+  }
+
+  :root[data-theme="dark"] #modalSetor > .modal-content,
+  html[data-theme="dark"] #modalSetor > .modal-content,
+  :root[data-theme="dark"] #modalSetor > .modal-content > h2,
+  html[data-theme="dark"] #modalSetor > .modal-content > h2 {
+    background: var(--rrn-surface, #132129) !important;
+  }
+}
