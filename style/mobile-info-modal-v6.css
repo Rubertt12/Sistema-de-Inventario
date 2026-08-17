@@ -8,7 +8,6 @@
     overscroll-behavior: none !important;
   }
 
-  /* Nada da dashboard pode atravessar visualmente o modal. */
   body:has(#infoModal[aria-hidden="false"]) > .navbar,
   body:has(#infoModal[aria-hidden="false"]) > .dashboard-actions,
   body:has(#infoModal[aria-hidden="false"]) > main,
@@ -30,25 +29,27 @@
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    background: var(--rrn-surface, #fff) !important;
+    background: rgba(7,20,29,.76) !important;
     z-index: 2147483646 !important;
     isolation: isolate !important;
   }
 
   #infoModal.modal[aria-hidden="false"] {
-    display: block !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
   }
 
   #infoModal > .modal-content {
-    position: absolute !important;
-    inset: 0 !important;
+    position: relative !important;
+    inset: auto !important;
     z-index: 2 !important;
     display: block !important;
     box-sizing: border-box !important;
     width: 100% !important;
     max-width: none !important;
-    height: 100% !important;
-    max-height: none !important;
+    height: 92dvh !important;
+    max-height: 92dvh !important;
     margin: 0 !important;
     padding: 0 12px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
     overflow-y: auto !important;
@@ -56,10 +57,23 @@
     overscroll-behavior: contain !important;
     -webkit-overflow-scrolling: touch !important;
     border: 0 !important;
-    border-radius: 0 !important;
+    border-radius: 22px 22px 0 0 !important;
     background: var(--rrn-surface, #fff) !important;
     color: var(--rrn-text, #263238) !important;
-    box-shadow: none !important;
+    box-shadow: 0 -18px 55px rgba(0,0,0,.30) !important;
+  }
+
+  #infoModal > .modal-content::before {
+    content: '' !important;
+    position: sticky !important;
+    top: 7px !important;
+    z-index: 110 !important;
+    display: block !important;
+    width: 42px !important;
+    height: 4px !important;
+    margin: 8px auto -12px !important;
+    border-radius: 999px !important;
+    background: color-mix(in srgb, var(--rrn-muted, #72808a) 42%, transparent) !important;
   }
 
   #infoModal > .modal-content > h2 {
@@ -68,9 +82,9 @@
     z-index: 100 !important;
     box-sizing: border-box !important;
     width: calc(100% + 24px) !important;
-    min-height: calc(58px + env(safe-area-inset-top, 0px)) !important;
+    min-height: 62px !important;
     margin: 0 -12px 10px !important;
-    padding: calc(15px + env(safe-area-inset-top, 0px)) 58px 13px 14px !important;
+    padding: 25px 58px 13px 14px !important;
     border-bottom: 1px solid var(--rrn-border, #d7e0e4) !important;
     background: var(--rrn-surface, #fff) !important;
     color: var(--rrn-heading, #163A4D) !important;
@@ -81,17 +95,18 @@
 
   #infoModal > .modal-content > .close-btn,
   #infoModal > .modal-content > .close {
-    position: fixed !important;
-    top: calc(9px + env(safe-area-inset-top, 0px)) !important;
-    right: 10px !important;
-    z-index: 2147483647 !important;
+    position: sticky !important;
+    float: right !important;
+    top: 12px !important;
+    right: 0 !important;
+    z-index: 120 !important;
     display: grid !important;
     place-items: center !important;
     width: 40px !important;
     height: 40px !important;
     min-width: 40px !important;
     min-height: 40px !important;
-    margin: 0 !important;
+    margin: 8px 0 -48px auto !important;
     padding: 0 !important;
     border: 1px solid var(--rrn-border, #d7e0e4) !important;
     border-radius: 11px !important;
