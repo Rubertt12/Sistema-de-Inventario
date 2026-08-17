@@ -4,7 +4,7 @@
   window.__RRN_AGENT_MANAGEMENT__ = true;
 
   const state = { devices: [], token: null, command: '', loading: false };
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]));
   const siteBase = `${location.origin}`;
 
   function client() {
@@ -17,6 +17,10 @@
 
   function canManage() {
     return ['admin','operador'].includes(window.RRN_SESSION?.role || '');
+  }
+
+  function canRevoke() {
+    return (window.RRN_SESSION?.role || '') === 'admin';
   }
 
   function ensureView() {
@@ -63,7 +67,7 @@
   async function openTab() {
     if (!canManage()) return;
     ensureView();
-    document.body.classList.remove('rrn-tab-dashboard','rrn-tab-inventory','rrn-tab-stock');
+    document.body.classList.remove('rrn-tab-dashboard','rrn-tab-inventory','rrn-tab-stock','rrn-tab-map');
     document.body.classList.add('rrn-tab-agents');
     document.querySelectorAll('[data-app-tab]').forEach(button => {
       const active = button.dataset.appTab === 'agents';
@@ -81,6 +85,7 @@
   }
 
   function statusFor(device) {
+    if (String(device.status || 'active').toLowerCase() !== 'active') return { cls:'off', label:'Revogado' };
     const hours = ageHours(device.last_seen_at);
     if (hours <= 14) return { cls:'ok', label:'Atualizado' };
     if (hours <= 36) return { cls:'warn', label:'Atenção' };
@@ -105,8 +110,9 @@
   function render() {
     const view = ensureView();
     const devices = state.devices;
-    const recent = devices.filter(d => ageHours(d.last_seen_at) <= 14).length;
-    const stale = devices.filter(d => ageHours(d.last_seen_at) > 36).length;
+    const activeDevices = devices.filter(d => String(d.status || 'active').toLowerCase() === 'active');
+    const recent = activeDevices.filter(d => ageHours(d.last_seen_at) <= 14).length;
+    const stale = activeDevices.filter(d => ageHours(d.last_seen_at) > 36).length;
     const located = devices.filter(d => d.location_city || (d.latitude != null && d.longitude != null)).length;
     const token = state.token;
 
@@ -133,8 +139,9 @@
           <div class="rrn-agent-list">
             ${devices.length ? devices.map(device => {
               const status = statusFor(device);
+              const revoked = String(device.status || 'active').toLowerCase() !== 'active';
               return `<div class="rrn-agent-device">
-                <div><strong>${esc(device.hostname || device.serial_number || 'Dispositivo')}</strong><small>${esc([device.manufacturer,device.model].filter(Boolean).join(' ') || device.equipment_type || 'Computador')}</small><span class="rrn-agent-status ${status.cls}">${status.label}</span></div>
+                <div><strong>${esc(device.hostname || device.serial_number || 'Dispositivo')}</strong><small>${esc([device.manufacturer,device.model].filter(Boolean).join(' ') || device.equipment_type || 'Computador')}</small><span class="rrn-agent-status ${status.cls}">${status.label}</span>${canRevoke() && !revoked ? `<button type="button" class="rrn-agent-btn rrn-agent-revoke" data-agent-revoke="${esc(device.id)}">Revogar agente</button>` : ''}</div>
                 <div><small>Serial / patrimônio</small><strong>${esc(device.serial_number || device.asset_tag || '—')}</strong><small>${esc(device.asset_tag || '')}</small></div>
                 <div><small>Última comunicação</small><strong>${esc(formatDate(device.last_seen_at))}</strong><small>Agente ${esc(device.agent_version || '—')}</small></div>
                 <div><small>Última localização</small><strong>${esc(locationLabel(device))}</strong><small>${device.public_ip ? `IP ${esc(device.public_ip)}` : '—'}</small></div>
@@ -149,6 +156,7 @@
     view.querySelector('[data-agent-generate]')?.addEventListener('click',generateToken);
     view.querySelector('[data-agent-copy-code]')?.addEventListener('click',() => copyText(token?.enrollment_code || '', 'Código copiado.'));
     view.querySelector('[data-agent-copy-command]')?.addEventListener('click',() => copyText(state.command,'Comando de instalação copiado.'));
+    view.querySelectorAll('[data-agent-revoke]').forEach(button => button.addEventListener('click',() => revokeDevice(button.dataset.agentRevoke)));
     window.RRN_ICONS?.decorateStatic?.(view);
   }
 
@@ -183,6 +191,26 @@
       console.error('RRN Agent: falha ao gerar código.',error);
       alert(error?.message || 'Não foi possível gerar o código de instalação.');
     } finally {
+      state.loading = false; render();
+    }
+  }
+
+  async function revokeDevice(deviceId) {
+    if (!deviceId || !canRevoke()) return;
+    const device = state.devices.find(item => item.id === deviceId);
+    const label = device?.hostname || device?.serial_number || 'este dispositivo';
+    if (!confirm(`Revogar o RRN Agent de ${label}?\n\nO agente deixará de conseguir enviar inventário até ser vinculado novamente com um novo código.`)) return;
+    const db = client();
+    if (!db) return;
+    state.loading = true; render();
+    try {
+      const { error } = await db.rpc('revoke_agent_device',{p_device_id:deviceId});
+      if (error) throw error;
+      toast('Agente revogado. A credencial deixou de ser aceita pelo backend.');
+      await refreshDevices();
+    } catch (error) {
+      console.error('RRN Agent: falha ao revogar dispositivo.',error);
+      alert(error?.message || 'Não foi possível revogar o agente.');
       state.loading = false; render();
     }
   }
