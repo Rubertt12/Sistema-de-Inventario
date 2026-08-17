@@ -4,10 +4,19 @@
   window.__RRN_MOBILE_MODALS_AUTHORITY__ = true;
 
   const marker = 'data-rrn-mobile-info-modal-v13';
+  const href = '/style/mobile-info-modal-v13.css?v=20260817-1009';
   let scheduled = false;
 
   function stylesheet() {
-    return document.querySelector(`link[${marker}]`);
+    let link = document.querySelector(`link[${marker}]`);
+    if (!link && document.head) {
+      link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.setAttribute(marker, '1');
+      document.head.appendChild(link);
+    }
+    return link;
   }
 
   function ensureLast() {
@@ -29,6 +38,7 @@
   }
 
   function boot() {
+    stylesheet();
     const observer = new MutationObserver(records => {
       if (records.some(record => [...record.addedNodes].some(node =>
         node instanceof Element && (node.tagName === 'STYLE' || (node.tagName === 'LINK' && node.rel === 'stylesheet'))
