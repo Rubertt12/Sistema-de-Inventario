@@ -24,6 +24,7 @@
     if (isDashboard) {
       addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-3', 'data-rrn-theme-component-fixes-v2');
       addStylesheet('/style/ui-fixes-v3.css?v=20260817-2', 'data-rrn-ui-fixes-v3');
+      addStylesheet('/style/mobile-info-modal-v5.css?v=20260817-1', 'data-rrn-mobile-info-modal-v5');
     }
   }
 
