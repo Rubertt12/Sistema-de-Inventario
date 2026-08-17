@@ -37,8 +37,10 @@
       addStylesheet('/style/mobile-asset-page-v1.css?v=20260817-1054', 'data-rrn-mobile-asset-page-v1');
       addStylesheet('/style/mobile-core-modals-v1.css?v=20260817-1110', 'data-rrn-mobile-core-modals-v1');
       addStylesheet('/style/mobile-sector-modal-v1.css?v=20260817-1119', 'data-rrn-mobile-sector-modal-v1');
+      addStylesheet('/style/modal-system-v1.css?v=20260817-1123', 'data-rrn-modal-system-v1');
       addScript('/js/mobile-modal-accessibility-guard.js?v=20260817-1', 'data-rrn-mobile-modal-accessibility-guard');
       addScript('/js/mobile-core-modals.js?v=20260817-1110', 'data-rrn-mobile-core-modals');
+      addScript('/js/modal-system-v1.js?v=20260817-1123', 'data-rrn-modal-system-v1');
       addScript('/js/map-tile-fallback.js?v=20260817-1000', 'data-rrn-map-tile-fallback');
     }
   }
