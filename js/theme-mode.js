@@ -21,6 +21,7 @@
     if (isDashboard) addStylesheet('/style/dark-inventory-fix.css', 'data-rrn-dark-inventory-fix');
     addStylesheet('/style/theme-consistency-v1.css?v=20260817-1', 'data-rrn-theme-consistency-v1');
     addStylesheet('/style/theme-consistency-final.css?v=20260817-1', 'data-rrn-theme-consistency-final');
+    if (isDashboard) addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-1', 'data-rrn-theme-component-fixes-v2');
   }
 
   function ensureFooter() {
