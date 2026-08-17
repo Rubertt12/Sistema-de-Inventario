@@ -7,6 +7,9 @@
   const activeBySector = new Map();
   const choiceModeBySector = new Set();
   const labels = {
+    notebooks: 'Notebooks',
+    desktops: 'Desktops',
+    workstations: 'Workstations',
     computers: 'Computadores',
     monitors: 'Monitores',
     printers: 'Impressoras',
@@ -33,10 +36,10 @@
     if (explicitType) {
       if (explicitType.includes('monitor')) return 'monitors';
       if (explicitType.includes('impress') || explicitType.includes('printer')) return 'printers';
+      if (explicitType.includes('notebook') || explicitType.includes('laptop')) return 'notebooks';
+      if (explicitType.includes('workstation')) return 'workstations';
+      if (explicitType.includes('desktop')) return 'desktops';
       if (
-        explicitType.includes('notebook') ||
-        explicitType.includes('desktop') ||
-        explicitType.includes('workstation') ||
         explicitType.includes('computador') ||
         explicitType.includes('maquina') ||
         /(^|\s)pc(\s|$)/.test(explicitType)
@@ -51,10 +54,10 @@
 
     if (fallback.includes('monitor')) return 'monitors';
     if (fallback.includes('impress') || fallback.includes('printer')) return 'printers';
+    if (fallback.includes('notebook') || fallback.includes('laptop')) return 'notebooks';
+    if (fallback.includes('workstation')) return 'workstations';
+    if (fallback.includes('desktop')) return 'desktops';
     if (
-      fallback.includes('notebook') ||
-      fallback.includes('desktop') ||
-      fallback.includes('workstation') ||
       fallback.includes('computador') ||
       fallback.includes('maquina') ||
       /(^|\s)pc(\s|$)/.test(fallback)
