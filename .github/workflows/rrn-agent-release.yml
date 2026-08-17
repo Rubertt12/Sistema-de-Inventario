@@ -13,6 +13,10 @@ on:
       - 'img/icon-png.png'
       - '.github/workflows/rrn-agent-release.yml'
 
+concurrency:
+  group: rrn-agent-release
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -20,16 +24,21 @@ jobs:
   build-release:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
 
-      - uses: actions/setup-dotnet@v4
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           dotnet-version: '8.0.x'
 
       - name: Build Windows icon from RRN logo
         shell: pwsh
         run: |
-          python -m pip install --disable-pip-version-check pillow
+          python -m pip install --disable-pip-version-check --only-binary=:all: pillow==12.3.0
           @'
           from PIL import Image
           from pathlib import Path
@@ -74,7 +83,7 @@ jobs:
           Set-Content -NoNewline -Path package/RRN-Agent-Windows-x64.zip.sha256 -Value $zipHash
 
       - name: Upload workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: RRN-Agent-Windows-x64
           path: |
@@ -109,4 +118,4 @@ jobs:
             package/RRN-Agent-Windows-x64.zip \
             package/RRN-Agent-Windows-x64.zip.sha256 \
             --title "RRN Agent Windows (latest)" \
-            --notes "RRN Agent Windows x64 v0.3.1 com hardening de rede: bloqueio explícito de conexões de entrada no Windows Firewall, auditoria fail-closed contra portas TCP em LISTENING, validação do endpoint autorizado, proteção de ACL dos dados locais e hashes SHA-256 publicados para os executáveis."
+            --notes "RRN Agent Windows x64 v0.4.0: comunicação HTTPS de saída, bloqueio explícito de conexões de entrada, auditoria fail-closed contra TCP LISTENING, endpoint restrito, credencial protegida por DPAPI, atualização com verificação SHA-256/rollback e hashes publicados para Core, Tray e Setup."
