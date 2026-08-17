@@ -1,0 +1,204 @@
+/* RRN Manager — isolamento definitivo do modal de informações no smartphone */
+@media (max-width: 700px) {
+  html:has(#infoModal[aria-hidden="false"]),
+  body:has(#infoModal[aria-hidden="false"]) {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  /* Nada da dashboard pode atravessar visualmente o modal. */
+  body:has(#infoModal[aria-hidden="false"]) > .navbar,
+  body:has(#infoModal[aria-hidden="false"]) > .dashboard-actions,
+  body:has(#infoModal[aria-hidden="false"]) > main,
+  body:has(#infoModal[aria-hidden="false"]) > footer,
+  body:has(#infoModal[aria-hidden="false"]) > .rrn-footer,
+  body:has(#infoModal[aria-hidden="false"]) > #painelManutencao,
+  body:has(#infoModal[aria-hidden="false"]) > .rrn-maintenance-handle {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #infoModal.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    display: none !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: var(--rrn-surface, #fff) !important;
+    z-index: 2147483646 !important;
+    isolation: isolate !important;
+  }
+
+  #infoModal.modal[aria-hidden="false"] {
+    display: block !important;
+  }
+
+  #infoModal > .modal-content {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2 !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 12px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--rrn-surface, #fff) !important;
+    color: var(--rrn-text, #263238) !important;
+    box-shadow: none !important;
+  }
+
+  #infoModal > .modal-content > h2 {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    box-sizing: border-box !important;
+    width: calc(100% + 24px) !important;
+    min-height: calc(58px + env(safe-area-inset-top, 0px)) !important;
+    margin: 0 -12px 10px !important;
+    padding: calc(15px + env(safe-area-inset-top, 0px)) 58px 13px 14px !important;
+    border-bottom: 1px solid var(--rrn-border, #d7e0e4) !important;
+    background: var(--rrn-surface, #fff) !important;
+    color: var(--rrn-heading, #163A4D) !important;
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+    text-align: left !important;
+  }
+
+  #infoModal > .modal-content > .close-btn,
+  #infoModal > .modal-content > .close {
+    position: fixed !important;
+    top: calc(9px + env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    z-index: 2147483647 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--rrn-border, #d7e0e4) !important;
+    border-radius: 11px !important;
+    background: var(--rrn-surface-2, #f3f7f8) !important;
+    color: var(--rrn-heading, #163A4D) !important;
+  }
+
+  #infoModal #modalText,
+  #infoModal .rrn-machine-detail-card,
+  #infoModal .rrn-machine-modal-shell,
+  #infoModal .rrn-machine-modal-columns,
+  #infoModal .rrn-machine-modal-left,
+  #infoModal .rrn-machine-modal-right {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #infoModal .rrn-machine-detail-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    z-index: 3 !important;
+    background: var(--rrn-surface, #fff) !important;
+  }
+
+  #infoModal .rrn-agent-location-card {
+    position: relative !important;
+    z-index: 4 !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 10px 0 0 !important;
+    padding: 10px !important;
+    overflow: hidden !important;
+    background: var(--rrn-surface-2, #f5f8f9) !important;
+  }
+
+  #infoModal .rrn-agent-location-meta {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+    width: 100% !important;
+  }
+
+  #infoModal .rrn-agent-location-meta > div {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #infoModal .rrn-agent-location-meta strong {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #infoModal .rrn-agent-mini-map,
+  #infoModal #rrnAgentMiniMap {
+    position: relative !important;
+    z-index: 5 !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 210px !important;
+    min-height: 210px !important;
+    margin: 10px 0 0 !important;
+    overflow: hidden !important;
+    border-radius: 11px !important;
+  }
+
+  #infoModal .leaflet-container { z-index: 1 !important; }
+  #infoModal .leaflet-pane { z-index: 1 !important; }
+  #infoModal .leaflet-top,
+  #infoModal .leaflet-bottom { z-index: 10 !important; }
+
+  #infoModal #maintenanceSection,
+  #infoModal #observationsList,
+  #infoModal .modal-actions {
+    position: relative !important;
+    z-index: 6 !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: var(--rrn-surface, #fff) !important;
+  }
+
+  #infoModal .checklist-content { grid-template-columns: 1fr !important; }
+  #infoModal #observationsUl { max-height: none !important; overflow: visible !important; }
+
+  #infoModal .modal-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
+
+  #infoModal .modal-actions button,
+  #infoModal #maintenanceSection > button {
+    width: 100% !important;
+    min-height: 44px !important;
+  }
+}
