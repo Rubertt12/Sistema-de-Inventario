@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>RRN.Agent.Setup</AssemblyName>
     <RootNamespace>RRN.Agent.Setup</RootNamespace>
-    <Version>0.4.0</Version>
+    <Version>0.4.1</Version>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
