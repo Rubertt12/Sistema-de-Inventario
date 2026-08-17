@@ -14,6 +14,10 @@
     const actions = content?.querySelector(':scope > .modal-actions');
     if (!modal || !content || !title || !modalText || !maintenance || !observations || !actions) return;
 
+    // O modal deve viver diretamente no body para não herdar stacking contexts
+    // de containers do dashboard (navbar, transform, backdrop-filter etc.).
+    if (modal.parentElement !== document.body) document.body.appendChild(modal);
+
     if (!document.getElementById('rrn-info-modal-layout-v3')) {
       const style = document.createElement('style');
       style.id = 'rrn-info-modal-layout-v3';
@@ -37,14 +41,16 @@
           justify-content: center !important;
           overflow: hidden !important;
           box-sizing: border-box !important;
-          background: rgba(12, 22, 30, .76) !important;
+          isolation: isolate !important;
+          background: rgba(12, 22, 30, .78) !important;
           backdrop-filter: blur(6px) !important;
           -webkit-backdrop-filter: blur(6px) !important;
-          z-index: 1600 !important;
+          z-index: 2147483000 !important;
         }
 
         #infoModal > .modal-content {
           position: relative !important;
+          z-index: 1 !important;
           display: flex !important;
           flex-direction: column !important;
           width: min(1380px, calc(100vw - 24px)) !important;
