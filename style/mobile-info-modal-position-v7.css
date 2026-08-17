@@ -1,0 +1,21 @@
+/* RRN Manager — posição do modal de informações no smartphone */
+@media (max-width: 700px) {
+  #infoModal.modal[aria-hidden="false"] {
+    align-items: flex-end !important;
+    justify-content: center !important;
+  }
+
+  #infoModal > .modal-content {
+    height: 84dvh !important;
+    max-height: 84dvh !important;
+    border-radius: 22px 22px 0 0 !important;
+  }
+
+  /* Em aparelhos muito baixos, preserva área útil sem voltar a colar no topo. */
+  @media (max-height: 700px) {
+    #infoModal > .modal-content {
+      height: 88dvh !important;
+      max-height: 88dvh !important;
+    }
+  }
+}
