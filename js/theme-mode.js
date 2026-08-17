@@ -37,6 +37,7 @@
       addStylesheet('/style/mobile-info-modal-v6.css?v=20260817-2', 'data-rrn-mobile-info-modal-v6');
       addStylesheet('/style/mobile-info-modal-position-v7.css?v=20260817-1', 'data-rrn-mobile-info-modal-position-v7');
       addStylesheet('/style/mobile-info-modal-v8.css?v=20260817-1', 'data-rrn-mobile-info-modal-v8');
+      addStylesheet('/style/mobile-modals-fullscreen-v9.css?v=20260817-1', 'data-rrn-mobile-modals-fullscreen-v9');
       addScript('/js/mobile-info-modal-reset.js?v=20260817-1', 'data-rrn-mobile-info-modal-reset');
     }
   }
