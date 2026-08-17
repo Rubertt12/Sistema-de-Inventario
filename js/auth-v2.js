@@ -27,6 +27,16 @@
     button.textContent = state ? text : button.dataset.originalText;
   };
 
+  function passwordPolicyError(value) {
+    const password = String(value || '');
+    if (password.length < 12) return 'Use pelo menos 12 caracteres.';
+    if (!/[a-z]/.test(password)) return 'Inclua pelo menos uma letra minúscula.';
+    if (!/[A-Z]/.test(password)) return 'Inclua pelo menos uma letra maiúscula.';
+    if (!/\d/.test(password)) return 'Inclua pelo menos um número.';
+    if (!/[^A-Za-z0-9]/.test(password)) return 'Inclua pelo menos um símbolo.';
+    return '';
+  }
+
   function injectRecoveryUI() {
     if (document.getElementById('forgotPasswordButton')) return;
     const loginPasswordField = document.getElementById('loginSenha')?.closest('.field');
@@ -46,8 +56,8 @@
         <p class="form-message" id="forgotPasswordMsg" role="status"></p>
       </form>
       <form id="formResetPassword" class="auth-form" novalidate>
-        <label class="field"><span>Nova senha</span><div class="password-field"><input type="password" id="resetPassword" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" minlength="8" required><button type="button" class="password-toggle" data-toggle-password="resetPassword">Mostrar</button></div></label>
-        <label class="field"><span>Confirmar nova senha</span><div class="password-field"><input type="password" id="resetPasswordConfirm" placeholder="Repita a nova senha" autocomplete="new-password" minlength="8" required><button type="button" class="password-toggle" data-toggle-password="resetPasswordConfirm">Mostrar</button></div></label>
+        <label class="field"><span>Nova senha</span><div class="password-field"><input type="password" id="resetPassword" placeholder="12+ caracteres, com maiúscula, número e símbolo" autocomplete="new-password" minlength="12" required><button type="button" class="password-toggle" data-toggle-password="resetPassword">Mostrar</button></div></label>
+        <label class="field"><span>Confirmar nova senha</span><div class="password-field"><input type="password" id="resetPasswordConfirm" placeholder="Repita a nova senha" autocomplete="new-password" minlength="12" required><button type="button" class="password-toggle" data-toggle-password="resetPasswordConfirm">Mostrar</button></div></label>
         <button type="submit" class="btn-primary" id="resetPasswordButton"><span>Definir nova senha</span></button>
         <p class="form-message" id="resetPasswordMsg" role="status"></p>
       </form>`);
@@ -219,7 +229,8 @@
     const confirm = document.getElementById('resetPasswordConfirm')?.value || '';
     const msg = document.getElementById('resetPasswordMsg');
     const button = document.getElementById('resetPasswordButton');
-    if (password.length < 8) return setMessage(msg, 'Use uma senha com pelo menos 8 caracteres.', 'error');
+    const policyError = passwordPolicyError(password);
+    if (policyError) return setMessage(msg, policyError, 'error');
     if (password !== confirm) return setMessage(msg, 'As senhas não conferem.', 'error');
     setMessage(msg); setBusy(button, true, 'Salvando...');
     try {
@@ -244,7 +255,9 @@
     const organization = document.getElementById('registerOrganization')?.value.trim();
     const invite = document.getElementById('registerInvite')?.value.trim();
     const accepted = document.getElementById('acceptTerms')?.checked;
-    if (!name || !email || password.length < 8) return setMessage(msg, 'Preencha nome, e-mail e uma senha com pelo menos 8 caracteres.', 'error');
+    if (!name || !email) return setMessage(msg, 'Preencha nome e e-mail.', 'error');
+    const policyError = passwordPolicyError(password);
+    if (policyError) return setMessage(msg, policyError, 'error');
     if (!organization && !invite) return setMessage(msg, 'Informe a organização ou um código de convite.', 'error');
     if (!accepted) return setMessage(msg, 'Confirme que você está autorizado a criar ou ingressar no workspace.', 'error');
     setMessage(msg); setBusy(button, true, 'Criando acesso...');
