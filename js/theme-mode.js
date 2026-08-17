@@ -26,6 +26,7 @@
       addStylesheet('/style/ui-fixes-v3.css?v=20260817-2', 'data-rrn-ui-fixes-v3');
       addStylesheet('/style/mobile-info-modal-v5.css?v=20260817-2', 'data-rrn-mobile-info-modal-v5');
       addStylesheet('/style/mobile-info-modal-v6.css?v=20260817-2', 'data-rrn-mobile-info-modal-v6');
+      addStylesheet('/style/mobile-info-modal-position-v7.css?v=20260817-1', 'data-rrn-mobile-info-modal-position-v7');
     }
   }
 
