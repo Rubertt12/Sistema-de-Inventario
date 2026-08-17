@@ -15,6 +15,15 @@
     document.head.appendChild(link);
   }
 
+  function addScript(src, marker) {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.setAttribute(marker, '1');
+    document.head.appendChild(script);
+  }
+
   function ensureThemeFixes() {
     addStylesheet('/style/dark-mode-v4.css', 'data-rrn-dark-mode-v4');
     const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\.html$/i.test(location.pathname);
@@ -27,6 +36,8 @@
       addStylesheet('/style/mobile-info-modal-v5.css?v=20260817-2', 'data-rrn-mobile-info-modal-v5');
       addStylesheet('/style/mobile-info-modal-v6.css?v=20260817-2', 'data-rrn-mobile-info-modal-v6');
       addStylesheet('/style/mobile-info-modal-position-v7.css?v=20260817-1', 'data-rrn-mobile-info-modal-position-v7');
+      addStylesheet('/style/mobile-info-modal-v8.css?v=20260817-1', 'data-rrn-mobile-info-modal-v8');
+      addScript('/js/mobile-info-modal-reset.js?v=20260817-1', 'data-rrn-mobile-info-modal-reset');
     }
   }
 
