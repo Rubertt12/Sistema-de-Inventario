@@ -3,7 +3,7 @@
   if (window.__RRN_MOBILE_MODALS_AUTHORITY__) return;
   window.__RRN_MOBILE_MODALS_AUTHORITY__ = true;
 
-  const marker = 'data-rrn-mobile-modals-v11';
+  const marker = 'data-rrn-mobile-info-modal-v12';
   let scheduled = false;
 
   function stylesheet() {
