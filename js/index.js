@@ -182,6 +182,7 @@
       await load('/js/tenant-runtime.js');
       await load('/js/remote-inventory-sync.js');
       await load('/js/agent-delete-bridge.js?v=20260814-1');
+      await load('/js/agent-delete-choice.js?v=20260817-1');
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
       await load('/js/agent-global-map.js?v=20260816-1');
