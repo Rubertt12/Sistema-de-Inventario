@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RRN Manager | Validando acesso</title>
+  <meta name="description" content="Validação de acesso por e-mail do RRN Manager" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/img/icon-png.png" type="image/png" />
+  <style>
+    :root{font-family:Inter,Arial,sans-serif;color:#263746;background:#eef3f7}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at top left,#dce9f3 0,transparent 38%),#eef3f7}
+    .card{width:min(100%,480px);background:#fff;border:1px solid #dfe7ed;border-radius:22px;padding:34px;box-shadow:0 22px 60px rgba(20,53,91,.12);text-align:center}
+    .brand{display:flex;justify-content:center;align-items:center;gap:11px;margin-bottom:26px;color:#14355b;font-family:Manrope,Inter,sans-serif;font-size:20px;font-weight:700}
+    .brand img{width:42px;height:42px;border-radius:10px}
+    .icon{width:64px;height:64px;margin:0 auto 18px;border-radius:20px;display:grid;place-items:center;background:#edf4fa;color:#14355b;font-size:30px}
+    h1{margin:0 0 10px;color:#14355b;font:700 26px/1.2 Manrope,Inter,sans-serif}
+    p{margin:0;color:#66757f;line-height:1.65;font-size:15px}
+    .spinner{width:30px;height:30px;margin:24px auto 0;border:3px solid #d9e4ec;border-top-color:#295991;border-radius:50%;animation:spin .8s linear infinite}
+    .actions{display:none;margin-top:24px}
+    .actions a{display:inline-block;text-decoration:none;background:#14355b;color:#fff;padding:12px 18px;border-radius:11px;font-weight:700}
+    .is-error .spinner,.is-success .spinner{display:none}
+    .is-error .actions{display:block}
+    .is-error .icon{background:#fff1f1;color:#b42318}
+    .is-success .icon{background:#edf8f1;color:#18794e}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <main class="card" id="fallbackCard">
+    <div class="brand"><img src="/img/icon-png.png" alt="RRN Manager" /><span>RRN Manager</span></div>
+    <div class="icon">✉️</div>
+    <h1 id="fallbackTitle">Validando seu acesso</h1>
+    <p id="fallbackText">Aguarde enquanto confirmamos o link recebido por e-mail.</p>
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="actions"><a href="/login.html">Voltar ao login</a></div>
+  </main>
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/auth-email-fallback-return.js?v=20260816-2"></script>
+</body>
+</html>

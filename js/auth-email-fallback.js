@@ -13,9 +13,9 @@
     const raw = params.get('next');
     return raw && raw.startsWith('/') && !raw.startsWith('//') ? raw : '/dashboard.html';
   })();
+  const PENDING_KEY = 'rrn_email_magic_fallback_pending';
+  const PENDING_TTL_MS = 15 * 60 * 1000;
 
-  let expectedUserId = '';
-  let fallbackEmail = '';
   let resendTimer = null;
   let resendRemaining = 0;
 
@@ -46,6 +46,19 @@
     return `${visible}${'*'.repeat(Math.max(3, local.length - visible.length))}@${domain}`;
   }
 
+  function savePending(user) {
+    const pending = {
+      userId: user.id,
+      email: String(user.email || '').toLowerCase(),
+      requestedSlug,
+      redirectTarget,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + PENDING_TTL_MS
+    };
+    localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
+    return pending;
+  }
+
   function ensureStyle() {
     if ($('rrnEmailFallbackStyle')) return;
     const style = document.createElement('style');
@@ -54,7 +67,6 @@
       .rrn-email-fallback-note{margin:2px 0 8px;padding:12px 14px;border:1px solid rgba(20,53,91,.12);border-radius:12px;background:rgba(20,53,91,.05);color:#66757f;font-size:.82rem;line-height:1.5}
       .rrn-email-fallback-note strong{color:#163a4d}
       .rrn-email-fallback-actions{display:grid;gap:8px;margin-top:8px}
-      .rrn-email-code{font-variant-numeric:tabular-nums;letter-spacing:.3em;text-align:center;font-size:1.18rem;font-weight:700}
       .rrn-email-resend[disabled]{opacity:.55;cursor:not-allowed}
     `;
     document.head.appendChild(style);
@@ -69,7 +81,7 @@
       if (resendRemaining <= 0) {
         clearInterval(resendTimer);
         button.disabled = false;
-        button.textContent = 'Reenviar código';
+        button.textContent = 'Reenviar link';
         return;
       }
       button.disabled = true;
@@ -87,73 +99,39 @@
     return data.user;
   }
 
-  async function sendEmailCode({ resend = false } = {}) {
+  async function sendEmailLink({ resend = false } = {}) {
     const button = resend ? $('mfaEmailResend') : $('mfaUseEmailButton');
     setBusy(button, true, resend ? 'Reenviando...' : 'Enviando...');
     setMessage();
+
     try {
       const user = await currentUser();
-      if (!user.email) throw new Error('Sua conta não possui um e-mail confirmado para recuperação.');
-      expectedUserId = user.id;
-      fallbackEmail = user.email.toLowerCase();
+      if (!user.email) throw new Error('Sua conta não possui um e-mail cadastrado.');
 
+      const pending = savePending(user);
       const { error } = await client.auth.signInWithOtp({
-        email: fallbackEmail,
-        options: { shouldCreateUser: false }
+        email: pending.email,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: `${location.origin}/login.html`
+        }
       });
       if (error) throw error;
 
-      if ($('mfaEmailDestination')) $('mfaEmailDestination').textContent = maskEmail(fallbackEmail);
-      setMessage('Código enviado. Confira também a caixa de spam.', 'success');
+      if ($('mfaEmailDestination')) $('mfaEmailDestination').textContent = maskEmail(pending.email);
+      setMessage('Link enviado. Abra o e-mail e clique em “Entrar” neste mesmo dispositivo.', 'success');
       startResendCooldown(60);
-      setTimeout(() => $('mfaEmailCode')?.focus(), 0);
     } catch (error) {
       const code = error?.code || '';
       if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit') {
         setMessage('Muitas tentativas em pouco tempo. Aguarde um pouco e tente novamente.', 'error');
       } else {
-        setMessage(error?.message || 'Não foi possível enviar o código por e-mail.', 'error');
+        setMessage(error?.message || 'Não foi possível enviar o link por e-mail.', 'error');
       }
       throw error;
     } finally {
       setBusy(button, false);
     }
-  }
-
-  async function finishEmailFallback() {
-    const user = await currentUser();
-    if (!expectedUserId || user.id !== expectedUserId) {
-      await client.auth.signOut({ scope: 'local' }).catch(() => undefined);
-      throw new Error('A conta validada por e-mail não corresponde à conta que iniciou o login.');
-    }
-
-    const { data: profile, error } = await client
-      .from('profiles')
-      .select('user_id,tenant_id,name,email,role,status,tenants(name,slug,status)')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    if (error) throw error;
-    if (!profile || profile.status !== 'active') throw new Error('Seu acesso está inativo.');
-
-    if (requestedSlug) {
-      const profileSlug = String(profile?.tenants?.slug || '').toLowerCase();
-      if (profileSlug !== requestedSlug || profile?.tenants?.status === 'inactive') {
-        await client.auth.signOut({ scope: 'local' }).catch(() => undefined);
-        throw new Error('Esta conta não pertence a este ambiente.');
-      }
-    }
-
-    localStorage.setItem('usuarioLogado', JSON.stringify({
-      id: profile.user_id,
-      nome: profile.name || profile.email || 'Usuário',
-      email: profile.email || '',
-      perfil: profile.role || 'monitoramento',
-      tenant_id: profile.tenant_id,
-      tenant: profile.tenants?.name || 'Workspace'
-    }));
-    sessionStorage.setItem('rrn_email_fallback_verified', new Date().toISOString());
-    sessionStorage.removeItem('rrn_hydrated_tenant');
-    location.replace(redirectTarget);
   }
 
   function showAuthenticator() {
@@ -166,10 +144,9 @@
   async function showEmailFallback() {
     $('formMfaChallenge')?.classList.remove('active');
     $('formMfaEmailFallback')?.classList.add('active');
-    setHeader('Código por e-mail', 'Use este método caso esteja sem acesso ao seu aplicativo autenticador.');
-    $('mfaEmailCode').value = '';
+    setHeader('Acesso por e-mail', 'Use este método caso esteja sem acesso ao seu aplicativo autenticador.');
     try {
-      await sendEmailCode();
+      await sendEmailLink();
     } catch {
       // A mensagem de erro já foi exibida no formulário.
     }
@@ -185,28 +162,21 @@
     emailButton.type = 'button';
     emailButton.className = 'rrn-auth-link';
     emailButton.id = 'mfaUseEmailButton';
-    emailButton.textContent = 'Estou sem o autenticador — enviar código por e-mail';
+    emailButton.textContent = 'Estou sem o autenticador — enviar link por e-mail';
     const signout = challenge.querySelector('[data-mfa-signout]');
     challenge.insertBefore(emailButton, signout || challenge.querySelector('.form-message'));
 
-    const form = document.createElement('form');
+    const form = document.createElement('section');
     form.id = 'formMfaEmailFallback';
     form.className = 'auth-form rrn-mfa-form';
-    form.noValidate = true;
     form.innerHTML = `
       <div class="rrn-mfa-icon">✉️</div>
       <div class="rrn-email-fallback-note">
-        Enviaremos um código temporário para <strong id="mfaEmailDestination">seu e-mail cadastrado</strong>.
-        Este acesso de contingência não substitui o MFA forte para operações administrativas críticas.
+        Enviaremos um link temporário para <strong id="mfaEmailDestination">seu e-mail cadastrado</strong>.
+        Abra o link neste mesmo dispositivo para concluir o acesso. Este método de contingência não substitui o MFA forte para operações administrativas críticas.
       </div>
-      <label class="field">
-        <span>Código recebido por e-mail</span>
-        <input id="mfaEmailCode" class="rrn-email-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" required>
-        <small>Digite os 6 dígitos enviados pelo RRN Manager.</small>
-      </label>
-      <button type="submit" class="btn-primary" id="mfaEmailVerifyButton">Verificar e entrar</button>
       <div class="rrn-email-fallback-actions">
-        <button type="button" class="rrn-auth-link rrn-email-resend" id="mfaEmailResend">Reenviar código</button>
+        <button type="button" class="btn-primary rrn-email-resend" id="mfaEmailResend">Reenviar link</button>
         <button type="button" class="rrn-auth-link" id="mfaEmailBack">Voltar para o autenticador</button>
       </div>
       <p class="form-message" id="mfaEmailFallbackMsg" role="status"></p>
@@ -216,34 +186,7 @@
     emailButton.addEventListener('click', showEmailFallback);
     $('mfaEmailBack')?.addEventListener('click', showAuthenticator);
     $('mfaEmailResend')?.addEventListener('click', async () => {
-      try { await sendEmailCode({ resend: true }); } catch {}
-    });
-
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      const code = $('mfaEmailCode')?.value.trim() || '';
-      if (!/^\d{6}$/.test(code)) return setMessage('Digite o código de 6 dígitos.', 'error');
-      if (!fallbackEmail || !expectedUserId) return setMessage('Solicite um novo código antes de continuar.', 'error');
-
-      setBusy($('mfaEmailVerifyButton'), true, 'Verificando...');
-      setMessage();
-      try {
-        const { data, error } = await client.auth.verifyOtp({
-          email: fallbackEmail,
-          token: code,
-          type: 'email'
-        });
-        if (error) throw error;
-        if (!data?.user || data.user.id !== expectedUserId) throw new Error('O código não pertence a esta conta.');
-        await finishEmailFallback();
-      } catch (error) {
-        const codeName = error?.code || '';
-        if (codeName === 'otp_expired') setMessage('Código expirado. Solicite um novo.', 'error');
-        else setMessage('Código inválido ou expirado. Confira o e-mail e tente novamente.', 'error');
-        $('mfaEmailCode')?.select();
-      } finally {
-        setBusy($('mfaEmailVerifyButton'), false);
-      }
+      try { await sendEmailLink({ resend: true }); } catch {}
     });
 
     return true;
