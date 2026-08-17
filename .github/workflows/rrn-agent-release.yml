@@ -118,4 +118,4 @@ jobs:
             package/RRN-Agent-Windows-x64.zip \
             package/RRN-Agent-Windows-x64.zip.sha256 \
             --title "RRN Agent Windows (latest)" \
-            --notes "RRN Agent Windows x64 v0.4.0: comunicação HTTPS de saída, bloqueio explícito de conexões de entrada, auditoria fail-closed contra TCP LISTENING, endpoint restrito, credencial protegida por DPAPI, atualização com verificação SHA-256/rollback e hashes publicados para Core, Tray e Setup."
+            --notes "RRN Agent Windows x64 v0.4.1: comunicação HTTPS de saída, bloqueio explícito de conexões de entrada, auditoria fail-closed contra TCP LISTENING, endpoint restrito, credencial DPAPI isolada para SYSTEM/Administradores, status somente leitura para usuários padrão, sincronização manual delegada à tarefa protegida do Windows, atualizações e instalação com verificação SHA-256/rollback e hashes publicados para Core, Tray e Setup."
