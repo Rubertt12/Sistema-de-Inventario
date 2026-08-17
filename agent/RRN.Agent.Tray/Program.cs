@@ -24,11 +24,11 @@ internal sealed class TrayContext : ApplicationContext
     private const string LocationValue = "PreciseLocationJson";
     private const string LocationEnabledValue = "PreciseLocationEnabled";
     private const string LocationPromptedValue = "PreciseLocationPrompted";
+    private const string ManualTaskName = "RRN Agent - 08h";
 
     private static readonly string InstallDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "RRN Manager Agent");
     private static readonly string ProgramDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "RRN Manager Agent");
     private static readonly string CoreExe = Path.Combine(InstallDir, "RRN.Agent.exe");
-    private static readonly string ConfigPath = Path.Combine(ProgramDataDir, "agent.json");
     private static readonly string StatusPath = Path.Combine(ProgramDataDir, "status.json");
     private static readonly string LogoPath = Path.Combine(InstallDir, "rrn-logo.png");
 
@@ -137,15 +137,16 @@ internal sealed class TrayContext : ApplicationContext
 
     private void RefreshStatus()
     {
-        var config = ReadJson(ConfigPath);
         var status = ReadJson(StatusPath);
-        var deviceId = ReadString(config, "deviceId") ?? ReadString(config, "DeviceId");
-        var connected = !string.IsNullOrWhiteSpace(deviceId);
         var lastResult = ReadString(status, "lastResult") ?? ReadString(status, "LastResult");
         var lastSync = ReadDate(status, "lastSyncAt") ?? ReadDate(status, "LastSyncAt");
+        var lastMessage = ReadString(status, "lastMessage") ?? ReadString(status, "LastMessage") ?? string.Empty;
+        var linked = status is not null
+            && !lastMessage.Contains("não vinculado", StringComparison.OrdinalIgnoreCase)
+            && (!string.IsNullOrWhiteSpace(lastResult) || lastSync.HasValue);
         var location = ReadPreciseLocation();
 
-        _connectionItem.Text = connected
+        _connectionItem.Text = linked
             ? (string.Equals(lastResult, "error", StringComparison.OrdinalIgnoreCase) ? "Status: atenção" : "Status: conectado")
             : "Status: não vinculado";
         _lastSyncItem.Text = lastSync.HasValue
@@ -154,7 +155,7 @@ internal sealed class TrayContext : ApplicationContext
         _locationItem.Text = location is not null
             ? $"Localização precisa: {SourceLabel(location.Source)} · ±{FormatAccuracy(location.AccuracyM)}"
             : IsPreciseLocationEnabled() ? "Localização precisa: aguardando posição" : "Localização precisa: desativada";
-        _notifyIcon.Text = connected ? "RRN Agent - conectado" : "RRN Agent - não vinculado";
+        _notifyIcon.Text = linked ? "RRN Agent - conectado" : "RRN Agent - não vinculado";
     }
 
     private async Task<LocationSnapshot?> CapturePreciseLocationAsync(bool requestAccess, bool showFeedback)
@@ -357,26 +358,44 @@ internal sealed class TrayContext : ApplicationContext
         try
         {
             if (IsPreciseLocationEnabled()) await CapturePreciseLocationAsync(false, false);
-            var psi = new ProcessStartInfo(CoreExe, "run --kind manual")
+            var beforeStatus = ReadJson(StatusPath);
+            var before = ReadDate(beforeStatus, "lastSyncAt") ?? ReadDate(beforeStatus, "LastSyncAt");
+
+            var psi = new ProcessStartInfo("schtasks.exe")
             {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
+                UseShellExecute = true,
+                Verb = "runas",
+                Arguments = $"/Run /TN \"{ManualTaskName}\""
             };
             using var process = Process.Start(psi);
-            if (process is null) throw new InvalidOperationException("Não foi possível iniciar a sincronização.");
-            var stdoutTask = process.StandardOutput.ReadToEndAsync();
-            var stderrTask = process.StandardError.ReadToEndAsync();
+            if (process is null) throw new InvalidOperationException("Não foi possível acionar a tarefa segura de sincronização.");
             await process.WaitForExitAsync();
-            var stdout = await stdoutTask;
-            var stderr = await stderrTask;
-            RefreshStatus();
+            if (process.ExitCode != 0)
+                throw new InvalidOperationException("O Windows não autorizou a tarefa de sincronização. Reinstale o agente se a tarefa automática tiver sido removida.");
 
-            if (process.ExitCode == 0)
-                ShowBalloon("RRN Agent", string.IsNullOrWhiteSpace(stdout) ? "Inventário sincronizado com sucesso." : stdout.Trim(), ToolTipIcon.Info);
-            else
-                ShowBalloon("RRN Agent", string.IsNullOrWhiteSpace(stderr) ? "Falha ao sincronizar o inventário." : stderr.Trim(), ToolTipIcon.Error);
+            for (var attempt = 0; attempt < 80; attempt++)
+            {
+                await Task.Delay(500);
+                var status = ReadJson(StatusPath);
+                var current = ReadDate(status, "lastSyncAt") ?? ReadDate(status, "LastSyncAt");
+                if (!current.HasValue || (before.HasValue && current.Value <= before.Value)) continue;
+
+                var result = ReadString(status, "lastResult") ?? ReadString(status, "LastResult");
+                var message = ReadString(status, "lastMessage") ?? ReadString(status, "LastMessage");
+                RefreshStatus();
+                if (string.Equals(result, "error", StringComparison.OrdinalIgnoreCase))
+                    ShowBalloon("RRN Agent", string.IsNullOrWhiteSpace(message) ? "A sincronização retornou erro." : message, ToolTipIcon.Error);
+                else
+                    ShowBalloon("RRN Agent", string.IsNullOrWhiteSpace(message) ? "Inventário sincronizado com sucesso." : message, ToolTipIcon.Info);
+                return;
+            }
+
+            RefreshStatus();
+            ShowBalloon("RRN Agent", "A sincronização foi solicitada ao Windows. O resultado aparecerá no status assim que a tarefa concluir.", ToolTipIcon.Info);
+        }
+        catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
+        {
+            ShowBalloon("RRN Agent", "Sincronização cancelada: a elevação do Windows não foi autorizada.", ToolTipIcon.Warning);
         }
         catch (Exception ex)
         {
@@ -390,9 +409,8 @@ internal sealed class TrayContext : ApplicationContext
 
     private void ShowStatusWindow()
     {
-        var config = ReadJson(ConfigPath);
         var status = ReadJson(StatusPath);
-        var deviceId = ReadString(config, "deviceId") ?? ReadString(config, "DeviceId") ?? "Não vinculado";
+        var linked = status is not null;
         var lastSync = ReadDate(status, "lastSyncAt") ?? ReadDate(status, "LastSyncAt");
         var lastMessage = ReadString(status, "lastMessage") ?? ReadString(status, "LastMessage") ?? "—";
         var version = typeof(TrayContext).Assembly.GetName().Version?.ToString(3) ?? "0.4.0";
@@ -403,7 +421,7 @@ internal sealed class TrayContext : ApplicationContext
             : $"{SourceLabel(location.Source)} · ±{FormatAccuracy(location.AccuracyM)}\nCoordenadas: {location.Latitude:F6}, {location.Longitude:F6}\nAtualizada: {location.CapturedAt.LocalDateTime:dd/MM/yyyy HH:mm}";
 
         MessageBox.Show(
-            $"Dispositivo: {deviceId}\nVersão: {version}\nÚltima sincronização: {(lastSync.HasValue ? lastSync.Value.LocalDateTime.ToString("dd/MM/yyyy HH:mm") : "—")}\nPróxima sincronização: {nextSync:dd/MM/yyyy HH:mm}\nÚltimo status: {lastMessage}\n\nLocalização: {locationText}\n\nSegurança: entrada de rede bloqueada; atualizações verificadas por SHA-256.",
+            $"Vínculo: {(linked ? "Ativo" : "Não vinculado")}\nVersão: {version}\nÚltima sincronização: {(lastSync.HasValue ? lastSync.Value.LocalDateTime.ToString("dd/MM/yyyy HH:mm") : "—")}\nPróxima sincronização: {nextSync:dd/MM/yyyy HH:mm}\nÚltimo status: {lastMessage}\n\nLocalização: {locationText}\n\nSegurança: credencial isolada do usuário padrão; sincronizações executadas pela tarefa protegida do Windows; entrada de rede bloqueada; atualizações verificadas por SHA-256.",
             "RRN Agent · Status",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
