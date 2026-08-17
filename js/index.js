@@ -122,7 +122,7 @@
 
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
-    await load('/js/theme-mode.js?v=20260817-1110');
+    await load('/js/theme-mode.js?v=20260817-1119');
     await load('/js/footer-v2.js');
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
