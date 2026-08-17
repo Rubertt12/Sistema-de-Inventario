@@ -184,9 +184,26 @@
     }
   }
 
+  function ensureAgentManagement() {
+    if (!document.querySelector('link[data-rrn-agent-management]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/style/agent-management.css?v=20260816-2';
+      link.dataset.rrnAgentManagement = '1';
+      document.head.appendChild(link);
+    }
+    if (window.__RRN_AGENT_MANAGEMENT__ || document.querySelector('script[data-rrn-agent-management]')) return;
+    const script = document.createElement('script');
+    script.src = '/js/agent-management.js?v=20260816-2';
+    script.async = false;
+    script.dataset.rrnAgentManagement = '1';
+    document.head.appendChild(script);
+  }
+
   function boot() {
     injectUI();
     bind();
+    ensureAgentManagement();
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !document.getElementById('passwordChangeModal')?.hidden) close();
     });
