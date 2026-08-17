@@ -1,0 +1,265 @@
+/* RRN Manager — authoritative theme overrides.
+   Mantém os componentes-chave no mesmo sistema visual nos dois temas. */
+
+/* LIGHT */
+:root:not([data-theme="dark"]) .rrn-dashboard-overview,
+:root:not([data-theme="dark"]) .rrn-sector-category-shell,
+:root:not([data-theme="dark"]) .rrn-category-backbar,
+:root:not([data-theme="dark"]) .rrn-machine-item,
+:root:not([data-theme="dark"]) .rrn-machine-fact,
+:root:not([data-theme="dark"]) .rrn-agent-location-card,
+:root:not([data-theme="dark"]) .modal-content,
+:root:not([data-theme="dark"]) .config-modal{
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root:not([data-theme="dark"]) .rrn-dashboard-overview{
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--rrn-secondary) 8%,var(--rrn-surface)),
+    color-mix(in srgb,var(--rrn-primary) 5%,var(--rrn-surface)))!important;
+}
+
+:root:not([data-theme="dark"]) .rrn-sector-category,
+:root:not([data-theme="dark"]) .rrn-category-backbar,
+:root:not([data-theme="dark"]) .rrn-category-empty{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-heading)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root:not([data-theme="dark"]) .rrn-sector-category:hover{
+  background:var(--rrn-surface-soft)!important;
+}
+
+:root:not([data-theme="dark"]) .modal-title{
+  background:transparent!important;
+  color:var(--rrn-heading)!important;
+}
+
+/* DARK — mesma hierarquia do light, sem cards azulados/verde isolado. */
+:root[data-theme="dark"] body{
+  background:var(--rrn-bg)!important;
+  color:var(--rrn-text)!important;
+}
+
+:root[data-theme="dark"] .settings-card,
+:root[data-theme="dark"] .admin-user,
+:root[data-theme="dark"] .tenant-card,
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .rrn-card,
+:root[data-theme="dark"] .dashboard-card,
+:root[data-theme="dark"] .kpi-card,
+:root[data-theme="dark"] .chart-card,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .overview-card,
+:root[data-theme="dark"] .summary-card,
+:root[data-theme="dark"] .queue-card,
+:root[data-theme="dark"] .health-card,
+:root[data-theme="dark"] .machine-card,
+:root[data-theme="dark"] .equipment-card,
+:root[data-theme="dark"] .sector-card,
+:root[data-theme="dark"] .setor-card,
+:root[data-theme="dark"] .setor,
+:root[data-theme="dark"] .rrn-setor-card,
+:root[data-theme="dark"] .rrn-machine-item,
+:root[data-theme="dark"] .rrn-machine-main,
+:root[data-theme="dark"] .rrn-machine-grid-details,
+:root[data-theme="dark"] .rrn-machine-fact,
+:root[data-theme="dark"] .rrn-home-panel,
+:root[data-theme="dark"] .rrn-kpi,
+:root[data-theme="dark"] .rrn-agent-location-card,
+:root[data-theme="dark"] .modal-content,
+:root[data-theme="dark"] .config-modal,
+:root[data-theme="dark"] .modal-transferencia-content{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+  box-shadow:none!important;
+}
+
+:root[data-theme="dark"] .rrn-machine-fact,
+:root[data-theme="dark"] .rrn-health-item,
+:root[data-theme="dark"] .rrn-alert-item,
+:root[data-theme="dark"] .rrn-search-result,
+:root[data-theme="dark"] .rrn-category-empty,
+:root[data-theme="dark"] .rrn-sector-empty,
+:root[data-theme="dark"] .empty-state,
+:root[data-theme="dark"] .rrn-overview-stats>div,
+:root[data-theme="dark"] .settings-user-card,
+:root[data-theme="dark"] .settings-session-pill,
+:root[data-theme="dark"] .workspace-summary,
+:root[data-theme="dark"] .settings-segment,
+:root[data-theme="dark"] .settings-kpis>div{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .search-input,
+:root[data-theme="dark"] .settings-input-action input{
+  background:var(--rrn-input)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+  box-shadow:none!important;
+}
+
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] select:focus,
+:root[data-theme="dark"] textarea:focus{
+  border-color:var(--rrn-secondary)!important;
+  box-shadow:0 0 0 3px var(--rrn-focus-ring)!important;
+}
+
+/* Exceção da busca na navbar. */
+:root[data-theme="dark"] .navbar #searchInput,
+:root[data-theme="dark"] .navbar #searchInput:focus{
+  background-color:rgba(255,255,255,.075)!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.12)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+
+:root[data-theme="dark"] .btn-primary,
+:root[data-theme="dark"] .rrn-btn-primary,
+:root[data-theme="dark"] .settings-primary-btn,
+:root[data-theme="dark"] button.primary,
+:root[data-theme="dark"] .primary-button,
+:root[data-theme="dark"] .save-btn,
+:root[data-theme="dark"] .upload-btn,
+:root[data-theme="dark"] .btn-confirmar,
+:root[data-theme="dark"] .dashboard-actions button{
+  background:var(--rrn-primary)!important;
+  border-color:var(--rrn-primary)!important;
+  color:var(--rrn-on-primary)!important;
+  box-shadow:none!important;
+}
+
+:root[data-theme="dark"] .btn-primary:hover,
+:root[data-theme="dark"] .rrn-btn-primary:hover,
+:root[data-theme="dark"] .settings-primary-btn:hover,
+:root[data-theme="dark"] button.primary:hover,
+:root[data-theme="dark"] .primary-button:hover,
+:root[data-theme="dark"] .save-btn:hover,
+:root[data-theme="dark"] .upload-btn:hover,
+:root[data-theme="dark"] .btn-confirmar:hover,
+:root[data-theme="dark"] .dashboard-actions button:hover{
+  background:var(--rrn-primary-hover)!important;
+  border-color:var(--rrn-primary-hover)!important;
+  color:var(--rrn-on-primary)!important;
+  transform:none!important;
+}
+
+:root[data-theme="dark"] .btn-secondary,
+:root[data-theme="dark"] .btn-ghost,
+:root[data-theme="dark"] .settings-ghost-btn,
+:root[data-theme="dark"] .settings-back-btn,
+:root[data-theme="dark"] .action-btn,
+:root[data-theme="dark"] .rrn-btn-secondary,
+:root[data-theme="dark"] .rrn-icon-btn,
+:root[data-theme="dark"] .rrn-action-btn,
+:root[data-theme="dark"] .rrn-theme-toggle{
+  background:var(--rrn-surface-2)!important;
+  border-color:var(--rrn-border)!important;
+  color:var(--rrn-heading)!important;
+}
+
+:root[data-theme="dark"] .btn-secondary:hover,
+:root[data-theme="dark"] .btn-ghost:hover,
+:root[data-theme="dark"] .settings-ghost-btn:hover,
+:root[data-theme="dark"] .settings-back-btn:hover,
+:root[data-theme="dark"] .action-btn:hover,
+:root[data-theme="dark"] .rrn-btn-secondary:hover,
+:root[data-theme="dark"] .rrn-icon-btn:hover,
+:root[data-theme="dark"] .rrn-action-btn:hover,
+:root[data-theme="dark"] .rrn-theme-toggle:hover{
+  background:var(--rrn-surface-soft)!important;
+  color:var(--rrn-heading)!important;
+  border-color:color-mix(in srgb,var(--rrn-secondary) 28%,var(--rrn-border))!important;
+}
+
+:root[data-theme="dark"] .rrn-sector-category-shell,
+:root[data-theme="dark"] .rrn-category-backbar{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] .rrn-sector-category{
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-heading)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] .rrn-sector-category:hover{
+  background:var(--rrn-surface-soft)!important;
+  border-color:color-mix(in srgb,var(--rrn-secondary) 34%,var(--rrn-border))!important;
+}
+
+:root[data-theme="dark"] .rrn-sector-category strong{
+  background:color-mix(in srgb,var(--rrn-secondary) 13%,var(--rrn-surface))!important;
+  color:var(--rrn-secondary)!important;
+}
+
+:root[data-theme="dark"] .modal-title{
+  background:transparent!important;
+  color:var(--rrn-heading)!important;
+}
+
+:root[data-theme="dark"] .close-btn,
+:root[data-theme="dark"] .modal .close,
+:root[data-theme="dark"] .modal-transferencia .close{
+  background:var(--rrn-surface-2)!important;
+  color:var(--rrn-heading)!important;
+  border-color:var(--rrn-border)!important;
+}
+
+:root[data-theme="dark"] .close-btn:hover,
+:root[data-theme="dark"] .modal .close:hover,
+:root[data-theme="dark"] .modal-transferencia .close:hover{
+  background:color-mix(in srgb,var(--rrn-danger) 12%,var(--rrn-surface))!important;
+  color:var(--rrn-danger)!important;
+}
+
+/* Hero padronizado no mesmo azul-petróleo/teal do produto. */
+:root[data-theme="dark"] .rrn-home-hero{
+  background:
+    radial-gradient(circle at 88% 18%,rgba(98,170,166,.20),transparent 30%),
+    linear-gradient(135deg,var(--rrn-navbar),color-mix(in srgb,var(--rrn-navbar-2) 76%,var(--rrn-secondary)))!important;
+  border-color:rgba(255,255,255,.10)!important;
+  box-shadow:none!important;
+}
+
+:root[data-theme="dark"] .rrn-home-hero .rrn-home-eyebrow{color:#8BD1CC!important}
+:root[data-theme="dark"] .rrn-home-hero h2,
+:root[data-theme="dark"] .rrn-home-hero [data-home-title]{color:#F5FAFB!important;text-shadow:none!important}
+:root[data-theme="dark"] .rrn-home-hero p,
+:root[data-theme="dark"] .rrn-home-hero [data-home-subtitle]{color:rgba(235,246,247,.76)!important}
+:root[data-theme="dark"] .rrn-home-hero .rrn-home-action.primary{
+  background:var(--rrn-secondary)!important;
+  border-color:rgba(255,255,255,.14)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+:root[data-theme="dark"] .rrn-home-hero .rrn-home-action.primary:hover{background:var(--rrn-secondary-hover)!important}
+:root[data-theme="dark"] .rrn-home-hero .rrn-home-action:not(.primary){
+  background:rgba(255,255,255,.075)!important;
+  border-color:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+}
+
+/* Tabelas e estados */
+:root[data-theme="dark"] thead th,
+:root[data-theme="dark"] th{background:var(--rrn-surface-soft)!important;color:var(--rrn-heading)!important;border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] td{background:transparent!important;color:var(--rrn-text)!important;border-color:var(--rrn-border)!important}
+:root[data-theme="dark"] tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--rrn-surface-2) 48%,transparent)!important}
+:root[data-theme="dark"] tbody tr:hover td{background:color-mix(in srgb,var(--rrn-secondary) 6%,var(--rrn-surface))!important}
+
+/* Navbar é a mesma identidade visual em light/dark. */
+:root[data-theme="dark"] .navbar,
+:root:not([data-theme="dark"]) .navbar{
+  background:linear-gradient(135deg,var(--rrn-navbar),var(--rrn-navbar-2))!important;
+}
