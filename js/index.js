@@ -122,7 +122,7 @@
 
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
-    await load('/js/theme-mode.js?v=20260817-1017');
+    await load('/js/theme-mode.js?v=20260817-1042');
     await load('/js/footer-v2.js');
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
@@ -164,6 +164,7 @@
       await load('/js/search-center-v2.js');
       await load('/js/dashboard-quality-fixes.js');
       await load('/js/service-desk-inventory-bridge.js');
+      await load('/js/mobile-asset-page.js?v=20260817-1042');
     }
 
     if (!window.supabase?.createClient) await load('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
