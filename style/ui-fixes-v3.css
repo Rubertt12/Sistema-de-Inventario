@@ -1,272 +1,121 @@
 /* RRN Manager — correções finais de interface 17/08/2026.
    Esta folha é carregada por último e resolve conflitos deixados pelo CSS legado. */
 
-/* --------------------------------------------------------------------------
-   Gaveta lateral de manutenção — LIGHT
-   Evita texto branco sobre fundo claro e mantém contraste consistente.
-   -------------------------------------------------------------------------- */
-:root:not([data-theme="dark"]) body .rrn-maintenance-handle{
-  background:var(--rrn-surface,#fff)!important;
-  color:var(--rrn-heading,#163A4D)!important;
-  border:1px solid color-mix(in srgb,var(--rrn-secondary,#2F7D78) 24%,var(--rrn-border,#d7e0e4))!important;
-  border-right:0!important;
-  box-shadow:0 12px 30px rgba(22,58,77,.14)!important;
-}
-:root:not([data-theme="dark"]) body .rrn-maintenance-handle:hover{
-  background:var(--rrn-surface-soft,#eef4f5)!important;
-  color:var(--rrn-heading,#163A4D)!important;
-}
-:root:not([data-theme="dark"]) body .rrn-maintenance-handle-label{
-  color:var(--rrn-heading,#163A4D)!important;
-  -webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;
-  text-shadow:none!important;
-  opacity:1!important;
-}
-:root:not([data-theme="dark"]) body .rrn-maintenance-handle::after{
-  color:var(--rrn-heading,#163A4D)!important;
-}
-:root:not([data-theme="dark"]) body .rrn-maintenance-handle-grip{
-  background:var(--rrn-secondary,#2F7D78)!important;
-}
-:root:not([data-theme="dark"]) body .rrn-maintenance-badge{
-  background:color-mix(in srgb,var(--rrn-accent,#F39A67) 22%,var(--rrn-surface,#fff))!important;
-  color:var(--rrn-heading,#163A4D)!important;
-  border-color:var(--rrn-surface,#fff)!important;
-}
+:root:not([data-theme="dark"]) body .rrn-maintenance-handle{background:var(--rrn-surface,#fff)!important;color:var(--rrn-heading,#163A4D)!important;border:1px solid color-mix(in srgb,var(--rrn-secondary,#2F7D78) 24%,var(--rrn-border,#d7e0e4))!important;border-right:0!important;box-shadow:0 12px 30px rgba(22,58,77,.14)!important}
+:root:not([data-theme="dark"]) body .rrn-maintenance-handle:hover{background:var(--rrn-surface-soft,#eef4f5)!important;color:var(--rrn-heading,#163A4D)!important}
+:root:not([data-theme="dark"]) body .rrn-maintenance-handle-label{color:var(--rrn-heading,#163A4D)!important;-webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;text-shadow:none!important;opacity:1!important}
+:root:not([data-theme="dark"]) body .rrn-maintenance-handle::after{color:var(--rrn-heading,#163A4D)!important}
+:root:not([data-theme="dark"]) body .rrn-maintenance-handle-grip{background:var(--rrn-secondary,#2F7D78)!important}
+:root:not([data-theme="dark"]) body .rrn-maintenance-badge{background:color-mix(in srgb,var(--rrn-accent,#F39A67) 22%,var(--rrn-surface,#fff))!important;color:var(--rrn-heading,#163A4D)!important;border-color:var(--rrn-surface,#fff)!important}
 
-/* --------------------------------------------------------------------------
-   Modal Adicionar Setor — compacto, alinhado e coerente com o tema.
-   -------------------------------------------------------------------------- */
-#modalSetor.modal{
-  position:fixed!important;
-  inset:0!important;
-  width:100vw!important;
-  height:100dvh!important;
-  min-height:100dvh!important;
-  padding:24px!important;
-  align-items:center!important;
-  justify-content:center!important;
-  overflow:hidden!important;
-  background:rgba(7,20,29,.62)!important;
-  backdrop-filter:blur(9px)!important;
-  -webkit-backdrop-filter:blur(9px)!important;
-  z-index:60000!important;
-}
-#modalSetor > .modal-content{
-  position:relative!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-rows:auto auto auto!important;
-  column-gap:12px!important;
-  row-gap:10px!important;
-  width:min(520px,calc(100vw - 32px))!important;
-  max-width:520px!important;
-  max-height:none!important;
-  margin:0!important;
-  padding:28px!important;
-  overflow:visible!important;
-  border:1px solid var(--rrn-border,#d7e0e4)!important;
-  border-radius:18px!important;
-  background:var(--rrn-surface,#fff)!important;
-  color:var(--rrn-text,#263238)!important;
-  box-shadow:0 26px 70px rgba(6,24,34,.28)!important;
-}
-#modalSetor > .modal-content > h2{
-  grid-column:1 / -1!important;
-  margin:0 44px 8px 0!important;
-  padding:0!important;
-  text-align:left!important;
-  color:var(--rrn-heading,#163A4D)!important;
-  -webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;
-  font-size:1.15rem!important;
-  line-height:1.25!important;
-}
-#modalSetor > .modal-content > label{
-  grid-column:1 / -1!important;
-  margin:0!important;
-  padding:0!important;
-  color:var(--rrn-heading,#163A4D)!important;
-  -webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;
-  font-size:.78rem!important;
-  font-weight:700!important;
-  text-align:left!important;
-}
-#modalSetor > .modal-content > input{
-  grid-column:1!important;
-  width:100%!important;
-  min-width:0!important;
-  min-height:44px!important;
-  margin:0!important;
-  padding:10px 12px!important;
-  border:1px solid var(--rrn-border,#d7e0e4)!important;
-  border-radius:10px!important;
-  background:var(--rrn-input,var(--rrn-surface-2,#f7f9fa))!important;
-  color:var(--rrn-text,#263238)!important;
-  -webkit-text-fill-color:var(--rrn-text,#263238)!important;
-  box-shadow:none!important;
-}
-#modalSetor > .modal-content > input::placeholder{
-  color:var(--rrn-muted,#72808a)!important;
-  -webkit-text-fill-color:var(--rrn-muted,#72808a)!important;
-  opacity:1!important;
-}
-#modalSetor > .modal-content > button:not(.close-btn){
-  grid-column:2!important;
-  align-self:stretch!important;
-  min-height:44px!important;
-  margin:0!important;
-  padding:0 18px!important;
-  border:1px solid var(--rrn-secondary,#2F7D78)!important;
-  border-radius:10px!important;
-  background:var(--rrn-secondary,#2F7D78)!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  font-weight:800!important;
-  box-shadow:none!important;
-}
-#modalSetor > .modal-content > button:not(.close-btn):hover{
-  background:var(--rrn-secondary-hover,#286d69)!important;
-  border-color:var(--rrn-secondary-hover,#286d69)!important;
-}
-#modalSetor > .modal-content > .close-btn{
-  position:absolute!important;
-  top:18px!important;
-  right:18px!important;
-  width:38px!important;
-  height:38px!important;
-  min-width:38px!important;
-  min-height:38px!important;
-  padding:0!important;
-  border:1px solid var(--rrn-border,#d7e0e4)!important;
-  border-radius:11px!important;
-  background:var(--rrn-surface-2,#f3f7f8)!important;
-  color:var(--rrn-heading,#163A4D)!important;
-  -webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;
-  box-shadow:none!important;
-  font-size:1.15rem!important;
-}
-#modalSetor > .modal-content > .close-btn:hover{
-  background:color-mix(in srgb,var(--rrn-danger,#d9534f) 10%,var(--rrn-surface,#fff))!important;
-  color:var(--rrn-danger,#d9534f)!important;
-  -webkit-text-fill-color:var(--rrn-danger,#d9534f)!important;
-}
+#modalSetor.modal{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;padding:24px!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;background:rgba(7,20,29,.62)!important;backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important;z-index:60000!important}
+#modalSetor>.modal-content{position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:auto auto auto!important;column-gap:12px!important;row-gap:10px!important;width:min(520px,calc(100vw - 32px))!important;max-width:520px!important;max-height:none!important;margin:0!important;padding:28px!important;overflow:visible!important;border:1px solid var(--rrn-border,#d7e0e4)!important;border-radius:18px!important;background:var(--rrn-surface,#fff)!important;color:var(--rrn-text,#263238)!important;box-shadow:0 26px 70px rgba(6,24,34,.28)!important}
+#modalSetor>.modal-content>h2{grid-column:1/-1!important;margin:0 44px 8px 0!important;padding:0!important;text-align:left!important;color:var(--rrn-heading,#163A4D)!important;-webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;font-size:1.15rem!important;line-height:1.25!important}
+#modalSetor>.modal-content>label{grid-column:1/-1!important;margin:0!important;padding:0!important;color:var(--rrn-heading,#163A4D)!important;-webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;font-size:.78rem!important;font-weight:700!important;text-align:left!important}
+#modalSetor>.modal-content>input{grid-column:1!important;width:100%!important;min-width:0!important;min-height:44px!important;margin:0!important;padding:10px 12px!important;border:1px solid var(--rrn-border,#d7e0e4)!important;border-radius:10px!important;background:var(--rrn-input,var(--rrn-surface-2,#f7f9fa))!important;color:var(--rrn-text,#263238)!important;-webkit-text-fill-color:var(--rrn-text,#263238)!important;box-shadow:none!important}
+#modalSetor>.modal-content>input::placeholder{color:var(--rrn-muted,#72808a)!important;-webkit-text-fill-color:var(--rrn-muted,#72808a)!important;opacity:1!important}
+#modalSetor>.modal-content>button:not(.close-btn){grid-column:2!important;align-self:stretch!important;min-height:44px!important;margin:0!important;padding:0 18px!important;border:1px solid var(--rrn-secondary,#2F7D78)!important;border-radius:10px!important;background:var(--rrn-secondary,#2F7D78)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;font-weight:800!important;box-shadow:none!important}
+#modalSetor>.modal-content>.close-btn{position:absolute!important;top:18px!important;right:18px!important;width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;padding:0!important;border:1px solid var(--rrn-border,#d7e0e4)!important;border-radius:11px!important;background:var(--rrn-surface-2,#f3f7f8)!important;color:var(--rrn-heading,#163A4D)!important;-webkit-text-fill-color:var(--rrn-heading,#163A4D)!important;box-shadow:none!important;font-size:1.15rem!important}
 
-/* --------------------------------------------------------------------------
-   Editar equipamento — overlay realmente ocupa a viewport e a página não rola.
-   -------------------------------------------------------------------------- */
-html:has(#rrnEditAssetModal.is-open),
-body:has(#rrnEditAssetModal.is-open){
-  overflow:hidden!important;
-}
-#rrnEditAssetModal.rrn-history-modal{
-  position:fixed!important;
-  inset:0!important;
-  width:100vw!important;
-  height:100dvh!important;
-  min-height:100dvh!important;
-  padding:24px!important;
-  align-items:center!important;
-  justify-content:center!important;
-  overflow:hidden!important;
-  background:rgba(7,20,29,.66)!important;
-  backdrop-filter:blur(9px)!important;
-  -webkit-backdrop-filter:blur(9px)!important;
-  z-index:60000!important;
-}
+html:has(#rrnEditAssetModal.is-open),body:has(#rrnEditAssetModal.is-open){overflow:hidden!important}
+#rrnEditAssetModal.rrn-history-modal{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;padding:24px!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;background:rgba(7,20,29,.66)!important;backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important;z-index:60000!important}
 #rrnEditAssetModal.rrn-history-modal:not(.is-open){display:none!important}
 #rrnEditAssetModal.rrn-history-modal.is-open{display:flex!important}
-#rrnEditAssetModal > .rrn-history-dialog{
-  position:relative!important;
-  width:min(860px,calc(100vw - 36px))!important;
-  max-width:860px!important;
-  max-height:min(760px,calc(100dvh - 48px))!important;
-  margin:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  overflow:hidden!important;
-  border:1px solid var(--rrn-border,#d7e0e4)!important;
-  border-radius:18px!important;
-  background:var(--rrn-surface,#fff)!important;
-  box-shadow:0 28px 80px rgba(6,24,34,.34)!important;
-}
-#rrnEditAssetModal .rrn-history-header{
-  position:relative!important;
-  top:auto!important;
-  flex:0 0 auto!important;
-  padding:15px 18px!important;
-  background:var(--rrn-surface,#fff)!important;
-  border-bottom:1px solid var(--rrn-border,#d7e0e4)!important;
-}
-#rrnEditAssetModal .rrn-history-body{
-  flex:1 1 auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  padding:16px 18px 18px!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-  scrollbar-width:thin!important;
-  scrollbar-color:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 40%,transparent) transparent!important;
-}
-#rrnEditAssetModal .rrn-history-body::-webkit-scrollbar{width:6px!important}
-#rrnEditAssetModal .rrn-history-body::-webkit-scrollbar-thumb{
-  border-radius:999px!important;
-  background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 40%,transparent)!important;
-}
-#rrnEditAssetModal .rrn-asset-form-grid{
-  margin:0!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:8px 12px!important;
-}
+#rrnEditAssetModal>.rrn-history-dialog{position:relative!important;width:min(860px,calc(100vw - 36px))!important;max-width:860px!important;max-height:min(760px,calc(100dvh - 48px))!important;margin:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;border:1px solid var(--rrn-border,#d7e0e4)!important;border-radius:18px!important;background:var(--rrn-surface,#fff)!important;box-shadow:0 28px 80px rgba(6,24,34,.34)!important}
+#rrnEditAssetModal .rrn-history-header{position:relative!important;top:auto!important;flex:0 0 auto!important;padding:15px 18px!important;background:var(--rrn-surface,#fff)!important;border-bottom:1px solid var(--rrn-border,#d7e0e4)!important}
+#rrnEditAssetModal .rrn-history-body{flex:1 1 auto!important;min-height:0!important;max-height:none!important;padding:16px 18px 18px!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+#rrnEditAssetModal .rrn-asset-form-grid{margin:0!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px 12px!important}
 #rrnEditAssetModal .rrn-asset-field{gap:3px!important}
-#rrnEditAssetModal .rrn-asset-field label{
-  color:var(--rrn-heading,#163A4D)!important;
-  font-size:.70rem!important;
-}
-#rrnEditAssetModal .rrn-asset-field input,
-#rrnEditAssetModal .rrn-asset-field select{
-  min-height:38px!important;
-  padding:7px 10px!important;
-}
-#rrnEditAssetModal .rrn-asset-field textarea{
-  min-height:72px!important;
-  max-height:100px!important;
-  padding:8px 10px!important;
-}
-#rrnEditAssetModal .rrn-edit-asset-actions{
-  position:sticky!important;
-  bottom:0!important;
-  z-index:2!important;
-  margin:12px -18px -18px!important;
-  padding:12px 18px!important;
-  border-top:1px solid var(--rrn-border,#d7e0e4)!important;
-  background:var(--rrn-surface,#fff)!important;
-}
-#rrnEditAssetModal .rrn-history-close{
-  position:static!important;
-  flex:0 0 38px!important;
-  width:38px!important;
-  height:38px!important;
-}
+#rrnEditAssetModal .rrn-asset-field label{color:var(--rrn-heading,#163A4D)!important;font-size:.70rem!important}
+#rrnEditAssetModal .rrn-asset-field input,#rrnEditAssetModal .rrn-asset-field select{min-height:38px!important;padding:7px 10px!important}
+#rrnEditAssetModal .rrn-asset-field textarea{min-height:72px!important;max-height:100px!important;padding:8px 10px!important}
+#rrnEditAssetModal .rrn-edit-asset-actions{position:sticky!important;bottom:0!important;z-index:2!important;margin:12px -18px -18px!important;padding:12px 18px!important;border-top:1px solid var(--rrn-border,#d7e0e4)!important;background:var(--rrn-surface,#fff)!important}
+#rrnEditAssetModal .rrn-history-close{position:static!important;flex:0 0 38px!important;width:38px!important;height:38px!important}
 
+/* Smartphone: um único padrão para todos os modais principais do RRN Manager. */
 @media(max-width:700px){
-  #modalSetor.modal{padding:12px!important}
-  #modalSetor > .modal-content{
-    grid-template-columns:1fr!important;
-    width:100%!important;
-    padding:24px 18px 18px!important;
-  }
-  #modalSetor > .modal-content > input,
-  #modalSetor > .modal-content > button:not(.close-btn){grid-column:1!important}
-  #modalSetor > .modal-content > button:not(.close-btn){width:100%!important}
+  html,body{max-width:100%;overflow-x:hidden}
 
-  #rrnEditAssetModal.rrn-history-modal{padding:10px!important}
-  #rrnEditAssetModal > .rrn-history-dialog{
-    width:100%!important;
-    max-height:calc(100dvh - 20px)!important;
-    border-radius:15px!important;
+  /* overlays: sempre acima da navbar, sem scroll duplo */
+  #infoModal.modal,#modalSetor.modal,#modalTransferencia,#modalEditarUsuario,
+  #rrnEditAssetModal.rrn-history-modal,.rrn-history-modal,.rrn-stock-modal,
+  .rrn-agent-delete-choice{
+    position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;
+    margin:0!important;padding:0!important;align-items:flex-end!important;justify-content:center!important;
+    overflow:hidden!important;overscroll-behavior:none!important;z-index:2147483000!important;
+    background:rgba(7,20,29,.72)!important;backdrop-filter:blur(7px)!important;-webkit-backdrop-filter:blur(7px)!important;
   }
-  #rrnEditAssetModal .rrn-history-body{padding:14px!important}
-  #rrnEditAssetModal .rrn-asset-form-grid{grid-template-columns:1fr!important}
+
+  /* painel padrão: bottom sheet/tela quase cheia */
+  #infoModal>.modal-content,#modalSetor>.modal-content,#modalTransferencia>.modal-transferencia-content,
+  #modalTransferencia .rrn-transfer-v3,#modalEditarUsuario>*,#rrnEditAssetModal>.rrn-history-dialog,
+  .rrn-history-modal>.rrn-history-dialog,.rrn-stock-modal>.rrn-stock-dialog,
+  .rrn-agent-delete-choice>.rrn-agent-delete-dialog{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;height:auto!important;
+    max-height:calc(100dvh - env(safe-area-inset-top,0px))!important;margin:0!important;
+    border-radius:18px 18px 0 0!important;border-left:0!important;border-right:0!important;border-bottom:0!important;
+    overflow:hidden!important;background:var(--rrn-surface,#fff)!important;color:var(--rrn-text,#263238)!important;
+    box-shadow:0 -18px 55px rgba(0,0,0,.32)!important;
+  }
+
+  /* modal de informações: não fica estreito nem com duas barras de rolagem */
+  #infoModal>.modal-content{display:flex!important;flex-direction:column!important;padding:0!important;max-height:96dvh!important}
+  #infoModal>.modal-content>h2{flex:0 0 auto!important;margin:0!important;padding:16px 58px 12px 16px!important;font-size:1rem!important;border-bottom:1px solid var(--rrn-border,#d7e0e4)!important;background:var(--rrn-surface,#fff)!important}
+  #infoModal>.modal-content>.close,#infoModal>.modal-content>.close-btn{position:absolute!important;top:10px!important;right:12px!important;z-index:5!important;width:40px!important;height:40px!important;margin:0!important}
+  #infoModal #modalText{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px))!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+  #infoModal .rrn-machine-detail-card{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;padding:10px!important}
+  #infoModal .rrn-machine-modal-shell,#infoModal .rrn-machine-modal-columns{display:block!important;overflow:visible!important;max-height:none!important}
+  #infoModal .rrn-machine-modal-left,#infoModal .rrn-machine-modal-right{width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:0!important}
+  #infoModal .checklist-content{grid-template-columns:1fr!important;gap:7px!important}
+  #infoModal #observationsUl{max-height:none!important}
+  #infoModal .modal-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;position:static!important}
+  #infoModal .modal-actions button,#infoModal #maintenanceSection>button{width:100%!important;min-height:44px!important}
+
+  /* adicionar setor */
+  #modalSetor>.modal-content{display:flex!important;flex-direction:column!important;gap:10px!important;padding:22px 16px calc(18px + env(safe-area-inset-bottom,0px))!important}
+  #modalSetor>.modal-content>h2{margin:0 48px 4px 0!important}
+  #modalSetor>.modal-content>input,#modalSetor>.modal-content>button:not(.close-btn){width:100%!important;min-height:46px!important}
+  #modalSetor>.modal-content>.close-btn{top:12px!important;right:12px!important}
+
+  /* editar equipamento */
+  #rrnEditAssetModal.rrn-history-modal{padding:0!important}
+  #rrnEditAssetModal>.rrn-history-dialog{height:96dvh!important;max-height:96dvh!important}
+  #rrnEditAssetModal .rrn-history-header{padding:13px 14px!important}
+  #rrnEditAssetModal .rrn-history-body{padding:12px 14px 0!important}
+  #rrnEditAssetModal .rrn-asset-form-grid{grid-template-columns:1fr!important;gap:10px!important}
   #rrnEditAssetModal .rrn-asset-field.full{grid-column:1!important}
-  #rrnEditAssetModal .rrn-edit-asset-actions{margin:12px -14px -14px!important;padding:12px 14px!important}
+  #rrnEditAssetModal .rrn-asset-field input,#rrnEditAssetModal .rrn-asset-field select{min-height:44px!important;font-size:16px!important}
+  #rrnEditAssetModal .rrn-asset-field textarea{min-height:88px!important;max-height:160px!important;font-size:16px!important}
+  #rrnEditAssetModal .rrn-edit-asset-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin:12px -14px 0!important;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))!important}
+  #rrnEditAssetModal .rrn-edit-asset-actions button{width:100%!important;min-height:44px!important}
+
+  /* transferência: uma coluna, listas com altura controlada */
+  #modalTransferencia>.modal-transferencia-content,#modalTransferencia .rrn-transfer-v3{max-height:96dvh!important;padding:14px!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important}
+  #modalTransferencia .pesquisa-transferencia,#modalTransferencia .caixas-transferencia,#modalTransferencia .rrn-transfer-columns{grid-template-columns:1fr!important}
+  #modalTransferencia .box-setor,#modalTransferencia .rrn-transfer-panel{min-height:0!important}
+  #modalTransferencia .lista-maquinas,#modalTransferencia .lista-destino,#modalTransferencia .rrn-transfer-list{min-height:120px!important;max-height:220px!important}
+  #modalTransferencia .rrn-transfer-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;position:sticky!important;bottom:0!important;background:var(--rrn-surface,#fff)!important;padding:10px 0 calc(6px + env(safe-area-inset-bottom,0px))!important}
+  #modalTransferencia .rrn-transfer-actions button,#modalTransferencia .btn-confirmar{width:100%!important;min-height:44px!important;margin:0!important}
+
+  /* renomear responsável */
+  #modalEditarUsuario{padding:0!important;align-items:flex-end!important}
+  #modalEditarUsuario>*{padding:20px 16px calc(18px + env(safe-area-inset-bottom,0px))!important}
+  #modalEditarUsuario input,#modalEditarUsuario select,#modalEditarUsuario textarea{font-size:16px!important;min-height:44px!important}
+  #modalEditarUsuario button{min-height:44px!important}
+
+  /* histórico, estoque e escolha do agent */
+  .rrn-history-modal>.rrn-history-dialog,.rrn-stock-modal>.rrn-stock-dialog{height:min(94dvh,900px)!important;max-height:94dvh!important;display:flex!important;flex-direction:column!important}
+  .rrn-history-modal .rrn-history-body,.rrn-stock-modal .rrn-stock-modal-body,.rrn-stock-modal .rrn-stock-body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
+  .rrn-agent-delete-choice>.rrn-agent-delete-dialog{padding:20px 16px calc(18px + env(safe-area-inset-bottom,0px))!important}
+  .rrn-agent-delete-options{grid-template-columns:1fr!important}
+  .rrn-agent-delete-option{min-height:auto!important}
+
+  /* evita zoom automático em iOS e cortes de formulário */
+  #infoModal input,#infoModal select,#infoModal textarea,#modalSetor input,#modalTransferencia input,#modalTransferencia select,#modalTransferencia textarea,#modalEditarUsuario input,#rrnEditAssetModal input,#rrnEditAssetModal select,#rrnEditAssetModal textarea{font-size:16px!important;max-width:100%!important;box-sizing:border-box!important}
+}
+
+@media(max-width:430px){
+  #infoModal>.modal-content,#rrnEditAssetModal>.rrn-history-dialog,.rrn-history-modal>.rrn-history-dialog,.rrn-stock-modal>.rrn-stock-dialog{border-radius:14px 14px 0 0!important}
+  #infoModal #modalText{padding-left:10px!important;padding-right:10px!important}
+  #modalTransferencia>.modal-transferencia-content,#modalTransferencia .rrn-transfer-v3{padding:12px!important}
 }
