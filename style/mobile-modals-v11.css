@@ -1,0 +1,308 @@
+/* RRN Manager — camada mobile autoritativa dos modais.
+   Substitui as correções mobile incrementais anteriores para evitar conflitos. */
+@media (max-width: 700px) {
+  html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ------------------------------------------------------------------
+     Informações da máquina — exatamente uma tela, exatamente um scroll.
+     ------------------------------------------------------------------ */
+  html:has(#infoModal[aria-hidden="false"]),
+  body:has(#infoModal[aria-hidden="false"]) {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  body:has(#infoModal[aria-hidden="false"]) > *:not(#infoModal):not(script):not(style) {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body:has(#infoModal[aria-hidden="false"]) > #infoModal,
+  body:has(#infoModal[aria-hidden="false"]) > #infoModal * {
+    visibility: visible !important;
+  }
+
+  #infoModal.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: var(--rrn-surface, #fff) !important;
+    z-index: 2147483646 !important;
+    isolation: isolate !important;
+  }
+
+  #infoModal.modal[aria-hidden="true"] { display: none !important; }
+  #infoModal.modal[aria-hidden="false"] { display: block !important; }
+
+  #infoModal > .modal-content {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 14px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-anchor: none !important;
+    scroll-behavior: auto !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--rrn-surface, #fff) !important;
+    color: var(--rrn-text, #263238) !important;
+    box-shadow: none !important;
+  }
+
+  #infoModal > .modal-content::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  #infoModal > .modal-content > h2 {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    box-sizing: border-box !important;
+    width: calc(100% + 28px) !important;
+    min-height: calc(58px + env(safe-area-inset-top, 0px)) !important;
+    margin: 0 -14px 12px !important;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 58px 11px 14px !important;
+    border-bottom: 1px solid var(--rrn-border, #d7e0e4) !important;
+    background: var(--rrn-surface, #fff) !important;
+    color: var(--rrn-heading, #163A4D) !important;
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+    text-align: left !important;
+  }
+
+  #infoModal > .modal-content > h2::after {
+    content: 'Inventário · RRN Agent · Chamados e manutenção' !important;
+    display: block !important;
+    margin-top: 2px !important;
+    color: var(--rrn-muted, #66757f) !important;
+    font-size: .52rem !important;
+    font-weight: 500 !important;
+    line-height: 1.25 !important;
+  }
+
+  #infoModal > .modal-content > .close-btn,
+  #infoModal > .modal-content > .close {
+    position: fixed !important;
+    top: calc(8px + env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    z-index: 2147483647 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--rrn-border, #d7e0e4) !important;
+    border-radius: 11px !important;
+    background: var(--rrn-surface-2, #f3f7f8) !important;
+    color: var(--rrn-heading, #163A4D) !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08) !important;
+  }
+
+  #infoModal #modalText,
+  #infoModal .rrn-machine-detail-card,
+  #infoModal .rrn-machine-modal-shell,
+  #infoModal .rrn-machine-modal-columns,
+  #infoModal .rrn-machine-modal-left,
+  #infoModal .rrn-machine-modal-right,
+  #infoModal .rrn-related-assets,
+  #infoModal .rrn-agent-location-card,
+  #infoModal .rrn-agent-location-meta,
+  #infoModal .rrn-agent-location-actions,
+  #infoModal .rrn-agent-history,
+  #infoModal #maintenanceSection,
+  #infoModal #observationsList,
+  #infoModal #observationsUl,
+  #infoModal .modal-actions {
+    position: relative !important;
+    inset: auto !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+    contain: none !important;
+    overflow-anchor: none !important;
+  }
+
+  #infoModal .rrn-machine-detail-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 10px !important;
+  }
+
+  #infoModal .rrn-agent-location-card {
+    margin: 12px 0 0 !important;
+    padding: 10px !important;
+  }
+
+  #infoModal .rrn-agent-location-meta {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+  }
+
+  #infoModal .rrn-agent-mini-map,
+  #infoModal #rrnAgentMiniMap {
+    position: relative !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 220px !important;
+    margin: 10px 0 0 !important;
+    overflow: hidden !important;
+    border-radius: 11px !important;
+    overflow-anchor: none !important;
+  }
+
+  #infoModal .leaflet-container { z-index: 1 !important; }
+  #infoModal .leaflet-top,
+  #infoModal .leaflet-bottom { z-index: 10 !important; }
+
+  #infoModal #maintenanceSection {
+    display: block !important;
+    margin-top: 16px !important;
+    padding: 12px !important;
+    border: 1px solid var(--rrn-border, #d7e0e4) !important;
+    border-radius: 13px !important;
+    background: var(--rrn-surface, #fff) !important;
+  }
+
+  #infoModal #observacao {
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 96px !important;
+    height: 96px !important;
+    max-height: 180px !important;
+  }
+
+  #infoModal .checklist-content {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+  }
+
+  #infoModal #observationsList {
+    display: block !important;
+    margin-top: 16px !important;
+  }
+
+  #infoModal #observationsUl {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #infoModal .modal-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  #infoModal .modal-actions button,
+  #infoModal #maintenanceSection > button {
+    width: 100% !important;
+    min-height: 46px !important;
+  }
+
+  /* ------------------------------------------------------------------
+     Demais modais — fullscreen, sem bottom-sheet e com um único scroll.
+     ------------------------------------------------------------------ */
+  #modalSetor.modal,
+  #modalMaquina.modal,
+  #modalTransferencia,
+  #modalEditarUsuario,
+  #modalScanner,
+  .rrn-history-modal,
+  .rrn-stock-modal,
+  .rrn-agent-delete-choice,
+  .rrn-agent-map-modal,
+  .rrn-transfer-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    z-index: 2147483000 !important;
+  }
+
+  #modalSetor > .modal-content,
+  #modalMaquina > .modal-content,
+  #modalTransferencia > .modal-transferencia-content,
+  #modalTransferencia .rrn-transfer-v3,
+  #modalEditarUsuario > *,
+  #modalScanner > div,
+  .rrn-history-modal > .rrn-history-dialog,
+  .rrn-stock-modal > .rrn-stock-dialog,
+  .rrn-agent-delete-choice > .rrn-agent-delete-dialog,
+  .rrn-agent-map-modal > .rrn-agent-map-dialog,
+  .rrn-transfer-modal > * {
+    box-sizing: border-box !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    background: var(--rrn-surface, #fff) !important;
+  }
+
+  #configModal.config-modal:not([hidden]) {
+    position: fixed !important;
+    inset: 0 !important;
+    box-sizing: border-box !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: 100vw !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: calc(18px + env(safe-area-inset-top,0px)) 16px calc(18px + env(safe-area-inset-bottom,0px)) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-radius: 0 !important;
+    z-index: 2147483000 !important;
+    background: var(--rrn-surface,#fff) !important;
+  }
+}
