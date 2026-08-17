@@ -86,8 +86,7 @@ internal static class InstallerSecurity
                 "/inheritance:r",
                 "/grant:r",
                 "*S-1-5-18:F",
-                "*S-1-5-32-544:F",
-                "*S-1-5-32-545:R");
+                "*S-1-5-32-544:F");
         }
 
         if (File.Exists(StatusPath))
@@ -98,7 +97,7 @@ internal static class InstallerSecurity
                 "/grant:r",
                 "*S-1-5-18:F",
                 "*S-1-5-32-544:F",
-                "*S-1-5-32-545:M");
+                "*S-1-5-32-545:R");
         }
     }
 
@@ -147,7 +146,7 @@ internal static class InstallerSecurity
         {
             Directory.CreateDirectory(ProgramDataDir);
             File.WriteAllText(Path.Combine(ProgramDataDir, "security-hardening.txt"),
-                $"RRN Agent hardening ativo\r\nAplicado em: {DateTimeOffset.Now:O}\r\nEntrada de rede: bloqueada para Core e Tray\r\n");
+                $"RRN Agent hardening ativo\r\nAplicado em: {DateTimeOffset.Now:O}\r\nEntrada de rede: bloqueada para Core e Tray\r\nCredencial local: somente SYSTEM e Administradores\r\nStatus operacional: somente leitura para usuários padrão\r\n");
         }
         catch { }
     }
