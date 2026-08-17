@@ -24,10 +24,13 @@ internal sealed class SetupForm : Form
 {
     private const string ReleaseBase = "https://github.com/Rubertt12/Sistema-de-Inventario/releases/download/rrn-agent-latest";
     private const string Endpoint = "https://tvfiicmwkddpswgbjyok.supabase.co/functions/v1/rrn-agent";
+    private const string TaskMorning = "RRN Agent - 08h";
+    private const string TaskEvening = "RRN Agent - 18h";
     private static readonly string InstallDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "RRN Manager Agent");
     private static readonly string CoreExe = Path.Combine(InstallDir, "RRN.Agent.exe");
     private static readonly string TrayExe = Path.Combine(InstallDir, "RRN.Agent.Tray.exe");
     private static readonly string SetupExe = Path.Combine(InstallDir, "RRN.Agent.Setup.exe");
+    private static readonly string SetupPendingExe = Path.Combine(InstallDir, "RRN.Agent.Setup.pending.exe");
     private static readonly string LogoPng = Path.Combine(InstallDir, "rrn-logo.png");
 
     private readonly TextBox _code = new();
@@ -124,26 +127,41 @@ internal sealed class SetupForm : Form
         _status.Text = string.Empty;
 
         var temp = Path.Combine(Path.GetTempPath(), "rrn-agent-setup-" + Guid.NewGuid().ToString("N"));
+        var deferredSetupReplacement = false;
         try
         {
             Directory.CreateDirectory(temp);
             Directory.CreateDirectory(InstallDir);
 
-            SetStep(8, "Preparando a instalação...");
-            StopTray();
+            SetStep(6, "Encerrando processos antigos do RRN Agent...");
+            PrepareForReplacement();
 
             using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(4) };
-            SetStep(18, "Baixando e verificando agente principal...");
+            SetStep(16, "Baixando e verificando agente principal...");
             await VerifiedDownload.DownloadAsync(http, ReleaseBase, "RRN.Agent.exe", Path.Combine(temp, "RRN.Agent.exe"));
-            SetStep(35, "Baixando e verificando aplicativo da bandeja...");
+            SetStep(30, "Baixando e verificando aplicativo da bandeja...");
             await VerifiedDownload.DownloadAsync(http, ReleaseBase, "RRN.Agent.Tray.exe", Path.Combine(temp, "RRN.Agent.Tray.exe"));
-            await DownloadAsync(http, $"{ReleaseBase}/rrn-logo.png", Path.Combine(temp, "rrn-logo.png"), 46, "Baixando identidade visual...");
+            SetStep(42, "Baixando e verificando o instalador...");
+            await VerifiedDownload.DownloadAsync(http, ReleaseBase, "RRN.Agent.Setup.exe", Path.Combine(temp, "RRN.Agent.Setup.exe"));
+            await DownloadAsync(http, $"{ReleaseBase}/rrn-logo.png", Path.Combine(temp, "rrn-logo.png"), 48, "Baixando identidade visual...");
 
             SetStep(54, "Instalando arquivos verificados do RRN Agent...");
-            File.Copy(Path.Combine(temp, "RRN.Agent.exe"), CoreExe, true);
-            File.Copy(Path.Combine(temp, "RRN.Agent.Tray.exe"), TrayExe, true);
-            File.Copy(Path.Combine(temp, "rrn-logo.png"), LogoPng, true);
-            File.Copy(Environment.ProcessPath!, SetupExe, true);
+            CopyWithRetry(Path.Combine(temp, "RRN.Agent.exe"), CoreExe);
+            CopyWithRetry(Path.Combine(temp, "RRN.Agent.Tray.exe"), TrayExe);
+            CopyWithRetry(Path.Combine(temp, "rrn-logo.png"), LogoPng);
+
+            var runningSetup = Environment.ProcessPath ?? string.Empty;
+            var downloadedSetup = Path.Combine(temp, "RRN.Agent.Setup.exe");
+            if (PathsEqual(runningSetup, SetupExe))
+            {
+                CopyWithRetry(downloadedSetup, SetupPendingExe);
+                deferredSetupReplacement = true;
+            }
+            else
+            {
+                CopyWithRetry(downloadedSetup, SetupExe);
+                TryDelete(SetupPendingExe);
+            }
 
             SetStep(64, "Vinculando esta máquina ao RRN Manager...");
             var enroll = await RunAsync(CoreExe, ["enroll", "--code", code, "--endpoint", Endpoint], true);
@@ -151,8 +169,8 @@ internal sealed class SetupForm : Form
                 throw new InvalidOperationException(string.IsNullOrWhiteSpace(enroll.Error) ? "O servidor não aceitou o vínculo da máquina." : enroll.Error.Trim());
 
             SetStep(76, "Configurando sincronizações das 08:00 e 18:00...");
-            CreateScheduledTask("RRN Agent - 08h", "08:00", "morning");
-            CreateScheduledTask("RRN Agent - 18h", "18:00", "evening");
+            CreateScheduledTask(TaskMorning, "08:00", "morning");
+            CreateScheduledTask(TaskEvening, "18:00", "evening");
 
             SetStep(84, "Configurando inicialização com o Windows...");
             using (var run = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
@@ -164,10 +182,13 @@ internal sealed class SetupForm : Form
             SetStep(94, "Iniciando RRN Agent...");
             Process.Start(new ProcessStartInfo(TrayExe) { UseShellExecute = true });
 
+            if (deferredSetupReplacement)
+                ScheduleSetupReplacement();
+
             SetStep(100, "Instalação concluída.");
             _status.Text = "✓ RRN Agent instalado, vinculado e sincronizado com sucesso.";
             _install.Text = "Reinstalar / atualizar";
-            MessageBox.Show("RRN Agent instalado com sucesso. A integridade dos executáveis foi validada antes da instalação e a máquina já foi cadastrada no RRN Manager.", "RRN Agent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("RRN Agent instalado com sucesso. Processos antigos foram encerrados antes da substituição e a integridade dos executáveis foi validada.", "RRN Agent", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
@@ -180,6 +201,7 @@ internal sealed class SetupForm : Form
         finally
         {
             try { if (Directory.Exists(temp)) Directory.Delete(temp, true); } catch { }
+            if (!deferredSetupReplacement) TryDelete(SetupPendingExe);
             _busy = false;
             _install.Enabled = true;
             _code.Enabled = true;
@@ -196,12 +218,92 @@ internal sealed class SetupForm : Form
         await source.CopyToAsync(file);
     }
 
-    private static void StopTray()
+    private static void PrepareForReplacement()
     {
-        foreach (var process in Process.GetProcessesByName("RRN.Agent.Tray"))
+        EndScheduledTask(TaskMorning);
+        EndScheduledTask(TaskEvening);
+        StopProcess("RRN.Agent.Tray");
+        StopProcess("RRN.Agent");
+    }
+
+    private static void StopProcess(string processName)
+    {
+        foreach (var process in Process.GetProcessesByName(processName))
         {
-            try { process.Kill(true); process.WaitForExit(5000); } catch { }
+            try
+            {
+                process.Kill(true);
+                process.WaitForExit(10000);
+            }
+            catch { }
+            finally { process.Dispose(); }
         }
+    }
+
+    private static void EndScheduledTask(string name)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo("schtasks.exe") { UseShellExecute = false, CreateNoWindow = true };
+            foreach (var arg in new[] { "/End", "/TN", name }) psi.ArgumentList.Add(arg);
+            using var process = Process.Start(psi);
+            process?.WaitForExit(5000);
+        }
+        catch { }
+    }
+
+    private static void CopyWithRetry(string source, string destination)
+    {
+        Exception? last = null;
+        for (var attempt = 1; attempt <= 20; attempt++)
+        {
+            try
+            {
+                File.Copy(source, destination, true);
+                return;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                last = ex;
+                if (string.Equals(destination, CoreExe, StringComparison.OrdinalIgnoreCase)) StopProcess("RRN.Agent");
+                if (string.Equals(destination, TrayExe, StringComparison.OrdinalIgnoreCase)) StopProcess("RRN.Agent.Tray");
+                Thread.Sleep(250);
+            }
+        }
+        throw new IOException($"Não foi possível substituir {Path.GetFileName(destination)} porque o arquivo continua em uso por outro processo. Feche o RRN Agent e tente novamente.", last);
+    }
+
+    private static bool PathsEqual(string? first, string? second)
+    {
+        if (string.IsNullOrWhiteSpace(first) || string.IsNullOrWhiteSpace(second)) return false;
+        try
+        {
+            return string.Equals(Path.GetFullPath(first), Path.GetFullPath(second), StringComparison.OrdinalIgnoreCase);
+        }
+        catch { return string.Equals(first, second, StringComparison.OrdinalIgnoreCase); }
+    }
+
+    private static void ScheduleSetupReplacement()
+    {
+        var pending = SetupPendingExe.Replace("'", "''");
+        var target = SetupExe.Replace("'", "''");
+        var script = $"$p=Get-Process -Id {Environment.ProcessId} -ErrorAction SilentlyContinue; if($p){{$p.WaitForExit()}}; for($i=0;$i -lt 30;$i++){{try{{Move-Item -LiteralPath '{pending}' -Destination '{target}' -Force; exit 0}}catch{{Start-Sleep -Milliseconds 500}}}}; exit 1";
+        var psi = new ProcessStartInfo("powershell.exe")
+        {
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        psi.ArgumentList.Add("-NoProfile");
+        psi.ArgumentList.Add("-ExecutionPolicy");
+        psi.ArgumentList.Add("Bypass");
+        psi.ArgumentList.Add("-Command");
+        psi.ArgumentList.Add(script);
+        Process.Start(psi);
+    }
+
+    private static void TryDelete(string path)
+    {
+        try { if (File.Exists(path)) File.Delete(path); } catch { }
     }
 
     private static async Task<(int ExitCode, string Output, string Error)> RunAsync(string fileName, IEnumerable<string> arguments, bool hidden)
@@ -304,8 +406,14 @@ internal sealed class UninstallForm : Form
     {
         try
         {
-            foreach (var process in Process.GetProcessesByName("RRN.Agent.Tray"))
-                try { process.Kill(true); } catch { }
+            foreach (var processName in new[] { "RRN.Agent.Tray", "RRN.Agent" })
+            {
+                foreach (var process in Process.GetProcessesByName(processName))
+                {
+                    try { process.Kill(true); process.WaitForExit(5000); } catch { }
+                    finally { process.Dispose(); }
+                }
+            }
 
             DeleteTask("RRN Agent - 08h");
             DeleteTask("RRN Agent - 18h");
