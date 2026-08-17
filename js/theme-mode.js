@@ -34,10 +34,8 @@
       addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-3', 'data-rrn-theme-component-fixes-v2');
       addStylesheet('/style/ui-fixes-v3.css?v=20260817-2', 'data-rrn-ui-fixes-v3');
       addStylesheet('/style/mobile-modals-v11.css?v=20260817-3', 'data-rrn-mobile-modals-v11');
-      addStylesheet('/style/mobile-info-modal-v13.css?v=20260817-1017', 'data-rrn-mobile-info-modal-v13');
-      addScript('/js/mobile-info-modal-reset.js?v=20260817-1038', 'data-rrn-mobile-info-modal-reset');
+      addStylesheet('/style/mobile-asset-page-v1.css?v=20260817-1042', 'data-rrn-mobile-asset-page-v1');
       addScript('/js/mobile-modal-accessibility-guard.js?v=20260817-1', 'data-rrn-mobile-modal-accessibility-guard');
-      addScript('/js/mobile-modals-authority.js?v=20260817-1017', 'data-rrn-mobile-modals-authority');
       addScript('/js/map-tile-fallback.js?v=20260817-1000', 'data-rrn-map-tile-fallback');
     }
   }
