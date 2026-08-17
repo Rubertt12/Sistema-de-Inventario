@@ -1,0 +1,1 @@
+Trigger de deploy para publicar a nova visualização mobile de equipamento em página dedicada.
