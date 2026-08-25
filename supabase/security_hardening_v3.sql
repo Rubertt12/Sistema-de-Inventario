@@ -17,13 +17,8 @@ alter default privileges for role postgres in schema public
 alter default privileges for role postgres in schema public
   revoke execute on functions from public, anon, authenticated;
 
--- Objetos criados pelo painel/serviços administrativos também ficam privados.
-alter default privileges for role supabase_admin in schema public
-  revoke all privileges on tables from anon, authenticated;
-alter default privileges for role supabase_admin in schema public
-  revoke all privileges on sequences from anon, authenticated;
-alter default privileges for role supabase_admin in schema public
-  revoke execute on functions from public, anon, authenticated;
+-- Os defaults do papel supabase_admin são gerenciados pela plataforma e não
+-- podem ser alterados pelo papel postgres deste projeto.
 
 -- O Data API nunca precisa permitir TRUNCATE, REFERENCES ou TRIGGER ao navegador.
 revoke truncate, references, trigger on all tables in schema public from anon, authenticated;
