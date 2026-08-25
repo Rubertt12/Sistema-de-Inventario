@@ -239,6 +239,29 @@ revoke all on public.asset_movements from anon;
 revoke all on public.maintenance_records from anon;
 revoke all on public.audit_events from anon;
 
--- Remove helpers SECURITY DEFINER do schema exposto somente após migrar policies e RPCs.
-drop function public.current_role();
-drop function public.current_tenant_id();
+-- Wrappers SECURITY INVOKER preservam compatibilidade com módulos maduros que
+-- ainda referenciam os nomes públicos, sem manter helpers privilegiados expostos.
+create or replace function public.current_tenant_id()
+returns uuid
+language sql
+stable
+security invoker
+set search_path=''
+as $$
+  select private.current_tenant_id();
+$$;
+
+create or replace function public.current_role()
+returns text
+language sql
+stable
+security invoker
+set search_path=''
+as $$
+  select private.current_user_role();
+$$;
+
+revoke all on function public.current_tenant_id() from public, anon;
+revoke all on function public.current_role() from public, anon;
+grant execute on function public.current_tenant_id() to authenticated;
+grant execute on function public.current_role() to authenticated;
