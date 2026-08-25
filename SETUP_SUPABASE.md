@@ -4,16 +4,19 @@ Esta branch usa **Supabase Auth + PostgreSQL + Row Level Security (RLS)** para s
 
 ## 1. Instalação do banco
 
-No **SQL Editor** do Supabase, execute exatamente nesta ordem:
+No **SQL Editor** do Supabase, execute nesta ordem:
 
 1. `supabase/schema.sql`
 2. `supabase/asset_management.sql`
 3. `supabase/migrate_legacy_inventory.sql`
 4. `supabase/security_hardening.sql`
-5. `supabase/security_hardening_v2.sql`, quando presente no ambiente/repositório
-6. `supabase/security_hardening_v3.sql`
+5. Se houver dados JSON legados para importar, autentique um administrador do tenant e execute `select public.migrate_legacy_inventory();` **neste ponto**.
+6. `supabase/security_hardening_v2.sql`
+7. `supabase/security_hardening_v3.sql`
 
-O `security_hardening.sql` é obrigatório. Ele move os helpers privilegiados de tenant/perfil para um schema privado, remove execução anônima, faz as RPCs públicas obedecerem ao RLS e reduz a superfície exposta pelo Data API.
+O `security_hardening.sql` é obrigatório. Ele move os helpers privilegiados de tenant/perfil para um schema privado, remove execução anônima, recria as RPCs de auditoria e migração como `SECURITY INVOKER` e reduz a superfície exposta pelo Data API.
+
+`security_hardening_v2.sql` bloqueia a RPC de migração para usuários comuns depois que a migração inicial estiver concluída. Por isso, se a importação do legado for necessária, faça-a entre as etapas 4 e 6.
 
 Depois da instalação, execute os **Security Advisors** do Supabase. A liberação para produção exige zero alertas de segurança não justificados.
 
@@ -56,13 +59,13 @@ Todas as tabelas de negócio expostas devem manter RLS habilitado.
 
 ## 6. Migração do inventário legado
 
-Depois de instalar todos os scripts e autenticar um administrador, a RPC abaixo pode migrar o JSON legado para o modelo relacional:
+Após `security_hardening.sql` e antes de `security_hardening_v2.sql`, um administrador autenticado pode executar:
 
 ```sql
 select public.migrate_legacy_inventory();
 ```
 
-A função roda como **SECURITY INVOKER**, portanto continua sujeita às policies RLS do chamador. Somente um administrador do próprio tenant deve conseguir concluir a migração.
+A função roda como **SECURITY INVOKER**, portanto continua sujeita às policies RLS do chamador e só opera sobre o próprio tenant. Depois de `security_hardening_v2.sql`, a execução pelo papel `authenticated` fica bloqueada por segurança.
 
 ## 7. Teste obrigatório antes de produção
 
