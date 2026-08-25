@@ -508,6 +508,11 @@
     const modal = document.getElementById('rrnStockScanModal');
     if (!modal || state.scan.starting || state.scan.instance) return;
     const note = modal.querySelector('[data-scan-note]');
+    try {
+      await window.RRN_loadScannerLibrary?.();
+    } catch (error) {
+      console.warn('RRN Manager: falha ao carregar o leitor de códigos.', error);
+    }
     if (!window.Html5Qrcode) {
       if (note) { note.textContent = 'A biblioteca do scanner não foi carregada. Você ainda pode usar um leitor USB/Bluetooth ou digitar o código.'; note.className = 'rrn-stock-inline-note warn'; }
       modal.querySelector('[data-scan-code]')?.focus();
