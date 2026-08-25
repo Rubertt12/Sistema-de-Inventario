@@ -123,7 +123,6 @@
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
     await load('/js/theme-mode.js?v=20260817-1123');
-    await load('/js/footer-v2.js');
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
     if (isDashboard && window.RRN_PREVIEW_DEMO) { window.loadSetoresAndMachines?.(); window.renderSetores?.(); }

@@ -3,6 +3,26 @@
 
   let scanner = null;
   let starting = false;
+  const SCANNER_LIBRARY_URL = 'https://unpkg.com/html5-qrcode';
+
+  function loadScannerLibrary() {
+    if (window.Html5Qrcode) return Promise.resolve();
+    if (window.__RRN_SCANNER_LIBRARY_PROMISE__) return window.__RRN_SCANNER_LIBRARY_PROMISE__;
+
+    window.__RRN_SCANNER_LIBRARY_PROMISE__ = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = SCANNER_LIBRARY_URL;
+      script.async = true;
+      script.dataset.rrnScannerLibrary = '1';
+      script.onload = () => resolve();
+      script.onerror = () => {
+        window.__RRN_SCANNER_LIBRARY_PROMISE__ = null;
+        reject(new Error('Não foi possível carregar a biblioteca do scanner.'));
+      };
+      document.head.appendChild(script);
+    });
+    return window.__RRN_SCANNER_LIBRARY_PROMISE__;
+  }
 
   function targetInput() {
     const type = document.getElementById('tipoEquipamento')?.value;
@@ -41,16 +61,13 @@
       alert('Selecione primeiro o tipo de equipamento que deseja cadastrar.');
       return;
     }
-    if (!window.Html5Qrcode) {
-      alert('A biblioteca do scanner não foi carregada.');
-      return;
-    }
     if (scanner || starting) return;
 
     starting = true;
     setModalVisible(true);
 
     try {
+      await loadScannerLibrary();
       const cameras = await window.Html5Qrcode.getCameras();
       if (!cameras?.length) throw new Error('Nenhuma câmera encontrada.');
 
@@ -97,4 +114,5 @@
 
   window.abrirScanner = openScanner;
   window.fecharScanner = stopScanner;
+  window.RRN_loadScannerLibrary = loadScannerLibrary;
 })();
