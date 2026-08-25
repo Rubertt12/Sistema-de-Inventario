@@ -4,14 +4,6 @@
   if (window.__RRN_TENANT_BRANDING_RUNTIME__) return;
   window.__RRN_TENANT_BRANDING_RUNTIME__ = true;
 
-  if (/\/configuracoes\.html$/i.test(location.pathname) && !document.querySelector('script[data-rrn-settings-agent]')) {
-    const script = document.createElement('script');
-    script.src = '/js/settings-agent.js?v=20260814-1';
-    script.async = true;
-    script.dataset.rrnSettingsAgent = '1';
-    document.head.appendChild(script);
-  }
-
   const cfg = window.RRN_SUPABASE || {};
   if (!window.supabase?.createClient || !cfg.url || !cfg.anonKey) return;
 
