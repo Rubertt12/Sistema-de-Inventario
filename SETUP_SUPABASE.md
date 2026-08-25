@@ -1,137 +1,83 @@
 # Configuração do backend multi-tenant
 
-Esta branch troca o cadastro e login em `localStorage` por **Supabase Auth + PostgreSQL + Row Level Security (RLS)** e prepara a migração do inventário para tabelas relacionais próprias.
+Esta branch usa **Supabase Auth + PostgreSQL + Row Level Security (RLS)** para separar os dados de cada organização.
 
-## 1. Criar o projeto
+## 1. Instalação do banco
 
-1. Crie um projeto no Supabase.
-2. Abra **SQL Editor**.
-3. Execute, nesta ordem:
-   1. `supabase/schema.sql`
-   2. `supabase/asset_management.sql`
-   3. `supabase/migrate_legacy_inventory.sql`
-4. Em **Authentication > Providers > Email**, mantenha Email/Password habilitado.
+No **SQL Editor** do Supabase, execute exatamente nesta ordem:
 
-Para testes rápidos, a confirmação obrigatória de e-mail pode ser desativada temporariamente. Em produção, mantenha a confirmação habilitada.
+1. `supabase/schema.sql`
+2. `supabase/asset_management.sql`
+3. `supabase/migrate_legacy_inventory.sql`
+4. `supabase/security_hardening.sql`
+5. `supabase/security_hardening_v2.sql`, quando presente no ambiente/repositório
+6. `supabase/security_hardening_v3.sql`
 
-## 2. Configurar o frontend
+O `security_hardening.sql` é obrigatório. Ele move os helpers privilegiados de tenant/perfil para um schema privado, remove execução anônima, faz as RPCs públicas obedecerem ao RLS e reduz a superfície exposta pelo Data API.
 
-Abra `js/supabase-config.js` e substitua os placeholders:
+Depois da instalação, execute os **Security Advisors** do Supabase. A liberação para produção exige zero alertas de segurança não justificados.
 
-```js
-window.RRN_SUPABASE = Object.freeze({
-  url: 'https://SEU-PROJETO.supabase.co',
-  anonKey: 'SUA_CHAVE_ANON_PUBLICA'
-});
-```
+## 2. Authentication
 
-Use somente a **Project URL** e a **anon/public key**. Nunca coloque a `service_role` no HTML ou JavaScript público.
+Em **Authentication > Providers > Email**, mantenha Email/Password habilitado. Em produção, mantenha confirmação de e-mail habilitada.
 
-## 3. Como o tenant funciona
+O trigger `handle_new_auth_user()` cria o primeiro tenant ou associa o novo usuário a um convite. A função é usada pelo trigger de `auth.users` e não deve ser exposta como RPC para `anon` ou `authenticated`.
 
-- Ao criar uma conta informando uma organização, o banco cria um tenant novo e torna o primeiro usuário `admin`.
-- O administrador abre **Gestão de Usuários**, informa o e-mail, perfil e validade e gera um código temporário.
-- O convidado usa **Criar conta** na tela inicial e cola o código.
-- O trigger do banco associa o novo usuário ao tenant correto e aplica o perfil do convite.
-- O código original aparece uma única vez para o administrador; no banco fica somente o hash SHA-256.
+## 3. Frontend
 
-## 4. Perfis
+`js/supabase-config.js` deve conter somente a Project URL e uma chave publicável (`sb_publishable_...`). Nunca use `service_role`, `sb_secret_...` ou qualquer segredo administrativo em HTML/JavaScript público.
 
-- `admin`: gerencia membros e altera o inventário.
-- `operador`: altera o inventário sem administrar membros.
-- `monitoramento`: acesso de leitura ao inventário.
+## 4. Isolamento entre tenants
 
-As políticas RLS usam `current_tenant_id()` e `current_role()` para impedir que um usuário leia ou altere registros de outro tenant.
+Cada usuário ativo possui um `tenant_id` em `public.profiles`. As policies RLS consultam helpers localizados no schema privado e restringem leitura/escrita ao tenant autenticado.
 
-## 5. Compatibilidade com o inventário atual
+Perfis disponíveis:
 
-O código legado usa APIs síncronas do navegador. Para não reescrever todo o sistema de uma vez, `js/tenant-runtime.js` funciona como camada de compatibilidade:
+- `admin`: administra membros e altera inventário;
+- `operador`: altera inventário sem administrar membros;
+- `monitoramento`: somente leitura.
 
-- hidrata `setores`, `chamados` e `asset_history` do tenant ao abrir o dashboard;
-- mantém os dados locais necessários para os módulos antigos continuarem funcionando;
-- sincroniza alterações para `tenant_inventory_state`;
-- remove dados locais do tenant no logout;
-- mantém `usuarioLogado` somente como objeto de compatibilidade, **sem senha**.
+Não crie policies baseadas apenas em `TO authenticated`. Toda policy de negócio precisa também verificar tenant e, quando aplicável, perfil e `auth.uid()`.
 
-A versão do payload de compatibilidade agora é `2`.
+## 5. Modelo de dados
 
-## 6. Modelo relacional de ativos
+O modelo principal inclui:
 
-`supabase/asset_management.sql` cria as tabelas que serão a fonte de verdade definitiva:
+- `tenants` e `profiles`;
+- `tenant_invitations`;
+- `tenant_inventory_state` como ponte temporária do legado;
+- `sectors`;
+- `assets`;
+- `asset_movements`;
+- `maintenance_records`;
+- `audit_events`.
 
-- `sectors`: setores do tenant;
-- `assets`: equipamentos e dados patrimoniais;
-- `asset_movements`: transferências e mudanças de situação;
-- `maintenance_records`: histórico de manutenção/chamados;
-- `audit_events`: trilha de auditoria do workspace.
+Todas as tabelas de negócio expostas devem manter RLS habilitado.
 
-Os ativos suportam, entre outros campos:
+## 6. Migração do inventário legado
 
-- tipo do equipamento;
-- hostname;
-- número de série;
-- etiqueta/patrimônio;
-- fabricante e modelo;
-- usuário responsável;
-- localização;
-- situação patrimonial;
-- data de compra;
-- garantia;
-- observações;
-- metadados adicionais.
-
-## 7. Histórico e auditoria no frontend
-
-`js/asset-history.js` registra automaticamente alterações do inventário comparando o estado antes/depois das operações existentes.
-
-São registrados:
-
-- equipamento criado;
-- transferência entre setores;
-- entrada e saída de manutenção;
-- chamado registrado;
-- edição de dados patrimoniais;
-- exclusão.
-
-O histórico é sincronizado por tenant durante a fase de compatibilidade. Cada card de equipamento recebe acesso ao **Histórico**, e a tela de Configurações recebe o **Histórico de alterações** do workspace.
-
-## 8. Migrar os dados existentes
-
-Depois que os três scripts SQL estiverem instalados e o primeiro administrador estiver autenticado, execute a RPC:
+Depois de instalar todos os scripts e autenticar um administrador, a RPC abaixo pode migrar o JSON legado para o modelo relacional:
 
 ```sql
 select public.migrate_legacy_inventory();
 ```
 
-A função:
+A função roda como **SECURITY INVOKER**, portanto continua sujeita às policies RLS do chamador. Somente um administrador do próprio tenant deve conseguir concluir a migração.
 
-- só migra o tenant do usuário autenticado;
-- exige perfil `admin`;
-- lê `tenant_inventory_state`;
-- cria setores relacionais;
-- cria os equipamentos com `legacy_key` para evitar duplicação;
-- preserva fabricante, modelo, usuário, localização, garantia e demais dados conhecidos;
-- cria o evento inicial de movimentação;
-- cria manutenção aberta se o equipamento já estiver em manutenção;
-- registra a migração na auditoria.
+## 7. Teste obrigatório antes de produção
 
-A função é idempotente para os equipamentos que possuem a mesma `legacy_key`: uma nova execução não deve recadastrar o mesmo ativo.
+Valide no mínimo:
 
-## 9. Teste mínimo
+1. Tenant A consegue ler seus próprios registros.
+2. Tenant A não consegue ler `tenants`, `profiles`, inventário, ativos ou histórico do Tenant B.
+3. Tenant A não consegue atualizar/inserir registros apontando para o Tenant B.
+4. `monitoramento` não consegue gravar.
+5. `operador` não consegue administrar usuários/convites.
+6. `anon` não possui acesso às tabelas de negócio.
+7. As funções de trigger não são executáveis pelo navegador.
+8. Security Advisors não apresentam alertas de segurança pendentes.
+9. O frontend não contém `service_role` nem chaves secretas.
 
-1. Crie a primeira organização e entre como administrador.
-2. Cadastre um setor e alguns equipamentos.
-3. Preencha fabricante, modelo, localização e garantia em um ativo.
-4. Transfira o ativo para outro setor e abra o **Histórico**.
-5. Coloque o ativo em manutenção e libere-o novamente.
-6. Abra **Configurações > Histórico de alterações** e valide os eventos.
-7. Recarregue o navegador e confirme que os dados permanecem no mesmo tenant.
-8. Gere um convite em **Gestão de Usuários**.
-9. Crie outro usuário usando esse convite e confirme que ele visualiza o mesmo tenant.
-10. Crie outra organização com outro e-mail e confirme que não visualiza os dados da primeira.
-11. Teste o perfil `monitoramento`; o RLS deve rejeitar gravações remotas.
-12. Execute `select public.migrate_legacy_inventory();` como admin e valide as tabelas relacionais.
+## 8. Compatibilidade temporária
 
-## 10. Próxima etapa de migração
-
-Enquanto o frontend legado ainda existir, `tenant_inventory_state` continua sendo a ponte de compatibilidade. A migração seguinte deve fazer os módulos do dashboard lerem e gravarem diretamente em `sectors`, `assets`, `asset_movements` e `maintenance_records`. Quando todos os fluxos estiverem validados, o JSONB deixa de ser necessário como fonte principal.
+Enquanto os módulos antigos ainda dependem de APIs síncronas do navegador, `js/tenant-runtime.js` mantém `tenant_inventory_state` como ponte de compatibilidade. O objetivo final é ler e gravar diretamente nas tabelas relacionais e retirar o JSONB como fonte principal.
