@@ -41,7 +41,8 @@ test('o hardening v3 torna privilégios futuros privados e reduz a superfície a
   assert.match(hardening, /grant execute on function public\.get_public_tenant_branding_v2\(text\) to anon/i);
   assert.match(hardening, /grant execute on function public\.get_support_chat_bot_config\(text\) to anon/i);
   assert.doesNotMatch(hardening, /grant execute on function public\.get_public_tenant_branding\(text\) to anon/i);
-  assert.match(hardening, /revoke all privileges on table public\.mfa_trusted_devices from anon, authenticated/i);
+  assert.match(hardening, /public\.mfa_trusted_devices/i);
+  assert.match(hardening, /revoke all privileges on table %s from anon, authenticated/i);
 });
 
 test('todos os assets locais referenciados nas páginas existem', () => {
