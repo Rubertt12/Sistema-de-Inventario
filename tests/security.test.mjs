@@ -32,6 +32,18 @@ test('o hardening revoga funções sensíveis dos papéis públicos', () => {
   assert.match(hardening, /revoke all[\s\S]+from public/i);
 });
 
+test('o hardening v3 torna privilégios futuros privados e reduz a superfície anônima', () => {
+  const hardening = read('supabase/security_hardening_v3.sql');
+  assert.match(hardening, /alter default privileges[\s\S]+revoke all privileges on tables from anon, authenticated/i);
+  assert.match(hardening, /revoke truncate, references, trigger on all tables/i);
+  assert.match(hardening, /revoke execute on all functions in schema public from public/i);
+  assert.match(hardening, /revoke execute on all functions in schema public from anon/i);
+  assert.match(hardening, /grant execute on function public\.get_public_tenant_branding_v2\(text\) to anon/i);
+  assert.match(hardening, /grant execute on function public\.get_support_chat_bot_config\(text\) to anon/i);
+  assert.doesNotMatch(hardening, /grant execute on function public\.get_public_tenant_branding\(text\) to anon/i);
+  assert.match(hardening, /revoke all privileges on table public\.mfa_trusted_devices from anon, authenticated/i);
+});
+
 test('todos os assets locais referenciados nas páginas existem', () => {
   for (const page of ['index.html', 'login.html', 'dashboard.html', 'configuracoes.html', 'chamados.html', 'portal.html', 'usuarios.html']) {
     const html = read(page);
