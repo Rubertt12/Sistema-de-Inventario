@@ -45,3 +45,13 @@ test('todos os assets locais referenciados nas páginas existem', () => {
     }
   }
 });
+
+test('a hospedagem aplica cabeçalhos mínimos de segurança', () => {
+  const config = JSON.parse(read('vercel.json'));
+  const headers = new Map(config.headers[0].headers.map(item => [item.key.toLowerCase(), item.value]));
+  assert.equal(headers.get('x-content-type-options'), 'nosniff');
+  assert.equal(headers.get('x-frame-options'), 'SAMEORIGIN');
+  assert.match(headers.get('strict-transport-security'), /max-age=/);
+  assert.match(headers.get('content-security-policy'), /object-src 'none'/);
+  assert.match(headers.get('content-security-policy'), /upgrade-insecure-requests/);
+});
