@@ -20,14 +20,21 @@
   let applyingRemote = false;
 
   function ensureSearchAssets() {
-    if (!document.querySelector('link[data-rrn-search-center]')) {
+    const hasSearchStyle = document.querySelector(
+      'link[data-rrn-search-center], link[data-rrn-search-center-v2], link[href*="/style/search-center-v2.css"]'
+    );
+    if (!hasSearchStyle) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = '/style/search-center-v2.css';
       link.dataset.rrnSearchCenter = '1';
       document.head.appendChild(link);
     }
-    if (!document.querySelector('script[data-rrn-search-center]')) {
+
+    const hasSearchScript = document.querySelector(
+      'script[data-rrn-search-center], script[data-rrn-src="/js/search-center-v2.js"], script[src*="/js/search-center-v2.js"]'
+    );
+    if (!hasSearchScript) {
       const script = document.createElement('script');
       script.src = '/js/search-center-v2.js';
       script.async = false;
@@ -78,14 +85,12 @@
       detail: { tenantId, updatedAt }
     }));
 
+    // loadSetoresAndMachines já chama renderSetores. Na versão atual da dashboard,
+    // renderSetores também atualiza overview e os enhancers dos cards. Evitamos
+    // repetir todo esse trabalho a cada sincronização remota.
     try { window.loadSetoresAndMachines?.(); } catch {}
-    try { window.renderSetores?.(); } catch {}
-    try { window.RRN_UI?.updateOverview?.(); } catch {}
     try { window.RRN_TABS?.renderHome?.(); } catch {}
     try { window.RRN_STOCK?.render?.(); } catch {}
-    try { window.RRN_GRID_DETAILS?.enhanceAll?.(); } catch {}
-    try { window.RRN_COMPACT_ACTIONS?.enhance?.(); } catch {}
-    try { window.RRN_USER_ASSETS?.refreshCards?.(); } catch {}
   }
 
   async function fetchLatest() {
