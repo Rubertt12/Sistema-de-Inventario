@@ -4,8 +4,7 @@
   const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
   const legacyCredentialKeys = new Set(['usuarios', 'users', 'rememberedUser', 'rememberedPass', 'loggedUser']);
 
-  // Only warm modules that are required for the first usable dashboard paint.
-  // Feature modules below are intentionally excluded and loaded on first use.
+  // Apenas módulos necessários para a primeira tela utilizável entram no warm-up.
   const dashboardCriticalScriptQueue = [
     '/js/supabase-config.js',
     '/js/theme-mode.js?v=20260817-1123',
@@ -20,7 +19,6 @@
     '/js/transfer-v2.js',
     '/js/machine-details-v2.js?v=20260817-1017',
     '/js/user-rename-modal-layer-fix.js',
-    '/js/machine-location-map.js?v=20260817-1017',
     '/js/ticket-author-bridge.js',
     '/js/asset-history.js?v=20260817-1108',
     '/js/dashboard-hotfix.js',
@@ -50,7 +48,6 @@
     '/js/agent-delete-choice.js?v=20260817-1',
     '/js/backend-v2.js',
     '/js/backend-status.js',
-    '/js/agent-global-map.js?v=20260816-1',
     '/js/password-management.js',
     '/js/dashboard-customize-v2.js'
   ];
@@ -62,8 +59,17 @@
       '/js/backup-v3.js',
       '/js/reports-v2.js',
       '/js/inventory-snapshots.js'
-    ]
+    ],
+    machineLocation: ['/js/machine-location-map.js?v=20260817-1017'],
+    globalMap: ['/js/agent-global-map.js?v=20260816-1'],
+    agents: ['/js/agent-management.js?v=20260816-2']
   });
+
+  const lazyFeatureStyles = Object.freeze({
+    globalMap: [['/style/agent-global-map.css?v=20260816-1', 'data-rrn-agent-global-map']],
+    agents: [['/style/agent-management.css?v=20260816-2', 'data-rrn-agent-management']]
+  });
+
   const lazyFeaturePromises = new Map();
 
   function addStylesheet(href, marker) {
@@ -82,7 +88,6 @@
     addStylesheet('/style/dashboard-admin-tools.css', 'data-rrn-dashboard-admin-tools');
     addStylesheet('/style/grid-machine-details.css', 'data-rrn-grid-machine-details');
     addStylesheet('/style/asset-history.css?v=20260817-1108', 'data-rrn-asset-history');
-    addStylesheet('/style/agent-global-map.css?v=20260816-1', 'data-rrn-agent-global-map');
     addStylesheet('/style/modal-refinement-v2.css?v=20260814-1', 'data-rrn-modal-refinement-v2');
     addStylesheet('/style/backend-status.css', 'data-rrn-backend-status');
     addStylesheet('/style/trash.css', 'data-rrn-trash');
@@ -229,17 +234,24 @@
     document.head.appendChild(script);
   });
 
+  function ensureFeatureStyles(name) {
+    (lazyFeatureStyles[name] || []).forEach(([href, marker]) => addStylesheet(href, marker));
+  }
+
   function ensureFeature(name) {
     if (!isDashboard) return Promise.resolve();
     if (lazyFeaturePromises.has(name)) return lazyFeaturePromises.get(name);
     const sources = lazyFeatures[name];
     if (!sources?.length) return Promise.reject(new Error(`Recurso desconhecido: ${name}`));
-    const promise = Promise.all(sources.map(load))
-      .then(() => undefined)
-      .catch(error => {
-        lazyFeaturePromises.delete(name);
-        throw error;
-      });
+
+    const promise = (async () => {
+      ensureFeatureStyles(name);
+      for (const src of sources) await load(src);
+    })().catch(error => {
+      lazyFeaturePromises.delete(name);
+      throw error;
+    });
+
     lazyFeaturePromises.set(name, promise);
     return promise;
   }
@@ -305,9 +317,100 @@
     }
   }
 
+  function ensureMapLazyTab() {
+    if (!isDashboard || window.RRN_AGENT_GLOBAL_MAP) return;
+    const role = currentRole();
+    if (!['admin', 'operador', 'monitoramento'].includes(role || '')) return;
+    const tabs = document.querySelector('.rrn-app-tabs');
+    if (!tabs || tabs.querySelector('[data-app-tab="map"]')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'rrn-app-tab';
+    button.dataset.appTab = 'map';
+    button.dataset.rrnLazyMap = '1';
+    button.dataset.rrnIcon = 'map';
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-selected', 'false');
+    button.textContent = 'Mapa';
+    button.addEventListener('click', () => openLazyMap());
+    tabs.appendChild(button);
+    window.RRN_ICONS?.decorateStatic?.(button);
+  }
+
+  async function openLazyMap() {
+    if (!isDashboard) return;
+    document.querySelector('[data-rrn-lazy-map]')?.remove();
+    try {
+      await ensureFeature('globalMap');
+      await window.RRN_AGENT_GLOBAL_MAP?.open?.();
+    } catch (error) {
+      console.error('RRN Manager: falha ao carregar mapa.', error);
+      ensureMapLazyTab();
+      alert('Não foi possível abrir o mapa agora. Atualize a página e tente novamente.');
+    }
+  }
+
+  function ensureAgentsLazyTab() {
+    if (!isDashboard || window.RRN_AGENT_MANAGEMENT) return;
+    const role = currentRole();
+    if (!['admin', 'operador'].includes(role || '')) return;
+    const tabs = document.querySelector('.rrn-app-tabs');
+    if (!tabs || tabs.querySelector('[data-app-tab="agents"]')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'rrn-app-tab';
+    button.dataset.appTab = 'agents';
+    button.dataset.rrnLazyAgents = '1';
+    button.dataset.rrnIcon = 'monitor';
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-selected', 'false');
+    button.textContent = 'Agentes RRN';
+    button.addEventListener('click', () => openLazyAgents());
+    tabs.appendChild(button);
+    window.RRN_ICONS?.decorateStatic?.(button);
+  }
+
+  async function openLazyAgents() {
+    if (!isDashboard) return;
+    document.querySelector('[data-rrn-lazy-agents]')?.remove();
+    try {
+      await ensureFeature('agents');
+      await window.RRN_AGENT_MANAGEMENT?.open?.();
+    } catch (error) {
+      console.error('RRN Manager: falha ao carregar agentes.', error);
+      ensureAgentsLazyTab();
+      alert('Não foi possível abrir Agentes RRN agora. Atualize a página e tente novamente.');
+    }
+  }
+
+  function installMachineLocationLazyWrapper() {
+    if (!isDashboard) return;
+    const base = window.showInfo;
+    if (typeof base !== 'function' || base.__rrnMachineLocationLazy || base.__rrnLocationMapWrapped) return;
+
+    const lazy = async function(...args) {
+      if (window.showInfo === lazy) window.showInfo = base;
+      try {
+        await ensureFeature('machineLocation');
+        const actual = window.showInfo;
+        if (typeof actual === 'function' && actual !== lazy) return actual.apply(this, args);
+        return base.apply(this, args);
+      } catch (error) {
+        console.warn('RRN Manager: mapa do equipamento indisponível.', error);
+        if (!window.showInfo || window.showInfo === base) window.showInfo = lazy;
+        return base.apply(this, args);
+      }
+    };
+    lazy.__rrnMachineLocationLazy = true;
+    lazy.__rrnPrevious = base;
+    window.showInfo = lazy;
+  }
+
   function handleLazyHash() {
     const hash = location.hash.toLowerCase();
     if (hash === '#stock' || hash === '#estoque') openLazyStock();
+    else if (hash === '#map') openLazyMap();
+    else if (hash === '#agents') openLazyAgents();
   }
 
   installLazyFunctionProxy('abrirScanner', 'scanner');
@@ -315,6 +418,11 @@
   installLazyFunctionProxy('exportarBackupJSON', 'settingsExtras');
   installLazyFunctionProxy('importarBackupJSON', 'settingsExtras');
   window.addEventListener('hashchange', handleLazyHash);
+  window.addEventListener('rrn:session-ready', () => {
+    ensureMapLazyTab();
+    ensureAgentsLazyTab();
+    handleLazyHash();
+  });
 
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
@@ -335,8 +443,8 @@
       await load('/js/transfer-v2.js');
       await load('/js/machine-details-v2.js?v=20260817-1017');
       await load('/js/user-rename-modal-layer-fix.js');
-      await load('/js/machine-location-map.js?v=20260817-1017');
       await load('/js/ticket-author-bridge.js');
+      installMachineLocationLazyWrapper();
       await load('/js/asset-history.js?v=20260817-1108');
       await load('/js/dashboard-hotfix.js');
       await load('/js/equipment-list-performance.js');
@@ -352,6 +460,8 @@
       await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
       ensureStockLazyTab();
+      ensureMapLazyTab();
+      ensureAgentsLazyTab();
       handleLazyHash();
       await load('/js/nav-label-fix.js?v=20260814-1');
       await load('/js/navbar-v5.js');
@@ -383,8 +493,14 @@
       await load('/js/agent-delete-choice.js?v=20260817-1');
       await load('/js/backend-v2.js');
       await load('/js/backend-status.js');
-      await load('/js/agent-global-map.js?v=20260816-1');
+
+      // password-management costumava puxar agent-management automaticamente.
+      // O marcador temporário impede esse side effect; a aba Agentes carrega sob demanda.
+      const isolateAgentBoot = !window.RRN_AGENT_MANAGEMENT && !window.__RRN_AGENT_MANAGEMENT__;
+      if (isolateAgentBoot) window.__RRN_AGENT_MANAGEMENT__ = true;
       await load('/js/password-management.js');
+      if (isolateAgentBoot && !window.RRN_AGENT_MANAGEMENT) delete window.__RRN_AGENT_MANAGEMENT__;
+
       await load('/js/dashboard-customize-v2.js');
       installConfigLazyLoader();
       window.verificarPermissoes?.();
@@ -397,6 +513,8 @@
       window.RRN_USER_ASSETS?.refreshCards?.();
       window.RRN_RESPONSIBLE_AUTOCOMPLETE?.refresh?.();
       ensureStockLazyTab();
+      ensureMapLazyTab();
+      ensureAgentsLazyTab();
       handleLazyHash();
     }
   })().catch(error => {
