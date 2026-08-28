@@ -3,7 +3,10 @@
 
   const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
   const legacyCredentialKeys = new Set(['usuarios', 'users', 'rememberedUser', 'rememberedPass', 'loggedUser']);
-  const dashboardScriptQueue = [
+
+  // Only warm modules that are required for the first usable dashboard paint.
+  // Feature modules below are intentionally excluded and loaded on first use.
+  const dashboardCriticalScriptQueue = [
     '/js/supabase-config.js',
     '/js/theme-mode.js?v=20260817-1123',
     '/js/preview-demo.js',
@@ -14,7 +17,6 @@
     '/js/settings-v2.js',
     '/js/maintenance-panel.js',
     '/js/maintenance-mobile-gesture-v3.js?v=20260814-1',
-    '/js/scanner.js',
     '/js/transfer-v2.js',
     '/js/machine-details-v2.js?v=20260817-1017',
     '/js/user-rename-modal-layer-fix.js',
@@ -27,8 +29,6 @@
     '/js/sector-category-guard.js',
     '/js/trash-v2.js',
     '/js/trash-audit-bridge.js',
-    '/js/backup-v3.js',
-    '/js/reports-v2.js',
     '/js/profile-picture-v2.js',
     '/js/production-stability.js',
     '/js/grid-machine-details.js',
@@ -36,7 +36,6 @@
     '/js/user-asset-linking.js?v=20260817-1017',
     '/js/responsible-autocomplete.js',
     '/js/dashboard-tabs.js',
-    '/js/stock-inventory-v2.js?v=20260814-2',
     '/js/nav-label-fix.js?v=20260814-1',
     '/js/navbar-v5.js',
     '/js/search-center-v2.js',
@@ -53,9 +52,19 @@
     '/js/backend-status.js',
     '/js/agent-global-map.js?v=20260816-1',
     '/js/password-management.js',
-    '/js/dashboard-customize-v2.js',
-    '/js/inventory-snapshots.js'
+    '/js/dashboard-customize-v2.js'
   ];
+
+  const lazyFeatures = Object.freeze({
+    scanner: ['/js/scanner.js'],
+    stock: ['/js/stock-inventory-v2.js?v=20260814-2'],
+    settingsExtras: [
+      '/js/backup-v3.js',
+      '/js/reports-v2.js',
+      '/js/inventory-snapshots.js'
+    ]
+  });
+  const lazyFeaturePromises = new Map();
 
   function addStylesheet(href, marker) {
     if (!isDashboard || document.querySelector(`link[${marker}]`)) return;
@@ -114,7 +123,7 @@
     if (!isDashboard || window.__RRN_SCRIPT_WARMUP__) return;
     window.__RRN_SCRIPT_WARMUP__ = true;
     const seen = new Set();
-    dashboardScriptQueue.forEach(src => {
+    dashboardCriticalScriptQueue.forEach(src => {
       if (seen.has(src) || document.querySelector(`link[data-rrn-preload="${src}"]`)) return;
       seen.add(src);
       const link = document.createElement('link');
@@ -201,12 +210,111 @@
   else cleanupLegacyMarkup();
 
   const load = src => new Promise((resolve, reject) => {
-    if (document.querySelector(`script[data-rrn-src="${src}"]`)) return resolve();
+    const existing = document.querySelector(`script[data-rrn-src="${src}"]`);
+    if (existing) {
+      if (existing.dataset.rrnLoaded === '1') return resolve();
+      existing.addEventListener('load', resolve, { once: true });
+      existing.addEventListener('error', () => reject(new Error(`Falha ao carregar ${src}`)), { once: true });
+      return;
+    }
     const script = document.createElement('script');
-    script.src = src; script.async = false; script.dataset.rrnSrc = src;
-    script.onload = resolve; script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
+    script.src = src;
+    script.async = false;
+    script.dataset.rrnSrc = src;
+    script.onload = () => {
+      script.dataset.rrnLoaded = '1';
+      resolve();
+    };
+    script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
     document.head.appendChild(script);
   });
+
+  function ensureFeature(name) {
+    if (!isDashboard) return Promise.resolve();
+    if (lazyFeaturePromises.has(name)) return lazyFeaturePromises.get(name);
+    const sources = lazyFeatures[name];
+    if (!sources?.length) return Promise.reject(new Error(`Recurso desconhecido: ${name}`));
+    const promise = Promise.all(sources.map(load))
+      .then(() => undefined)
+      .catch(error => {
+        lazyFeaturePromises.delete(name);
+        throw error;
+      });
+    lazyFeaturePromises.set(name, promise);
+    return promise;
+  }
+
+  window.RRN_LAZY = Object.freeze({
+    ensure: ensureFeature,
+    loaded: name => lazyFeaturePromises.has(name)
+  });
+
+  function installLazyFunctionProxy(functionName, featureName) {
+    if (!isDashboard || typeof window[functionName] === 'function') return;
+    const proxy = async function(...args) {
+      await ensureFeature(featureName);
+      const actual = window[functionName];
+      if (typeof actual === 'function' && actual !== proxy) return actual.apply(this, args);
+    };
+    proxy.__rrnLazyProxy = true;
+    window[functionName] = proxy;
+  }
+
+  function installConfigLazyLoader() {
+    if (!isDashboard) return;
+    const original = window.openConfigModal;
+    if (typeof original !== 'function' || original.__rrnLazySettingsWrapped) return;
+    const wrapped = function(...args) {
+      const result = original.apply(this, args);
+      ensureFeature('settingsExtras').catch(error => console.warn('RRN Manager: extras de configuração indisponíveis.', error));
+      return result;
+    };
+    wrapped.__rrnLazySettingsWrapped = true;
+    wrapped.__rrnPrevious = original;
+    window.openConfigModal = wrapped;
+  }
+
+  function ensureStockLazyTab() {
+    if (!isDashboard || window.RRN_STOCK) return;
+    const tabs = document.querySelector('.rrn-app-tabs');
+    if (!tabs || tabs.querySelector('[data-app-tab="stock"]')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'rrn-app-tab';
+    button.dataset.appTab = 'stock';
+    button.dataset.rrnLazyStock = '1';
+    button.dataset.rrnIcon = 'box';
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-selected', 'false');
+    button.textContent = 'Máquinas em estoque';
+    button.addEventListener('click', () => openLazyStock());
+    tabs.appendChild(button);
+    window.RRN_ICONS?.decorateStatic?.(button);
+  }
+
+  async function openLazyStock() {
+    if (!isDashboard) return;
+    document.querySelector('[data-rrn-lazy-stock]')?.remove();
+    try {
+      await Promise.all([ensureFeature('stock'), ensureFeature('scanner')]);
+      window.RRN_STOCK?.open?.();
+    } catch (error) {
+      console.error('RRN Manager: falha ao carregar estoque.', error);
+      ensureStockLazyTab();
+      alert('Não foi possível abrir o estoque agora. Atualize a página e tente novamente.');
+    }
+  }
+
+  function handleLazyHash() {
+    const hash = location.hash.toLowerCase();
+    if (hash === '#stock' || hash === '#estoque') openLazyStock();
+  }
+
+  installLazyFunctionProxy('abrirScanner', 'scanner');
+  installLazyFunctionProxy('fecharScanner', 'scanner');
+  installLazyFunctionProxy('exportarBackupJSON', 'settingsExtras');
+  installLazyFunctionProxy('importarBackupJSON', 'settingsExtras');
+  window.addEventListener('hashchange', handleLazyHash);
 
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
@@ -221,9 +329,9 @@
       await load('/js/dashboard-ui.js');
       await load('/js/support-desk-link.js');
       await load('/js/settings-v2.js');
+      installConfigLazyLoader();
       await load('/js/maintenance-panel.js');
       await load('/js/maintenance-mobile-gesture-v3.js?v=20260814-1');
-      await load('/js/scanner.js');
       await load('/js/transfer-v2.js');
       await load('/js/machine-details-v2.js?v=20260817-1017');
       await load('/js/user-rename-modal-layer-fix.js');
@@ -236,8 +344,6 @@
       await load('/js/sector-category-guard.js');
       await load('/js/trash-v2.js');
       await load('/js/trash-audit-bridge.js');
-      await load('/js/backup-v3.js');
-      await load('/js/reports-v2.js');
       await load('/js/profile-picture-v2.js');
       await load('/js/production-stability.js');
       await load('/js/grid-machine-details.js');
@@ -245,9 +351,11 @@
       await load('/js/user-asset-linking.js?v=20260817-1017');
       await load('/js/responsible-autocomplete.js');
       await load('/js/dashboard-tabs.js');
-      await load('/js/stock-inventory-v2.js?v=20260814-2');
+      ensureStockLazyTab();
+      handleLazyHash();
       await load('/js/nav-label-fix.js?v=20260814-1');
       await load('/js/navbar-v5.js');
+      installConfigLazyLoader();
       await load('/js/search-center-v2.js');
       document.querySelector('link[data-rrn-search-center-v2]')?.setAttribute('data-rrn-search-center', '1');
       document.querySelector('script[data-rrn-src="/js/search-center-v2.js"]')?.setAttribute('data-rrn-search-center', '1');
@@ -278,17 +386,18 @@
       await load('/js/agent-global-map.js?v=20260816-1');
       await load('/js/password-management.js');
       await load('/js/dashboard-customize-v2.js');
-      await load('/js/inventory-snapshots.js');
+      installConfigLazyLoader();
       window.verificarPermissoes?.();
       window.RRN_UI?.updateOverview?.();
       window.RRN_TABS?.renderHome?.();
       window.RRN_DASHBOARD_CUSTOMIZE?.refresh?.();
-      window.RRN_INVENTORY_SNAPSHOTS?.refresh?.();
       window.RRN_ICONS?.decorateStatic?.();
       window.RRN_GRID_DETAILS?.enhanceAll?.();
       window.RRN_COMPACT_ACTIONS?.enhance?.();
       window.RRN_USER_ASSETS?.refreshCards?.();
       window.RRN_RESPONSIBLE_AUTOCOMPLETE?.refresh?.();
+      ensureStockLazyTab();
+      handleLazyHash();
     }
   })().catch(error => {
     console.error('Falha ao inicializar o RRN Manager:', error);
