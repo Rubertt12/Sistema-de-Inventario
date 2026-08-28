@@ -3,6 +3,59 @@
 
   const isDashboard = /dashboard\.html$/i.test(location.pathname) || Boolean(document.getElementById('setoresContainer'));
   const legacyCredentialKeys = new Set(['usuarios', 'users', 'rememberedUser', 'rememberedPass', 'loggedUser']);
+  const dashboardScriptQueue = [
+    '/js/supabase-config.js',
+    '/js/theme-mode.js?v=20260817-1123',
+    '/js/preview-demo.js',
+    '/js/icons-v2.js',
+    '/js/icon-mutation-bridge.js',
+    '/js/dashboard-ui.js',
+    '/js/support-desk-link.js',
+    '/js/settings-v2.js',
+    '/js/maintenance-panel.js',
+    '/js/maintenance-mobile-gesture-v3.js?v=20260814-1',
+    '/js/scanner.js',
+    '/js/transfer-v2.js',
+    '/js/machine-details-v2.js?v=20260817-1017',
+    '/js/user-rename-modal-layer-fix.js',
+    '/js/machine-location-map.js?v=20260817-1017',
+    '/js/ticket-author-bridge.js',
+    '/js/asset-history.js?v=20260817-1108',
+    '/js/dashboard-hotfix.js',
+    '/js/equipment-list-performance.js',
+    '/js/category-navigation-fix.js',
+    '/js/sector-category-guard.js',
+    '/js/trash-v2.js',
+    '/js/trash-audit-bridge.js',
+    '/js/backup-v3.js',
+    '/js/reports-v2.js',
+    '/js/profile-picture-v2.js',
+    '/js/production-stability.js',
+    '/js/grid-machine-details.js',
+    '/js/compact-grid-actions.js',
+    '/js/user-asset-linking.js?v=20260817-1017',
+    '/js/responsible-autocomplete.js',
+    '/js/dashboard-tabs.js',
+    '/js/stock-inventory-v2.js?v=20260814-2',
+    '/js/nav-label-fix.js?v=20260814-1',
+    '/js/navbar-v5.js',
+    '/js/search-center-v2.js',
+    '/js/dashboard-quality-fixes.js',
+    '/js/service-desk-inventory-bridge.js',
+    '/js/mobile-asset-page.js?v=20260817-1042',
+    '/js/tenant-branding-runtime.js',
+    '/js/maintenance-waiting-queue.js',
+    '/js/tenant-runtime.js',
+    '/js/remote-inventory-sync.js',
+    '/js/agent-delete-bridge.js?v=20260814-1',
+    '/js/agent-delete-choice.js?v=20260817-1',
+    '/js/backend-v2.js',
+    '/js/backend-status.js',
+    '/js/agent-global-map.js?v=20260816-1',
+    '/js/password-management.js',
+    '/js/dashboard-customize-v2.js',
+    '/js/inventory-snapshots.js'
+  ];
 
   function addStylesheet(href, marker) {
     if (!isDashboard || document.querySelector(`link[${marker}]`)) return;
@@ -57,6 +110,39 @@
     document.head.appendChild(link);
   }
 
+  function warmDashboardScripts() {
+    if (!isDashboard || window.__RRN_SCRIPT_WARMUP__) return;
+    window.__RRN_SCRIPT_WARMUP__ = true;
+    const seen = new Set();
+    dashboardScriptQueue.forEach(src => {
+      if (seen.has(src) || document.querySelector(`link[data-rrn-preload="${src}"]`)) return;
+      seen.add(src);
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'script';
+      link.href = src;
+      link.fetchPriority = 'low';
+      link.dataset.rrnPreload = src;
+      document.head.appendChild(link);
+    });
+  }
+
+  function suppressDuplicateLegacyLoadRender() {
+    if (!isDashboard || window.__RRN_LEAN_WINDOW_LOAD__) return;
+    if (typeof window.onload !== 'function') return;
+    window.__RRN_LEAN_WINDOW_LOAD__ = true;
+    window.onload = null;
+    window.addEventListener('load', () => {
+      const container = document.getElementById('setoresContainer');
+      const toggle = document.getElementById('layoutToggle');
+      if (container) {
+        container.classList.add('grid-view');
+        container.classList.remove('list-view');
+      }
+      if (toggle) toggle.checked = false;
+    }, { once: true });
+  }
+
   function containsPlaintextPassword(value) {
     try {
       const parsed = JSON.parse(value);
@@ -108,6 +194,8 @@
   ensureTypography();
   ensureFooterStyles();
   guardLegacyCredentials();
+  suppressDuplicateLegacyLoadRender();
+  warmDashboardScripts();
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cleanupLegacyMarkup, { once: true });
   else cleanupLegacyMarkup();
@@ -161,6 +249,8 @@
       await load('/js/nav-label-fix.js?v=20260814-1');
       await load('/js/navbar-v5.js');
       await load('/js/search-center-v2.js');
+      document.querySelector('link[data-rrn-search-center-v2]')?.setAttribute('data-rrn-search-center', '1');
+      document.querySelector('script[data-rrn-src="/js/search-center-v2.js"]')?.setAttribute('data-rrn-search-center', '1');
       await load('/js/dashboard-quality-fixes.js');
       await load('/js/service-desk-inventory-bridge.js');
       await load('/js/mobile-asset-page.js?v=20260817-1042');
