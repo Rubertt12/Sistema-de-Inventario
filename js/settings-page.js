@@ -187,7 +187,7 @@
       preview.style.backgroundImage = config.imagem ? `url("${String(config.imagem).replace(/"/g, '%22')}")` : 'none';
     }
 
-    const mode = document.documentElement.dataset.theme || window.RRN_THEME?.get?.() || localStorage.getItem('rrn_theme_mode') || 'light';
+    const mode = window.RRN_THEME?.get?.() || document.documentElement.dataset.theme || localStorage.getItem('rrn_theme_mode') || 'dark';
     $$('[data-theme-choice]').forEach(button => button.classList.toggle('active', button.dataset.themeChoice === mode));
   }
 
@@ -196,8 +196,7 @@
       const mode = button.dataset.themeChoice;
       if (window.RRN_THEME?.set) window.RRN_THEME.set(mode);
       else {
-        document.documentElement.dataset.theme = mode;
-        localStorage.setItem('rrn_theme_mode', mode);
+        if (window.RRN_THEME?.set) window.RRN_THEME.set(mode); else { document.documentElement.dataset.theme = mode; localStorage.setItem('rrn_theme_mode', mode); }
       }
       renderAppearance();
       toast(`Tema ${mode === 'dark' ? 'escuro' : 'claro'} aplicado.`);
