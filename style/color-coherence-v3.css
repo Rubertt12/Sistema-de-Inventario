@@ -128,31 +128,31 @@ body [style*="background:#F2BF4F"],body [style*="background: #F2BF4F"]{backgroun
 body [style*="border:1px solid #ccc"],body [style*="border: 1px solid #ccc"],body [style*="border:1.5px solid #ccc"],body [style*="border: 1.5px solid #ccc"]{border-color:var(--rrn-border)!important}
 
 /* Light explicitamente coerente */
-:root:not([data-theme="dark"]) .rrn-home-panel,
-:root:not([data-theme="dark"]) .rrn-kpi,
-:root:not([data-theme="dark"]) .rrn-health-item,
-:root:not([data-theme="dark"]) .rrn-machine-item,
-:root:not([data-theme="dark"]) .rrn-setor-card,
-:root:not([data-theme="dark"]) .modal-content,
-:root:not([data-theme="dark"]) .rrn-maintenance-sheet{
+:root[data-theme="light"] .rrn-home-panel,
+:root[data-theme="light"] .rrn-kpi,
+:root[data-theme="light"] .rrn-health-item,
+:root[data-theme="light"] .rrn-machine-item,
+:root[data-theme="light"] .rrn-setor-card,
+:root[data-theme="light"] .modal-content,
+:root[data-theme="light"] .rrn-maintenance-sheet{
   box-shadow:0 8px 24px rgba(22,58,77,.07)!important;
 }
 
 /* Indicador de sincronização na navbar: contraste correto no tema claro. */
-:root:not([data-theme="dark"]) .navbar .rrn-sync-status{
+:root[data-theme="light"] .navbar .rrn-sync-status{
   background:rgba(255,255,255,.12)!important;
   border-color:rgba(255,255,255,.22)!important;
   color:rgba(255,255,255,.94)!important;
   box-shadow:none!important;
   backdrop-filter:blur(8px);
 }
-:root:not([data-theme="dark"]) .navbar .rrn-sync-status>span:not(.rrn-sync-dot){color:rgba(255,255,255,.94)!important}
-:root:not([data-theme="dark"]) .navbar .rrn-sync-dot{
+:root[data-theme="light"] .navbar .rrn-sync-status>span:not(.rrn-sync-dot){color:rgba(255,255,255,.94)!important}
+:root[data-theme="light"] .navbar .rrn-sync-dot{
   background:#7FE0C2!important;
   box-shadow:0 0 0 3px rgba(127,224,194,.16)!important;
 }
-:root:not([data-theme="dark"]) body[data-rrn-sync-status="channel_error"] .navbar .rrn-sync-dot,
-:root:not([data-theme="dark"]) body[data-rrn-sync-status="timed_out"] .navbar .rrn-sync-dot{
+:root[data-theme="light"] body[data-rrn-sync-status="channel_error"] .navbar .rrn-sync-dot,
+:root[data-theme="light"] body[data-rrn-sync-status="timed_out"] .navbar .rrn-sync-dot{
   background:#FFAAA0!important;
   box-shadow:0 0 0 3px rgba(255,170,160,.16)!important;
 }
