@@ -42,6 +42,8 @@
       addScript('/js/mobile-core-modals.js?v=20260817-1110', 'data-rrn-mobile-core-modals');
       addScript('/js/modal-system-v1.js?v=20260817-1123', 'data-rrn-modal-system-v1');
       addScript('/js/map-tile-fallback.js?v=20260817-1000', 'data-rrn-map-tile-fallback');
+      /* Final light-mode contrast layer must come AFTER every dashboard component layer. */
+      addStylesheet('/style/theme-consistency-final.css?v=20260929-7', 'data-rrn-theme-consistency-final-last');
     }
   }
 
