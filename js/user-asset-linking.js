@@ -106,13 +106,26 @@
       .find(fact => fact.querySelector('small')?.textContent?.trim().toLowerCase() === 'responsável');
     if (!responsibleFact) return;
 
-    responsibleFact.querySelector('.rrn-user-assets-badge')?.remove();
-    if (group.length <= 1) return;
+    const existingBadge = responsibleFact.querySelector('.rrn-user-assets-badge');
+    if (group.length <= 1) {
+      existingBadge?.remove();
+      return;
+    }
+
+    const label = `${group.length} ativos vinculados`;
+    const title = group.map(item => `${clean(item.asset?.tipo) || 'Equipamento'} · ${clean(item.asset?.nome) || 'Sem nome'} · ${item.sectorName}`).join('\n');
+
+    // Evita o ciclo MutationObserver: remove/add badge -> mutation -> refresh -> remove/add.
+    if (existingBadge) {
+      if (existingBadge.textContent !== label) existingBadge.textContent = label;
+      if (existingBadge.title !== title) existingBadge.title = title;
+      return;
+    }
 
     const badge = document.createElement('span');
     badge.className = 'rrn-user-assets-badge';
-    badge.textContent = `${group.length} ativos vinculados`;
-    badge.title = group.map(item => `${clean(item.asset?.tipo) || 'Equipamento'} · ${clean(item.asset?.nome) || 'Sem nome'} · ${item.sectorName}`).join('\n');
+    badge.textContent = label;
+    badge.title = title;
     responsibleFact.querySelector('div')?.appendChild(badge);
   }
 
