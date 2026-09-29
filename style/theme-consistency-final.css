@@ -399,3 +399,64 @@
   background:rgba(85,170,164,.30);
   color:#fff;
 }
+
+
+/* LIGHT FINAL — última camada de contraste. Corrige componentes antigos que ainda
+   chegam com texto branco, sem alterar superfícies realmente escuras/coloridas. */
+:root:not([data-theme="dark"]) .rrn-dashboard-overview,
+:root:not([data-theme="dark"]) .rrn-sector-category-shell,
+:root:not([data-theme="dark"]) .rrn-category-backbar,
+:root:not([data-theme="dark"]) .rrn-machine-item,
+:root:not([data-theme="dark"]) .rrn-machine-fact,
+:root:not([data-theme="dark"]) .rrn-machine-main,
+:root:not([data-theme="dark"]) .rrn-agent-location-card,
+:root:not([data-theme="dark"]) .rrn-home-panel,
+:root:not([data-theme="dark"]) .rrn-kpi,
+:root:not([data-theme="dark"]) .rrn-health-item,
+:root:not([data-theme="dark"]) .rrn-alert-item,
+:root:not([data-theme="dark"]) .rrn-search-result,
+:root:not([data-theme="dark"]) .rrn-category-empty,
+:root:not([data-theme="dark"]) .rrn-sector-empty,
+:root:not([data-theme="dark"]) .empty-state,
+:root:not([data-theme="dark"]) .settings-user-card,
+:root:not([data-theme="dark"]) .settings-session-pill,
+:root:not([data-theme="dark"]) .workspace-summary,
+:root:not([data-theme="dark"]) .settings-segment,
+:root:not([data-theme="dark"]) .settings-kpis>div{
+  color:var(--rrn-text)!important;
+  background:var(--rrn-surface)!important;
+  border-color:var(--rrn-border)!important;
+}
+:root:not([data-theme="dark"]) :where(.rrn-dashboard-overview,.rrn-sector-category-shell,.rrn-category-backbar,.rrn-machine-item,.rrn-machine-fact,.rrn-machine-main,.rrn-agent-location-card,.rrn-home-panel,.rrn-kpi,.rrn-health-item,.rrn-alert-item,.rrn-search-result,.rrn-category-empty,.rrn-sector-empty,.empty-state,.settings-user-card,.settings-session-pill,.workspace-summary,.settings-segment,.settings-kpis>div) :where(h1,h2,h3,h4,h5,h6,strong,b){color:var(--rrn-heading)!important}
+:root:not([data-theme="dark"]) :where(.rrn-dashboard-overview,.rrn-sector-category-shell,.rrn-category-backbar,.rrn-machine-item,.rrn-machine-fact,.rrn-machine-main,.rrn-agent-location-card,.rrn-home-panel,.rrn-kpi,.rrn-health-item,.rrn-alert-item,.rrn-search-result,.rrn-category-empty,.rrn-sector-empty,.empty-state,.settings-user-card,.settings-session-pill,.workspace-summary,.settings-segment,.settings-kpis>div) :where(p,span,small,label,li,td,dd,dt,.meta,.muted,.subtitle,.description){color:var(--rrn-text)!important}
+/* Texto branco legado em elementos inline. */
+:root:not([data-theme="dark"]) [style*="color:#fff"],
+:root:not([data-theme="dark"]) [style*="color: #fff"],
+:root:not([data-theme="dark"]) [style*="color:#FFF"],
+:root:not([data-theme="dark"]) [style*="color: #FFF"],
+:root:not([data-theme="dark"]) [style*="color:#ffffff"],
+:root:not([data-theme="dark"]) [style*="color: #ffffff"],
+:root:not([data-theme="dark"]) [style*="color: white"],
+:root:not([data-theme="dark"]) [style*="color:white"]{color:var(--rrn-text)!important}
+/* Exceções obrigatórias: elementos com fundo de ação continuam brancos. */
+:root:not([data-theme="dark"]) .navbar,
+:root:not([data-theme="dark"]) .navbar :where(a,button,span,strong,.user-name),
+:root:not([data-theme="dark"]) .brand-panel,
+:root:not([data-theme="dark"]) .brand-panel :where(h1,p,span,strong,.eyebrow),
+:root:not([data-theme="dark"]) .btn-primary,
+:root:not([data-theme="dark"]) .rrn-btn-primary,
+:root:not([data-theme="dark"]) .save-btn,
+:root:not([data-theme="dark"]) .upload-btn,
+:root:not([data-theme="dark"]) .btn-confirmar,
+:root:not([data-theme="dark"]) button.primary,
+:root:not([data-theme="dark"]) .primary-button,
+:root:not([data-theme="dark"]) .user-menu,
+:root:not([data-theme="dark"]) .tab-button.active,
+:root:not([data-theme="dark"]) .dashboard-tab.active,
+:root:not([data-theme="dark"]) .category-button.active,
+:root:not([data-theme="dark"]) .sector-category-button.active,
+:root:not([data-theme="dark"]) .pagination button.active,
+:root:not([data-theme="dark"]) .page-btn.active,
+:root:not([data-theme="dark"]) [aria-current="page"]{color:#fff!important}
+/* Ícones e imagens não devem receber a cor de texto. */
+:root:not([data-theme="dark"]) :where(svg,img,i,.icon,.material-icons,.lucide){color:inherit}
