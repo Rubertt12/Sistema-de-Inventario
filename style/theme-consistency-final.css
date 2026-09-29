@@ -460,3 +460,126 @@
 :root:not([data-theme="dark"]) .pagination button.active,
 :root:not([data-theme="dark"]) .page-btn.active,
 :root:not([data-theme="dark"]) [aria-current="page"]{color:#fff!important}
+
+
+/* --------------------------------------------------------------------------
+   LIGHT MODE — dashboard pós-login
+   Contrato final de legibilidade: texto de conteúdo nunca usa branco.
+   Ícones e superfícies de ação ficam fora desta regra.
+   -------------------------------------------------------------------------- */
+:root:not([data-theme="dark"]) body{
+  color:var(--rrn-text)!important;
+  -webkit-text-fill-color:var(--rrn-text);
+}
+:root:not([data-theme="dark"]) main,
+:root:not([data-theme="dark"]) .main-content,
+:root:not([data-theme="dark"]) .dashboard-content,
+:root:not([data-theme="dark"]) .content-wrapper,
+:root:not([data-theme="dark"]) .tab-content{
+  color:var(--rrn-text)!important;
+}
+:root:not([data-theme="dark"]) main :where(h1,h2,h3,h4,h5,h6){
+  color:var(--rrn-heading)!important;
+  -webkit-text-fill-color:var(--rrn-heading);
+}
+:root:not([data-theme="dark"]) main :where(p,li,dt,dd,td,th,label,small,.meta,.muted,.subtitle,.description,.card-subtitle,.machine-meta,.equipment-meta){
+  color:var(--rrn-text)!important;
+  -webkit-text-fill-color:var(--rrn-text);
+}
+:root:not([data-theme="dark"]) main :where(a:not(.btn):not(.rrn-btn):not(.rrn-action-btn)){
+  color:var(--rrn-primary)!important;
+  -webkit-text-fill-color:var(--rrn-primary);
+}
+:root:not([data-theme="dark"]) main :where(button,.btn,.button,.action-btn,.rrn-btn,.rrn-action-btn,.rrn-icon-btn,.machine-action,.equipment-action){
+  color:var(--rrn-heading);
+  -webkit-text-fill-color:var(--rrn-heading);
+}
+:root:not([data-theme="dark"]) main :where(input,select,textarea){
+  color:var(--rrn-text)!important;
+  -webkit-text-fill-color:var(--rrn-text);
+}
+:root:not([data-theme="dark"]) main :where(input,select,textarea)::placeholder{
+  color:var(--rrn-muted)!important;
+  -webkit-text-fill-color:var(--rrn-muted);
+}
+
+/* Componentes claros com hierarquia explícita. */
+:root:not([data-theme="dark"]) :where(
+  .rrn-dashboard-home,
+  .rrn-home-panel,
+  .rrn-kpi,
+  .rrn-health-item,
+  .rrn-alert-item,
+  .rrn-search-result,
+  .rrn-machine-item,
+  .rrn-machine-main,
+  .rrn-machine-fact,
+  .rrn-machine-grid-details,
+  .rrn-setor-card,
+  .setor,
+  .rrn-sector-category,
+  .rrn-category-backbar,
+  .rrn-sector-category-shell,
+  .settings-card,
+  .rrn-settings-panel,
+  .rrn-trash-panel,
+  .rrn-history-panel
+) :where(p,span:not(.rrn-icon):not(.rrn-kpi-icon):not(.rrn-setor-icon):not(.rrn-machine-icon):not(.material-icons):not(.lucide),small,label,li,td,dd,dt){
+  color:var(--rrn-text)!important;
+  -webkit-text-fill-color:var(--rrn-text);
+}
+:root:not([data-theme="dark"]) :where(
+  .rrn-dashboard-home,
+  .rrn-home-panel,
+  .rrn-kpi,
+  .rrn-health-item,
+  .rrn-alert-item,
+  .rrn-search-result,
+  .rrn-machine-item,
+  .rrn-machine-main,
+  .rrn-machine-fact,
+  .rrn-machine-grid-details,
+  .rrn-setor-card,
+  .setor,
+  .rrn-sector-category,
+  .rrn-category-backbar,
+  .rrn-sector-category-shell,
+  .settings-card,
+  .rrn-settings-panel,
+  .rrn-trash-panel,
+  .rrn-history-panel
+) :where(h1,h2,h3,h4,h5,h6,strong,b,.rrn-kpi strong){
+  color:var(--rrn-heading)!important;
+  -webkit-text-fill-color:var(--rrn-heading);
+}
+
+/* Ícones: nunca recebem a cor do texto por acidente. */
+:root:not([data-theme="dark"]) :where(
+  .rrn-icon,.rrn-kpi-icon,.rrn-setor-icon,.rrn-machine-icon,
+  .rrn-icon-control,.material-icons,.lucide,svg
+){
+  -webkit-text-fill-color:initial;
+}
+
+/* Ações com fundo colorido mantêm texto branco. */
+:root:not([data-theme="dark"]) :where(
+  .btn-primary,.rrn-btn-primary,.save-btn,.upload-btn,.btn-confirmar,
+  button.primary,.primary-button,.dashboard-actions button,
+  .rrn-home-action.primary,.tab-button.active,.dashboard-tab.active,
+  .category-button.active,.sector-category-button.active,
+  .pagination button.active,.page-btn.active,[aria-current="page"]
+){
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+/* Navbar continua sendo uma superfície escura, independente do modo claro. */
+:root:not([data-theme="dark"]) .navbar,
+:root:not([data-theme="dark"]) .navbar :where(a,button,span,strong,.user-name){
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+:root:not([data-theme="dark"]) .navbar svg,
+:root:not([data-theme="dark"]) .navbar .rrn-icon{
+  -webkit-text-fill-color:initial;
+}
