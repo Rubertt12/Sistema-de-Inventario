@@ -219,7 +219,7 @@
       body.rrn-tab-stock #searchInput{display:none!important}
       .rrn-stock-view{display:none;width:min(100% - clamp(24px,4vw,64px),1480px);margin:22px auto 36px;color:var(--rrn-stock-text,var(--rrn-stock-text))}
       body.rrn-tab-stock .rrn-stock-view{display:block}
-      :root:not([data-theme="dark"]){--rrn-stock-bg:#F3F6F7;--rrn-stock-surface:#FFFFFF;--rrn-stock-surface-2:#F8FAFA;--rrn-stock-surface-soft:#EDF3F4;--rrn-stock-text:#26363D;--rrn-stock-heading:#123B4A;--rrn-stock-muted:#687980;--rrn-stock-border:rgba(18,59,74,.13);--rrn-stock-primary:#14566B;--rrn-stock-secondary:#23877F}
+      :root:not([data-theme="dark"]){--rrn-stock-bg:#EEF2F3;--rrn-stock-surface:#FFFFFF;--rrn-stock-surface-2:#F8FAFA;--rrn-stock-surface-soft:#EDF3F4;--rrn-stock-text:#263238;--rrn-stock-heading:#163A4D;--rrn-stock-muted:#687980;--rrn-stock-border:rgba(18,59,74,.13);--rrn-stock-primary:#163A4D;--rrn-stock-secondary:#2F7D78}
       :root[data-theme="dark"]{--rrn-stock-bg:#080F13;--rrn-stock-surface:#101A1F;--rrn-stock-surface-2:#16242A;--rrn-stock-surface-soft:#1B2C33;--rrn-stock-text:#E7EEF0;--rrn-stock-heading:#F4F8F9;--rrn-stock-muted:#9BAAB0;--rrn-stock-border:rgba(190,218,224,.14);--rrn-stock-primary:#5BB3AE;--rrn-stock-secondary:#55AAA4}
       body.rrn-tab-stock{background:var(--rrn-stock-bg)!important}
       body.rrn-tab-stock>main{background:transparent!important}
