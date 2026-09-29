@@ -24,3 +24,43 @@
 :root[data-theme="dark"] #formMfaChallenge .field,:root[data-theme="dark"] #formMfaEnroll>.field,:root[data-theme="dark"] .rrn-mfa-offer-copy{background:#111d22!important;border-color:rgba(184,211,219,.13)!important}
 :root[data-theme="dark"] #mfaChallengeCode,:root[data-theme="dark"] #mfaEnrollCode{background:#091318!important;color:#f4f8f9!important;border-color:rgba(103,200,162,.26)!important}
 @media(max-width:600px){.auth-card:has(.rrn-mfa-form.active){padding:24px 18px!important}.rrn-mfa-icon{width:60px!important;height:60px!important;border-radius:18px!important}.rrn-mfa-icon::before{width:27px;height:27px}#mfaChallengeCode,#mfaEnrollCode{height:58px!important;font-size:1.5rem!important}.rrn-mfa-setup{grid-template-columns:1fr!important;text-align:center}.rrn-mfa-setup img{margin:auto}}
+
+/* White mode — contraste completo da autenticação */
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active){
+  background:#FFFFFF!important;
+  color:#263238!important;
+  border-color:rgba(22,58,77,.12)!important;
+  box-shadow:0 24px 70px rgba(22,58,77,.12)!important;
+}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .auth-header h1,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .auth-header p,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-topline strong,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-intro h3,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-offer-copy strong,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-setup strong,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .security-heading h1,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .field>span{color:#163A4D!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-intro p,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-topline small,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .field small,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-offer-copy p,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-setup small,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-trust,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .form-message{color:#52636B!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) input,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) select,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) textarea{color:#263238!important;background:#FFFFFF!important;border-color:rgba(22,58,77,.18)!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) input::placeholder{color:#687980!important;opacity:1!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-topline{background:linear-gradient(135deg,#F1F7F7,#FFFFFF)!important;border-color:rgba(47,125,120,.18)!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-trust{background:#F1F7F7!important;border-color:rgba(47,125,120,.16)!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-setup,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-mfa-offer-copy,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) #formMfaChallenge .field,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) #formMfaEnroll>.field{background:#F8FAFA!important;border-color:rgba(22,58,77,.14)!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-auth-link,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .auth-link,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .rrn-auth-back button{color:#2F7D78!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .auth-footer,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) .auth-footer:after{color:#52636B!important}
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) #mfaChallengeCode,
+:root:not([data-theme="dark"]) .auth-card:has(.rrn-mfa-form.active) #mfaEnrollCode{color:#163A4D!important;background:#FFFFFF!important;-webkit-text-fill-color:#163A4D!important}
