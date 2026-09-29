@@ -1,0 +1,67 @@
+/* RRN Manager — canonical design tokens
+   One semantic contract shared by every page/component. */
+
+:root {
+  color-scheme: dark;
+  --rrn-bg:#10191D;
+  --rrn-surface:#162328;
+  --rrn-surface-2:#1B2A30;
+  --rrn-surface-soft:#1D3036;
+  --rrn-text:#E7EEF0;
+  --rrn-heading:#D8F0EE;
+  --rrn-muted:#A7B5BA;
+  --rrn-placeholder:#829399;
+  --rrn-primary:#79B6B2;
+  --rrn-primary-hover:#91CBC7;
+  --rrn-secondary:#55A39E;
+  --rrn-secondary-hover:#6AB7B2;
+  --rrn-accent:#E19260;
+  --rrn-success:#69C2A3;
+  --rrn-warning:#E3A172;
+  --rrn-danger:#F18D82;
+  --rrn-border:rgba(171,201,207,.18);
+  --rrn-border-strong:rgba(171,201,207,.28);
+  --rrn-focus:rgba(85,163,158,.24);
+  --rrn-navbar:#0C171B;
+  --rrn-navbar-2:#16323A;
+  --rrn-input:#142228;
+  --rrn-overlay:rgba(3,10,13,.78);
+  --rrn-on-primary:#081316;
+}
+
+:root[data-theme="dark"] {
+  color-scheme:dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme:light;
+  --rrn-bg:#F1F3F4;
+  --rrn-surface:#FFFFFF;
+  --rrn-surface-2:#FBFCFC;
+  --rrn-surface-soft:#E8ECEE;
+  --rrn-text:#24343B;
+  --rrn-heading:#123B4A;
+  --rrn-muted:#61737B;
+  --rrn-placeholder:#7B8B92;
+  --rrn-primary:#14566B;
+  --rrn-primary-hover:#0F4759;
+  --rrn-secondary:#23877F;
+  --rrn-secondary-hover:#1C706A;
+  --rrn-accent:#C8753F;
+  --rrn-success:#247A5D;
+  --rrn-warning:#A85F30;
+  --rrn-danger:#B74740;
+  --rrn-border:rgba(18,59,74,.14);
+  --rrn-border-strong:rgba(18,59,74,.22);
+  --rrn-focus:rgba(35,135,127,.18);
+  --rrn-navbar:#123B4A;
+  --rrn-navbar-2:#18566A;
+  --rrn-input:#F8FAFA;
+  --rrn-overlay:rgba(12,35,46,.68);
+  --rrn-on-primary:#FFFFFF;
+}
+
+html,body {
+  background:var(--rrn-bg);
+  color:var(--rrn-text);
+}
