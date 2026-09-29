@@ -401,185 +401,185 @@
 }
 
 
-/* LIGHT FINAL — última camada de contraste. Corrige componentes antigos que ainda
-   chegam com texto branco, sem alterar superfícies realmente escuras/coloridas. */
-:root:not([data-theme="dark"]) .rrn-dashboard-overview,
-:root:not([data-theme="dark"]) .rrn-sector-category-shell,
-:root:not([data-theme="dark"]) .rrn-category-backbar,
-:root:not([data-theme="dark"]) .rrn-machine-item,
-:root:not([data-theme="dark"]) .rrn-machine-fact,
-:root:not([data-theme="dark"]) .rrn-machine-main,
-:root:not([data-theme="dark"]) .rrn-agent-location-card,
-:root:not([data-theme="dark"]) .rrn-home-panel,
-:root:not([data-theme="dark"]) .rrn-kpi,
-:root:not([data-theme="dark"]) .rrn-health-item,
-:root:not([data-theme="dark"]) .rrn-alert-item,
-:root:not([data-theme="dark"]) .rrn-search-result,
-:root:not([data-theme="dark"]) .rrn-category-empty,
-:root:not([data-theme="dark"]) .rrn-sector-empty,
-:root:not([data-theme="dark"]) .empty-state,
-:root:not([data-theme="dark"]) .settings-user-card,
-:root:not([data-theme="dark"]) .settings-session-pill,
-:root:not([data-theme="dark"]) .workspace-summary,
-:root:not([data-theme="dark"]) .settings-segment,
-:root:not([data-theme="dark"]) .settings-kpis>div{
-  color:var(--rrn-text)!important;
-  background:var(--rrn-surface)!important;
-  border-color:var(--rrn-border)!important;
-}
-:root:not([data-theme="dark"]) :where(.rrn-dashboard-overview,.rrn-sector-category-shell,.rrn-category-backbar,.rrn-machine-item,.rrn-machine-fact,.rrn-machine-main,.rrn-agent-location-card,.rrn-home-panel,.rrn-kpi,.rrn-health-item,.rrn-alert-item,.rrn-search-result,.rrn-category-empty,.rrn-sector-empty,.empty-state,.settings-user-card,.settings-session-pill,.workspace-summary,.settings-segment,.settings-kpis>div) :where(h1,h2,h3,h4,h5,h6,strong,b){color:var(--rrn-heading)!important}
-:root:not([data-theme="dark"]) :where(.rrn-dashboard-overview,.rrn-sector-category-shell,.rrn-category-backbar,.rrn-machine-item,.rrn-machine-fact,.rrn-machine-main,.rrn-agent-location-card,.rrn-home-panel,.rrn-kpi,.rrn-health-item,.rrn-alert-item,.rrn-search-result,.rrn-category-empty,.rrn-sector-empty,.empty-state,.settings-user-card,.settings-session-pill,.workspace-summary,.settings-segment,.settings-kpis>div) :where(p,small,label,li,td,dd,dt,.meta,.muted,.subtitle,.description){color:var(--rrn-text)!important}
-/* Labels de ícones são excluídos: a cor do SVG/wrapper pertence ao componente. */
-:root:not([data-theme="dark"]) :where(.rrn-kpi-icon,.rrn-setor-icon,.rrn-machine-icon,.rrn-icon-control,.rrn-icon,.material-icons,.lucide){color:inherit!important}
-/* Texto branco legado em elementos inline. */
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color:#fff"],
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color: #fff"],
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color:#FFF"],
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color: #FFF"],
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color:#ffffff"],
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color: #ffffff"],
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color: white"],
-:root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color:white"]{color:var(--rrn-text)!important}
-/* Exceções obrigatórias: elementos com fundo de ação continuam brancos. */
-:root:not([data-theme="dark"]) .navbar,
-:root:not([data-theme="dark"]) .navbar :where(a,button,span,strong,.user-name),
-:root:not([data-theme="dark"]) .brand-panel,
-:root:not([data-theme="dark"]) .brand-panel :where(h1,p,span,strong,.eyebrow),
-:root:not([data-theme="dark"]) .btn-primary,
-:root:not([data-theme="dark"]) .rrn-btn-primary,
-:root:not([data-theme="dark"]) .save-btn,
-:root:not([data-theme="dark"]) .upload-btn,
-:root:not([data-theme="dark"]) .btn-confirmar,
-:root:not([data-theme="dark"]) button.primary,
-:root:not([data-theme="dark"]) .primary-button,
-:root:not([data-theme="dark"]) .user-menu,
-:root:not([data-theme="dark"]) .tab-button.active,
-:root:not([data-theme="dark"]) .dashboard-tab.active,
-:root:not([data-theme="dark"]) .category-button.active,
-:root:not([data-theme="dark"]) .sector-category-button.active,
-:root:not([data-theme="dark"]) .pagination button.active,
-:root:not([data-theme="dark"]) .page-btn.active,
-:root:not([data-theme="dark"]) [aria-current="page"]{color:#fff!important}
-
-
 /* --------------------------------------------------------------------------
-   LIGHT MODE — dashboard pós-login
-   Contrato final de legibilidade: texto de conteúdo nunca usa branco.
-   Ícones e superfícies de ação ficam fora desta regra.
+   RRN Manager — White Mode visual system
+   Uma única hierarquia para o conteúdo pós-login.
    -------------------------------------------------------------------------- */
+:root:not([data-theme="dark"]){
+  --rrn-bg:#F4F7F8;
+  --rrn-surface:#FFFFFF;
+  --rrn-surface-2:#F8FAFB;
+  --rrn-surface-soft:#EEF4F4;
+  --rrn-text:#26363D;
+  --rrn-heading:#123B4A;
+  --rrn-muted:#60727A;
+  --rrn-border:rgba(18,59,74,.12);
+  --rrn-primary:#14566B;
+  --rrn-primary-hover:#0F4759;
+  --rrn-secondary:#23877F;
+  --rrn-secondary-hover:#1D716A;
+  --rrn-accent:#C8753F;
+}
+
+/* Página */
 :root:not([data-theme="dark"]) body{
   color:var(--rrn-text)!important;
-  -webkit-text-fill-color:var(--rrn-text);
+  background:linear-gradient(180deg,#F8FAFB 0%,#F1F5F6 100%)!important;
 }
-:root:not([data-theme="dark"]) main,
-:root:not([data-theme="dark"]) .main-content,
-:root:not([data-theme="dark"]) .dashboard-content,
-:root:not([data-theme="dark"]) .content-wrapper,
-:root:not([data-theme="dark"]) .tab-content{
-  color:var(--rrn-text)!important;
+:root:not([data-theme="dark"]) main{
+  color:var(--rrn-text);
 }
+
+/* Hierarquia tipográfica — somente elementos de conteúdo */
 :root:not([data-theme="dark"]) main :where(h1,h2,h3,h4,h5,h6){
   color:var(--rrn-heading)!important;
-  -webkit-text-fill-color:var(--rrn-heading);
 }
-:root:not([data-theme="dark"]) main :where(p,li,dt,dd,td,th,label,small,.meta,.muted,.subtitle,.description,.card-subtitle,.machine-meta,.equipment-meta){
+:root:not([data-theme="dark"]) main :where(p,li,dt,dd,td,th,label,small){
   color:var(--rrn-text)!important;
-  -webkit-text-fill-color:var(--rrn-text);
 }
-:root:not([data-theme="dark"]) main :where(a:not(.btn):not(.rrn-btn):not(.rrn-action-btn)){
-  color:var(--rrn-primary)!important;
-  -webkit-text-fill-color:var(--rrn-primary);
+:root:not([data-theme="dark"]) main :where(.muted,.meta,.subtitle,.description,.card-meta,.kpi-label,.metric-label,.machine-meta,.equipment-meta){
+  color:var(--rrn-muted)!important;
 }
-:root:not([data-theme="dark"]) main :where(button,.btn,.button,.action-btn,.rrn-btn,.rrn-action-btn,.rrn-icon-btn,.machine-action,.equipment-action){
-  color:var(--rrn-heading);
-  -webkit-text-fill-color:var(--rrn-heading);
+:root:not([data-theme="dark"]) main :where(a:not(button)){
+  color:var(--rrn-primary);
 }
+
+/* Cards e painéis: branco limpo, borda leve e sombra curta. */
+:root:not([data-theme="dark"]) main :where(
+  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,
+  .panel,.chart-card,.activity-card,.settings-card,.user-card,
+  .machine-card,.equipment-card,.sector-card,.setor-card,.detail-card,
+  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,.rrn-health-item,
+  .rrn-alert-item,.rrn-search-result,.rrn-machine-item,.rrn-setor-card,
+  .rrn-sector-category,.rrn-sector-category-shell,.rrn-category-backbar
+){
+  background:var(--rrn-surface)!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+  box-shadow:0 5px 20px rgba(18,59,74,.055)!important;
+}
+:root:not([data-theme="dark"]) main :where(
+  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,
+  .panel,.chart-card,.activity-card,.settings-card,.user-card,
+  .machine-card,.equipment-card,.sector-card,.setor-card,.detail-card,
+  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,.rrn-health-item,
+  .rrn-alert-item,.rrn-search-result,.rrn-machine-item,.rrn-setor-card,
+  .rrn-sector-category,.rrn-sector-category-shell,.rrn-category-backbar
+) :where(h1,h2,h3,h4,h5,h6,strong,b,.title,.card-title,.section-title,.panel-title){
+  color:var(--rrn-heading)!important;
+}
+:root:not([data-theme="dark"]) main :where(
+  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,
+  .panel,.chart-card,.activity-card,.settings-card,.user-card,
+  .machine-card,.equipment-card,.sector-card,.setor-card,.detail-card,
+  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,.rrn-health-item,
+  .rrn-alert-item,.rrn-search-result,.rrn-machine-item,.rrn-setor-card
+) :where(.muted,.meta,.subtitle,.description,.card-meta,.kpi-label,.metric-label,small){
+  color:var(--rrn-muted)!important;
+}
+
+/* Campos */
 :root:not([data-theme="dark"]) main :where(input,select,textarea){
+  background:#FFFFFF!important;
   color:var(--rrn-text)!important;
-  -webkit-text-fill-color:var(--rrn-text);
+  border:1px solid var(--rrn-border)!important;
 }
 :root:not([data-theme="dark"]) main :where(input,select,textarea)::placeholder{
-  color:var(--rrn-muted)!important;
-  -webkit-text-fill-color:var(--rrn-muted);
+  color:#819097!important;
+}
+:root:not([data-theme="dark"]) main :where(input,select,textarea):focus{
+  border-color:var(--rrn-secondary)!important;
+  box-shadow:0 0 0 3px rgba(35,135,127,.12)!important;
+  outline:none!important;
 }
 
-/* Componentes claros com hierarquia explícita. */
-:root:not([data-theme="dark"]) :where(
-  .rrn-dashboard-home,
-  .rrn-home-panel,
-  .rrn-kpi,
-  .rrn-health-item,
-  .rrn-alert-item,
-  .rrn-search-result,
-  .rrn-machine-item,
-  .rrn-machine-main,
-  .rrn-machine-fact,
-  .rrn-machine-grid-details,
-  .rrn-setor-card,
-  .setor,
-  .rrn-sector-category,
-  .rrn-category-backbar,
-  .rrn-sector-category-shell,
-  .settings-card,
-  .rrn-settings-panel,
-  .rrn-trash-panel,
-  .rrn-history-panel
-) :where(p,span:not(.rrn-icon):not(.rrn-kpi-icon):not(.rrn-setor-icon):not(.rrn-machine-icon):not(.material-icons):not(.lucide),small,label,li,td,dd,dt){
-  color:var(--rrn-text)!important;
-  -webkit-text-fill-color:var(--rrn-text);
-}
-:root:not([data-theme="dark"]) :where(
-  .rrn-dashboard-home,
-  .rrn-home-panel,
-  .rrn-kpi,
-  .rrn-health-item,
-  .rrn-alert-item,
-  .rrn-search-result,
-  .rrn-machine-item,
-  .rrn-machine-main,
-  .rrn-machine-fact,
-  .rrn-machine-grid-details,
-  .rrn-setor-card,
-  .setor,
-  .rrn-sector-category,
-  .rrn-category-backbar,
-  .rrn-sector-category-shell,
-  .settings-card,
-  .rrn-settings-panel,
-  .rrn-trash-panel,
-  .rrn-history-panel
-) :where(h1,h2,h3,h4,h5,h6,strong,b,.rrn-kpi strong){
+/* Botões neutros */
+:root:not([data-theme="dark"]) main :where(
+  .btn-secondary,.secondary-button,.btn-ghost,.filter-btn,
+  .view-toggle button,.pagination button,.page-btn
+){
+  background:#FFFFFF!important;
   color:var(--rrn-heading)!important;
-  -webkit-text-fill-color:var(--rrn-heading);
+  border-color:var(--rrn-border)!important;
+}
+:root:not([data-theme="dark"]) main :where(
+  .btn-secondary,.secondary-button,.btn-ghost,.filter-btn,
+  .view-toggle button,.pagination button,.page-btn
+):hover{
+  background:var(--rrn-surface-soft)!important;
 }
 
-/* Ícones: nunca recebem a cor do texto por acidente. */
-:root:not([data-theme="dark"]) :where(
-  .rrn-icon,.rrn-kpi-icon,.rrn-setor-icon,.rrn-machine-icon,
-  .rrn-icon-control,.material-icons,.lucide,svg
-){
-  -webkit-text-fill-color:initial;
-}
-
-/* Ações com fundo colorido mantêm texto branco. */
-:root:not([data-theme="dark"]) :where(
+/* Ações primárias */
+:root:not([data-theme="dark"]) main :where(
   .btn-primary,.rrn-btn-primary,.save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button,.dashboard-actions button,
-  .rrn-home-action.primary,.tab-button.active,.dashboard-tab.active,
-  .category-button.active,.sector-category-button.active,
-  .pagination button.active,.page-btn.active,[aria-current="page"]
+  button.primary,.primary-button,.dashboard-actions button
 ){
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+  background:var(--rrn-primary)!important;
+  color:#FFFFFF!important;
+  border-color:var(--rrn-primary)!important;
+}
+:root:not([data-theme="dark"]) main :where(
+  .btn-primary,.rrn-btn-primary,.save-btn,.upload-btn,.btn-confirmar,
+  button.primary,.primary-button,.dashboard-actions button
+):hover{
+  background:var(--rrn-primary-hover)!important;
 }
 
-/* Navbar continua sendo uma superfície escura, independente do modo claro. */
-:root:not([data-theme="dark"]) .navbar,
+/* Tabs e estados selecionados */
+:root:not([data-theme="dark"]) main :where(
+  .tab-button.active,.dashboard-tab.active,.category-button.active,
+  .sector-category-button.active,.pagination button.active,.page-btn.active,
+  [aria-current="page"]
+){
+  background:var(--rrn-secondary)!important;
+  color:#FFFFFF!important;
+  border-color:var(--rrn-secondary)!important;
+}
+
+/* Navbar é deliberadamente independente do White Mode. */
+:root:not([data-theme="dark"]) .navbar{
+  background:linear-gradient(135deg,#123B4A,#18566A)!important;
+  color:#FFFFFF!important;
+}
 :root:not([data-theme="dark"]) .navbar :where(a,button,span,strong,.user-name){
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+  color:#FFFFFF!important;
 }
-:root:not([data-theme="dark"]) .navbar svg,
-:root:not([data-theme="dark"]) .navbar .rrn-icon{
-  -webkit-text-fill-color:initial;
+/* Nunca alterar a pintura dos ícones da navbar. */
+:root:not([data-theme="dark"]) .navbar :where(svg,.rrn-icon,.rrn-icon-control){
+  color:inherit!important;
+  -webkit-text-fill-color:initial!important;
 }
+
+/* Menus e modais claros */
+:root:not([data-theme="dark"]) :where(.user-dropdown,.modal-content,.config-modal,.detail-card){
+  background:#FFFFFF!important;
+  color:var(--rrn-text)!important;
+  border-color:var(--rrn-border)!important;
+}
+:root:not([data-theme="dark"]) :where(.user-dropdown,.modal-content,.config-modal,.detail-card) :where(h1,h2,h3,h4,h5,h6,strong,b){
+  color:var(--rrn-heading)!important;
+}
+:root:not([data-theme="dark"]) :where(.user-dropdown,.modal-content,.config-modal,.detail-card) :where(p,span,label,small,li){
+  color:var(--rrn-text)!important;
+}
+
+/* Status semânticos */
+:root:not([data-theme="dark"]) .status-ok,
+:root:not([data-theme="dark"]) .badge-success,
+:root:not([data-theme="dark"]) .status-active{
+  color:#237456!important;
+  background:rgba(35,116,86,.10)!important;
+}
+:root:not([data-theme="dark"]) .status-warning,
+:root:not([data-theme="dark"]) .badge-warning{
+  color:#94562D!important;
+  background:rgba(180,106,53,.10)!important;
+}
+:root:not([data-theme="dark"]) .status-danger,
+:root:not([data-theme="dark"]) .badge-danger{
+  color:#A83F39!important;
+  background:rgba(185,74,67,.10)!important;
+}
+
+/* Não usar regras globais para span/svg/icon e não converter texto inline
+   indiscriminadamente. Componentes antigos devem ser corrigidos localmente. */
