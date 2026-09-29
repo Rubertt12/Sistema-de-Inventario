@@ -7,7 +7,7 @@
   // Apenas módulos necessários para a primeira tela utilizável entram no warm-up.
   const dashboardCriticalScriptQueue = [
     '/js/supabase-config.js',
-    '/js/theme-mode.js?v=20260817-1123',
+    '/js/theme-mode.js?v=20260929-16',
     '/js/preview-demo.js',
     '/js/icons-v2.js',
     '/js/icon-mutation-bridge.js',
@@ -426,7 +426,7 @@
 
   (async () => {
     if (!window.RRN_SUPABASE) await load('/js/supabase-config.js');
-    await load('/js/theme-mode.js?v=20260817-1123');
+    await load('/js/theme-mode.js?v=20260929-16');
     await load('/js/preview-demo.js');
     window.verificarPermissoes?.();
     if (isDashboard && window.RRN_PREVIEW_DEMO) { window.loadSetoresAndMachines?.(); window.renderSetores?.(); }
