@@ -263,3 +263,139 @@
 :root:not([data-theme="dark"]) .navbar{
   background:linear-gradient(135deg,var(--rrn-navbar),var(--rrn-navbar-2))!important;
 }
+
+
+/* --------------------------------------------------------------------------
+   RRN Manager — palette refinement 2026
+   Light: clean/neutral with teal identity.
+   Dark: deep graphite/teal, avoiding crushed blacks and excessive blue.
+   -------------------------------------------------------------------------- */
+
+:root:not([data-theme="dark"]){
+  --rrn-bg:#F3F6F7;
+  --rrn-surface:#FFFFFF;
+  --rrn-surface-2:#F8FAFA;
+  --rrn-surface-soft:#EDF3F4;
+  --rrn-input:#FFFFFF;
+  --rrn-text:#26363D;
+  --rrn-heading:#123B4A;
+  --rrn-muted:#687980;
+  --rrn-border:rgba(18,59,74,.13);
+  --rrn-primary:#14566B;
+  --rrn-primary-hover:#0F4759;
+  --rrn-secondary:#23877F;
+  --rrn-secondary-hover:#1D716A;
+  --rrn-accent:#C8753F;
+  --rrn-success:#258565;
+  --rrn-warning:#B46A35;
+  --rrn-danger:#B94A43;
+  --rrn-navbar:#123B4A;
+  --rrn-navbar-2:#18566A;
+  --rrn-on-primary:#FFFFFF;
+  --rrn-on-secondary:#FFFFFF;
+  --rrn-shadow-soft:0 8px 26px rgba(18,59,74,.065);
+  --rrn-shadow-panel:0 22px 60px rgba(18,59,74,.14);
+}
+
+:root[data-theme="dark"]{
+  --rrn-bg:#080F13;
+  --rrn-surface:#101A1F;
+  --rrn-surface-2:#16242A;
+  --rrn-surface-soft:#1B2C33;
+  --rrn-input:#0C1519;
+  --rrn-text:#E7EEF0;
+  --rrn-heading:#F4F8F9;
+  --rrn-muted:#9BAAB0;
+  --rrn-border:rgba(190,218,224,.14);
+  --rrn-primary:#5BB3AE;
+  --rrn-primary-hover:#70C3BE;
+  --rrn-secondary:#55AAA4;
+  --rrn-secondary-hover:#6ABAB4;
+  --rrn-accent:#E09A69;
+  --rrn-success:#62C39D;
+  --rrn-warning:#E6AA76;
+  --rrn-danger:#EE8D87;
+  --rrn-navbar:#071116;
+  --rrn-navbar-2:#10323C;
+  --rrn-on-primary:#061214;
+  --rrn-on-secondary:#061214;
+  --rrn-shadow-soft:0 12px 32px rgba(0,0,0,.24);
+  --rrn-shadow-panel:0 28px 80px rgba(0,0,0,.52);
+}
+
+/* Backgrounds */
+:root:not([data-theme="dark"]) body{
+  background:
+    radial-gradient(circle at 8% -10%,rgba(35,135,127,.055),transparent 28rem),
+    linear-gradient(180deg,#F7F9FA 0%,#F1F5F6 100%)!important;
+}
+:root[data-theme="dark"] body{
+  background:
+    radial-gradient(circle at 8% -10%,rgba(85,170,164,.075),transparent 30rem),
+    radial-gradient(circle at 100% 0,rgba(224,154,105,.035),transparent 24rem),
+    #080F13!important;
+}
+
+/* Cards: subtle separation in light, depth through surface contrast in dark. */
+:root:not([data-theme="dark"]) .setor,
+:root:not([data-theme="dark"]) .rrn-setor-card,
+:root:not([data-theme="dark"]) .rrn-machine-item,
+:root:not([data-theme="dark"]) .rrn-dashboard-overview,
+:root:not([data-theme="dark"]) .rrn-home-panel,
+:root:not([data-theme="dark"]) .rrn-kpi{
+  box-shadow:0 7px 24px rgba(18,59,74,.055)!important;
+}
+:root[data-theme="dark"] .setor,
+:root[data-theme="dark"] .rrn-setor-card,
+:root[data-theme="dark"] .rrn-machine-item,
+:root[data-theme="dark"] .rrn-dashboard-overview,
+:root[data-theme="dark"] .rrn-home-panel,
+:root[data-theme="dark"] .rrn-kpi{
+  box-shadow:0 10px 28px rgba(0,0,0,.18)!important;
+}
+
+/* Category navigation */
+.rrn-sector-category{
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease!important;
+}
+:root:not([data-theme="dark"]) .rrn-sector-category:hover{
+  box-shadow:0 8px 22px rgba(35,135,127,.08)!important;
+  transform:translateY(-1px);
+}
+:root[data-theme="dark"] .rrn-sector-category:hover{
+  box-shadow:0 8px 24px rgba(0,0,0,.18)!important;
+  transform:translateY(-1px);
+}
+
+/* Search */
+:root:not([data-theme="dark"]) .navbar #searchInput{
+  background:rgba(255,255,255,.10)!important;
+  border-color:rgba(255,255,255,.16)!important;
+}
+:root:not([data-theme="dark"]) .navbar #searchInput:focus{
+  background:rgba(255,255,255,.16)!important;
+}
+
+/* Status colors stay semantic and restrained. */
+:root:not([data-theme="dark"]) .rrn-status.online{
+  background:rgba(37,133,101,.10)!important;
+}
+:root:not([data-theme="dark"]) .rrn-status.maintenance{
+  background:rgba(180,106,53,.10)!important;
+}
+:root[data-theme="dark"] .rrn-status.online{
+  background:rgba(98,195,157,.12)!important;
+}
+:root[data-theme="dark"] .rrn-status.maintenance{
+  background:rgba(230,170,118,.12)!important;
+}
+
+/* Focus and selection */
+:root:not([data-theme="dark"]) ::selection{
+  background:rgba(35,135,127,.18);
+  color:#123B4A;
+}
+:root[data-theme="dark"] ::selection{
+  background:rgba(85,170,164,.30);
+  color:#fff;
+}
