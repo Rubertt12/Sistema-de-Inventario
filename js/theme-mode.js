@@ -25,6 +25,22 @@
     document.head.appendChild(script);
   };
 
+  function ensureFinalThemeCascade() {
+    const link = document.querySelector('link[data-rrn-theme-final-cascade]');
+    const target = document.body || document.head;
+    if (!target) return;
+    if (link) {
+      if (link.parentNode !== document.body && document.body) document.body.appendChild(link);
+      return;
+    }
+    const finalLink = document.createElement('link');
+    finalLink.rel = 'stylesheet';
+    finalLink.href = '/style/theme-final-cascade-v1.css?v=20260929-1';
+    finalLink.setAttribute('data-rrn-theme-final-cascade', '1');
+    target.appendChild(finalLink);
+    if (document.body && finalLink.parentNode !== document.body) document.body.appendChild(finalLink);
+  }
+
   function ensureThemeFixes() {
     addStylesheet('/style/theme-tokens-v3.css?v=20260929-2', 'data-rrn-theme-tokens-v3');
     addStylesheet('/style/dark-mode-v5.css?v=20260929-1', 'data-rrn-dark-mode-v5');
@@ -62,6 +78,7 @@
   function apply(mode, persist = true) {
     const normalized = mode === 'light' ? 'light' : 'dark';
     ensureThemeFixes();
+    ensureFinalThemeCascade();
     document.documentElement.dataset.theme = normalized;
     if (persist) localStorage.setItem(KEY, normalized);
     document.documentElement.style.colorScheme = normalized;
@@ -113,6 +130,7 @@
 
   function mount() {
     ensureThemeFixes();
+    ensureFinalThemeCascade();
     ensureFooter();
     bindThemeButtons();
     mountSecurityLink();
