@@ -748,3 +748,214 @@
   color: var(--rrn-placeholder) !important;
   -webkit-text-fill-color: var(--rrn-placeholder) !important;
 }
+
+
+/* ==========================================================================
+   RRN Manager — LIGHT MODE POLISH V2
+   Visual hierarchy, density, surfaces, states and interaction quality.
+   Dark mode is not affected.
+   ========================================================================== */
+
+:root[data-theme="light"] {
+  --rrn-bg:#E9EDF0;
+  --rrn-surface:#F8FAFB;
+  --rrn-surface-2:#FFFFFF;
+  --rrn-surface-soft:#E1E6E9;
+  --rrn-input:#F7F9FA;
+  --rrn-text:#23343B;
+  --rrn-heading:#103B4B;
+  --rrn-muted:#60737C;
+  --rrn-placeholder:#788991;
+  --rrn-border:rgba(16,59,75,.13);
+  --rrn-border-strong:rgba(16,59,75,.20);
+  --rrn-focus:rgba(35,135,127,.18);
+}
+
+/* Global rendering */
+:root[data-theme="light"] {
+  scrollbar-color:#B7C2C7 #E9EDF0;
+}
+:root[data-theme="light"] ::selection {
+  background:rgba(35,135,127,.20);
+  color:var(--rrn-heading);
+}
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(circle at 10% -10%, rgba(35,135,127,.045), transparent 30%),
+    var(--rrn-bg) !important;
+}
+
+/* Main content gets a quiet visual canvas instead of a flat white page. */
+:root[data-theme="light"] main,
+:root[data-theme="light"] .main-content,
+:root[data-theme="light"] .dashboard-content,
+:root[data-theme="light"] .content-wrapper,
+:root[data-theme="light"] .tab-content {
+  background:transparent !important;
+}
+
+/* Cards: slightly tinted surfaces + restrained elevation. */
+:root[data-theme="light"] main :where(
+  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,
+  .panel,.chart-card,.activity-card,.settings-card,.user-card,.machine-card,
+  .equipment-card,.sector-card,.setor-card,.detail-card,.queue-card,.health-card,
+  .overview-panel,.transfer-column,.transfer-card,.box-setor,
+  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,.rrn-machine-item,
+  .rrn-setor-card,.rrn-agent-location-card,.rrn-health-item,.rrn-alert-item,
+  .rrn-search-result,.security-card,.security-factor,.security-status,
+  .settings-user-card,.workspace-summary,.settings-segment
+) {
+  background:var(--rrn-surface) !important;
+  border:1px solid var(--rrn-border) !important;
+  box-shadow:0 1px 2px rgba(16,59,75,.035),0 8px 24px rgba(16,59,75,.035) !important;
+}
+
+/* Hover elevation only on interactive cards. */
+:root[data-theme="light"] main :where(
+  .machine-card,.equipment-card,.sector-card,.setor-card,.rrn-machine-item,
+  .rrn-setor-card,.rrn-search-result,.dashboard-card
+):hover {
+  border-color:var(--rrn-border-strong) !important;
+  box-shadow:0 2px 4px rgba(16,59,75,.045),0 12px 30px rgba(16,59,75,.055) !important;
+}
+
+/* Inputs should visually belong to the page, not look like browser defaults. */
+:root[data-theme="light"] :where(input,select,textarea,.search-input,.search-box input) {
+  background:var(--rrn-input) !important;
+  border:1px solid var(--rrn-border-strong) !important;
+  border-radius:9px;
+  box-shadow:inset 0 1px 1px rgba(16,59,75,.025) !important;
+}
+:root[data-theme="light"] :where(input,select,textarea,.search-input,.search-box input):hover {
+  border-color:rgba(16,59,75,.28) !important;
+}
+:root[data-theme="light"] :where(input,select,textarea,.search-input,.search-box input):focus {
+  background:#FFFFFF !important;
+  border-color:var(--rrn-secondary) !important;
+  box-shadow:0 0 0 3px var(--rrn-focus),inset 0 1px 1px rgba(16,59,75,.025) !important;
+}
+
+/* Toolbar / filter zones */
+:root[data-theme="light"] main :where(
+  .toolbar,.filters-bar,.filter-group,.tabs,.dashboard-tabs,.view-toggle,
+  .category-bar,.sector-category-bar
+) {
+  background:rgba(248,250,251,.82) !important;
+  border:1px solid var(--rrn-border) !important;
+  box-shadow:0 1px 2px rgba(16,59,75,.025) !important;
+}
+
+/* Tables: clear header, subtle zebra, stronger row separation. */
+:root[data-theme="light"] :where(table,.table-wrap) {
+  background:var(--rrn-surface) !important;
+  border-radius:10px;
+  overflow:hidden;
+}
+:root[data-theme="light"] table thead th {
+  background:var(--rrn-surface-soft) !important;
+  color:var(--rrn-heading) !important;
+  font-weight:700;
+  border-bottom:1px solid var(--rrn-border-strong) !important;
+}
+:root[data-theme="light"] table tbody tr:nth-child(even) td {
+  background:rgba(225,230,233,.24) !important;
+}
+:root[data-theme="light"] table tbody tr:hover td {
+  background:rgba(35,135,127,.055) !important;
+}
+
+/* Buttons: neutral actions stay quiet; primary actions stay obvious. */
+:root[data-theme="light"] main :where(
+  .btn-secondary,.secondary-button,.btn-ghost,.settings-ghost-btn,
+  .settings-back-btn,.action-btn,.rrn-action-btn,.rrn-icon-btn,
+  .filter-btn,.view-toggle button,.pagination button,.page-btn
+) {
+  background:var(--rrn-surface-2) !important;
+  border:1px solid var(--rrn-border-strong) !important;
+  box-shadow:0 1px 2px rgba(16,59,75,.025) !important;
+}
+:root[data-theme="light"] main :where(
+  .btn-secondary,.secondary-button,.btn-ghost,.settings-ghost-btn,
+  .settings-back-btn,.action-btn,.rrn-action-btn,.rrn-icon-btn,
+  .filter-btn,.view-toggle button,.pagination button,.page-btn
+):hover {
+  background:var(--rrn-surface-soft) !important;
+  border-color:rgba(16,59,75,.27) !important;
+}
+
+/* Status badges become compact semantic pills. */
+:root[data-theme="light"] :where(
+  .status-ok,.badge-success,.status-active,.status-online,
+  .status-warning,.badge-warning,.status-maintenance,
+  .status-danger,.badge-danger,.status-inactive
+) {
+  border:1px solid currentColor !important;
+  border-radius:999px !important;
+  padding:.18rem .55rem !important;
+  font-weight:700;
+}
+
+/* Modals: layered above the grey canvas. */
+:root[data-theme="light"] :where(
+  .modal-content,.config-modal,.modal-transferencia-content,
+  .security-modal,.settings-modal
+) {
+  background:var(--rrn-surface-2) !important;
+  border:1px solid var(--rrn-border-strong) !important;
+  box-shadow:0 20px 60px rgba(16,59,75,.16) !important;
+}
+
+/* Dropdowns get the same surface language as cards. */
+:root[data-theme="light"] .user-dropdown,
+:root[data-theme="light"] .dropdown-menu,
+:root[data-theme="light"] .autocomplete-menu,
+:root[data-theme="light"] .search-results {
+  background:var(--rrn-surface-2) !important;
+  border:1px solid var(--rrn-border-strong) !important;
+  box-shadow:0 14px 38px rgba(16,59,75,.12) !important;
+}
+
+/* Empty/loading states: quieter than normal content. */
+:root[data-theme="light"] main :where(
+  .empty-state,.category-empty,.sector-empty,.rrn-category-empty,
+  .loading-state,.no-results
+) {
+  color:var(--rrn-muted) !important;
+  background:var(--rrn-surface-soft) !important;
+  border:1px dashed var(--rrn-border-strong) !important;
+}
+
+/* Disabled controls */
+:root[data-theme="light"] :where(
+  button:disabled,input:disabled,select:disabled,textarea:disabled,
+  .disabled,[aria-disabled="true"]
+) {
+  opacity:.56 !important;
+  cursor:not-allowed !important;
+}
+
+/* Keep dark/brand surfaces intentional. */
+:root[data-theme="light"] .navbar,
+:root[data-theme="light"] .rrn-home-hero,
+:root[data-theme="light"] .brand-panel,
+:root[data-theme="light"] .btn-primary,
+:root[data-theme="light"] .rrn-btn-primary,
+:root[data-theme="light"] .settings-primary-btn,
+:root[data-theme="light"] .save-btn,
+:root[data-theme="light"] .upload-btn,
+:root[data-theme="light"] .btn-confirmar,
+:root[data-theme="light"] button.primary,
+:root[data-theme="light"] .primary-button {
+  box-shadow:none !important;
+}
+
+/* Mobile: remove excessive elevation and preserve contrast. */
+@media (max-width:900px) {
+  :root[data-theme="light"] main :where(
+    .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,
+    .panel,.settings-card,.machine-card,.equipment-card,.sector-card,
+    .setor-card,.detail-card,.rrn-kpi,.rrn-machine-item,.rrn-setor-card
+  ) {
+    box-shadow:0 1px 2px rgba(16,59,75,.035) !important;
+  }
+}
