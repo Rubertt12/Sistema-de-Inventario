@@ -6,6 +6,10 @@
 
   const KEY = 'rrn_theme_mode';
 
+  // RRN Manager uses Dark Mode exclusively.
+  document.documentElement.dataset.theme = 'dark';
+  localStorage.setItem(KEY, 'dark');
+
   function addStylesheet(href, marker) {
     if (document.querySelector(`link[${marker}]`)) return;
     const link = document.createElement('link');
@@ -29,7 +33,6 @@
     const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\.html$/i.test(location.pathname);
     if (isDashboard) addStylesheet('/style/dark-inventory-fix.css', 'data-rrn-dark-inventory-fix');
     addStylesheet('/style/theme-consistency-v1.css?v=20260817-1', 'data-rrn-theme-consistency-v1');
-    addStylesheet('/style/theme-consistency-final.css?v=20260929-11', 'data-rrn-theme-consistency-final');
     if (isDashboard) {
       addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-3', 'data-rrn-theme-component-fixes-v2');
       addStylesheet('/style/ui-fixes-v3.css?v=20260817-2', 'data-rrn-ui-fixes-v3');
@@ -43,8 +46,6 @@
       addScript('/js/modal-system-v1.js?v=20260817-1123', 'data-rrn-modal-system-v1');
       addScript('/js/map-tile-fallback.js?v=20260817-1000', 'data-rrn-map-tile-fallback');
     }
-    /* Final light-mode contrast layer is intentionally last for every page. */
-    addStylesheet('/style/theme-consistency-final.css?v=20260929-9', 'data-rrn-theme-consistency-final-last');
   }
 
   function ensureFooter() {
@@ -83,51 +84,6 @@
     document.head.appendChild(trusted);
   }
 
-  function preferred() {
-    const saved = localStorage.getItem(KEY);
-    if (saved === 'dark' || saved === 'light') return saved;
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function syncButtons(mode) {
-    document.querySelectorAll('[data-rrn-theme-toggle]').forEach(button => {
-      button.setAttribute('aria-pressed', String(mode === 'dark'));
-      button.textContent = mode === 'dark' ? 'Modo claro' : 'Modo escuro';
-    });
-  }
-
-  function apply(mode) {
-    const normalized = mode === 'dark' ? 'dark' : 'light';
-    ensureThemeFixes();
-    document.documentElement.dataset.theme = normalized;
-    localStorage.setItem(KEY, normalized);
-    syncButtons(normalized);
-    window.dispatchEvent(new CustomEvent('rrn:themechange', { detail: { mode: normalized } }));
-  }
-
-  function toggle() {
-    apply(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-  }
-
-  function bindExistingButtons() {
-    document.querySelectorAll('[data-rrn-theme-toggle]').forEach(button => {
-      if (button.dataset.rrnThemeBound === '1') return;
-      button.dataset.rrnThemeBound = '1';
-      button.addEventListener('click', toggle);
-    });
-  }
-
-  function makeButton(extra = '') {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = `rrn-theme-toggle ${extra}`.trim();
-    button.setAttribute('data-rrn-theme-toggle', '1');
-    button.setAttribute('aria-label', 'Alternar tema claro e escuro');
-    button.dataset.rrnThemeBound = '1';
-    button.addEventListener('click', toggle);
-    return button;
-  }
-
   function mountSecurityLink() {
     const dropdown = document.getElementById('userDropdown');
     if (!dropdown || dropdown.querySelector('[data-rrn-security-link]')) return;
@@ -146,32 +102,13 @@
   function mount() {
     ensureThemeFixes();
     ensureFooter();
+    mountSecurityLink();\n    ensureThemeFixes();
+    ensureFooter();
     mountSecurityLink();
-    bindExistingButtons();
-    if (document.querySelector('[data-rrn-theme-toggle]')) {
-      syncButtons(document.documentElement.dataset.theme || preferred());
-      return;
-    }
-
-    const dropdown = document.getElementById('userDropdown');
-    if (dropdown) {
-      const button = makeButton();
-      dropdown.insertBefore(button, dropdown.firstChild);
-      syncButtons(document.documentElement.dataset.theme || preferred());
-      return;
-    }
-
-    const topbar = document.querySelector('.topbar');
-    if (topbar) {
-      const button = makeButton();
-      topbar.insertBefore(button, topbar.lastElementChild);
-      syncButtons(document.documentElement.dataset.theme || preferred());
-    }
-  }
-
-  ensureThemeFixes();
+  }\n\n  ensureThemeFixes();
   ensureFooter();
-  apply(preferred());
+  document.documentElement.dataset.theme = 'dark';
+  localStorage.setItem(KEY, 'dark');
   ensureMfaGuard();
 
   if (document.readyState === 'loading') {
@@ -183,9 +120,9 @@
   setTimeout(mountSecurityLink, 350);
   setTimeout(mountSecurityLink, 1100);
 
-  window.RRN_THEME = {
-    get: () => document.documentElement.dataset.theme,
-    set: apply,
-    toggle
-  };
+  window.RRN_THEME = Object.freeze({
+    get: () => 'dark',
+    set: () => 'dark',
+    toggle: () => 'dark'
+  });
 })();
