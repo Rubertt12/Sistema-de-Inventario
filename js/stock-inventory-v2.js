@@ -76,11 +76,23 @@
 
   function stockRecords() {
     const rows = [];
+    const seen = new Set();
+
+    const pushUnique = row => {
+      const identities = identityValues(row.asset);
+      const keys = [
+        row.asset?.id ? `id:${String(row.asset.id).trim()}` : '',
+        ...identities.map(value => `value:${value}`)
+      ].filter(Boolean);
+      if (keys.some(key => seen.has(key))) return;
+      keys.forEach(key => seen.add(key));
+      rows.push(row);
+    };
 
     directStock().forEach((asset, directIndex) => {
       const status = norm(asset?.situacaoPatrimonial || 'estoque');
       if (!status.includes('estoque') || asset?.emManutencao || norm(asset?.usuarioResponsavel)) return;
-      rows.push({
+      pushUnique({
         source: 'direct',
         asset,
         directIndex,
@@ -95,7 +107,7 @@
       (Array.isArray(sector?.maquinas) ? sector.maquinas : []).forEach((asset, assetIndex) => {
         const status = norm(asset?.situacaoPatrimonial);
         if (!status.includes('estoque') || asset?.emManutencao || norm(asset?.usuarioResponsavel)) return;
-        rows.push({
+        pushUnique({
           source: 'sector',
           asset,
           directIndex: null,
@@ -107,7 +119,11 @@
       });
     });
 
-    return rows;
+    return rows.sort((a, b) => {
+      const type = typeLabel(a.asset).localeCompare(typeLabel(b.asset), 'pt-BR');
+      if (type) return type;
+      return assetLabel(a.asset).localeCompare(assetLabel(b.asset), 'pt-BR');
+    });
   }
 
   function filteredRecords() {
@@ -292,14 +308,16 @@
   function openStockTab() {
     ensureTab();
     ensureView();
-    document.body.classList.remove('rrn-tab-dashboard', 'rrn-tab-inventory');
+    document.body.classList.remove('rrn-tab-dashboard', 'rrn-tab-inventory', 'rrn-tab-map', 'rrn-tab-agents');
     document.body.classList.add('rrn-tab-stock');
     document.querySelectorAll('[data-app-tab]').forEach(button => {
       const active = button.dataset.appTab === 'stock';
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-selected', String(active));
     });
-    history.replaceState(null, '', `${location.pathname}${location.search}#stock`);
+    if (location.hash.toLowerCase() !== '#stock') {
+      history.replaceState(null, '', `${location.pathname}${location.search}#stock`);
+    }
     render();
   }
 
@@ -861,6 +879,15 @@
   }
 
   function installObservers() {
+    window.addEventListener('hashchange', () => {
+      const hash = location.hash.toLowerCase();
+      if (hash === '#stock' || hash === '#estoque') {
+        openStockTab();
+      } else if (document.body.classList.contains('rrn-tab-stock')) {
+        closeStockMode();
+      }
+    });
+
     window.addEventListener('storage', e => {
       if ((e.key === 'setores' || e.key === STOCK_KEY) && document.body.classList.contains('rrn-tab-stock')) render();
     });
