@@ -19,3 +19,34 @@
 .rrn-mfa-setup{grid-template-columns:174px minmax(0,1fr);padding:18px;gap:22px;border-radius:18px}.rrn-mfa-setup img{width:174px;height:174px;border-radius:15px;padding:10px}.rrn-mfa-setup code{padding:11px 12px;border-radius:11px}.rrn-mfa-offer-copy{padding:4px 8px 2px}.rrn-mfa-offer-copy strong{font-size:1.1rem}.rrn-mfa-offer-copy p{max-width:430px;margin-inline:auto;font-size:.82rem}
 .security-status{padding:17px 18px;border-radius:16px}.security-status-copy strong{font-size:1.02rem}.security-actions{margin-top:17px}.security-btn{min-height:41px;border-radius:11px}.security-factor{padding:14px 15px;border-radius:13px}.security-modal-card{width:min(680px,100%);border-radius:24px;padding:28px}.security-modal-card h2{font-size:1.25rem}.security-setup{grid-template-columns:196px minmax(0,1fr);padding:19px;border-radius:18px}.security-setup img{width:196px;height:196px;border-radius:15px}.security-code{height:58px;border-radius:13px}
 :root[data-theme="dark"] .rrn-mfa-form #mfaChallengeCode,:root[data-theme="dark"] .rrn-mfa-form #mfaEnrollCode{background:#111c22;box-shadow:none}:root[data-theme="dark"] .rrn-mfa-icon{border-color:rgba(121,182,178,.22)}
+
+
+/* Redesign — tela de autenticador após o login */
+.rrn-mfa-challenge{position:relative;gap:18px;padding-top:2px}
+.rrn-mfa-topline{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--rrn-secondary,#2F7D78) 16%,var(--rrn-border));border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--rrn-secondary,#2F7D78) 7%,var(--rrn-surface,#fff)),var(--rrn-surface,#fff));}
+.rrn-mfa-topline>div{display:grid;gap:2px;min-width:0}
+.rrn-mfa-topline strong{color:var(--rrn-heading,#163A4D);font-size:.78rem;font-weight:850}
+.rrn-mfa-topline small{color:var(--rrn-muted,#52636B);font-size:.58rem;font-weight:850;letter-spacing:.08em}
+.rrn-mfa-security-icon{position:relative;width:38px;height:38px;flex:0 0 38px;border-radius:12px;background:var(--rrn-primary,#163A4D);box-shadow:0 8px 18px color-mix(in srgb,var(--rrn-primary,#163A4D) 20%,transparent)}
+.rrn-mfa-security-icon:before{content:"";position:absolute;left:11px;top:8px;width:16px;height:19px;border:2px solid #fff;border-radius:9px 9px 7px 7px}
+.rrn-mfa-security-icon:after{content:"";position:absolute;left:16px;top:14px;width:6px;height:6px;border-radius:50%;background:#fff}
+.rrn-mfa-security-icon span{position:absolute;left:18px;top:19px;width:2px;height:6px;background:#fff;border-radius:2px;z-index:2}
+.rrn-mfa-intro{display:grid;gap:5px;padding:2px 2px 0}
+.rrn-mfa-intro h3{margin:0;color:var(--rrn-heading,#163A4D);font-size:1.12rem;letter-spacing:-.02em}
+.rrn-mfa-intro p{margin:0;color:var(--rrn-muted,#52636B);font-size:.78rem;line-height:1.55}
+.rrn-mfa-challenge .field{gap:7px}
+.rrn-mfa-challenge #mfaChallengeCode{height:68px;border-radius:16px;background:var(--rrn-surface-2,#fff);border:1.5px solid color-mix(in srgb,var(--rrn-primary,#163A4D) 22%,var(--rrn-border));font-size:1.7rem;letter-spacing:.48em;padding-left:calc(.48em + 18px);box-shadow:0 10px 24px rgba(13,39,50,.055)}
+.rrn-mfa-challenge #mfaChallengeCode::placeholder{color:color-mix(in srgb,var(--rrn-muted,#52636B) 55%,transparent);letter-spacing:.38em}
+.rrn-mfa-challenge #mfaChallengeCode:focus{border-color:var(--rrn-secondary,#2F7D78);box-shadow:0 0 0 4px color-mix(in srgb,var(--rrn-secondary,#2F7D78) 13%,transparent),0 12px 26px rgba(13,39,50,.07)}
+.rrn-mfa-challenge #mfaChallengeButton{min-height:52px;border-radius:14px;font-size:.82rem;letter-spacing:.01em}
+.rrn-mfa-trust{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:11px;background:color-mix(in srgb,var(--rrn-secondary,#2F7D78) 6%,var(--rrn-surface,#fff));border:1px solid color-mix(in srgb,var(--rrn-secondary,#2F7D78) 13%,var(--rrn-border));color:var(--rrn-muted,#52636B);font-size:.65rem;line-height:1.4}
+.rrn-mfa-check{display:grid;place-items:center;width:19px;height:19px;flex:0 0 19px;border-radius:50%;background:var(--rrn-secondary,#2F7D78);color:#fff;font-size:.62rem;font-weight:900}
+.rrn-mfa-challenge>[data-mfa-signout]{align-self:center;margin-top:-5px}
+:root[data-theme="dark"] .rrn-mfa-topline{background:linear-gradient(135deg,rgba(91,179,174,.10),#101a1f);border-color:rgba(91,179,174,.18)}
+:root[data-theme="dark"] .rrn-mfa-security-icon{background:#16383f}
+:root[data-theme="dark"] .rrn-mfa-challenge #mfaChallengeCode{background:#0d171c;border-color:rgba(121,182,178,.22);box-shadow:none}
+@media(max-width:640px){
+ .rrn-mfa-topline{padding:11px 12px}
+ .rrn-mfa-intro h3{font-size:1.02rem}
+ .rrn-mfa-challenge #mfaChallengeCode{height:62px;font-size:1.48rem;letter-spacing:.36em;padding-left:calc(.36em + 14px)}
+}
