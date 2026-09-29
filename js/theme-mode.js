@@ -29,7 +29,7 @@
     addStylesheet('/style/theme-tokens-v3.css?v=20260929-2', 'data-rrn-theme-tokens-v3');
     addStylesheet('/style/dark-mode-v5.css?v=20260929-1', 'data-rrn-dark-mode-v5');
     addStylesheet('/style/theme-consistency-v1.css?v=20260929-2', 'data-rrn-theme-consistency-v1');
-    addStylesheet('/style/theme-consistency-final.css?v=20260929-13', 'data-rrn-theme-consistency-final');
+    addStylesheet('/style/theme-consistency-final.css?v=20260929-14', 'data-rrn-theme-consistency-final');
     const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\.html$/i.test(location.pathname);
     if (isDashboard) {
       addStylesheet('/style/dark-inventory-fix.css?v=20260929-1', 'data-rrn-dark-inventory-fix');
