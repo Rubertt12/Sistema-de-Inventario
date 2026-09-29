@@ -13,3 +13,73 @@ button,.button,.btn,.action-btn{border-color:var(--rrn-border)}.dashboard-action
 .switch input:checked+.slider{background:var(--rrn-secondary)!important}.slider{background:var(--rrn-border)!important}.slider:before{background:var(--rrn-surface-2)!important}.rrn-theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:0 11px;border:1px solid var(--rrn-border)!important;border-radius:10px;background:var(--rrn-surface-2)!important;color:var(--rrn-heading)!important;font-size:.75rem;font-weight:700;cursor:pointer}.rrn-theme-toggle:hover{background:var(--rrn-surface-soft)!important}.rrn-theme-toggle--floating{position:fixed;top:18px;right:18px;z-index:1000;box-shadow:0 8px 22px rgba(0,0,0,.12)}
 :root[data-theme="dark"] .brand-panel{filter:saturate(.82) brightness(.78)}:root[data-theme="dark"] img:not(.navbar-icon):not(.user-avatar){filter:none}:root[data-theme="dark"] .chart-container canvas{filter:brightness(.9) contrast(1.05)}
 @media(max-width:900px){.auth-panel{background:var(--rrn-bg)!important}.rrn-theme-toggle--floating{top:12px;right:12px}}
+
+/* WHITE MODE — normalização global de contraste.
+   Regras finais para impedir texto branco perdido em superfícies claras. */
+:root:not([data-theme="dark"]) .card,
+:root:not([data-theme="dark"]) .rrn-card,
+:root:not([data-theme="dark"]) .dashboard-card,
+:root:not([data-theme="dark"]) .kpi-card,
+:root:not([data-theme="dark"]) .overview-card,
+:root:not([data-theme="dark"]) .summary-card,
+:root:not([data-theme="dark"]) .panel,
+:root:not([data-theme="dark"]) .chart-card,
+:root:not([data-theme="dark"]) .activity-card,
+:root:not([data-theme="dark"]) .settings-card,
+:root:not([data-theme="dark"]) .user-card,
+:root:not([data-theme="dark"]) .machine-card,
+:root:not([data-theme="dark"]) .equipment-card,
+:root:not([data-theme="dark"]) .sector-card,
+:root:not([data-theme="dark"]) .setor-card,
+:root:not([data-theme="dark"]) .detail-card,
+:root:not([data-theme="dark"]) .modal-content,
+:root:not([data-theme="dark"]) .config-modal,
+:root:not([data-theme="dark"]) .modal-transferencia-content,
+:root:not([data-theme="dark"]) .user-dropdown,
+:root:not([data-theme="dark"]) .security-card,
+:root:not([data-theme="dark"]) .security-factor,
+:root:not([data-theme="dark"]) .security-status{
+  color:var(--rrn-text)!important;
+}
+:root:not([data-theme="dark"]) .card :where(p,span,small,label,li,td,dd,dt,div),
+:root:not([data-theme="dark"]) .rrn-card :where(p,span,small,label,li,td,dd,dt,div),
+:root:not([data-theme="dark"]) .dashboard-card :where(p,span,small,label,li,td,dd,dt,div),
+:root:not([data-theme="dark"]) .modal-content :where(p,span,small,label,li,td,dd,dt,div),
+:root:not([data-theme="dark"]) .config-modal :where(p,span,small,label,li,td,dd,dt,div),
+:root:not([data-theme="dark"]) .settings-card :where(p,span,small,label,li,td,dd,dt,div){
+  color:var(--rrn-text);
+}
+:root:not([data-theme="dark"]) :where(.card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,.panel,.chart-card,.activity-card,.settings-card,.user-card,.machine-card,.equipment-card,.sector-card,.setor-card,.detail-card,.modal-content,.config-modal,.modal-transferencia-content,.user-dropdown,.security-card,.security-factor,.security-status) :where(h1,h2,h3,h4,h5,h6,strong,b,.card-title,.section-title,.panel-title,.machine-title,.equipment-title){color:var(--rrn-heading)!important}
+:root:not([data-theme="dark"]) :where(.card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,.panel,.chart-card,.activity-card,.settings-card,.user-card,.machine-card,.equipment-card,.sector-card,.setor-card,.detail-card,.modal-content,.config-modal,.modal-transferencia-content,.user-dropdown,.security-card,.security-factor,.security-status) :where(.muted,.subtitle,.description,.meta,.card-meta,.card-subtitle,.machine-meta,.equipment-meta,.kpi-label,.metric-label,.field small){color:var(--rrn-muted)!important}
+/* Corrige estilos inline antigos sem interferir em áreas que propositalmente usam texto branco. */
+:root:not([data-theme="dark"]) body [style*="color: white"],
+:root:not([data-theme="dark"]) body [style*="color:white"],
+:root:not([data-theme="dark"]) body [style*="color:#fff"],
+:root:not([data-theme="dark"]) body [style*="color: #fff"],
+:root:not([data-theme="dark"]) body [style*="color:#ffffff"],
+:root:not([data-theme="dark"]) body [style*="color: #ffffff"]{
+  color:var(--rrn-text)!important;
+}
+/* Exceções: superfícies escuras/primárias continuam com texto branco. */
+:root:not([data-theme="dark"]) .navbar :where(*),
+:root:not([data-theme="dark"]) .brand-panel :where(*),
+:root:not([data-theme="dark"]) .btn-primary,
+:root:not([data-theme="dark"]) .save-btn,
+:root:not([data-theme="dark"]) .upload-btn,
+:root:not([data-theme="dark"]) .btn-confirmar,
+:root:not([data-theme="dark"]) button.primary,
+:root:not([data-theme="dark"]) .primary-button,
+:root:not([data-theme="dark"]) .auth-tab.active,
+:root:not([data-theme="dark"]) .tab-button.active,
+:root:not([data-theme="dark"]) .dashboard-tab.active,
+:root:not([data-theme="dark"]) .category-button.active,
+:root:not([data-theme="dark"]) .sector-category-button.active,
+:root:not([data-theme="dark"]) .pagination button.active,
+:root:not([data-theme="dark"]) .page-btn.active,
+:root:not([data-theme="dark"]) [aria-current="page"],
+:root:not([data-theme="dark"]) .modal-title,
+:root:not([data-theme="dark"]) .close-btn,
+:root:not([data-theme="dark"]) .modal .close,
+:root:not([data-theme="dark"]) .modal-transferencia .close{
+  color:#fff!important;
+}
