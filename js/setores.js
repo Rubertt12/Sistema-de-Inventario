@@ -475,31 +475,78 @@ window.onload = () => {
  * @param {number} maquinaIndex - O índice da máquina dentro do setor.
  */
 function showInfo(setorIndex, maquinaIndex) {
-    maquinaAtivaSetor = setorIndex;
-    maquinaAtivaIndex = maquinaIndex;
-    currentMachineId = setores[setorIndex].maquinas[maquinaIndex].id; // Atualiza o ID da máquina ativa
+    const sectorIndex = Number(setorIndex);
+    const assetIndex = Number(maquinaIndex);
+    const maquina = setores?.[sectorIndex]?.maquinas?.[assetIndex];
+
+    if (!maquina) {
+        console.warn('RRN Manager: equipamento não encontrado ao abrir detalhes.', {
+            setorIndex: sectorIndex,
+            maquinaIndex: assetIndex
+        });
+        return false;
+    }
+
+    maquinaAtivaSetor = sectorIndex;
+    maquinaAtivaIndex = assetIndex;
+    currentMachineId = maquina.id;
 
     const modal = document.getElementById('infoModal');
+    if (!modal) {
+        console.warn('RRN Manager: modal de informações não encontrado.');
+        return false;
+    }
+
+    // A ficha local abre primeiro e não depende de Supabase, Agent ou Service Desk.
     modal.style.display = 'flex';
     modal.style.zIndex = '999';
 
-    const maquina = setores[setorIndex].maquinas[maquinaIndex];
+    const modalText = document.getElementById('modalText');
+    if (modalText) {
+        const safe = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
 
-    document.getElementById('modalText').innerHTML = `
-        <strong>Usuário:</strong>
-        <span id="usuarioInfo">${maquina.usuarioResponsavel || ''}</span>
-        <button onclick="abrirModalEditarUsuario('${maquina.id}')" style="margin-left: 6px; cursor: pointer;" title="Editar usuário">✏️</button><br>
-        <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
-        <strong>Nome:</strong> ${maquina.nome}<br>
-        <strong>Tipo:</strong> ${maquina.tipo}<br>
-        <strong>Etiqueta:</strong> ${maquina.etiqueta}<br>
-    `;
+        modalText.innerHTML = `
+            <strong>Usuário:</strong>
+            <span id="usuarioInfo">${safe(maquina.usuarioResponsavel || '')}</span>
+            <button onclick="abrirModalEditarUsuario('${safe(maquina.id)}')" style="margin-left: 6px; cursor: pointer;" title="Editar usuário">✏️</button><br>
+            <strong>Status:</strong> ${maquina.emManutencao ? 'Em manutenção' : 'Operando normalmente'}<br>
+            <strong>Nome:</strong> ${safe(maquina.nome)}<br>
+            <strong>Tipo:</strong> ${safe(maquina.tipo)}<br>
+            <strong>Etiqueta:</strong> ${safe(maquina.etiqueta)}<br>
+        `;
+    }
 
-    paginarChamados(maquina); // Renderiza os chamados com paginação
+    paginarChamados(maquina);
 
-    document.getElementById('maintenanceMessage').style.display = maquina.emManutencao ? 'block' : 'none';
-    document.getElementById('maintenanceBtn').style.display = maquina.emManutencao ? 'none' : 'inline-block';
-    document.getElementById('releaseBtn').style.display = maquina.emManutencao ? 'inline-block' : 'none';
+    const maintenanceMessage = document.getElementById('maintenanceMessage');
+    const maintenanceBtn = document.getElementById('maintenanceBtn');
+    const releaseBtn = document.getElementById('releaseBtn');
+
+    if (maintenanceMessage) maintenanceMessage.style.display = maquina.emManutencao ? 'block' : 'none';
+    if (maintenanceBtn) maintenanceBtn.style.display = maquina.emManutencao ? 'none' : 'inline-block';
+    if (releaseBtn) releaseBtn.style.display = maquina.emManutencao ? 'inline-block' : 'none';
+
+    // Integrações externas reagem em segundo plano. Nenhuma integração pode
+    // impedir a abertura da ficha local.
+    try {
+        window.dispatchEvent(new CustomEvent('rrn:show-info', {
+            detail: {
+                sectorIndex,
+                assetIndex,
+                machineId: maquina.id
+            }
+        }));
+    } catch (error) {
+        console.warn('RRN Manager: falha ao notificar integrações da ficha.', error);
+    }
+
+    return true;
 }
 
 /**
