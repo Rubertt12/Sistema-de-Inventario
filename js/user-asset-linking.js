@@ -194,16 +194,21 @@
   }
 
   function wrapShowInfo() {
-    const original = window.showInfo;
-    if (typeof original !== 'function' || original.__rrnUserAssetWrapped) return;
-    const wrapped = function(sectorIndex, assetIndex, ...rest) {
-      const result = original.call(this, sectorIndex, assetIndex, ...rest);
-      queueMicrotask(() => renderRelatedAssets(Number(sectorIndex), Number(assetIndex)));
-      return result;
-    };
-    wrapped.__rrnUserAssetWrapped = true;
-    wrapped.__rrnOriginal = original;
-    window.showInfo = wrapped;
+    if (window.__RRN_USER_ASSETS_SHOW_INFO_LISTENER__) return;
+    window.__RRN_USER_ASSETS_SHOW_INFO_LISTENER__ = true;
+
+    window.addEventListener('rrn:show-info', event => {
+      const detail = event.detail || {};
+      const sectorIndex = Number(detail.sectorIndex);
+      const assetIndex = Number(detail.assetIndex);
+      queueMicrotask(() => {
+        try {
+          renderRelatedAssets(sectorIndex, assetIndex);
+        } catch (error) {
+          console.warn('RRN Manager: falha ao carregar ativos relacionados.', error);
+        }
+      });
+    });
   }
 
   function boot() {
