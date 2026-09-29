@@ -596,811 +596,292 @@
 }
 
 
-/* ==========================================================================
-   15. FINAL WHITE-MODE TEXT SWEEP
-   Any readable element that is not explicitly on a dark/colored surface
-   must be dark in Light Mode. This catches legacy/dynamically injected
-   div/span/button text that older rules do not enumerate.
-   ========================================================================== */
-
-:root[data-theme="light"] body :where(
-  div,span,p,a,li,dt,dd,dl,td,th,label,legend,
-  strong,b,em,i,small,summary,caption,
-  button,input,select,textarea,option,
-  h1,h2,h3,h4,h5,h6
-) {
-  color: var(--rrn-text) !important;
-  -webkit-text-fill-color: var(--rrn-text) !important;
-}
-
-/* Headings keep the stronger heading tone. */
-:root[data-theme="light"] body :where(
-  h1,h2,h3,h4,h5,h6,
-  .heading,.section-title,.panel-title,.card-title,
-  .machine-title,.equipment-title,.setor-title,
-  .kpi-title
-) {
-  color: var(--rrn-heading) !important;
-  -webkit-text-fill-color: var(--rrn-heading) !important;
-}
-
-/* Secondary text. */
-:root[data-theme="light"] body :where(
-  small,.muted,.meta,.subtitle,.description-muted,
-  .card-meta,.card-subtitle,.machine-meta,.equipment-meta,
-  .kpi-label,.metric-label,.stat-label,.field-help,
-  .helper-text,.hint,.timestamp,.date,.secondary-text
-) {
-  color: var(--rrn-muted) !important;
-  -webkit-text-fill-color: var(--rrn-muted) !important;
-}
-
-/* Explicitly dark/colored surfaces are the only places where white text
-   remains intentional. */
-:root[data-theme="light"] body :where(
-  .navbar,
-  .rrn-home-hero,
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button,
-  .tab-button.active,.dashboard-tab.active,
-  .filter-btn.active,.category-button.active,
-  .sector-category-button.active,
-  .pagination button.active,.page-btn.active,
-  [aria-current="page"],
-  .modal-title,.modal-header,
-  .close-btn,.modal .close,.modal-transferencia .close
-) :where(
-  div,span,p,a,li,dt,dd,td,th,label,legend,
-  strong,b,em,i,small,button,
-  h1,h2,h3,h4,h5,h6
-) {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-}
-
-/* Navbar tabs keep their intended subdued inactive state. */
-:root[data-theme="light"] .navbar .rrn-app-tab:not(.is-active):not([aria-selected="true"]) {
-  color: rgba(255,255,255,.76) !important;
-  -webkit-text-fill-color: rgba(255,255,255,.76) !important;
-}
-
-/* Icons are not text: restore their semantic currentColor after the sweep. */
-:root[data-theme="light"] body :where(
-  .rrn-icon,.rrn-icon-control,.rrn-kpi-icon,
-  .rrn-setor-icon,.rrn-machine-icon,
-  .rrn-icon-btn,.icon-button,.navbar-icon,
-  [data-rrn-icon]
-) {
-  color: var(--rrn-heading) !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-:root[data-theme="light"] body :where(
-  .rrn-icon,.rrn-icon-control,.rrn-kpi-icon,
-  .rrn-setor-icon,.rrn-machine-icon,
-  .rrn-icon-btn,.icon-button,.navbar-icon,
-  [data-rrn-icon]
-) svg {
-  color: currentColor !important;
-  fill: currentColor;
-  stroke: currentColor;
-}
-
-/* Icons inside intentionally dark surfaces stay white. */
-:root[data-theme="light"] body :where(
-  .navbar,.rrn-home-hero,
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button,
-  .tab-button.active,.dashboard-tab.active,
-  .filter-btn.active,.category-button.active,
-  .sector-category-button.active,
-  .pagination button.active,.page-btn.active,
-  [aria-current="page"],.modal-title,.modal-header,
-  .close-btn,.modal .close,.modal-transferencia .close
-) :where(
-  .rrn-icon,.rrn-icon-control,.rrn-kpi-icon,
-  .rrn-setor-icon,.rrn-machine-icon,
-  .rrn-icon-btn,.icon-button,.navbar-icon,
-  [data-rrn-icon]
-) {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-:root[data-theme="light"] body :where(
-  .status-ok,.status-online,.status-active,.badge-success
-) :where(.rrn-icon,svg) {
-  color: var(--rrn-success) !important;
-  fill: currentColor;
-  stroke: currentColor;
-}
-
-:root[data-theme="light"] body :where(
-  .status-warning,.status-maintenance,.badge-warning
-) :where(.rrn-icon,svg) {
-  color: var(--rrn-warning) !important;
-  fill: currentColor;
-  stroke: currentColor;
-}
-
-:root[data-theme="light"] body :where(
-  .status-danger,.status-inactive,.danger,.danger-button,.btn-danger
-) :where(.rrn-icon,svg) {
-  color: var(--rrn-danger) !important;
-  fill: currentColor;
-  stroke: currentColor;
-}
-
-/* Inputs must remain readable even when legacy components set white text. */
-:root[data-theme="light"] body :where(
-  input,select,textarea,option
-) {
-  color: var(--rrn-text) !important;
-  -webkit-text-fill-color: var(--rrn-text) !important;
-}
-
-/* Placeholders remain intentionally muted. */
-:root[data-theme="light"] body :where(
-  input,select,textarea
-)::placeholder {
-  color: var(--rrn-placeholder) !important;
-  -webkit-text-fill-color: var(--rrn-placeholder) !important;
-}
-
 
 /* ==========================================================================
-   RRN Manager — LIGHT MODE POLISH V2
-   Visual hierarchy, density, surfaces, states and interaction quality.
-   Dark mode is not affected.
+   15. LIGHT MODE — COHERENT FINAL SYSTEM
+   Clean admin UI: white surfaces, soft canvas, restrained borders/shadows.
    ========================================================================== */
 
 :root[data-theme="light"] {
-  --rrn-bg:#E9EDF0;
-  --rrn-surface:#F8FAFB;
-  --rrn-surface-2:#FFFFFF;
-  --rrn-surface-soft:#E1E6E9;
-  --rrn-input:#F7F9FA;
-  --rrn-text:#23343B;
-  --rrn-heading:#103B4B;
-  --rrn-muted:#60737C;
-  --rrn-placeholder:#788991;
-  --rrn-border:rgba(16,59,75,.13);
-  --rrn-border-strong:rgba(16,59,75,.20);
-  --rrn-focus:rgba(35,135,127,.18);
+  --rrn-light-canvas: #EEF1F3;
+  --rrn-light-surface: #FFFFFF;
+  --rrn-light-surface-2: #F8FAFB;
+  --rrn-light-surface-soft: #E8EEF0;
+  --rrn-light-border: rgba(18,59,74,.14);
+  --rrn-light-border-strong: rgba(18,59,74,.22);
+  --rrn-light-shadow: 0 2px 10px rgba(18,59,74,.06);
+  --rrn-light-shadow-hover: 0 5px 16px rgba(18,59,74,.09);
 }
 
-/* Global rendering */
-:root[data-theme="light"] {
-  scrollbar-color:#B7C2C7 #E9EDF0;
-}
-:root[data-theme="light"] ::selection {
-  background:rgba(35,135,127,.20);
-  color:var(--rrn-heading);
-}
+/* Page canvas */
+:root[data-theme="light"] html,
 :root[data-theme="light"] body {
-  background:
-    radial-gradient(circle at 10% -10%, rgba(35,135,127,.045), transparent 30%),
-    var(--rrn-bg) !important;
+  background: var(--rrn-light-canvas) !important;
 }
 
-/* Main content gets a quiet visual canvas instead of a flat white page. */
 :root[data-theme="light"] main,
 :root[data-theme="light"] .main-content,
 :root[data-theme="light"] .dashboard-content,
 :root[data-theme="light"] .content-wrapper,
 :root[data-theme="light"] .tab-content {
-  background:transparent !important;
+  background: transparent !important;
 }
 
-/* Cards: slightly tinted surfaces + restrained elevation. */
+/* Only real content surfaces become cards. Avoid styling every div. */
 :root[data-theme="light"] main :where(
-  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,
-  .panel,.chart-card,.activity-card,.settings-card,.user-card,.machine-card,
-  .equipment-card,.sector-card,.setor-card,.detail-card,.queue-card,.health-card,
-  .overview-panel,.transfer-column,.transfer-card,.box-setor,
-  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,.rrn-machine-item,
-  .rrn-setor-card,.rrn-agent-location-card,.rrn-health-item,.rrn-alert-item,
-  .rrn-search-result,.security-card,.security-factor,.security-status,
-  .settings-user-card,.workspace-summary,.settings-segment
+  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,
+  .summary-card,.panel,.chart-card,.activity-card,.settings-card,
+  .user-card,.machine-card,.equipment-card,.sector-card,.setor-card,
+  .detail-card,.queue-card,.health-card,.overview-panel,
+  .transfer-column,.transfer-card,.box-setor,
+  .rrn-home-panel,.rrn-kpi,.rrn-machine-item,.rrn-setor-card,
+  .rrn-agent-location-card,.rrn-health-item,.rrn-alert-item,
+  .security-card,.security-factor,.security-status,
+  .workspace-summary,.settings-segment
 ) {
-  background:var(--rrn-surface) !important;
-  border:1px solid var(--rrn-border) !important;
-  box-shadow:0 1px 2px rgba(16,59,75,.035),0 8px 24px rgba(16,59,75,.035) !important;
-}
-
-/* Hover elevation only on interactive cards. */
-:root[data-theme="light"] main :where(
-  .machine-card,.equipment-card,.sector-card,.setor-card,.rrn-machine-item,
-  .rrn-setor-card,.rrn-search-result,.dashboard-card
-):hover {
-  border-color:var(--rrn-border-strong) !important;
-  box-shadow:0 2px 4px rgba(16,59,75,.045),0 12px 30px rgba(16,59,75,.055) !important;
-}
-
-/* Inputs should visually belong to the page, not look like browser defaults. */
-:root[data-theme="light"] :where(input,select,textarea,.search-input,.search-box input) {
-  background:var(--rrn-input) !important;
-  border:1px solid var(--rrn-border-strong) !important;
-  border-radius:9px;
-  box-shadow:inset 0 1px 1px rgba(16,59,75,.025) !important;
-}
-:root[data-theme="light"] :where(input,select,textarea,.search-input,.search-box input):hover {
-  border-color:rgba(16,59,75,.28) !important;
-}
-:root[data-theme="light"] :where(input,select,textarea,.search-input,.search-box input):focus {
-  background:#FFFFFF !important;
-  border-color:var(--rrn-secondary) !important;
-  box-shadow:0 0 0 3px var(--rrn-focus),inset 0 1px 1px rgba(16,59,75,.025) !important;
-}
-
-/* Toolbar / filter zones */
-:root[data-theme="light"] main :where(
-  .toolbar,.filters-bar,.filter-group,.tabs,.dashboard-tabs,.view-toggle,
-  .category-bar,.sector-category-bar
-) {
-  background:rgba(248,250,251,.82) !important;
-  border:1px solid var(--rrn-border) !important;
-  box-shadow:0 1px 2px rgba(16,59,75,.025) !important;
-}
-
-/* Tables: clear header, subtle zebra, stronger row separation. */
-:root[data-theme="light"] :where(table,.table-wrap) {
-  background:var(--rrn-surface) !important;
-  border-radius:10px;
-  overflow:hidden;
-}
-:root[data-theme="light"] table thead th {
-  background:var(--rrn-surface-soft) !important;
-  color:var(--rrn-heading) !important;
-  font-weight:700;
-  border-bottom:1px solid var(--rrn-border-strong) !important;
-}
-:root[data-theme="light"] table tbody tr:nth-child(even) td {
-  background:rgba(225,230,233,.24) !important;
-}
-:root[data-theme="light"] table tbody tr:hover td {
-  background:rgba(35,135,127,.055) !important;
-}
-
-/* Buttons: neutral actions stay quiet; primary actions stay obvious. */
-:root[data-theme="light"] main :where(
-  .btn-secondary,.secondary-button,.btn-ghost,.settings-ghost-btn,
-  .settings-back-btn,.action-btn,.rrn-action-btn,.rrn-icon-btn,
-  .filter-btn,.view-toggle button,.pagination button,.page-btn
-) {
-  background:var(--rrn-surface-2) !important;
-  border:1px solid var(--rrn-border-strong) !important;
-  box-shadow:0 1px 2px rgba(16,59,75,.025) !important;
-}
-:root[data-theme="light"] main :where(
-  .btn-secondary,.secondary-button,.btn-ghost,.settings-ghost-btn,
-  .settings-back-btn,.action-btn,.rrn-action-btn,.rrn-icon-btn,
-  .filter-btn,.view-toggle button,.pagination button,.page-btn
-):hover {
-  background:var(--rrn-surface-soft) !important;
-  border-color:rgba(16,59,75,.27) !important;
-}
-
-/* Status badges become compact semantic pills. */
-:root[data-theme="light"] :where(
-  .status-ok,.badge-success,.status-active,.status-online,
-  .status-warning,.badge-warning,.status-maintenance,
-  .status-danger,.badge-danger,.status-inactive
-) {
-  border:1px solid currentColor !important;
-  border-radius:999px !important;
-  padding:.18rem .55rem !important;
-  font-weight:700;
-}
-
-/* Modals: layered above the grey canvas. */
-:root[data-theme="light"] :where(
-  .modal-content,.config-modal,.modal-transferencia-content,
-  .security-modal,.settings-modal
-) {
-  background:var(--rrn-surface-2) !important;
-  border:1px solid var(--rrn-border-strong) !important;
-  box-shadow:0 20px 60px rgba(16,59,75,.16) !important;
-}
-
-/* Dropdowns get the same surface language as cards. */
-:root[data-theme="light"] .user-dropdown,
-:root[data-theme="light"] .dropdown-menu,
-:root[data-theme="light"] .autocomplete-menu,
-:root[data-theme="light"] .search-results {
-  background:var(--rrn-surface-2) !important;
-  border:1px solid var(--rrn-border-strong) !important;
-  box-shadow:0 14px 38px rgba(16,59,75,.12) !important;
-}
-
-/* Empty/loading states: quieter than normal content. */
-:root[data-theme="light"] main :where(
-  .empty-state,.category-empty,.sector-empty,.rrn-category-empty,
-  .loading-state,.no-results
-) {
-  color:var(--rrn-muted) !important;
-  background:var(--rrn-surface-soft) !important;
-  border:1px dashed var(--rrn-border-strong) !important;
-}
-
-/* Disabled controls */
-:root[data-theme="light"] :where(
-  button:disabled,input:disabled,select:disabled,textarea:disabled,
-  .disabled,[aria-disabled="true"]
-) {
-  opacity:.56 !important;
-  cursor:not-allowed !important;
-}
-
-/* Keep dark/brand surfaces intentional. */
-:root[data-theme="light"] .navbar,
-:root[data-theme="light"] .rrn-home-hero,
-:root[data-theme="light"] .brand-panel,
-:root[data-theme="light"] .btn-primary,
-:root[data-theme="light"] .rrn-btn-primary,
-:root[data-theme="light"] .settings-primary-btn,
-:root[data-theme="light"] .save-btn,
-:root[data-theme="light"] .upload-btn,
-:root[data-theme="light"] .btn-confirmar,
-:root[data-theme="light"] button.primary,
-:root[data-theme="light"] .primary-button {
-  box-shadow:none !important;
-}
-
-/* Mobile: remove excessive elevation and preserve contrast. */
-@media (max-width:900px) {
-  :root[data-theme="light"] main :where(
-    .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,.summary-card,
-    .panel,.settings-card,.machine-card,.equipment-card,.sector-card,
-    .setor-card,.detail-card,.rrn-kpi,.rrn-machine-item,.rrn-setor-card
-  ) {
-    box-shadow:0 1px 2px rgba(16,59,75,.035) !important;
-  }
-}
-
-
-/* ==========================================================================
-   16. LIGHT MODE — SEMANTIC TEXT COLORS
-   Restore visual hierarchy for labels, metrics, links and status copy.
-   ========================================================================== */
-
-:root[data-theme="light"] body :where(
-  .eyebrow,.section-kicker,.section-label,
-  .rrn-sector-bar-value,.rrn-sector-bar-label,
-  .rrn-alert-column h4,.rrn-health-copy strong,
-  .rrn-portal-ticket-head strong,
-  .rrn-agent-location-head h3,
-  .rrn-agent-history summary,
-  .rrn-trash-header span,.rrn-trash-header strong,
-  .cell-main strong,.picker-item strong,.cart-item strong,
-  .summary-box strong
-) {
-  color: var(--rrn-heading) !important;
-  -webkit-text-fill-color: var(--rrn-heading) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .rrn-sector-bar-value,
-  .rrn-service-ticket-pill,
-  .badge:not(.warn):not(.danger):not(.muted),
-  .rrn-user-assets-badge,
-  .stock-low
-) {
-  color: var(--rrn-secondary) !important;
-  -webkit-text-fill-color: var(--rrn-secondary) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .rrn-sector-maint,.rrn-priority,.rrn-warranty-days,
-  .rrn-sla-paused,.stock-low,
-  .badge.warn
-) {
-  color: var(--rrn-warning) !important;
-  -webkit-text-fill-color: var(--rrn-warning) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .stock-zero,.badge.danger,.mini.danger,
-  .rrn-maintenance-ticket-status,
-  .settings-danger-zone .settings-card-head h2
-) {
-  color: var(--rrn-danger) !important;
-  -webkit-text-fill-color: var(--rrn-danger) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .rrn-portal-ticket-head span,
-  .rrn-agent-location-head p,
-  .rrn-agent-location-meta span,
-  .rrn-agent-location-meta strong,
-  .rrn-agent-history-row strong,
-  .rrn-agent-history-row small,
-  .rrn-ticket-top small,
-  .rrn-ticket-empty,
-  .rrn-email-fallback-note,
-  .rrn-password-hint,
-  .rrn-password-message,
-  .rrn-related-assets-head small
-) {
-  color: var(--rrn-muted) !important;
-  -webkit-text-fill-color: var(--rrn-muted) !important;
-}
-
-/* Links and interactive text retain the accent instead of becoming flat gray. */
-:root[data-theme="light"] body :where(
-  .rrn-agent-location-actions a,
-  .rrn-agent-location-actions button,
-  .rrn-alert-action,
-  .mini,
-  .store-tab.active
-) {
-  color: var(--rrn-primary) !important;
-  -webkit-text-fill-color: var(--rrn-primary) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .rrn-password-message.success
-) {
-  color: var(--rrn-success) !important;
-  -webkit-text-fill-color: var(--rrn-success) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .rrn-password-message.error,
-  .rrn-company-cnpj-invalid
-) {
-  color: var(--rrn-danger) !important;
-  -webkit-text-fill-color: var(--rrn-danger) !important;
-}
-
-/* Keep the navbar / hero / filled controls white after semantic accents. */
-:root[data-theme="light"] body :where(
-  .navbar,.rrn-home-hero,
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button,
-  .tab-button.active,.dashboard-tab.active,
-  .filter-btn.active,.category-button.active,
-  .sector-category-button.active,
-  .pagination button.active,.page-btn.active,
-  [aria-current="page"],.modal-title,.modal-header,
-  .close-btn,.modal .close,.modal-transferencia .close
-) :where(
-  div,span,p,a,li,dt,dd,td,th,label,strong,b,small,
-  button,h1,h2,h3,h4,h5,h6
-) {
-  color:#FFFFFF !important;
-  -webkit-text-fill-color:#FFFFFF !important;
-}
-
-
-/* ==========================================================================
-   17. LIGHT MODE — CONTROL / BUTTON SURFACES
-   Ensure every neutral control remains visually bounded in white mode.
-   ========================================================================== */
-:root[data-theme="light"] body :where(
-  button,input,select,textarea,
-  .btn,.button,.action-btn,.icon-btn,.mini,.store-btn,
-  .filter-btn,.tab-button,.category-button,
-  .sector-category-button,.pagination button,
-  .page-btn,.settings-btn,.settings-action,
-  .modal button,.modal a[role="button"]
-) {
-  border-color: var(--rrn-border-strong) !important;
-}
-
-:root[data-theme="light"] body :where(
-  input,select,textarea,
-  .btn:not(.primary):not(.btn-primary),
-  .button:not(.primary):not(.btn-primary),
-  .action-btn:not(.primary),
-  .icon-btn,.mini,.store-btn,
-  .filter-btn:not(.active),
-  .tab-button:not(.active),
-  .category-button:not(.active),
-  .sector-category-button:not(.active),
-  .pagination button:not(.active),
-  .page-btn:not(.active),
-  .settings-btn,.settings-action,
-  .modal button:not(.primary)
-) {
-  background-color: var(--rrn-surface-2) !important;
-  color: var(--rrn-heading) !important;
-  -webkit-text-fill-color: var(--rrn-heading) !important;
-  box-shadow: 0 1px 3px rgba(16,59,75,.06) !important;
-}
-
-:root[data-theme="light"] body :where(
-  input,select,textarea
-) {
-  background-color: var(--rrn-input) !important;
+  background: var(--rrn-light-surface) !important;
   color: var(--rrn-text) !important;
-}
-
-:root[data-theme="light"] body :where(
-  button:hover,.btn:hover,.button:hover,
-  .action-btn:hover,.icon-btn:hover,.mini:hover,
-  .store-btn:hover,.filter-btn:not(.active):hover,
-  .tab-button:not(.active):hover,
-  .category-button:not(.active):hover,
-  .sector-category-button:not(.active):hover,
-  .pagination button:not(.active):hover,
-  .page-btn:not(.active):hover,
-  .settings-btn:hover,.settings-action:hover
-) {
-  background-color: var(--rrn-surface-soft) !important;
-  border-color: var(--rrn-primary) !important;
-}
-
-:root[data-theme="light"] body :where(
-  button:disabled,input:disabled,select:disabled,textarea:disabled
-) {
-  background-color: var(--rrn-surface-soft) !important;
-  color: var(--rrn-muted) !important;
-  -webkit-text-fill-color: var(--rrn-muted) !important;
-  opacity: .72 !important;
-}
-
-/* Filled/semantic controls keep their intentional color. */
-:root[data-theme="light"] body :where(
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button,
-  .filter-btn.active,.tab-button.active,
-  .dashboard-tab.active,.category-button.active,
-  .sector-category-button.active,
-  .pagination button.active,.page-btn.active
-) {
-  background: var(--rrn-primary) !important;
-  border-color: var(--rrn-primary) !important;
-  color: var(--rrn-on-primary) !important;
-  -webkit-text-fill-color: var(--rrn-on-primary) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .btn-primary:hover,.rrn-btn-primary:hover,
-  .settings-primary-btn:hover,.save-btn:hover,
-  .upload-btn:hover,.btn-confirmar:hover,
-  button.primary:hover,.primary-button:hover,
-  .filter-btn.active:hover,.tab-button.active:hover,
-  .dashboard-tab.active:hover,.category-button.active:hover,
-  .sector-category-button.active:hover,
-  .pagination button.active:hover,.page-btn.active:hover
-) {
-  background: var(--rrn-primary-hover) !important;
-  border-color: var(--rrn-primary-hover) !important;
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-}
-
-/* Standalone icon controls should never disappear into the white canvas. */
-:root[data-theme="light"] body :where(
-  .icon-button,.btn-icon,.action-icon,
-  button[aria-label],button[title]
-) {
-  background-color: var(--rrn-surface-2) !important;
-  border: 1px solid var(--rrn-border-strong) !important;
-  color: var(--rrn-primary) !important;
-  -webkit-text-fill-color: var(--rrn-primary) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .icon-button:hover,.btn-icon:hover,.action-icon:hover,
-  button[aria-label]:hover,button[title]:hover
-) {
-  background-color: var(--rrn-surface-soft) !important;
-  border-color: var(--rrn-primary) !important;
-}
-
-
-/* ==========================================================================
-   18. LIGHT MODE — FINAL COMPONENT NORMALIZATION
-   One visual language for every dashboard surface and control.
-   ========================================================================== */
-
-:root[data-theme="light"] body {
-  --rrn-light-border: rgba(18,59,74,.16);
-  --rrn-light-shadow: 0 6px 20px rgba(18,59,74,.07);
-  --rrn-light-shadow-hover: 0 10px 28px rgba(18,59,74,.11);
-}
-
-/* Canvas and structural containers */
-:root[data-theme="light"] body,
-:root[data-theme="light"] main,
-:root[data-theme="light"] .main-content,
-:root[data-theme="light"] .dashboard-content,
-:root[data-theme="light"] .content-wrapper {
-  background-color: var(--rrn-bg) !important;
-  color: var(--rrn-text) !important;
-}
-
-:root[data-theme="light"] body :where(
-  .setor,.sector,.setor-card,.sector-card,
-  .machine-card,.equipment-card,.dashboard-card,
-  .kpi-card,.overview-card,.panel,.card,.rrn-card,
-  .queue-card,.health-card,.summary-card,.chart-card,
-  .activity-card,.settings-card,.user-card,
-  .transfer-card,.transfer-column,.box-setor,
-  .rrn-home-panel,.rrn-kpi,.rrn-health-item,
-  .rrn-machine-item,.rrn-setor-card,
-  .rrn-agent-location-card,.rrn-alert-item,
-  .rrn-search-result,.workspace-summary,.settings-segment
-) {
-  background: var(--rrn-surface) !important;
-  color: var(--rrn-text) !important;
-  border-color: var(--rrn-light-border) !important;
+  border: 1px solid var(--rrn-light-border) !important;
   box-shadow: var(--rrn-light-shadow) !important;
+  border-radius: 12px;
 }
 
-:root[data-theme="light"] body :where(
-  .setor:hover,.sector:hover,.setor-card:hover,.sector-card:hover,
-  .machine-card:hover,.equipment-card:hover,.dashboard-card:hover,
-  .kpi-card:hover,.overview-card:hover,.rrn-machine-item:hover,
-  .rrn-setor-card:hover,.rrn-search-result:hover
-) {
+:root[data-theme="light"] main :where(
+  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,
+  .summary-card,.panel,.chart-card,.activity-card,.settings-card,
+  .user-card,.machine-card,.equipment-card,.sector-card,.setor-card,
+  .detail-card,.queue-card,.health-card,.overview-panel,
+  .transfer-column,.transfer-card,.box-setor,
+  .rrn-home-panel,.rrn-kpi,.rrn-machine-item,.rrn-setor-card,
+  .rrn-agent-location-card,.rrn-health-item,.rrn-alert-item,
+  .workspace-summary,.settings-segment
+):hover {
   box-shadow: var(--rrn-light-shadow-hover) !important;
 }
 
-/* All ordinary controls */
-:root[data-theme="light"] body :where(
-  button,.btn,.button,.action-btn,.rrn-action-btn,
-  .rrn-btn,.rrn-icon-btn,.rrn-icon-control,
-  .filter-btn,.tab-button,.dashboard-tab,
-  .category-button,.sector-category-button,
-  .page-btn,.pagination button,.view-toggle button,
-  .settings-btn,.settings-action,.settings-ghost-btn,
-  .settings-back-btn
-):not(.btn-primary):not(.rrn-btn-primary):not(.primary-button):not(.settings-primary-btn):not(.save-btn):not(.upload-btn):not(.btn-confirmar):not(.danger-button):not(.btn-danger):not(.logout-btn) {
-  background: var(--rrn-surface-2) !important;
+/* Form fields */
+:root[data-theme="light"] :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  select,textarea
+) {
+  background: var(--rrn-light-surface) !important;
+  color: var(--rrn-text) !important;
+  border: 1px solid var(--rrn-light-border-strong) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
+  border-radius: 8px;
+}
+
+:root[data-theme="light"] :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  select,textarea
+):hover {
+  border-color: rgba(35,135,127,.42) !important;
+}
+
+:root[data-theme="light"] :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  select,textarea
+):focus {
+  background: #FFFFFF !important;
+  border-color: var(--rrn-secondary) !important;
+  box-shadow: 0 0 0 3px var(--rrn-focus) !important;
+}
+
+/* Neutral actions — only known action classes, never every button. */
+:root[data-theme="light"] main :where(
+  .btn-secondary,.secondary-button,.btn-ghost,
+  .settings-ghost-btn,.settings-back-btn,
+  .action-btn,.rrn-action-btn,.rrn-icon-btn,
+  .filter-btn:not(.active),.view-toggle button:not(.active),
+  .pagination button:not(.active),.page-btn:not(.active)
+) {
+  background: var(--rrn-light-surface) !important;
   color: var(--rrn-heading) !important;
-  border: 1px solid var(--rrn-light-border) !important;
+  border: 1px solid var(--rrn-light-border-strong) !important;
   -webkit-text-fill-color: var(--rrn-heading) !important;
 }
 
-:root[data-theme="light"] body :where(
-  button,.btn,.button,.action-btn,.rrn-action-btn,
-  .rrn-btn,.rrn-icon-btn,.rrn-icon-control,
-  .filter-btn,.tab-button,.dashboard-tab,
-  .category-button,.sector-category-button,
-  .page-btn,.pagination button,.view-toggle button,
-  .settings-btn,.settings-action,.settings-ghost-btn,
-  .settings-back-btn
-):not(.btn-primary):not(.rrn-btn-primary):not(.primary-button):not(.settings-primary-btn):not(.save-btn):not(.upload-btn):not(.btn-confirmar):not(.danger-button):not(.btn-danger):not(.logout-btn):hover {
-  background: var(--rrn-surface-soft) !important;
-  color: var(--rrn-primary) !important;
+:root[data-theme="light"] main :where(
+  .btn-secondary,.secondary-button,.btn-ghost,
+  .settings-ghost-btn,.settings-back-btn,
+  .action-btn,.rrn-action-btn,.rrn-icon-btn,
+  .filter-btn:not(.active),.view-toggle button:not(.active),
+  .pagination button:not(.active),.page-btn:not(.active)
+):hover {
+  background: var(--rrn-light-surface-soft) !important;
   border-color: var(--rrn-secondary) !important;
 }
 
 /* Primary actions */
-:root[data-theme="light"] body :where(
-  .btn-primary,.rrn-btn-primary,.primary-button,
-  .settings-primary-btn,.save-btn,.upload-btn,
-  .btn-confirmar,.dashboard-actions button,
-  button.primary
+:root[data-theme="light"] main :where(
+  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
+  .save-btn,.upload-btn,.btn-confirmar,
+  button.primary,.primary-button
 ) {
   background: var(--rrn-primary) !important;
-  color: #fff !important;
+  color: #FFFFFF !important;
   border-color: var(--rrn-primary) !important;
-  -webkit-text-fill-color: #fff !important;
-  box-shadow: 0 4px 12px rgba(20,86,107,.16) !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(20,86,107,.16) !important;
 }
 
-:root[data-theme="light"] body :where(
-  .btn-primary,.rrn-btn-primary,.primary-button,
-  .settings-primary-btn,.save-btn,.upload-btn,
-  .btn-confirmar,.dashboard-actions button,
-  button.primary
+:root[data-theme="light"] main :where(
+  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
+  .save-btn,.upload-btn,.btn-confirmar,
+  button.primary,.primary-button
 ):hover {
   background: var(--rrn-primary-hover) !important;
-  border-color: var(--rrn-primary-hover) !important;
 }
 
-/* Fields */
-:root[data-theme="light"] body :where(
-  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
-  select,textarea
+/* Tabs and segmented controls */
+:root[data-theme="light"] main :where(
+  .tabs,.dashboard-tabs,.view-toggle,.toolbar,
+  .filters-bar,.filter-group,.category-bar,.sector-category-bar
 ) {
-  background: var(--rrn-input,#F7F9FA) !important;
+  background: var(--rrn-light-surface) !important;
+  border: 1px solid var(--rrn-light-border) !important;
   color: var(--rrn-text) !important;
-  border: 1px solid var(--rrn-border-strong) !important;
-  -webkit-text-fill-color: var(--rrn-text) !important;
-  box-shadow: inset 0 1px 2px rgba(18,59,74,.025) !important;
+  border-radius: 10px;
 }
 
-:root[data-theme="light"] body :where(
-  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
-  select,textarea
-):focus {
-  background: #fff !important;
+:root[data-theme="light"] main :where(
+  .tab-button:not(.active),.dashboard-tab:not(.active),
+  .category-button:not(.active),.sector-category-button:not(.active)
+) {
+  background: transparent !important;
+  color: var(--rrn-muted) !important;
+  border-color: transparent !important;
+  -webkit-text-fill-color: var(--rrn-muted) !important;
+}
+
+:root[data-theme="light"] main :where(
+  .tab-button.active,.dashboard-tab.active,
+  .filter-btn.active,.category-button.active,
+  .sector-category-button.active,.view-toggle button.active,
+  .pagination button.active,.page-btn.active,[aria-current="page"]
+) {
+  background: var(--rrn-secondary) !important;
+  color: #FFFFFF !important;
   border-color: var(--rrn-secondary) !important;
-  box-shadow: 0 0 0 3px var(--rrn-focus), inset 0 1px 2px rgba(18,59,74,.02) !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 
-/* Checkboxes / radios / native color input */
-:root[data-theme="light"] body :where(input[type="checkbox"],input[type="radio"]) {
-  accent-color: var(--rrn-secondary) !important;
+/* Tables */
+:root[data-theme="light"] :where(table,.table-wrap) {
+  background: var(--rrn-light-surface) !important;
+  border: 1px solid var(--rrn-light-border) !important;
 }
 
-:root[data-theme="light"] body :where(input[type="color"]) {
-  background: var(--rrn-surface-2) !important;
-  border: 1px solid var(--rrn-border-strong) !important;
-}
-
-/* Tables and list rows */
-:root[data-theme="light"] body :where(table,.table-wrap) {
-  background: var(--rrn-surface) !important;
+:root[data-theme="light"] table thead th {
+  background: var(--rrn-light-surface-soft) !important;
+  color: var(--rrn-heading) !important;
   border-color: var(--rrn-light-border) !important;
 }
-:root[data-theme="light"] body table thead th {
-  background: var(--rrn-surface-soft) !important;
-  color: var(--rrn-heading) !important;
-}
-:root[data-theme="light"] body table tbody tr:nth-child(even) td {
-  background: rgba(18,59,74,.025) !important;
-}
-:root[data-theme="light"] body table tbody tr:hover td {
-  background: rgba(35,135,127,.075) !important;
+
+:root[data-theme="light"] table tbody td {
+  background: transparent !important;
+  color: var(--rrn-text) !important;
+  border-color: var(--rrn-light-border) !important;
 }
 
-/* Modals */
-:root[data-theme="light"] body :where(
+:root[data-theme="light"] table tbody tr:hover td {
+  background: rgba(35,135,127,.045) !important;
+}
+
+/* Status badges */
+:root[data-theme="light"] :where(
+  .status-ok,.badge-success,.status-active,.status-online
+) {
+  color: var(--rrn-success) !important;
+}
+
+:root[data-theme="light"] :where(
+  .status-warning,.badge-warning,.status-maintenance
+) {
+  color: var(--rrn-warning) !important;
+}
+
+:root[data-theme="light"] :where(
+  .status-danger,.badge-danger,.status-inactive,.danger
+) {
+  color: var(--rrn-danger) !important;
+}
+
+/* Modals and overlays */
+:root[data-theme="light"] :where(
   .modal-content,.config-modal,.modal-transferencia-content,
   .modal-transferencia,.maintenance-sheet,.rrn-maintenance-sheet,
   .rrn-maintenance-panel,.rrn-search-popover
 ) {
-  background: var(--rrn-surface) !important;
+  background: var(--rrn-light-surface) !important;
   color: var(--rrn-text) !important;
-  border-color: var(--rrn-light-border) !important;
-  box-shadow: 0 20px 55px rgba(18,59,74,.16) !important;
-}
-:root[data-theme="light"] body :where(
-  .modal-title,.modal-header
-) {
-  background: var(--rrn-accent) !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-}
-:root[data-theme="light"] body :where(
-  .close-btn,.modal .close,.modal-transferencia .close
-) {
-  background: var(--rrn-accent) !important;
-  color: #fff !important;
-  border-color: transparent !important;
+  border: 1px solid var(--rrn-light-border-strong) !important;
+  box-shadow: 0 18px 48px rgba(18,59,74,.15) !important;
 }
 
-/* Dropdowns, popovers and autocomplete */
-:root[data-theme="light"] body :where(
+:root[data-theme="light"] :where(
+  .modal-title,.modal-header
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+:root[data-theme="light"] :where(
+  .close-btn,.modal .close,.modal-transferencia .close
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Dropdowns / autocomplete */
+:root[data-theme="light"] :where(
   .user-dropdown,.dropdown-menu,.popover,
-  .autocomplete-list,.autocomplete-results,
+  .autocomplete-menu,.autocomplete-list,.autocomplete-results,
   .search-results,.rrn-search-popover
 ) {
-  background: var(--rrn-surface-2) !important;
+  background: var(--rrn-light-surface) !important;
   color: var(--rrn-text) !important;
-  border-color: var(--rrn-light-border) !important;
-  box-shadow: 0 18px 42px rgba(18,59,74,.14) !important;
+  border: 1px solid var(--rrn-light-border-strong) !important;
+  box-shadow: 0 12px 32px rgba(18,59,74,.12) !important;
 }
-:root[data-theme="light"] body :where(
+
+:root[data-theme="light"] :where(
   .user-dropdown button,.dropdown-menu button,
   .autocomplete-list button,.autocomplete-results button
 ) {
-  color: var(--rrn-heading) !important;
   background: transparent !important;
+  color: var(--rrn-heading) !important;
   border-color: transparent !important;
 }
-:root[data-theme="light"] body :where(
-  .user-dropdown button:hover,.dropdown-menu button:hover,
-  .autocomplete-list button:hover,.autocomplete-results button:hover
-) {
-  background: var(--rrn-surface-soft) !important;
-}
 
-/* Keep the navbar intentionally dark in light mode */
+/* Keep navbar dark — it is the visual anchor of the application. */
 :root[data-theme="light"] .navbar {
   background: linear-gradient(135deg,var(--rrn-navbar),var(--rrn-navbar-2)) !important;
-  color: #fff !important;
+  color: #FFFFFF !important;
 }
-:root[data-theme="light"] .navbar :where(h1,h2,h3,a,button,span,strong,small) {
-  -webkit-text-fill-color: initial;
+
+:root[data-theme="light"] .navbar :where(
+  h1,h2,h3,h4,h5,h6,p,a,button,strong,b,small,span
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Never let disabled controls look like broken/unpainted controls. */
+:root[data-theme="light"] :where(
+  button:disabled,input:disabled,select:disabled,textarea:disabled,
+  [aria-disabled="true"]
+) {
+  opacity: .55 !important;
+  cursor: not-allowed !important;
+}
+
+/* Light mode should remain visually calm on mobile. */
+@media (max-width: 900px) {
+  :root[data-theme="light"] main :where(
+    .card,.rrn-card,.dashboard-card,.machine-card,.equipment-card,
+    .sector-card,.setor-card,.settings-card,.panel
+  ) {
+    box-shadow: 0 1px 6px rgba(18,59,74,.05) !important;
+  }
 }
