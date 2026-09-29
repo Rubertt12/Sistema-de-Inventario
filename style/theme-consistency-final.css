@@ -1,667 +1,596 @@
 /* ==========================================================================
-   RRN Manager — FINAL THEME LAYER
-   White Mode rebuilt from zero.
-   Dark Mode remains owned by the dedicated dark-theme files.
+   RRN Manager — WHITE MODE TYPOGRAPHY / CONTRAST
+   This file is the last light-theme cascade layer.
+   Dark mode is intentionally untouched.
    ========================================================================== */
 
-:root:not([data-theme="dark"]){
-  color-scheme:light;
+:root:not([data-theme="dark"]) {
+  color-scheme: light;
 
-  --rrn-bg:#F7F9FA;
-  --rrn-surface:#FFFFFF;
-  --rrn-surface-2:#FAFCFC;
-  --rrn-surface-soft:#F3F7F7;
+  /* Base palette */
+  --rrn-bg: #F7F9FA;
+  --rrn-surface: #FFFFFF;
+  --rrn-surface-2: #FAFCFC;
+  --rrn-surface-soft: #F2F6F6;
 
-  --rrn-text:#26363D;
-  --rrn-heading:#123B4A;
-  --rrn-muted:#66777E;
+  /* Typography */
+  --rrn-text: #24343B;
+  --rrn-heading: #123B4A;
+  --rrn-muted: #61737B;
+  --rrn-placeholder: #7B8B92;
 
-  --rrn-primary:#14566B;
-  --rrn-primary-hover:#0F4759;
-  --rrn-secondary:#23877F;
-  --rrn-secondary-hover:#1C706A;
-  --rrn-accent:#C8753F;
+  /* Actions */
+  --rrn-primary: #14566B;
+  --rrn-primary-hover: #0F4759;
+  --rrn-secondary: #23877F;
+  --rrn-secondary-hover: #1C706A;
+  --rrn-accent: #C8753F;
 
-  --rrn-success:#247A5D;
-  --rrn-warning:#A85F30;
-  --rrn-danger:#B74740;
+  --rrn-success: #247A5D;
+  --rrn-warning: #A85F30;
+  --rrn-danger: #B74740;
 
-  --rrn-border:rgba(18,59,74,.09);
-  --rrn-border-strong:rgba(18,59,74,.15);
-  --rrn-focus:rgba(35,135,127,.16);
+  /* Lines / focus */
+  --rrn-border: rgba(18,59,74,.12);
+  --rrn-border-strong: rgba(18,59,74,.20);
+  --rrn-focus: rgba(35,135,127,.18);
 
-  --rrn-navbar:#123B4A;
-  --rrn-navbar-2:#18566A;
-  --rrn-on-primary:#FFFFFF;
+  --rrn-navbar: #123B4A;
+  --rrn-navbar-2: #18566A;
+  --rrn-on-primary: #FFFFFF;
 }
 
-/* --------------------------------------------------------------------------
-   1. PAGE FOUNDATION
-   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   1. PAGE / GLOBAL TEXT
+   ========================================================================== */
 
 :root:not([data-theme="dark"]) html,
-:root:not([data-theme="dark"]) body{
-  background:#F7F9FA!important;
-  color:var(--rrn-text)!important;
+:root:not([data-theme="dark"]) body {
+  background: var(--rrn-bg) !important;
+  color: var(--rrn-text) !important;
 }
 
-:root:not([data-theme="dark"]) body{
-  background:#F7F9FA!important;
+:root:not([data-theme="dark"]) main,
+:root:not([data-theme="dark"]) .main-content,
+:root:not([data-theme="dark"]) .dashboard-content,
+:root:not([data-theme="dark"]) .content-wrapper,
+:root:not([data-theme="dark"]) .tab-content {
+  color: var(--rrn-text) !important;
 }
 
-:root:not([data-theme="dark"]) main{
-  color:var(--rrn-text)!important;
+/* Primary readable text */
+:root:not([data-theme="dark"]) main :where(
+  p, li, dt, dd, td, th, label, legend,
+  figcaption, caption, blockquote,
+  .text, .content, .value, .name, .title,
+  .description, .details, .detail, .info,
+  .message, .body, .field-value, .field-label,
+  .card-text, .card-content, .row-label, .row-value,
+  .machine-name, .equipment-name, .user-name,
+  .asset-name, .sector-name
+) {
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
 }
+
+/* Headings */
+:root:not([data-theme="dark"]) main :where(
+  h1, h2, h3, h4, h5, h6,
+  .heading, .section-title, .panel-title, .card-title,
+  .machine-title, .equipment-title, .setor-title,
+  .kpi-title, .metric-value, .stat-value, .count-value
+) {
+  color: var(--rrn-heading) !important;
+  -webkit-text-fill-color: var(--rrn-heading) !important;
+}
+
+/* Secondary / metadata text */
+:root:not([data-theme="dark"]) main :where(
+  small, .muted, .meta, .subtitle, .eyebrow,
+  .description-muted, .card-meta, .card-subtitle,
+  .machine-meta, .equipment-meta, .kpi-label,
+  .metric-label, .stat-label, .field-help,
+  .helper-text, .hint, .timestamp, .date,
+  .secondary-text
+) {
+  color: var(--rrn-muted) !important;
+  -webkit-text-fill-color: var(--rrn-muted) !important;
+}
+
+/* Generic spans are text in this application.
+   Icon spans are explicitly excluded below. */
+:root:not([data-theme="dark"]) main :where(
+  span:not(.rrn-icon):not(.rrn-icon-control):not(.rrn-kpi-icon):not(.rrn-setor-icon):not(.rrn-machine-icon):not(.navbar-icon):not(.icon):not(.icon-button):not([class*="icon-"]):not([data-rrn-icon])
+) {
+  color: var(--rrn-text) !important;
+}
+
+/* ==========================================================================
+   2. LINKS
+   ========================================================================== */
+
+:root:not([data-theme="dark"]) main a:not(
+  .btn-primary,
+  .rrn-btn-primary,
+  .primary-button,
+  .btn-danger,
+  .danger-button,
+  .logout-btn
+) {
+  color: var(--rrn-primary) !important;
+  -webkit-text-fill-color: var(--rrn-primary) !important;
+}
+
+:root:not([data-theme="dark"]) main a:hover:not(
+  .btn-primary,
+  .rrn-btn-primary,
+  .primary-button,
+  .btn-danger,
+  .danger-button,
+  .logout-btn
+) {
+  color: var(--rrn-primary-hover) !important;
+}
+
+/* ==========================================================================
+   3. CARDS / PANELS / SECONDARY SURFACES
+   ========================================================================== */
 
 :root:not([data-theme="dark"]) main :where(
-  h1,h2,h3,h4,h5,h6
-){
-  color:var(--rrn-heading)!important;
+  .card, .rrn-card, .dashboard-card, .kpi-card, .overview-card,
+  .summary-card, .panel, .chart-card, .activity-card, .settings-card,
+  .user-card, .machine-card, .equipment-card, .sector-card, .setor-card,
+  .detail-card, .queue-card, .health-card, .overview-panel,
+  .transfer-column, .transfer-card, .box-setor,
+  .rrn-dashboard-overview, .rrn-home-panel, .rrn-kpi,
+  .rrn-machine-item, .rrn-setor-card, .rrn-agent-location-card,
+  .rrn-health-item, .rrn-alert-item, .rrn-search-result,
+  .rrn-sector-category, .rrn-sector-category-shell,
+  .rrn-category-backbar, .rrn-category-empty,
+  .rrn-sector-empty, .empty-state,
+  .security-card, .security-factor, .security-status,
+  .settings-user-card, .workspace-summary, .settings-segment
+) {
+  background: var(--rrn-surface) !important;
+  color: var(--rrn-text) !important;
+  border-color: var(--rrn-border) !important;
 }
 
+/* Text inside cards */
 :root:not([data-theme="dark"]) main :where(
-  p,li,dt,dd,td,th,label,legend
-){
-  color:var(--rrn-text)!important;
-}
-
-:root:not([data-theme="dark"]) main :where(
-  small,.muted,.meta,.subtitle,.description,
-  .card-meta,.card-subtitle,.machine-meta,.equipment-meta,
-  .kpi-label,.metric-label,.stat-label,.field-help
-){
-  color:var(--rrn-muted)!important;
-}
-
-:root:not([data-theme="dark"]) main a:not(button){
-  color:var(--rrn-primary);
-}
-
-/* --------------------------------------------------------------------------
-   2. SURFACES
-   -------------------------------------------------------------------------- */
-
-:root:not([data-theme="dark"]) main :where(
-  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,
-  .summary-card,.panel,.chart-card,.activity-card,.settings-card,
-  .user-card,.machine-card,.equipment-card,.sector-card,.setor-card,
-  .detail-card,.queue-card,.health-card,.overview-panel,
-  .transfer-column,.transfer-card,.box-setor,
-  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,
-  .rrn-machine-item,.rrn-setor-card,.rrn-agent-location-card,
-  .rrn-health-item,.rrn-alert-item,.rrn-search-result,
-  .rrn-sector-category,.rrn-sector-category-shell,.rrn-category-backbar,
-  .rrn-category-empty,.rrn-sector-empty,.empty-state,
-  .security-card,.security-factor,.security-status,
-  .settings-user-card,.settings-session-pill,.workspace-summary,
-  .settings-segment
-){
-  background:var(--rrn-surface)!important;
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-  box-shadow:0 2px 10px rgba(18,59,74,.035)!important;
-}
-
-:root:not([data-theme="dark"]) main :where(
-  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,
-  .summary-card,.panel,.chart-card,.activity-card,.settings-card,
-  .user-card,.machine-card,.equipment-card,.sector-card,.setor-card,
-  .detail-card,.queue-card,.health-card,.overview-panel,
-  .transfer-column,.transfer-card,.box-setor,
-  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,
-  .rrn-machine-item,.rrn-setor-card,.rrn-agent-location-card,
-  .rrn-health-item,.rrn-alert-item,.rrn-search-result,
-  .rrn-sector-category,.rrn-sector-category-shell,.rrn-category-backbar,
-  .security-card,.security-factor,.security-status
+  .card, .rrn-card, .dashboard-card, .kpi-card, .overview-card,
+  .summary-card, .panel, .chart-card, .activity-card, .settings-card,
+  .user-card, .machine-card, .equipment-card, .sector-card, .setor-card,
+  .detail-card, .queue-card, .health-card, .overview-panel,
+  .transfer-card, .box-setor, .rrn-kpi, .rrn-machine-item,
+  .rrn-setor-card, .rrn-agent-location-card, .rrn-search-result,
+  .security-card, .security-factor, .security-status
 ) :where(
-  h1,h2,h3,h4,h5,h6,strong,b,
-  .title,.card-title,.section-title,.panel-title,
-  .machine-title,.equipment-title,.setor-title,
-  .kpi-title,.kpi-value,.metric-value,.stat-value,.count-value
-){
-  color:var(--rrn-heading)!important;
+  p, li, td, th, label, strong, b, em,
+  .text, .content, .value, .name, .title,
+  .description, .details, .info
+) {
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
 }
 
 :root:not([data-theme="dark"]) main :where(
-  .card,.rrn-card,.dashboard-card,.kpi-card,.overview-card,
-  .summary-card,.panel,.chart-card,.activity-card,.settings-card,
-  .user-card,.machine-card,.equipment-card,.sector-card,.setor-card,
-  .detail-card,.queue-card,.health-card,.overview-panel,
-  .transfer-column,.transfer-card,.box-setor,
-  .rrn-dashboard-overview,.rrn-home-panel,.rrn-kpi,
-  .rrn-machine-item,.rrn-setor-card,.rrn-agent-location-card,
-  .rrn-health-item,.rrn-alert-item,.rrn-search-result,
-  .security-card,.security-factor,.security-status
+  .card, .rrn-card, .dashboard-card, .kpi-card, .overview-card,
+  .summary-card, .panel, .chart-card, .activity-card, .settings-card,
+  .user-card, .machine-card, .equipment-card, .sector-card, .setor-card,
+  .detail-card, .queue-card, .health-card, .overview-panel,
+  .rrn-kpi, .rrn-machine-item, .rrn-setor-card,
+  .security-card, .security-factor, .security-status
 ) :where(
-  small,.muted,.meta,.subtitle,.description,.card-meta,
-  .card-subtitle,.machine-meta,.equipment-meta,
-  .kpi-label,.metric-label,.stat-label
-){
-  color:var(--rrn-muted)!important;
+  small, .muted, .meta, .subtitle, .card-meta,
+  .card-subtitle, .machine-meta, .equipment-meta,
+  .kpi-label, .metric-label, .stat-label
+) {
+  color: var(--rrn-muted) !important;
+  -webkit-text-fill-color: var(--rrn-muted) !important;
 }
 
-/* Secondary surfaces */
-:root:not([data-theme="dark"]) main :where(
-  .rrn-machine-fact,.rrn-overview-stats>div,
-  .settings-kpis>div,.category-empty,.workspace-summary,
-  .settings-segment,.settings-session-pill
-){
-  background:var(--rrn-surface-2)!important;
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-}
-
-/* --------------------------------------------------------------------------
-   3. INPUTS / SEARCH / SELECTS
-   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   4. INPUTS / SELECTS / TEXTAREAS
+   ========================================================================== */
 
 :root:not([data-theme="dark"]) :where(
-  input,select,textarea,
-  .search-input,.search-box input,
+  input, select, textarea,
+  .search-input, .search-box input,
   .settings-input-action input
-){
-  background:#FFFFFF!important;
-  color:var(--rrn-text)!important;
-  border:1px solid var(--rrn-border)!important;
-  box-shadow:none!important;
+) {
+  background: #FFFFFF !important;
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
+  border-color: var(--rrn-border-strong) !important;
 }
 
 :root:not([data-theme="dark"]) :where(
-  input,select,textarea
-)::placeholder{
-  color:#829198!important;
-  opacity:1!important;
+  input, select, textarea
+)::placeholder {
+  color: var(--rrn-placeholder) !important;
+  -webkit-text-fill-color: var(--rrn-placeholder) !important;
+  opacity: 1 !important;
 }
 
 :root:not([data-theme="dark"]) :where(
-  input,select,textarea,
-  .search-input
-):focus{
-  background:#FFFFFF!important;
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-secondary)!important;
-  box-shadow:0 0 0 3px var(--rrn-focus)!important;
-  outline:none!important;
+  input, select, textarea
+):focus {
+  border-color: var(--rrn-secondary) !important;
+  box-shadow: 0 0 0 3px var(--rrn-focus) !important;
+  outline: none !important;
 }
 
-:root:not([data-theme="dark"]) option{
-  background:#FFFFFF!important;
-  color:var(--rrn-text)!important;
+:root:not([data-theme="dark"]) option {
+  background: #FFFFFF !important;
+  color: var(--rrn-text) !important;
 }
 
-/* Navbar search is intentionally dark */
-:root:not([data-theme="dark"]) .navbar :where(
-  #searchInput,.search-input,.nav-links input
-){
-  background:rgba(255,255,255,.09)!important;
-  color:#FFFFFF!important;
-  border-color:rgba(255,255,255,.16)!important;
-  box-shadow:none!important;
-}
+/* ==========================================================================
+   5. NEUTRAL BUTTONS
+   ========================================================================== */
 
-:root:not([data-theme="dark"]) .navbar :where(
-  #searchInput,.search-input,.nav-links input
-)::placeholder{
-  color:rgba(255,255,255,.68)!important;
-}
-
-/* --------------------------------------------------------------------------
-   4. BUTTONS
-   -------------------------------------------------------------------------- */
-
-/* Neutral controls */
 :root:not([data-theme="dark"]) main :where(
-  .btn-secondary,.secondary-button,.btn-ghost,
-  .settings-ghost-btn,.settings-back-btn,
-  .action-btn,.rrn-action-btn,.rrn-icon-btn,
-  .filter-btn,.view-toggle button,
-  .pagination button,.page-btn
-){
-  background:#FFFFFF!important;
-  color:var(--rrn-heading)!important;
-  border:1px solid var(--rrn-border)!important;
-  box-shadow:none!important;
+  .btn-secondary, .secondary-button, .btn-ghost,
+  .settings-ghost-btn, .settings-back-btn,
+  .action-btn, .rrn-action-btn, .rrn-icon-btn,
+  .filter-btn, .view-toggle button,
+  .pagination button, .page-btn
+) {
+  background: #FFFFFF !important;
+  color: var(--rrn-heading) !important;
+  -webkit-text-fill-color: var(--rrn-heading) !important;
+  border-color: var(--rrn-border-strong) !important;
 }
 
 :root:not([data-theme="dark"]) main :where(
-  .btn-secondary,.secondary-button,.btn-ghost,
-  .settings-ghost-btn,.settings-back-btn,
-  .action-btn,.rrn-action-btn,.rrn-icon-btn,
-  .filter-btn,.view-toggle button,
-  .pagination button,.page-btn
-):hover{
-  background:var(--rrn-surface-soft)!important;
-  color:var(--rrn-heading)!important;
-  border-color:var(--rrn-border-strong)!important;
+  .btn-secondary, .secondary-button, .btn-ghost,
+  .settings-ghost-btn, .settings-back-btn,
+  .action-btn, .rrn-action-btn, .rrn-icon-btn,
+  .filter-btn, .view-toggle button,
+  .pagination button, .page-btn
+):hover {
+  background: var(--rrn-surface-soft) !important;
+  color: var(--rrn-heading) !important;
 }
 
-/* Primary controls */
+/* Primary / colored buttons keep white text */
 :root:not([data-theme="dark"]) main :where(
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button
-){
-  background:var(--rrn-primary)!important;
-  color:#FFFFFF!important;
-  border-color:var(--rrn-primary)!important;
-  box-shadow:0 4px 12px rgba(20,86,107,.16)!important;
-}
-
-:root:not([data-theme="dark"]) main :where(
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button
-):hover{
-  background:var(--rrn-primary-hover)!important;
-  color:#FFFFFF!important;
-  border-color:var(--rrn-primary-hover)!important;
-}
-
-/* Semantic actions */
-:root:not([data-theme="dark"]) :where(
-  .danger,.danger-button,.btn-danger,.logout-btn,.excluir-tudo-btn
-){
-  color:var(--rrn-danger)!important;
-}
-
-/* --------------------------------------------------------------------------
-   5. TABS / FILTERS / PAGINATION
-   -------------------------------------------------------------------------- */
-
-:root:not([data-theme="dark"]) main :where(
-  .tabs,.dashboard-tabs,.view-toggle,.toolbar,
-  .filters-bar,.filter-group,.category-bar,.sector-category-bar
-){
-  background:var(--rrn-surface)!important;
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
+  .btn-primary, .rrn-btn-primary, .settings-primary-btn,
+  .save-btn, .upload-btn, .btn-confirmar,
+  button.primary, .primary-button
+) {
+  background: var(--rrn-primary) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--rrn-primary) !important;
 }
 
 :root:not([data-theme="dark"]) main :where(
-  .tab-button,.dashboard-tab,.filter-btn,
-  .category-button,.sector-category-button
-){
-  color:var(--rrn-muted)!important;
-  background:transparent!important;
+  .btn-primary, .rrn-btn-primary, .settings-primary-btn,
+  .save-btn, .upload-btn, .btn-confirmar,
+  button.primary, .primary-button
+) :where(span, strong, b, svg) {
+  color: #FFFFFF !important;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+/* ==========================================================================
+   6. TABS / FILTERS / PAGINATION
+   ========================================================================== */
+
+:root:not([data-theme="dark"]) main :where(
+  .tabs, .dashboard-tabs, .view-toggle, .toolbar,
+  .filters-bar, .filter-group, .category-bar, .sector-category-bar
+) {
+  background: var(--rrn-surface) !important;
+  color: var(--rrn-text) !important;
+  border-color: var(--rrn-border) !important;
 }
 
 :root:not([data-theme="dark"]) main :where(
-  .tab-button.active,.dashboard-tab.active,
-  .filter-btn.active,.category-button.active,
+  .tab-button, .dashboard-tab, .filter-btn,
+  .category-button, .sector-category-button
+) {
+  color: var(--rrn-muted) !important;
+  -webkit-text-fill-color: var(--rrn-muted) !important;
+  background: transparent !important;
+}
+
+:root:not([data-theme="dark"]) main :where(
+  .tab-button.active, .dashboard-tab.active,
+  .filter-btn.active, .category-button.active,
   .sector-category-button.active,
   .view-toggle button.active,
-  .pagination button.active,.page-btn.active,
+  .pagination button.active, .page-btn.active,
   [aria-current="page"]
-){
-  background:var(--rrn-secondary)!important;
-  color:#FFFFFF!important;
-  border-color:var(--rrn-secondary)!important;
+) {
+  background: var(--rrn-secondary) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--rrn-secondary) !important;
 }
 
-/* --------------------------------------------------------------------------
-   6. TABLES
-   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   7. TABLES
+   ========================================================================== */
+
+:root:not([data-theme="dark"]) :where(table, .table-wrap) {
+  border-color: var(--rrn-border) !important;
+}
+
+:root:not([data-theme="dark"]) table {
+  background: var(--rrn-surface) !important;
+  color: var(--rrn-text) !important;
+}
+
+:root:not([data-theme="dark"]) table th {
+  background: var(--rrn-surface-soft) !important;
+  color: var(--rrn-heading) !important;
+  -webkit-text-fill-color: var(--rrn-heading) !important;
+  border-color: var(--rrn-border) !important;
+}
+
+:root:not([data-theme="dark"]) table td {
+  background: transparent !important;
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
+  border-color: var(--rrn-border) !important;
+}
+
+/* ==========================================================================
+   8. STATUS COLORS
+   ========================================================================== */
 
 :root:not([data-theme="dark"]) :where(
-  table,.table-wrap
-){
-  border-color:var(--rrn-border)!important;
-}
-
-:root:not([data-theme="dark"]) table{
-  color:var(--rrn-text)!important;
-  background:var(--rrn-surface)!important;
-}
-
-:root:not([data-theme="dark"]) table thead th,
-:root:not([data-theme="dark"]) table th{
-  background:var(--rrn-surface-soft)!important;
-  color:var(--rrn-heading)!important;
-  border-color:var(--rrn-border)!important;
-}
-
-:root:not([data-theme="dark"]) table td{
-  background:transparent!important;
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-}
-
-:root:not([data-theme="dark"]) table tbody tr:nth-child(even) td{
-  background:rgba(18,59,74,.018)!important;
-}
-
-:root:not([data-theme="dark"]) table tbody tr:hover td{
-  background:rgba(35,135,127,.055)!important;
-}
-
-/* --------------------------------------------------------------------------
-   7. BADGES / STATUS / KPI
-   -------------------------------------------------------------------------- */
-
-:root:not([data-theme="dark"]) :where(
-  .badge,.status-badge,.chip,.pill
-){
-  border-color:var(--rrn-border)!important;
+  .status-ok, .badge-success, .status-active, .status-online
+) {
+  color: var(--rrn-success) !important;
+  -webkit-text-fill-color: var(--rrn-success) !important;
 }
 
 :root:not([data-theme="dark"]) :where(
-  .status-ok,.badge-success,.status-active,.status-online
-){
-  background:rgba(36,122,93,.11)!important;
-  color:var(--rrn-success)!important;
+  .status-warning, .badge-warning, .status-maintenance
+) {
+  color: var(--rrn-warning) !important;
+  -webkit-text-fill-color: var(--rrn-warning) !important;
 }
 
 :root:not([data-theme="dark"]) :where(
-  .status-warning,.badge-warning,.status-maintenance
-){
-  background:rgba(168,95,48,.11)!important;
-  color:var(--rrn-warning)!important;
+  .status-danger, .badge-danger, .status-inactive,
+  .danger, .danger-button, .btn-danger, .logout-btn, .excluir-tudo-btn
+) {
+  color: var(--rrn-danger) !important;
+  -webkit-text-fill-color: var(--rrn-danger) !important;
 }
+
+/* ==========================================================================
+   9. MODALS / DROPDOWNS
+   ========================================================================== */
 
 :root:not([data-theme="dark"]) :where(
-  .status-danger,.badge-danger,.status-inactive
-){
-  background:rgba(183,71,64,.11)!important;
-  color:var(--rrn-danger)!important;
-}
-
-:root:not([data-theme="dark"]) .switch input:checked + .slider{
-  background:var(--rrn-secondary)!important;
-}
-
-/* --------------------------------------------------------------------------
-   8. MODALS / DROPDOWNS
-   -------------------------------------------------------------------------- */
-
-:root:not([data-theme="dark"]) :where(
-  .modal-content,.config-modal,.modal-transferencia-content,
+  .modal-content, .config-modal, .modal-transferencia-content,
   .user-dropdown
-){
-  background:var(--rrn-surface)!important;
-  color:var(--rrn-text)!important;
-  border-color:var(--rrn-border)!important;
-  box-shadow:0 14px 40px rgba(18,59,74,.12)!important;
+) {
+  background: var(--rrn-surface) !important;
+  color: var(--rrn-text) !important;
+  border-color: var(--rrn-border) !important;
 }
 
 :root:not([data-theme="dark"]) :where(
-  .modal-content,.config-modal,.modal-transferencia-content,
+  .modal-content, .config-modal, .modal-transferencia-content,
   .user-dropdown
 ) :where(
-  p,li,td,th,label,small
-){
-  color:var(--rrn-text)!important;
-}
-
-:root:not([data-theme="dark"]) .modal-title{
-  background:var(--rrn-accent)!important;
-  color:#FFFFFF!important;
+  p, li, td, th, label, small, strong, b,
+  .description, .content, .value, .text
+) {
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
 }
 
 :root:not([data-theme="dark"]) :where(
-  .close-btn,.modal .close,.modal-transferencia .close
-){
-  background:var(--rrn-accent)!important;
-  color:#FFFFFF!important;
-  border-color:var(--rrn-accent)!important;
+  .modal-title, .modal-header
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 
 :root:not([data-theme="dark"]) :where(
-  .close-btn,.modal .close,.modal-transferencia .close
-):hover{
-  background:var(--rrn-primary)!important;
-  color:#FFFFFF!important;
-  border-color:var(--rrn-primary)!important;
+  .close-btn, .modal .close, .modal-transferencia .close
+) {
+  background: var(--rrn-accent) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: var(--rrn-accent) !important;
 }
 
-:root:not([data-theme="dark"]) .user-dropdown button{
-  background:transparent!important;
-  color:var(--rrn-text)!important;
-  border-color:transparent!important;
+:root:not([data-theme="dark"]) .user-dropdown button {
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
 }
 
-:root:not([data-theme="dark"]) .user-dropdown button:hover{
-  background:var(--rrn-surface-soft)!important;
-  color:var(--rrn-heading)!important;
-}
+/* ==========================================================================
+   10. NAVBAR — INTENTIONALLY WHITE TEXT
+   ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   9. NAVBAR — NEVER INHERIT WHITE-MODE TEXT RULES
-   -------------------------------------------------------------------------- */
-
-:root:not([data-theme="dark"]) .navbar{
-  background:linear-gradient(135deg,#123B4A,#18566A)!important;
-  color:#FFFFFF!important;
-  border-color:rgba(255,255,255,.08)!important;
-  box-shadow:0 4px 16px rgba(18,59,74,.10)!important;
+:root:not([data-theme="dark"]) .navbar {
+  background: linear-gradient(135deg, var(--rrn-navbar), var(--rrn-navbar-2)) !important;
+  color: #FFFFFF !important;
 }
 
 :root:not([data-theme="dark"]) .navbar :where(
-  h1,h2,h3,h4,h5,h6,p,a,button,strong,small,.user-name
-){
-  color:#FFFFFF!important;
+  h1,h2,h3,h4,h5,h6,p,a,button,strong,b,small,
+  .user-name, .rrn-app-tab
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 
 :root:not([data-theme="dark"]) .navbar :where(
-  svg,.rrn-icon,.rrn-icon-control,.navbar-icon
-){
-  color:inherit!important;
-  fill:currentColor;
-  stroke:currentColor;
-  -webkit-text-fill-color:initial!important;
+  svg, .rrn-icon, .rrn-icon-control, .navbar-icon
+) {
+  color: currentColor !important;
+  fill: currentColor;
+  stroke: currentColor;
 }
 
-:root:not([data-theme="dark"]) .navbar .user-menu{
-  background:var(--rrn-secondary)!important;
-  color:#FFFFFF!important;
+/* Navbar tabs have their own active/inactive colors, all remain readable. */
+:root:not([data-theme="dark"]) .navbar .rrn-app-tab:not(.is-active):not([aria-selected="true"]) {
+  color: rgba(255,255,255,.76) !important;
+  -webkit-text-fill-color: rgba(255,255,255,.76) !important;
 }
 
-:root:not([data-theme="dark"]) .navbar .user-menu:hover{
-  background:var(--rrn-secondary-hover)!important;
+:root:not([data-theme="dark"]) .navbar .rrn-app-tab.is-active,
+:root:not([data-theme="dark"]) .navbar .rrn-app-tab[aria-selected="true"] {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 
-:root:not([data-theme="dark"]) .navbar .user-avatar{
-  border-color:var(--rrn-accent)!important;
-}
+/* ==========================================================================
+   11. HERO / INTENTIONALLY DARK SURFACES
+   ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   10. ICONS — COLOR IS PRESERVED
-   -------------------------------------------------------------------------- */
-
-/* Do not use global span/svg color rules here.
-   Icon components keep their own semantic color. */
-
-:root:not([data-theme="dark"]) main :where(
-  .rrn-kpi-icon,.rrn-setor-icon,.rrn-machine-icon,
-  .rrn-icon-control,.rrn-icon-btn,.icon-button
-){
-  -webkit-text-fill-color:initial!important;
-}
-
-:root:not([data-theme="dark"]) main :where(
-  .rrn-kpi-icon svg,.rrn-setor-icon svg,
-  .rrn-machine-icon svg,.rrn-icon-control svg,
-  .rrn-icon-btn svg,.icon-button svg
-){
-  color:inherit!important;
-  fill:currentColor;
-  stroke:currentColor;
-}
-
-/* --------------------------------------------------------------------------
-   11. HERO / EMPTY STATES
-   -------------------------------------------------------------------------- */
-
-:root:not([data-theme="dark"]) .rrn-home-hero{
+:root:not([data-theme="dark"]) .rrn-home-hero {
   background:
-    radial-gradient(circle at 88% 18%,rgba(35,135,127,.18),transparent 28%),
-    linear-gradient(135deg,#123B4A,#18566A)!important;
-  color:#FFFFFF!important;
-  border-color:rgba(255,255,255,.10)!important;
-  box-shadow:0 8px 22px rgba(18,59,74,.11)!important;
+    radial-gradient(circle at 88% 18%, rgba(35,135,127,.18), transparent 28%),
+    linear-gradient(135deg, var(--rrn-navbar), var(--rrn-navbar-2)) !important;
+  color: #FFFFFF !important;
 }
 
 :root:not([data-theme="dark"]) .rrn-home-hero :where(
-  h1,h2,h3,h4,p,span,strong
-){
-  color:#FFFFFF!important;
+  h1,h2,h3,h4,h5,h6,p,span,strong,b,a,small
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 
-:root:not([data-theme="dark"]) .rrn-home-hero .rrn-home-eyebrow{
-  color:#8BD1CC!important;
+:root:not([data-theme="dark"]) .rrn-home-hero .rrn-home-eyebrow {
+  color: #8BD1CC !important;
+  -webkit-text-fill-color: #8BD1CC !important;
 }
 
-:root:not([data-theme="dark"]) .rrn-home-hero .rrn-home-action.primary{
-  background:var(--rrn-secondary)!important;
-  color:#FFFFFF!important;
+/* ==========================================================================
+   12. ICONS — NEVER FORCE THEM WHITE ON LIGHT SURFACES
+   ========================================================================== */
+
+:root:not([data-theme="dark"]) main :where(
+  .rrn-icon, .rrn-icon-control, .rrn-kpi-icon,
+  .rrn-setor-icon, .rrn-machine-icon,
+  .rrn-icon-btn, .icon-button, .navbar-icon,
+  [data-rrn-icon]
+) {
+  -webkit-text-fill-color: currentColor !important;
 }
 
-:root:not([data-theme="dark"]) .rrn-home-hero .rrn-home-action:not(.primary){
-  background:rgba(255,255,255,.08)!important;
-  color:#FFFFFF!important;
-  border-color:rgba(255,255,255,.14)!important;
+/* SVG icons inherit their wrapper's semantic color. */
+:root:not([data-theme="dark"]) main :where(
+  .rrn-icon, .rrn-icon-control, .rrn-kpi-icon,
+  .rrn-setor-icon, .rrn-machine-icon,
+  .rrn-icon-btn, .icon-button, .navbar-icon,
+  [data-rrn-icon]
+) svg {
+  color: currentColor !important;
+  fill: currentColor;
+  stroke: currentColor;
 }
 
-/* --------------------------------------------------------------------------
-   12. INLINE LEGACY COLORS — ONLY TEXT-BEARING ELEMENTS
-   -------------------------------------------------------------------------- */
+/* Neutral icon controls */
+:root:not([data-theme="dark"]) main :where(
+  .rrn-icon-btn, .icon-button
+) {
+  color: var(--rrn-heading) !important;
+}
 
+/* Keep semantic icon colors */
+:root:not([data-theme="dark"]) main :where(
+  .status-ok, .status-online, .status-active
+) :where(.rrn-icon, svg) {
+  color: var(--rrn-success) !important;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+:root:not([data-theme="dark"]) main :where(
+  .status-warning, .status-maintenance
+) :where(.rrn-icon, svg) {
+  color: var(--rrn-warning) !important;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+:root:not([data-theme="dark"]) main :where(
+  .status-danger, .status-inactive, .danger, .danger-button
+) :where(.rrn-icon, svg) {
+  color: var(--rrn-danger) !important;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+/* ==========================================================================
+   13. INLINE LEGACY COLORS
+   ========================================================================== */
+
+/* Only text-bearing nodes are normalized. We do NOT touch every element
+   with [style*="color"], because that would break semantic icons. */
 :root:not([data-theme="dark"]) body :where(
-  p,li,label,small,strong,b,em,dt,dd,td,th,h1,h2,h3,h4,h5,h6
+  p,li,label,small,strong,b,em,dt,dd,td,th,
+  h1,h2,h3,h4,h5,h6
 )[style*="color: white"],
 :root:not([data-theme="dark"]) body :where(
-  p,li,label,small,strong,b,em,dt,dd,td,th,h1,h2,h3,h4,h5,h6
+  p,li,label,small,strong,b,em,dt,dd,td,th,
+  h1,h2,h3,h4,h5,h6
 )[style*="color:white"],
 :root:not([data-theme="dark"]) body :where(
-  p,li,label,small,strong,b,em,dt,dd,td,th,h1,h2,h3,h4,h5,h6
+  p,li,label,small,strong,b,em,dt,dd,td,th,
+  h1,h2,h3,h4,h5,h6
 )[style*="color:#fff"],
 :root:not([data-theme="dark"]) body :where(
-  p,li,label,small,strong,b,em,dt,dd,td,th,h1,h2,h3,h4,h5,h6
+  p,li,label,small,strong,b,em,dt,dd,td,th,
+  h1,h2,h3,h4,h5,h6
 )[style*="color: #fff"],
 :root:not([data-theme="dark"]) body :where(
-  p,li,label,small,strong,b,em,dt,dd,td,th,h1,h2,h3,h4,h5,h6
+  p,li,label,small,strong,b,em,dt,dd,td,th,
+  h1,h2,h3,h4,h5,h6
 )[style*="color:#ffffff"],
 :root:not([data-theme="dark"]) body :where(
-  p,li,label,small,strong,b,em,dt,dd,td,th,h1,h2,h3,h4,h5,h6
-)[style*="color: #ffffff"]{
-  color:var(--rrn-text)!important;
+  p,li,label,small,strong,b,em,dt,dd,td,th,
+  h1,h2,h3,h4,h5,h6
+)[style*="color: #ffffff"] {
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
 }
 
-/* Re-protect text on intentionally dark/colored surfaces. */
+/* Re-protect intentional white text after the legacy-color cleanup. */
 :root:not([data-theme="dark"]) :where(
-  .navbar,.brand-panel,.rrn-home-hero,
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,
-  button.primary,.primary-button,
-  .tab-button.active,.dashboard-tab.active,
-  .filter-btn.active,.category-button.active,
+  .navbar, .rrn-home-hero,
+  .btn-primary, .rrn-btn-primary, .settings-primary-btn,
+  .save-btn, .upload-btn, .btn-confirmar,
+  button.primary, .primary-button,
+  .tab-button.active, .dashboard-tab.active,
+  .filter-btn.active, .category-button.active,
   .sector-category-button.active,
-  .pagination button.active,.page-btn.active,
-  [aria-current="page"],.modal-title,
-  .close-btn,.modal .close,.modal-transferencia .close
-) :where(h1,h2,h3,h4,h5,h6,p,span,small,strong,b,label,a){
-  color:#FFFFFF!important;
+  .pagination button.active, .page-btn.active,
+  [aria-current="page"], .modal-title,
+  .modal-header, .close-btn, .modal .close,
+  .modal-transferencia .close
+) :where(h1,h2,h3,h4,h5,h6,p,span,strong,b,label,a,small) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 
-/* --------------------------------------------------------------------------
-   13. SELECTION / ACCESSIBILITY
-   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   14. ACCESSIBILITY
+   ========================================================================== */
 
-:root:not([data-theme="dark"]) ::selection{
-  background:rgba(35,135,127,.20);
-  color:#123B4A;
+:root:not([data-theme="dark"]) ::selection {
+  background: rgba(35,135,127,.20);
+  color: var(--rrn-heading);
 }
 
 :root:not([data-theme="dark"]) :where(
   button,a,input,select,textarea
-):focus-visible{
-  outline:2px solid rgba(35,135,127,.48)!important;
-  outline-offset:2px;
+):focus-visible {
+  outline: 2px solid rgba(35,135,127,.48) !important;
+  outline-offset: 2px;
 }
-
-/* --------------------------------------------------------------------------
-   14. RESPONSIVE
-   -------------------------------------------------------------------------- */
-
-@media (max-width:900px){
-  :root:not([data-theme="dark"]) .rrn-home-hero{
-    box-shadow:0 5px 16px rgba(18,59,74,.08)!important;
-  }
-}
-
-
-/* FINAL LIGHT MODE CONTRAST PATCH */
-:root:not([data-theme="dark"]) body :where(
-  p,li,dt,dd,td,th,label,legend,small,strong,b,em,
-  h1,h2,h3,h4,h5,h6,.title,.name,.label,.value,.text,.content,
-  .description,.subtitle,.meta,.caption,.helper,.hint,.field-label,.field-value
-):not(.navbar *):not(.rrn-home-hero *):not(.btn-primary *):not(.rrn-btn-primary *):not(.settings-primary-btn *):not(.save-btn *):not(.upload-btn *):not(.btn-confirmar *):not(.primary-button *):not(.modal-title *):not(.close-btn *):not(.modal .close *):not(.modal-transferencia .close *):not(.tab-button.active *):not(.dashboard-tab.active *):not(.filter-btn.active *):not(.category-button.active *):not(.sector-category-button.active *):not(.pagination button.active *):not(.page-btn.active *) {
-  color:var(--rrn-text)!important;
-}
-
-:root:not([data-theme="dark"]) body :where(
-  p,li,dt,dd,td,th,label,legend,small,strong,b,em,
-  h1,h2,h3,h4,h5,h6,.title,.name,.label,.value,.text,.content,
-  .description,.subtitle,.meta,.caption,.helper,.hint,.field-label,.field-value
-)[style*="color"] {
-  color:var(--rrn-text)!important;
-}
-
-:root:not([data-theme="dark"]) :where(
-  .navbar,.rrn-home-hero,
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,.primary-button,
-  .tab-button.active,.dashboard-tab.active,.filter-btn.active,
-  .category-button.active,.sector-category-button.active,
-  .pagination button.active,.page-btn.active,[aria-current="page"],
-  .modal-title,.close-btn,.modal .close,.modal-transferencia .close,.user-menu
-) :where(p,li,dt,dd,td,th,label,legend,small,strong,b,em,h1,h2,h3,h4,h5,h6,a,span) {
-  color:#FFFFFF!important;
-}
-
-/* SVG icons on normal light surfaces are dark and visible. */
-:root:not([data-theme="dark"]) body :where(
-  .rrn-icon,.rrn-icon-control,.rrn-kpi-icon,.rrn-setor-icon,
-  .rrn-machine-icon,.rrn-icon-btn,.icon-button,.navbar-icon
-) {
-  color:var(--rrn-heading)!important;
-  -webkit-text-fill-color:initial!important;
-}
-
-:root:not([data-theme="dark"]) body :where(
-  .rrn-icon-control > .rrn-icon,
-  .rrn-kpi-icon > .rrn-icon,
-  .rrn-setor-icon > .rrn-icon,
-  .rrn-machine-icon > .rrn-icon,
-  .rrn-icon-btn > .rrn-icon,
-  .icon-button > .rrn-icon
-) {
-  color:inherit!important;
-  stroke:currentColor!important;
-  fill:none!important;
-}
-
-/* Keep icons white only where the background is intentionally dark/colored. */
-:root:not([data-theme="dark"]) :where(
-  .navbar,.rrn-home-hero,
-  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
-  .save-btn,.upload-btn,.btn-confirmar,.primary-button,
-  .tab-button.active,.dashboard-tab.active,.filter-btn.active,
-  .category-button.active,.sector-category-button.active,
-  .pagination button.active,.page-btn.active,[aria-current="page"],
-  .modal-title,.close-btn,.modal .close,.modal-transferencia .close,.user-menu
-) :where(.rrn-icon,.rrn-icon-control,.rrn-kpi-icon,.rrn-setor-icon,.rrn-machine-icon,.rrn-icon-btn,.icon-button,.navbar-icon) {
-  color:#FFFFFF!important;
-  stroke:currentColor!important;
-}
-
-:root:not([data-theme="dark"]) body :where(
-  .status-ok,.badge-success,.status-active,.status-online
-) :where(.rrn-icon,.rrn-icon-control) { color:var(--rrn-success)!important; }
-
-:root:not([data-theme="dark"]) body :where(
-  .status-warning,.badge-warning,.status-maintenance
-) :where(.rrn-icon,.rrn-icon-control) { color:var(--rrn-warning)!important; }
-
-:root:not([data-theme="dark"]) body :where(
-  .status-danger,.badge-danger,.status-inactive,.danger,.danger-button,.btn-danger,.logout-btn,.excluir-tudo-btn
-) :where(.rrn-icon,.rrn-icon-control) { color:var(--rrn-danger)!important; }
