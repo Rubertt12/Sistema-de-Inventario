@@ -7,10 +7,10 @@
 :root:not([data-theme="dark"]){
   color-scheme:light;
 
-  --rrn-bg:#F3F6F7;
+  --rrn-bg:#F7F9FA;
   --rrn-surface:#FFFFFF;
-  --rrn-surface-2:#F8FAFB;
-  --rrn-surface-soft:#EEF3F4;
+  --rrn-surface-2:#FAFCFC;
+  --rrn-surface-soft:#F3F7F7;
 
   --rrn-text:#26363D;
   --rrn-heading:#123B4A;
@@ -26,8 +26,8 @@
   --rrn-warning:#A85F30;
   --rrn-danger:#B74740;
 
-  --rrn-border:rgba(18,59,74,.13);
-  --rrn-border-strong:rgba(18,59,74,.20);
+  --rrn-border:rgba(18,59,74,.09);
+  --rrn-border-strong:rgba(18,59,74,.15);
   --rrn-focus:rgba(35,135,127,.16);
 
   --rrn-navbar:#123B4A;
@@ -41,14 +41,12 @@
 
 :root:not([data-theme="dark"]) html,
 :root:not([data-theme="dark"]) body{
-  background:#F3F6F7!important;
+  background:#F7F9FA!important;
   color:var(--rrn-text)!important;
 }
 
 :root:not([data-theme="dark"]) body{
-  background:
-    radial-gradient(circle at 8% -8%,rgba(35,135,127,.055),transparent 28rem),
-    linear-gradient(180deg,#F8FAFB 0%,#F1F5F6 100%)!important;
+  background:#F7F9FA!important;
 }
 
 :root:not([data-theme="dark"]) main{
@@ -101,7 +99,7 @@
   background:var(--rrn-surface)!important;
   color:var(--rrn-text)!important;
   border-color:var(--rrn-border)!important;
-  box-shadow:0 5px 22px rgba(18,59,74,.055)!important;
+  box-shadow:0 2px 10px rgba(18,59,74,.035)!important;
 }
 
 :root:not([data-theme="dark"]) main :where(
@@ -382,7 +380,7 @@
   background:var(--rrn-surface)!important;
   color:var(--rrn-text)!important;
   border-color:var(--rrn-border)!important;
-  box-shadow:0 24px 70px rgba(18,59,74,.18)!important;
+  box-shadow:0 14px 40px rgba(18,59,74,.12)!important;
 }
 
 :root:not([data-theme="dark"]) :where(
@@ -434,7 +432,7 @@
   background:linear-gradient(135deg,#123B4A,#18566A)!important;
   color:#FFFFFF!important;
   border-color:rgba(255,255,255,.08)!important;
-  box-shadow:0 8px 28px rgba(18,59,74,.16)!important;
+  box-shadow:0 4px 16px rgba(18,59,74,.10)!important;
 }
 
 :root:not([data-theme="dark"]) .navbar :where(
@@ -499,7 +497,7 @@
     linear-gradient(135deg,#123B4A,#18566A)!important;
   color:#FFFFFF!important;
   border-color:rgba(255,255,255,.10)!important;
-  box-shadow:0 12px 34px rgba(18,59,74,.16)!important;
+  box-shadow:0 8px 22px rgba(18,59,74,.11)!important;
 }
 
 :root:not([data-theme="dark"]) .rrn-home-hero :where(
@@ -586,6 +584,6 @@
 
 @media (max-width:900px){
   :root:not([data-theme="dark"]) .rrn-home-hero{
-    box-shadow:0 8px 24px rgba(18,59,74,.12)!important;
+    box-shadow:0 5px 16px rgba(18,59,74,.08)!important;
   }
 }
