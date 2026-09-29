@@ -205,6 +205,10 @@ body:has(#setoresContainer) .dashboard-actions{
 
 .navbar .menu-toggle{display:none!important}
 
+.rrn-theme-menu-toggle{
+  display:none!important;
+}
+
 @media(max-width:1180px){
   .navbar{gap:9px!important;padding-inline:14px!important}
   .navbar>h1{min-width:174px!important}
@@ -272,8 +276,28 @@ body:has(#setoresContainer) .dashboard-actions{
   .navbar .nav-links.active .rrn-navbar-search #searchInput{height:44px!important;min-height:44px!important}
   .navbar .nav-links.active .rrn-app-tabs{order:2!important;width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:5px!important;padding:5px!important;overflow:visible!important}
   .navbar .nav-links.active .rrn-app-tab{width:100%!important;justify-content:flex-start!important;min-height:40px!important;height:40px!important;padding:0 11px!important}
-  .navbar .nav-links.active .rrn-sync-status{order:3!important;display:flex!important;width:100%!important;justify-content:flex-start!important}
-  .navbar .nav-links.active .user-menu{order:4!important;width:100%!important;min-height:48px!important;padding:6px!important}
+  .navbar .nav-links.active .rrn-theme-menu-toggle{
+    order:3!important;
+    display:flex!important;
+    width:100%!important;
+    min-height:44px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0 14px!important;
+    border:1px solid rgba(255,255,255,.13)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.075)!important;
+    color:#fff!important;
+    font:700 .72rem/1 Inter,system-ui,sans-serif!important;
+    cursor:pointer!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+  }
+  .navbar .nav-links.active .rrn-theme-menu-toggle:hover{
+    background:rgba(255,255,255,.12)!important;
+    border-color:rgba(255,255,255,.2)!important;
+  }
+  .navbar .nav-links.active .rrn-sync-status{order:4!important;display:flex!important;width:100%!important;justify-content:flex-start!important}
+  .navbar .nav-links.active .user-menu{order:5!important;width:100%!important;min-height:48px!important;padding:6px!important}
   .navbar .nav-links.active #userName{display:block!important;max-width:none!important;flex:1!important}
   .navbar .nav-links.active .user-dropdown{position:static!important;width:100%!important;min-width:0!important;margin:7px 0 0!important;max-height:300px!important;overflow-y:auto!important}
   .rrn-navbar-search kbd{display:none!important}
