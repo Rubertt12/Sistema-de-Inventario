@@ -82,7 +82,7 @@
       <form id="formMfaChallenge" class="auth-form rrn-mfa-form rrn-mfa-challenge" novalidate>
         <div class="rrn-mfa-topline"><span class="rrn-mfa-security-icon" aria-hidden="true"><span></span></span><div><strong>Autenticação em duas etapas</strong><small>SEGURANÇA DA CONTA · ETAPA 2 DE 2</small></div></div>
         <div class="rrn-mfa-intro"><h3>Confirme sua identidade</h3><p>Abra seu aplicativo autenticador e informe o código temporário de 6 dígitos para continuar.</p></div>
-        <label class="field" id="mfaFactorField"><span>Autenticador</span><select id="mfaFactorSelect"></select></label>
+        <div id="mfaFactorField" class="rrn-mfa-factor" hidden><select id="mfaFactorSelect" aria-label="Dispositivo de autenticação"></select></div>
         <label class="field"><span>Código de autenticação</span><input id="mfaChallengeCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" required><small>Abra seu aplicativo autenticador e informe o código atual de 6 dígitos.</small></label>
         <button type="submit" class="btn-primary" id="mfaChallengeButton">Verificar e entrar</button>
         <div class="rrn-mfa-trust"><span class="rrn-mfa-check" aria-hidden="true">✓</span><span>O código é válido por alguns segundos e muda automaticamente.</span></div>
@@ -180,7 +180,7 @@
     setHeader('Verificação em duas etapas', 'Senha correta. Agora confirme o segundo fator para entrar.');
     $('formMfaChallenge')?.classList.add('active');
     const select = $('mfaFactorSelect');
-    select.innerHTML = factors.map((factor, index) => `<option value="${factor.id}">${factor.friendly_name || `Autenticador ${index + 1}`}</option>`).join('');
+    select.innerHTML = factors.map((factor, index) => `<option value="${factor.id}">Dispositivo ${index + 1}</option>`).join('');
     $('mfaFactorField').hidden = factors.length <= 1;
     $('mfaChallengeCode').value = '';
     setMessage($('mfaChallengeMsg'));
