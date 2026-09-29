@@ -5,35 +5,34 @@
   window.__RRN_THEME_MODE__ = true;
 
   const KEY = 'rrn_theme_mode';
+  const DEFAULT_THEME = 'dark';
 
-  // RRN Manager uses Dark Mode exclusively.
-  document.documentElement.dataset.theme = 'dark';
-  localStorage.setItem(KEY, 'dark');
-
-  function addStylesheet(href, marker) {
+  const addStylesheet = (href, marker) => {
     if (document.querySelector(`link[${marker}]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = href;
     link.setAttribute(marker, '1');
     document.head.appendChild(link);
-  }
+  };
 
-  function addScript(src, marker) {
+  const addScript = (src, marker) => {
     if (document.querySelector(`script[${marker}]`)) return;
     const script = document.createElement('script');
     script.src = src;
     script.async = false;
     script.setAttribute(marker, '1');
     document.head.appendChild(script);
-  }
+  };
 
   function ensureThemeFixes() {
-    addStylesheet('/style/dark-mode-v5.css', 'data-rrn-dark-mode-v5');
-    const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\.html$/i.test(location.pathname);
-    if (isDashboard) addStylesheet('/style/dark-inventory-fix.css', 'data-rrn-dark-inventory-fix');
+    addStylesheet('/style/theme-tokens-v3.css?v=20260929-1', 'data-rrn-theme-tokens-v3');
+    addStylesheet('/style/dark-mode-v5.css?v=20260929-1', 'data-rrn-dark-mode-v5');
     addStylesheet('/style/theme-consistency-v1.css?v=20260817-1', 'data-rrn-theme-consistency-v1');
+    addStylesheet('/style/theme-consistency-final.css?v=20260929-12', 'data-rrn-theme-consistency-final');
+    const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\.html$/i.test(location.pathname);
     if (isDashboard) {
+      addStylesheet('/style/dark-inventory-fix.css?v=20260929-1', 'data-rrn-dark-inventory-fix');
       addStylesheet('/style/theme-component-fixes-v2.css?v=20260817-3', 'data-rrn-theme-component-fixes-v2');
       addStylesheet('/style/ui-fixes-v3.css?v=20260817-2', 'data-rrn-ui-fixes-v3');
       addStylesheet('/style/mobile-modals-v11.css?v=20260817-3', 'data-rrn-mobile-modals-v11');
@@ -60,28 +59,41 @@
     document.head.appendChild(script);
   }
 
-  function loadMfaGuard() {
-    if (document.querySelector('script[data-rrn-mfa-guard]')) return;
-    const script = document.createElement('script');
-    script.src = '/js/mfa-guard.js';
-    script.async = true;
-    script.dataset.rrnMfaGuard = '1';
-    document.head.appendChild(script);
+  function apply(mode, persist = true) {
+    const normalized = mode === 'light' ? 'light' : 'dark';
+    ensureThemeFixes();
+    document.documentElement.dataset.theme = normalized;
+    if (persist) localStorage.setItem(KEY, normalized);
+    document.documentElement.style.colorScheme = normalized;
+    syncButtons(normalized);
+    window.dispatchEvent(new CustomEvent('rrn:themechange', { detail: { mode: normalized } }));
+    return normalized;
   }
 
-  function ensureMfaGuard() {
-    if (window.__RRN_MFA_TRUSTED_DEVICE__ || document.querySelector('script[data-rrn-mfa-trusted]')) {
-      if (window.__RRN_MFA_TRUSTED_DEVICE__) loadMfaGuard();
-      else document.querySelector('script[data-rrn-mfa-trusted]')?.addEventListener('load', loadMfaGuard, { once: true });
-      return;
-    }
-    const trusted = document.createElement('script');
-    trusted.src = '/js/mfa-trusted-device.js';
-    trusted.async = false;
-    trusted.dataset.rrnMfaTrusted = '1';
-    trusted.onload = loadMfaGuard;
-    trusted.onerror = loadMfaGuard;
-    document.head.appendChild(trusted);
+  function getPreferred() {
+    const saved = localStorage.getItem(KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+    return DEFAULT_THEME;
+  }
+
+  function syncButtons(mode) {
+    document.querySelectorAll('[data-rrn-theme-toggle]').forEach(button => {
+      button.setAttribute('aria-pressed', String(mode === 'dark'));
+      button.textContent = mode === 'dark' ? 'Modo claro' : 'Modo escuro';
+    });
+  }
+
+  function toggle() {
+    return apply(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  }
+
+  function bindThemeButtons() {
+    document.querySelectorAll('[data-rrn-theme-toggle]').forEach(button => {
+      if (button.dataset.rrnThemeBound === '1') return;
+      button.dataset.rrnThemeBound = '1';
+      button.addEventListener('click', toggle);
+    });
+    syncButtons(document.documentElement.dataset.theme || getPreferred());
   }
 
   function mountSecurityLink() {
@@ -102,14 +114,13 @@
   function mount() {
     ensureThemeFixes();
     ensureFooter();
-    mountSecurityLink();\n    ensureThemeFixes();
-    ensureFooter();
+    bindThemeButtons();
     mountSecurityLink();
-  }\n\n  ensureThemeFixes();
+  }
+
+  ensureThemeFixes();
   ensureFooter();
-  document.documentElement.dataset.theme = 'dark';
-  localStorage.setItem(KEY, 'dark');
-  ensureMfaGuard();
+  apply(getPreferred());
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mount, { once: true });
@@ -121,8 +132,8 @@
   setTimeout(mountSecurityLink, 1100);
 
   window.RRN_THEME = Object.freeze({
-    get: () => 'dark',
-    set: () => 'dark',
-    toggle: () => 'dark'
+    get: () => document.documentElement.dataset.theme || getPreferred(),
+    set: mode => apply(mode),
+    toggle
   });
 })();
