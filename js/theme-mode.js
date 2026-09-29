@@ -25,6 +25,24 @@
     document.head.appendChild(script);
   };
 
+
+  function ensureFinalDashboardCascade() {
+    const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\\.html$/i.test(location.pathname);
+    if (!isDashboard) return;
+    const link = document.querySelector('link[data-rrn-dashboard-light-final]');
+    const target = document.body || document.head;
+    if (!target) return;
+    if (link) {
+      if (document.body && link.parentNode !== document.body) document.body.appendChild(link);
+      return;
+    }
+    const finalLink = document.createElement('link');
+    finalLink.rel = 'stylesheet';
+    finalLink.href = '/style/dashboard-light-final-v2.css?v=20260929-1';
+    finalLink.setAttribute('data-rrn-dashboard-light-final', '1');
+    target.appendChild(finalLink);
+    if (document.body && finalLink.parentNode !== document.body) document.body.appendChild(finalLink);
+  }
   function ensureFinalThemeCascade() {
     const link = document.querySelector('link[data-rrn-theme-final-cascade]');
     const target = document.body || document.head;
@@ -79,6 +97,7 @@
     const normalized = mode === 'light' ? 'light' : 'dark';
     ensureThemeFixes();
     ensureFinalThemeCascade();
+    ensureFinalDashboardCascade();
     document.documentElement.dataset.theme = normalized;
     if (persist) localStorage.setItem(KEY, normalized);
     document.documentElement.style.colorScheme = normalized;
@@ -131,6 +150,7 @@
   function mount() {
     ensureThemeFixes();
     ensureFinalThemeCascade();
+    ensureFinalDashboardCascade();
     ensureFooter();
     bindThemeButtons();
     mountSecurityLink();
