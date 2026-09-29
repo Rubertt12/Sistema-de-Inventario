@@ -54,7 +54,7 @@
 
   const lazyFeatures = Object.freeze({
     scanner: ['/js/scanner.js'],
-    stock: ['/js/stock-inventory-v2.js?v=20260814-2'],
+    stock: ['/js/stock-inventory-v2.js?v=20260929-1'],
     settingsExtras: [
       '/js/backup-v3.js',
       '/js/reports-v2.js',
