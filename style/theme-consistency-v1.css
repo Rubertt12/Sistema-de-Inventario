@@ -3,7 +3,7 @@
    Evita que CSS legado/hardcoded deixe cards, modais, filtros e inventário
    com cores diferentes entre telas. */
 
-:root:not([data-theme="dark"]){
+:root[data-theme="light"]{
   color-scheme:light;
   --rrn-bg:#EEF3F4;
   --rrn-surface:#FFFFFF;
@@ -92,13 +92,13 @@ hr{border-color:var(--rrn-border)!important}
   border-color:var(--rrn-border)!important;
 }
 
-:root:not([data-theme="dark"]) .setor,
-:root:not([data-theme="dark"]) .rrn-setor-card,
-:root:not([data-theme="dark"]) .rrn-machine-item,
-:root:not([data-theme="dark"]) .rrn-home-panel,
-:root:not([data-theme="dark"]) .rrn-kpi,
-:root:not([data-theme="dark"]) .modal-content,
-:root:not([data-theme="dark"]) .config-modal{box-shadow:var(--rrn-shadow-soft)!important}
+:root[data-theme="light"] .setor,
+:root[data-theme="light"] .rrn-setor-card,
+:root[data-theme="light"] .rrn-machine-item,
+:root[data-theme="light"] .rrn-home-panel,
+:root[data-theme="light"] .rrn-kpi,
+:root[data-theme="light"] .modal-content,
+:root[data-theme="light"] .config-modal{box-shadow:var(--rrn-shadow-soft)!important}
 
 :root[data-theme="dark"] .setor,
 :root[data-theme="dark"] .rrn-setor-card,
@@ -327,11 +327,11 @@ body [style*="background:#fff"],body [style*="background: #fff"],body [style*="b
 body [style*="background:#f9f9f9"],body [style*="background: #f9f9f9"]{background:var(--rrn-surface)!important}
 
 /* Scrollbars */
-:root:not([data-theme="dark"]) *{scrollbar-color:#B7C8CC #E8EFF0}
+:root[data-theme="light"] *{scrollbar-color:#B7C8CC #E8EFF0}
 :root[data-theme="dark"] *{scrollbar-color:#32474F #0D151A}
 *::-webkit-scrollbar{width:10px;height:10px}
-:root:not([data-theme="dark"]) *::-webkit-scrollbar-track{background:#E8EFF0}
-:root:not([data-theme="dark"]) *::-webkit-scrollbar-thumb{background:#B7C8CC;border:2px solid #E8EFF0;border-radius:999px}
+:root[data-theme="light"] *::-webkit-scrollbar-track{background:#E8EFF0}
+:root[data-theme="light"] *::-webkit-scrollbar-thumb{background:#B7C8CC;border:2px solid #E8EFF0;border-radius:999px}
 :root[data-theme="dark"] *::-webkit-scrollbar-track{background:#0D151A}
 :root[data-theme="dark"] *::-webkit-scrollbar-thumb{background:#32474F;border:2px solid #0D151A;border-radius:999px}
 
