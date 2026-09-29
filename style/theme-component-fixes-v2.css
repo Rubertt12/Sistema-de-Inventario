@@ -208,10 +208,10 @@ html[data-theme] #setoresContainer.grid-view .rrn-machine-actions .rrn-btn:hover
 }
 
 /* Light: sem cinzas lavados; Dark: sem ilhas brancas. */
-:root:not([data-theme="dark"]) #infoModal #maintenanceSection,
-:root:not([data-theme="dark"]) #infoModal #observationsList,
-:root:not([data-theme="dark"]) #infoModal .rrn-agent-location-card,
-:root:not([data-theme="dark"]) #infoModal .rrn-related-assets{
+:root[data-theme="light"] #infoModal #maintenanceSection,
+:root[data-theme="light"] #infoModal #observationsList,
+:root[data-theme="light"] #infoModal .rrn-agent-location-card,
+:root[data-theme="light"] #infoModal .rrn-related-assets{
   background:#F7FAFA!important;
 }
 :root[data-theme="dark"] #infoModal .rrn-info-row,
