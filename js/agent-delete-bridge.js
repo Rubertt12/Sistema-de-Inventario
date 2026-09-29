@@ -211,16 +211,18 @@
   }
 
   function wrapShowInfo() {
-    if (wrapped.has('showInfo') || typeof window.showInfo !== 'function') return false;
-    const original = window.showInfo;
-    window.showInfo = function(...args) {
-      const result = original.apply(this, args);
-      const sectorIndex = Number(args[0]);
-      const assetIndex = Number(args[1]);
-      setTimeout(() => refreshLocation(sectorIndex, assetIndex), 0);
-      return result;
-    };
-    wrapped.add('showInfo');
+    if (window.__RRN_AGENT_SHOW_INFO_LISTENER__) return true;
+    window.__RRN_AGENT_SHOW_INFO_LISTENER__ = true;
+
+    window.addEventListener('rrn:show-info', event => {
+      const detail = event.detail || {};
+      const sectorIndex = Number(detail.sectorIndex);
+      const assetIndex = Number(detail.assetIndex);
+      setTimeout(() => {
+        refreshLocation(sectorIndex, assetIndex).catch?.(() => {});
+      }, 0);
+    });
+
     return true;
   }
 
