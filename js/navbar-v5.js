@@ -18,7 +18,7 @@
 
   function ensureCss() {
     ensureStylesheet('/style/navbar-v5.css', 'data-rrn-navbar-v5');
-    ensureStylesheet('/style/navbar-flat-tabs.css', 'data-rrn-navbar-flat-tabs');
+    ensureStylesheet('/style/navbar-flat-tabs.css?v=20260929-2', 'data-rrn-navbar-flat-tabs');
   }
 
   function sessionInfo() {
