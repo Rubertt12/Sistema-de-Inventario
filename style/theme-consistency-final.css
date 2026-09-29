@@ -1193,3 +1193,214 @@
   background-color: var(--rrn-surface-soft) !important;
   border-color: var(--rrn-primary) !important;
 }
+
+
+/* ==========================================================================
+   18. LIGHT MODE — FINAL COMPONENT NORMALIZATION
+   One visual language for every dashboard surface and control.
+   ========================================================================== */
+
+:root[data-theme="light"] body {
+  --rrn-light-border: rgba(18,59,74,.16);
+  --rrn-light-shadow: 0 6px 20px rgba(18,59,74,.07);
+  --rrn-light-shadow-hover: 0 10px 28px rgba(18,59,74,.11);
+}
+
+/* Canvas and structural containers */
+:root[data-theme="light"] body,
+:root[data-theme="light"] main,
+:root[data-theme="light"] .main-content,
+:root[data-theme="light"] .dashboard-content,
+:root[data-theme="light"] .content-wrapper {
+  background-color: var(--rrn-bg) !important;
+  color: var(--rrn-text) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .setor,.sector,.setor-card,.sector-card,
+  .machine-card,.equipment-card,.dashboard-card,
+  .kpi-card,.overview-card,.panel,.card,.rrn-card,
+  .queue-card,.health-card,.summary-card,.chart-card,
+  .activity-card,.settings-card,.user-card,
+  .transfer-card,.transfer-column,.box-setor,
+  .rrn-home-panel,.rrn-kpi,.rrn-health-item,
+  .rrn-machine-item,.rrn-setor-card,
+  .rrn-agent-location-card,.rrn-alert-item,
+  .rrn-search-result,.workspace-summary,.settings-segment
+) {
+  background: var(--rrn-surface) !important;
+  color: var(--rrn-text) !important;
+  border-color: var(--rrn-light-border) !important;
+  box-shadow: var(--rrn-light-shadow) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .setor:hover,.sector:hover,.setor-card:hover,.sector-card:hover,
+  .machine-card:hover,.equipment-card:hover,.dashboard-card:hover,
+  .kpi-card:hover,.overview-card:hover,.rrn-machine-item:hover,
+  .rrn-setor-card:hover,.rrn-search-result:hover
+) {
+  box-shadow: var(--rrn-light-shadow-hover) !important;
+}
+
+/* All ordinary controls */
+:root[data-theme="light"] body :where(
+  button,.btn,.button,.action-btn,.rrn-action-btn,
+  .rrn-btn,.rrn-icon-btn,.rrn-icon-control,
+  .filter-btn,.tab-button,.dashboard-tab,
+  .category-button,.sector-category-button,
+  .page-btn,.pagination button,.view-toggle button,
+  .settings-btn,.settings-action,.settings-ghost-btn,
+  .settings-back-btn
+):not(.btn-primary):not(.rrn-btn-primary):not(.primary-button):not(.settings-primary-btn):not(.save-btn):not(.upload-btn):not(.btn-confirmar):not(.danger-button):not(.btn-danger):not(.logout-btn) {
+  background: var(--rrn-surface-2) !important;
+  color: var(--rrn-heading) !important;
+  border: 1px solid var(--rrn-light-border) !important;
+  -webkit-text-fill-color: var(--rrn-heading) !important;
+}
+
+:root[data-theme="light"] body :where(
+  button,.btn,.button,.action-btn,.rrn-action-btn,
+  .rrn-btn,.rrn-icon-btn,.rrn-icon-control,
+  .filter-btn,.tab-button,.dashboard-tab,
+  .category-button,.sector-category-button,
+  .page-btn,.pagination button,.view-toggle button,
+  .settings-btn,.settings-action,.settings-ghost-btn,
+  .settings-back-btn
+):not(.btn-primary):not(.rrn-btn-primary):not(.primary-button):not(.settings-primary-btn):not(.save-btn):not(.upload-btn):not(.btn-confirmar):not(.danger-button):not(.btn-danger):not(.logout-btn):hover {
+  background: var(--rrn-surface-soft) !important;
+  color: var(--rrn-primary) !important;
+  border-color: var(--rrn-secondary) !important;
+}
+
+/* Primary actions */
+:root[data-theme="light"] body :where(
+  .btn-primary,.rrn-btn-primary,.primary-button,
+  .settings-primary-btn,.save-btn,.upload-btn,
+  .btn-confirmar,.dashboard-actions button,
+  button.primary
+) {
+  background: var(--rrn-primary) !important;
+  color: #fff !important;
+  border-color: var(--rrn-primary) !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 4px 12px rgba(20,86,107,.16) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .btn-primary,.rrn-btn-primary,.primary-button,
+  .settings-primary-btn,.save-btn,.upload-btn,
+  .btn-confirmar,.dashboard-actions button,
+  button.primary
+):hover {
+  background: var(--rrn-primary-hover) !important;
+  border-color: var(--rrn-primary-hover) !important;
+}
+
+/* Fields */
+:root[data-theme="light"] body :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  select,textarea
+) {
+  background: var(--rrn-input,#F7F9FA) !important;
+  color: var(--rrn-text) !important;
+  border: 1px solid var(--rrn-border-strong) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
+  box-shadow: inset 0 1px 2px rgba(18,59,74,.025) !important;
+}
+
+:root[data-theme="light"] body :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  select,textarea
+):focus {
+  background: #fff !important;
+  border-color: var(--rrn-secondary) !important;
+  box-shadow: 0 0 0 3px var(--rrn-focus), inset 0 1px 2px rgba(18,59,74,.02) !important;
+}
+
+/* Checkboxes / radios / native color input */
+:root[data-theme="light"] body :where(input[type="checkbox"],input[type="radio"]) {
+  accent-color: var(--rrn-secondary) !important;
+}
+
+:root[data-theme="light"] body :where(input[type="color"]) {
+  background: var(--rrn-surface-2) !important;
+  border: 1px solid var(--rrn-border-strong) !important;
+}
+
+/* Tables and list rows */
+:root[data-theme="light"] body :where(table,.table-wrap) {
+  background: var(--rrn-surface) !important;
+  border-color: var(--rrn-light-border) !important;
+}
+:root[data-theme="light"] body table thead th {
+  background: var(--rrn-surface-soft) !important;
+  color: var(--rrn-heading) !important;
+}
+:root[data-theme="light"] body table tbody tr:nth-child(even) td {
+  background: rgba(18,59,74,.025) !important;
+}
+:root[data-theme="light"] body table tbody tr:hover td {
+  background: rgba(35,135,127,.075) !important;
+}
+
+/* Modals */
+:root[data-theme="light"] body :where(
+  .modal-content,.config-modal,.modal-transferencia-content,
+  .modal-transferencia,.maintenance-sheet,.rrn-maintenance-sheet,
+  .rrn-maintenance-panel,.rrn-search-popover
+) {
+  background: var(--rrn-surface) !important;
+  color: var(--rrn-text) !important;
+  border-color: var(--rrn-light-border) !important;
+  box-shadow: 0 20px 55px rgba(18,59,74,.16) !important;
+}
+:root[data-theme="light"] body :where(
+  .modal-title,.modal-header
+) {
+  background: var(--rrn-accent) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+:root[data-theme="light"] body :where(
+  .close-btn,.modal .close,.modal-transferencia .close
+) {
+  background: var(--rrn-accent) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+/* Dropdowns, popovers and autocomplete */
+:root[data-theme="light"] body :where(
+  .user-dropdown,.dropdown-menu,.popover,
+  .autocomplete-list,.autocomplete-results,
+  .search-results,.rrn-search-popover
+) {
+  background: var(--rrn-surface-2) !important;
+  color: var(--rrn-text) !important;
+  border-color: var(--rrn-light-border) !important;
+  box-shadow: 0 18px 42px rgba(18,59,74,.14) !important;
+}
+:root[data-theme="light"] body :where(
+  .user-dropdown button,.dropdown-menu button,
+  .autocomplete-list button,.autocomplete-results button
+) {
+  color: var(--rrn-heading) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+:root[data-theme="light"] body :where(
+  .user-dropdown button:hover,.dropdown-menu button:hover,
+  .autocomplete-list button:hover,.autocomplete-results button:hover
+) {
+  background: var(--rrn-surface-soft) !important;
+}
+
+/* Keep the navbar intentionally dark in light mode */
+:root[data-theme="light"] .navbar {
+  background: linear-gradient(135deg,var(--rrn-navbar),var(--rrn-navbar-2)) !important;
+  color: #fff !important;
+}
+:root[data-theme="light"] .navbar :where(h1,h2,h3,a,button,span,strong,small) {
+  -webkit-text-fill-color: initial;
+}
