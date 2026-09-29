@@ -1,36 +1,82 @@
-/* RRN Manager — abas da navbar sem caixa externa */
+/* RRN Manager — navegação principal refinada */
 
 .navbar .rrn-app-tabs{
-  padding:0!important;
-  gap:4px!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
+  flex:0 1 auto!important;
+  width:auto!important;
+  max-width:max-content!important;
+  padding:3px!important;
+  gap:2px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:13px!important;
+  background:rgba(3,24,31,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
 }
 
 .navbar .rrn-app-tab{
-  border:0!important;
+  position:relative!important;
+  min-width:112px!important;
+  min-height:38px!important;
+  height:38px!important;
+  padding:0 13px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  border:1px solid transparent!important;
+  border-radius:10px!important;
   background:transparent!important;
+  color:rgba(255,255,255,.68)!important;
+  font:750 .67rem/1 Inter,system-ui,sans-serif!important;
+  letter-spacing:.01em!important;
   box-shadow:none!important;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease!important;
+}
+
+.navbar .rrn-app-tab .rrn-icon{
+  width:16px!important;
+  height:16px!important;
+  flex:0 0 16px!important;
+  opacity:.78!important;
+  transition:opacity .18s ease,transform .18s ease!important;
 }
 
 .navbar .rrn-app-tab:hover{
-  background:rgba(255,255,255,.08)!important;
+  background:rgba(255,255,255,.075)!important;
+  border-color:rgba(255,255,255,.08)!important;
+  color:#fff!important;
+  transform:none!important;
 }
+
+.navbar .rrn-app-tab:hover .rrn-icon{opacity:1!important;transform:translateY(-.5px)}
 
 .navbar .rrn-app-tab.is-active,
 .navbar .rrn-app-tab[aria-selected="true"]{
-  background:rgba(255,255,255,.12)!important;
-  box-shadow:none!important;
+  background:linear-gradient(135deg,var(--rrn-secondary,#2F7D78),color-mix(in srgb,var(--rrn-secondary,#2F7D78) 72%,#4faaa4))!important;
+  border-color:rgba(255,255,255,.13)!important;
+  color:#fff!important;
+  box-shadow:0 5px 14px rgba(2,18,24,.20),inset 0 1px 0 rgba(255,255,255,.15)!important;
+}
+
+.navbar .rrn-app-tab.is-active .rrn-icon,
+.navbar .rrn-app-tab[aria-selected="true"] .rrn-icon{opacity:1!important}
+
+.navbar .rrn-navbar-search{margin-left:2px!important;padding-left:10px!important;border-left:1px solid rgba(255,255,255,.10)!important}
+
+@media(max-width:1180px){
+  .navbar .rrn-app-tab{min-width:98px!important;padding-inline:10px!important}
+}
+
+@media(max-width:920px){
+  .navbar .rrn-app-tabs{max-width:none!important;flex:1 1 auto!important}
+  .navbar .rrn-app-tab{min-width:88px!important}
 }
 
 @media(max-width:780px){
-  .navbar .nav-links.active .rrn-app-tabs{
-    padding:0!important;
-    border:0!important;
-    border-radius:0!important;
-    background:transparent!important;
-    box-shadow:none!important;
-  }
+  .navbar .rrn-navbar-search{margin-left:0!important;padding-left:0!important;border-left:0!important}
+  .navbar .nav-links.active .rrn-app-tabs{width:100%!important;max-width:none!important;padding:3px!important;gap:3px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:12px!important;background:rgba(3,24,31,.16)!important}
+  .navbar .nav-links.active .rrn-app-tab{min-width:0!important;min-height:42px!important;height:42px!important;border-radius:9px!important}
+}
+
+@media(max-width:460px){
+  .navbar .nav-links.active .rrn-app-tabs{grid-template-columns:1fr!important}
 }
