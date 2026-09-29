@@ -428,7 +428,9 @@
   border-color:var(--rrn-border)!important;
 }
 :root:not([data-theme="dark"]) :where(.rrn-dashboard-overview,.rrn-sector-category-shell,.rrn-category-backbar,.rrn-machine-item,.rrn-machine-fact,.rrn-machine-main,.rrn-agent-location-card,.rrn-home-panel,.rrn-kpi,.rrn-health-item,.rrn-alert-item,.rrn-search-result,.rrn-category-empty,.rrn-sector-empty,.empty-state,.settings-user-card,.settings-session-pill,.workspace-summary,.settings-segment,.settings-kpis>div) :where(h1,h2,h3,h4,h5,h6,strong,b){color:var(--rrn-heading)!important}
-:root:not([data-theme="dark"]) :where(.rrn-dashboard-overview,.rrn-sector-category-shell,.rrn-category-backbar,.rrn-machine-item,.rrn-machine-fact,.rrn-machine-main,.rrn-agent-location-card,.rrn-home-panel,.rrn-kpi,.rrn-health-item,.rrn-alert-item,.rrn-search-result,.rrn-category-empty,.rrn-sector-empty,.empty-state,.settings-user-card,.settings-session-pill,.workspace-summary,.settings-segment,.settings-kpis>div) :where(p,span,small,label,li,td,dd,dt,.meta,.muted,.subtitle,.description){color:var(--rrn-text)!important}
+:root:not([data-theme="dark"]) :where(.rrn-dashboard-overview,.rrn-sector-category-shell,.rrn-category-backbar,.rrn-machine-item,.rrn-machine-fact,.rrn-machine-main,.rrn-agent-location-card,.rrn-home-panel,.rrn-kpi,.rrn-health-item,.rrn-alert-item,.rrn-search-result,.rrn-category-empty,.rrn-sector-empty,.empty-state,.settings-user-card,.settings-session-pill,.workspace-summary,.settings-segment,.settings-kpis>div) :where(p,small,label,li,td,dd,dt,.meta,.muted,.subtitle,.description){color:var(--rrn-text)!important}
+/* Labels de ícones são excluídos: a cor do SVG/wrapper pertence ao componente. */
+:root:not([data-theme="dark"]) :where(.rrn-kpi-icon,.rrn-setor-icon,.rrn-machine-icon,.rrn-icon-control,.rrn-icon,.material-icons,.lucide){color:inherit!important}
 /* Texto branco legado em elementos inline. */
 :root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color:#fff"],
 :root:not([data-theme="dark"]) :not(svg):not(i):not(.icon):not(.material-icons):not(.lucide)[style*="color: #fff"],
