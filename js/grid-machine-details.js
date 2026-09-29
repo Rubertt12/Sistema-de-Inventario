@@ -66,6 +66,12 @@
 
   function enhanceCard(card) {
     if (!(card instanceof Element) || !card.matches('.rrn-machine-item')) return;
+
+    // O MutationObserver abaixo observa o próprio container. Esta guarda torna
+    // a transformação idempotente e impede um loop infinito de reprocessamento:
+    // enhanceCard -> DOM mutation -> observer -> enhanceCard -> ...
+    if (card.dataset.rrnMachineEnhanced === '1') return;
+
     const indexes = machineIndexes(card);
     if (!indexes) return;
 
@@ -74,6 +80,8 @@
     const asset = sector?.maquinas?.[assetIndex];
     if (!asset) return;
 
+    // Marque ANTES de alterar o DOM, para que qualquer MutationObserver
+    // disparado pelas alterações ignore este card.
     card.dataset.rrnMachineEnhanced = '1';
     card.dataset.rrnSectorIndex = String(sectorIndex);
     card.dataset.rrnAssetIndex = String(assetIndex);
@@ -121,8 +129,6 @@
       createFact('building', 'Localização', location, 'Sem localização', 'location')
     );
 
-    // Campos complementares só aparecem quando realmente têm conteúdo.
-    // Evita caixas vazias/fallbacks que deixam o grid alto e visualmente pesado.
     if (serial) details.append(createFact('monitor', 'Serial / Service Tag', serial, '', 'serial'));
     if (warranty) details.append(createFact('calendar', 'Garantia até', warranty, '', 'warranty'));
 
