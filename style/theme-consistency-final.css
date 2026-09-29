@@ -587,3 +587,81 @@
     box-shadow:0 5px 16px rgba(18,59,74,.08)!important;
   }
 }
+
+
+/* FINAL LIGHT MODE CONTRAST PATCH */
+:root:not([data-theme="dark"]) body :where(
+  p,li,dt,dd,td,th,label,legend,small,strong,b,em,
+  h1,h2,h3,h4,h5,h6,.title,.name,.label,.value,.text,.content,
+  .description,.subtitle,.meta,.caption,.helper,.hint,.field-label,.field-value
+):not(.navbar *):not(.rrn-home-hero *):not(.btn-primary *):not(.rrn-btn-primary *):not(.settings-primary-btn *):not(.save-btn *):not(.upload-btn *):not(.btn-confirmar *):not(.primary-button *):not(.modal-title *):not(.close-btn *):not(.modal .close *):not(.modal-transferencia .close *):not(.tab-button.active *):not(.dashboard-tab.active *):not(.filter-btn.active *):not(.category-button.active *):not(.sector-category-button.active *):not(.pagination button.active *):not(.page-btn.active *) {
+  color:var(--rrn-text)!important;
+}
+
+:root:not([data-theme="dark"]) body :where(
+  p,li,dt,dd,td,th,label,legend,small,strong,b,em,
+  h1,h2,h3,h4,h5,h6,.title,.name,.label,.value,.text,.content,
+  .description,.subtitle,.meta,.caption,.helper,.hint,.field-label,.field-value
+)[style*="color"] {
+  color:var(--rrn-text)!important;
+}
+
+:root:not([data-theme="dark"]) :where(
+  .navbar,.rrn-home-hero,
+  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
+  .save-btn,.upload-btn,.btn-confirmar,.primary-button,
+  .tab-button.active,.dashboard-tab.active,.filter-btn.active,
+  .category-button.active,.sector-category-button.active,
+  .pagination button.active,.page-btn.active,[aria-current="page"],
+  .modal-title,.close-btn,.modal .close,.modal-transferencia .close,.user-menu
+) :where(p,li,dt,dd,td,th,label,legend,small,strong,b,em,h1,h2,h3,h4,h5,h6,a,span) {
+  color:#FFFFFF!important;
+}
+
+/* SVG icons on normal light surfaces are dark and visible. */
+:root:not([data-theme="dark"]) body :where(
+  .rrn-icon,.rrn-icon-control,.rrn-kpi-icon,.rrn-setor-icon,
+  .rrn-machine-icon,.rrn-icon-btn,.icon-button,.navbar-icon
+) {
+  color:var(--rrn-heading)!important;
+  -webkit-text-fill-color:initial!important;
+}
+
+:root:not([data-theme="dark"]) body :where(
+  .rrn-icon-control > .rrn-icon,
+  .rrn-kpi-icon > .rrn-icon,
+  .rrn-setor-icon > .rrn-icon,
+  .rrn-machine-icon > .rrn-icon,
+  .rrn-icon-btn > .rrn-icon,
+  .icon-button > .rrn-icon
+) {
+  color:inherit!important;
+  stroke:currentColor!important;
+  fill:none!important;
+}
+
+/* Keep icons white only where the background is intentionally dark/colored. */
+:root:not([data-theme="dark"]) :where(
+  .navbar,.rrn-home-hero,
+  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
+  .save-btn,.upload-btn,.btn-confirmar,.primary-button,
+  .tab-button.active,.dashboard-tab.active,.filter-btn.active,
+  .category-button.active,.sector-category-button.active,
+  .pagination button.active,.page-btn.active,[aria-current="page"],
+  .modal-title,.close-btn,.modal .close,.modal-transferencia .close,.user-menu
+) :where(.rrn-icon,.rrn-icon-control,.rrn-kpi-icon,.rrn-setor-icon,.rrn-machine-icon,.rrn-icon-btn,.icon-button,.navbar-icon) {
+  color:#FFFFFF!important;
+  stroke:currentColor!important;
+}
+
+:root:not([data-theme="dark"]) body :where(
+  .status-ok,.badge-success,.status-active,.status-online
+) :where(.rrn-icon,.rrn-icon-control) { color:var(--rrn-success)!important; }
+
+:root:not([data-theme="dark"]) body :where(
+  .status-warning,.badge-warning,.status-maintenance
+) :where(.rrn-icon,.rrn-icon-control) { color:var(--rrn-warning)!important; }
+
+:root:not([data-theme="dark"]) body :where(
+  .status-danger,.badge-danger,.status-inactive,.danger,.danger-button,.btn-danger,.logout-btn,.excluir-tudo-btn
+) :where(.rrn-icon,.rrn-icon-control) { color:var(--rrn-danger)!important; }
