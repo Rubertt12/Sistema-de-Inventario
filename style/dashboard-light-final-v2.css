@@ -1,0 +1,318 @@
+/* RRN Manager — Dashboard visual refinement V2
+   Final presentation layer for the overview screen. */
+
+html[data-theme="light"] body:has(#setoresContainer){
+  background:
+    radial-gradient(circle at 12% 10%,rgba(35,135,127,.055),transparent 24%),
+    radial-gradient(circle at 88% 22%,rgba(20,86,107,.045),transparent 26%),
+    #EEF2F4!important;
+}
+
+/* Desktop navigation: never allow generic button styles to turn the tabs white. */
+html[data-theme="light"] .navbar .rrn-app-tabs{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  padding:4px!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:12px!important;
+  background:rgba(3,24,31,.22)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+
+html[data-theme="light"] .navbar .rrn-app-tab{
+  min-height:34px!important;
+  height:34px!important;
+  padding:0 14px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:rgba(255,255,255,.72)!important;
+  -webkit-text-fill-color:rgba(255,255,255,.72)!important;
+  box-shadow:none!important;
+  font-weight:750!important;
+}
+
+html[data-theme="light"] .navbar .rrn-app-tab:hover{
+  background:rgba(255,255,255,.09)!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+html[data-theme="light"] .navbar .rrn-app-tab.is-active,
+html[data-theme="light"] .navbar .rrn-app-tab[aria-selected="true"]{
+  background:#23877F!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  box-shadow:0 3px 10px rgba(35,135,127,.22)!important;
+}
+
+/* Overview hero */
+html[data-theme="light"] .rrn-home-hero{
+  min-height:118px!important;
+  box-sizing:border-box!important;
+  padding:24px 28px!important;
+  border:1px solid rgba(18,59,74,.13)!important;
+  border-left:4px solid #23877F!important;
+  border-radius:18px!important;
+  background:
+    radial-gradient(circle at 90% 15%,rgba(35,135,127,.16),transparent 31%),
+    linear-gradient(135deg,#123B4A 0%,#18566A 72%,#1B6872 100%)!important;
+  box-shadow:0 12px 30px rgba(18,59,74,.14)!important;
+}
+
+html[data-theme="light"] .rrn-home-eyebrow{
+  color:#8ED5D0!important;
+  -webkit-text-fill-color:#8ED5D0!important;
+  font-size:.65rem!important;
+}
+
+html[data-theme="light"] .rrn-home-hero h2{
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+  letter-spacing:-.025em!important;
+}
+
+html[data-theme="light"] .rrn-home-hero p{
+  color:rgba(255,255,255,.78)!important;
+  -webkit-text-fill-color:rgba(255,255,255,.78)!important;
+}
+
+html[data-theme="light"] .rrn-home-actions{
+  gap:9px!important;
+}
+
+html[data-theme="light"] .rrn-home-action{
+  min-height:40px!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  background:rgba(255,255,255,.95)!important;
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+  box-shadow:0 5px 14px rgba(5,25,32,.12)!important;
+}
+
+html[data-theme="light"] .rrn-home-action:hover{
+  background:#FFFFFF!important;
+  transform:translateY(-1px)!important;
+  box-shadow:0 8px 18px rgba(5,25,32,.17)!important;
+}
+
+html[data-theme="light"] .rrn-home-action.primary{
+  border-color:#23877F!important;
+  background:#23877F!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+}
+
+/* KPI row */
+html[data-theme="light"] .rrn-kpi-grid{
+  gap:14px!important;
+}
+
+html[data-theme="light"] .rrn-kpi{
+  min-height:126px!important;
+  box-sizing:border-box!important;
+  padding:18px 19px 16px!important;
+  border:1px solid rgba(18,59,74,.12)!important;
+  border-radius:15px!important;
+  background:#FFFFFF!important;
+  box-shadow:0 7px 20px rgba(18,59,74,.055)!important;
+}
+
+html[data-theme="light"] .rrn-kpi:hover{
+  border-color:rgba(35,135,127,.24)!important;
+  box-shadow:0 10px 24px rgba(18,59,74,.085)!important;
+  transform:translateY(-1px);
+}
+
+html[data-theme="light"] .rrn-kpi-top>span:first-child{
+  color:#60737C!important;
+  -webkit-text-fill-color:#60737C!important;
+  font-size:.69rem!important;
+  font-weight:750!important;
+}
+
+html[data-theme="light"] .rrn-kpi strong{
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+  font-size:1.72rem!important;
+  letter-spacing:-.025em!important;
+}
+
+html[data-theme="light"] .rrn-kpi small{
+  color:#6A7B83!important;
+  -webkit-text-fill-color:#6A7B83!important;
+}
+
+html[data-theme="light"] .rrn-kpi::after{
+  height:3px!important;
+  opacity:.9!important;
+  background:#23877F!important;
+}
+html[data-theme="light"] .rrn-kpi:nth-child(1)::after{background:#C77ED0!important}
+html[data-theme="light"] .rrn-kpi:nth-child(2)::after{background:#3D7395!important}
+html[data-theme="light"] .rrn-kpi:nth-child(3)::after{background:#D9A64B!important}
+html[data-theme="light"] .rrn-kpi:nth-child(4)::after{background:#D9A64B!important}
+
+/* Health strip */
+html[data-theme="light"] .rrn-health-item{
+  min-height:56px!important;
+  box-sizing:border-box!important;
+  padding:10px 13px!important;
+  border:1px solid rgba(18,59,74,.11)!important;
+  border-radius:12px!important;
+  background:#FFFFFF!important;
+  box-shadow:0 4px 14px rgba(18,59,74,.04)!important;
+}
+
+html[data-theme="light"] .rrn-health-copy strong{
+  color:#14566B!important;
+  -webkit-text-fill-color:#14566B!important;
+  font-size:.76rem!important;
+}
+
+html[data-theme="light"] .rrn-health-copy small{
+  color:#6B7C84!important;
+  -webkit-text-fill-color:#6B7C84!important;
+  font-size:.62rem!important;
+}
+
+/* Main panels */
+html[data-theme="light"] .rrn-home-grid{
+  gap:15px!important;
+}
+
+html[data-theme="light"] .rrn-home-panel{
+  min-height:148px!important;
+  box-sizing:border-box!important;
+  padding:19px 21px!important;
+  border:1px solid rgba(18,59,74,.12)!important;
+  border-radius:15px!important;
+  background:#FFFFFF!important;
+  box-shadow:0 7px 20px rgba(18,59,74,.05)!important;
+}
+
+html[data-theme="light"] .rrn-home-panel-head{
+  margin-bottom:15px!important;
+}
+
+html[data-theme="light"] .rrn-home-panel-head h3{
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+  font-size:.91rem!important;
+  font-weight:800!important;
+}
+
+html[data-theme="light"] .rrn-home-panel-head small{
+  color:#71818A!important;
+  -webkit-text-fill-color:#71818A!important;
+  font-size:.65rem!important;
+}
+
+html[data-theme="light"] .rrn-sector-bar-label,
+html[data-theme="light"] .rrn-type-row>span:first-child{
+  color:#314B56!important;
+  -webkit-text-fill-color:#314B56!important;
+  font-weight:700!important;
+}
+
+html[data-theme="light"] .rrn-sector-track,
+html[data-theme="light"] .rrn-type-track{
+  height:8px!important;
+  background:#E5EAED!important;
+}
+
+html[data-theme="light"] .rrn-sector-fill,
+html[data-theme="light"] .rrn-type-fill{
+  background:linear-gradient(90deg,#2C6D8C,#9B72B9)!important;
+}
+
+html[data-theme="light"] .rrn-sector-bar-value,
+html[data-theme="light"] .rrn-type-value{
+  color:#14566B!important;
+  -webkit-text-fill-color:#14566B!important;
+  font-weight:800!important;
+}
+
+html[data-theme="light"] .rrn-sector-maint{
+  color:#A55E2D!important;
+  -webkit-text-fill-color:#A55E2D!important;
+}
+
+html[data-theme="light"] .rrn-activity{
+  padding:10px 0!important;
+  border-bottom-color:#E7ECEE!important;
+}
+
+html[data-theme="light"] .rrn-activity strong{
+  color:#29434E!important;
+  -webkit-text-fill-color:#29434E!important;
+  font-size:.71rem!important;
+}
+
+html[data-theme="light"] .rrn-activity small{
+  color:#71818A!important;
+  -webkit-text-fill-color:#71818A!important;
+}
+
+html[data-theme="light"] .rrn-activity-dot{
+  background:#23877F!important;
+  box-shadow:0 0 0 3px rgba(35,135,127,.10)!important;
+}
+
+html[data-theme="light"] .rrn-home-empty{
+  min-height:70px!important;
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+  padding:12px!important;
+  border:1px dashed #CBD6DA!important;
+  border-radius:10px!important;
+  background:#F7F9FA!important;
+  color:#73838A!important;
+  -webkit-text-fill-color:#73838A!important;
+}
+
+/* Alert/action cards */
+html[data-theme="light"] .rrn-alert-item{
+  border-color:#E4EAED!important;
+  background:#FAFBFC!important;
+}
+
+html[data-theme="light"] .rrn-alert-item strong{
+  color:#29434E!important;
+  -webkit-text-fill-color:#29434E!important;
+}
+
+html[data-theme="light"] .rrn-alert-item small{
+  color:#71818A!important;
+  -webkit-text-fill-color:#71818A!important;
+}
+
+html[data-theme="light"] .rrn-alert-action{
+  background:#FFFFFF!important;
+  color:#14566B!important;
+  -webkit-text-fill-color:#14566B!important;
+  border:1px solid rgba(20,86,107,.18)!important;
+}
+
+/* Light theme body/footer separation */
+html[data-theme="light"] body:has(#setoresContainer)>.rrn-footer{
+  margin-top:18px!important;
+  border-top:1px solid #D8E0E3!important;
+  background:#F8FAFB!important;
+}
+
+/* Mobile */
+@media(max-width:780px){
+  html[data-theme="light"] .rrn-home-hero{
+    padding:19px!important;
+    border-radius:15px!important;
+  }
+  html[data-theme="light"] .rrn-kpi{
+    min-height:112px!important;
+  }
+  html[data-theme="light"] .rrn-home-panel{
+    min-height:0!important;
+  }
+}
