@@ -79,22 +79,24 @@
         <button type="submit" class="btn-primary" id="resetPasswordButton">Definir nova senha</button>
         <p class="form-message" id="resetPasswordMsg" role="status"></p>
       </form>
-      <form id="formMfaChallenge" class="auth-form rrn-mfa-form" novalidate>
-        <div class="rrn-mfa-icon">🔐</div>
+      <form id="formMfaChallenge" class="auth-form rrn-mfa-form rrn-mfa-challenge" novalidate>
+        <div class="rrn-mfa-topline"><span class="rrn-mfa-security-icon" aria-hidden="true"><span></span></span><div><strong>Autenticação em duas etapas</strong><small>SEGURANÇA DA CONTA · ETAPA 2 DE 2</small></div></div>
+        <div class="rrn-mfa-intro"><h3>Confirme sua identidade</h3><p>Abra seu aplicativo autenticador e informe o código temporário de 6 dígitos para continuar.</p></div>
         <label class="field" id="mfaFactorField"><span>Autenticador</span><select id="mfaFactorSelect"></select></label>
         <label class="field"><span>Código de autenticação</span><input id="mfaChallengeCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" required><small>Abra seu aplicativo autenticador e informe o código atual de 6 dígitos.</small></label>
         <button type="submit" class="btn-primary" id="mfaChallengeButton">Verificar e entrar</button>
+        <div class="rrn-mfa-trust"><span class="rrn-mfa-check" aria-hidden="true">✓</span><span>O código é válido por alguns segundos e muda automaticamente.</span></div>
         <button type="button" class="rrn-auth-link" data-mfa-signout>Sair desta conta</button>
         <p class="form-message" id="mfaChallengeMsg" role="status"></p>
       </form>
-      <section id="formMfaOffer" class="auth-form rrn-mfa-form">
-        <div class="rrn-mfa-icon">🛡️</div>
+      <section id="formMfaOffer" class="auth-form rrn-mfa-form rrn-mfa-challenge">
+        <div class="rrn-mfa-topline"><span class="rrn-mfa-security-icon" aria-hidden="true"><span></span></span><div><strong>Proteja seu acesso</strong><small>SEGURANÇA DA CONTA · RECOMENDADO</small></div></div>
         <div class="rrn-mfa-offer-copy"><strong>Quer proteger sua conta com 2FA?</strong><p>É opcional. Se você ativar, nos próximos logins o RRN pedirá o código do autenticador somente depois de validar seu e-mail e senha.</p></div>
         <button type="button" class="btn-primary" id="mfaOfferEnable">Ativar 2FA agora</button>
         <button type="button" class="rrn-auth-link" id="mfaOfferSkip">Agora não</button>
       </section>
-      <form id="formMfaEnroll" class="auth-form rrn-mfa-form" novalidate>
-        <div class="rrn-mfa-icon">🛡️</div>
+      <form id="formMfaEnroll" class="auth-form rrn-mfa-form rrn-mfa-challenge" novalidate>
+        <div class="rrn-mfa-topline"><span class="rrn-mfa-security-icon" aria-hidden="true"><span></span></span><div><strong>Configure seu autenticador</strong><small>SEGURANÇA DA CONTA · ETAPA 2 DE 2</small></div></div>
         <div class="rrn-mfa-setup"><img id="mfaEnrollQr" alt="QR Code para configurar autenticação em dois fatores"><div><strong>Escaneie o QR Code</strong><small>Use Google Authenticator, Microsoft Authenticator, Authy, 1Password ou outro aplicativo TOTP.</small><code id="mfaEnrollSecret"></code></div></div>
         <label class="field"><span>Confirme o código</span><input id="mfaEnrollCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" required></label>
         <button type="submit" class="btn-primary" id="mfaEnrollButton">Ativar autenticação em dois fatores</button>
