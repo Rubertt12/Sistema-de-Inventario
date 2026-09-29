@@ -1,0 +1,271 @@
+/* RRN Manager — final light-mode cascade
+   Loaded after dashboard/runtime styles so light mode cannot inherit
+   legacy white-on-white component rules. Dark mode is untouched. */
+
+html[data-theme="light"] body{
+  background:#EEF1F3!important;
+  color:#24343B!important;
+}
+
+html[data-theme="light"] .rrn-dashboard-home{
+  color:#24343B!important;
+}
+
+html[data-theme="light"] .rrn-kpi,
+html[data-theme="light"] .rrn-home-panel,
+html[data-theme="light"] .rrn-health-item,
+html[data-theme="light"] .rrn-alert-item{
+  background:#FFFFFF!important;
+  color:#24343B!important;
+  border-color:rgba(18,59,74,.14)!important;
+}
+
+html[data-theme="light"] .rrn-kpi .rrn-kpi-top>span:first-child{
+  color:#60737C!important;
+  -webkit-text-fill-color:#60737C!important;
+}
+
+html[data-theme="light"] .rrn-kpi>strong,
+html[data-theme="light"] .rrn-kpi .rrn-kpi-top+strong{
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+}
+
+html[data-theme="light"] .rrn-kpi>small,
+html[data-theme="light"] .rrn-kpi small{
+  color:#61737B!important;
+  -webkit-text-fill-color:#61737B!important;
+}
+
+html[data-theme="light"] .rrn-home-panel h3,
+html[data-theme="light"] .rrn-home-panel-head h3{
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+}
+
+html[data-theme="light"] .rrn-home-panel-head small,
+html[data-theme="light"] .rrn-home-panel small{
+  color:#61737B!important;
+  -webkit-text-fill-color:#61737B!important;
+}
+
+html[data-theme="light"] .rrn-health-copy strong,
+html[data-theme="light"] .rrn-health-copy small{
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+}
+
+html[data-theme="light"] .rrn-health-copy small{
+  color:#61737B!important;
+  -webkit-text-fill-color:#61737B!important;
+}
+
+html[data-theme="light"] .rrn-sector-bar-label,
+html[data-theme="light"] .rrn-type-row>span:first-child{
+  color:#314B56!important;
+  -webkit-text-fill-color:#314B56!important;
+}
+
+html[data-theme="light"] .rrn-sector-bar-value,
+html[data-theme="light"] .rrn-type-value{
+  color:#14566B!important;
+  -webkit-text-fill-color:#14566B!important;
+}
+
+html[data-theme="light"] .rrn-sector-track,
+html[data-theme="light"] .rrn-type-track{
+  background:#E4EAED!important;
+}
+
+html[data-theme="light"] .rrn-sector-fill,
+html[data-theme="light"] .rrn-type-fill{
+  background:linear-gradient(90deg,#286A88,#C875C9)!important;
+}
+
+html[data-theme="light"] .rrn-alert-column h4{
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+}
+
+html[data-theme="light"] .rrn-alert-item strong{
+  color:#24343B!important;
+  -webkit-text-fill-color:#24343B!important;
+}
+
+html[data-theme="light"] .rrn-alert-item small{
+  color:#61737B!important;
+  -webkit-text-fill-color:#61737B!important;
+}
+
+html[data-theme="light"] .rrn-activity strong{
+  color:#24343B!important;
+  -webkit-text-fill-color:#24343B!important;
+}
+
+html[data-theme="light"] .rrn-activity small{
+  color:#61737B!important;
+  -webkit-text-fill-color:#61737B!important;
+}
+
+html[data-theme="light"] .rrn-home-empty{
+  color:#73838A!important;
+  -webkit-text-fill-color:#73838A!important;
+}
+
+html[data-theme="light"] .rrn-home-hero{
+  color:#FFFFFF!important;
+}
+
+html[data-theme="light"] .rrn-home-hero :where(h1,h2,h3,h4,h5,h6,p,span,strong,b,a,small){
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+}
+
+html[data-theme="light"] .rrn-home-hero .rrn-home-eyebrow{
+  color:#8BD1CC!important;
+  -webkit-text-fill-color:#8BD1CC!important;
+}
+
+/* Navbar is intentionally dark in both themes. */
+html[data-theme="light"] .navbar{
+  background:linear-gradient(135deg,#123B4A,#18566A)!important;
+  color:#FFFFFF!important;
+}
+
+html[data-theme="light"] .navbar .rrn-app-tabs{
+  background:rgba(3,24,31,.20)!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+
+html[data-theme="light"] .navbar .rrn-app-tab,
+html[data-theme="light"] .navbar .rrn-app-tab:not(.is-active):not([aria-selected="true"]){
+  background:transparent!important;
+  color:rgba(255,255,255,.78)!important;
+  -webkit-text-fill-color:rgba(255,255,255,.78)!important;
+  border-color:transparent!important;
+}
+
+html[data-theme="light"] .navbar .rrn-app-tab:hover{
+  background:rgba(255,255,255,.09)!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+}
+
+html[data-theme="light"] .navbar .rrn-app-tab.is-active,
+html[data-theme="light"] .navbar .rrn-app-tab[aria-selected="true"]{
+  background:linear-gradient(135deg,#23877F,#2F958D)!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+  border-color:rgba(255,255,255,.14)!important;
+}
+
+html[data-theme="light"] .navbar .rrn-navbar-search #searchInput{
+  background:rgba(255,255,255,.075)!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+
+html[data-theme="light"] .navbar .rrn-navbar-search #searchInput::placeholder{
+  color:rgba(255,255,255,.48)!important;
+  -webkit-text-fill-color:rgba(255,255,255,.48)!important;
+}
+
+html[data-theme="light"] .navbar .user-menu,
+html[data-theme="light"] .navbar .rrn-sync-status{
+  color:#FFFFFF!important;
+}
+
+html[data-theme="light"] .navbar .user-menu span,
+html[data-theme="light"] .navbar .rrn-sync-status span{
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+}
+
+/* Theme control stays inside the hamburger menu on mobile. */
+html[data-theme="light"] .navbar .nav-links.active .rrn-theme-menu-toggle,
+html[data-theme="dark"] .navbar .nav-links.active .rrn-theme-menu-toggle{
+  display:flex!important;
+  width:100%!important;
+  min-height:44px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:10px!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+  background:rgba(255,255,255,.075)!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+}
+
+html[data-theme="light"] .navbar .nav-links.active .rrn-theme-menu-toggle:hover,
+html[data-theme="dark"] .navbar .nav-links.active .rrn-theme-menu-toggle:hover{
+  background:rgba(255,255,255,.12)!important;
+}
+
+/* Common light-mode controls. */
+html[data-theme="light"] main :where(
+  button:not(.rrn-home-action),
+  input,select,textarea
+){
+  color:#24343B;
+}
+
+html[data-theme="light"] main :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  select,textarea
+){
+  background:#FFFFFF!important;
+  color:#24343B!important;
+  -webkit-text-fill-color:#24343B!important;
+  border-color:rgba(18,59,74,.22)!important;
+}
+
+html[data-theme="light"] main :where(
+  button:not(.rrn-home-action):not(.btn-primary):not(.rrn-btn-primary):not(.save-btn):not(.upload-btn):not(.btn-confirmar):not(.primary-button)
+){
+  background:#FFFFFF!important;
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+  border-color:rgba(18,59,74,.20)!important;
+}
+
+html[data-theme="light"] main :where(
+  button:not(.rrn-home-action):not(.btn-primary):not(.rrn-btn-primary):not(.save-btn):not(.upload-btn):not(.btn-confirmar):not(.primary-button)
+):hover{
+  background:#E8EEF0!important;
+}
+
+html[data-theme="light"] main :where(
+  .btn-primary,.rrn-btn-primary,.save-btn,.upload-btn,.btn-confirmar,.primary-button
+){
+  background:#14566B!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+  border-color:#14566B!important;
+}
+
+/* Preserve readable text throughout legacy dashboard cards. */
+html[data-theme="light"] main :where(
+  .rrn-dashboard-home,.rrn-kpi,.rrn-home-panel,.rrn-health-item,.rrn-alert-item,
+  .rrn-machine-item,.rrn-setor-card,.rrn-machine-detail-card
+) :where(p,li,label,strong,b,em,span,small,h1,h2,h3,h4,h5,h6){
+  -webkit-text-fill-color:currentColor;
+}
+
+html[data-theme="light"] main :where(
+  .rrn-kpi,.rrn-home-panel,.rrn-health-item,.rrn-alert-item
+) :where(p,li,label,strong,b,em,span,small){
+  color:#24343B;
+}
+
+html[data-theme="light"] main :where(
+  .rrn-kpi,.rrn-home-panel,.rrn-health-item,.rrn-alert-item
+) :where(small){
+  color:#61737B!important;
+  -webkit-text-fill-color:#61737B!important;
+}
+
+html[data-theme="light"] .rrn-kpi strong{
+  color:#123B4A!important;
+  -webkit-text-fill-color:#123B4A!important;
+}
