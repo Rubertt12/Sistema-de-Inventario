@@ -1074,3 +1074,122 @@
   color:#FFFFFF !important;
   -webkit-text-fill-color:#FFFFFF !important;
 }
+
+
+/* ==========================================================================
+   17. LIGHT MODE — CONTROL / BUTTON SURFACES
+   Ensure every neutral control remains visually bounded in white mode.
+   ========================================================================== */
+:root[data-theme="light"] body :where(
+  button,input,select,textarea,
+  .btn,.button,.action-btn,.icon-btn,.mini,.store-btn,
+  .filter-btn,.tab-button,.category-button,
+  .sector-category-button,.pagination button,
+  .page-btn,.settings-btn,.settings-action,
+  .modal button,.modal a[role="button"]
+) {
+  border-color: var(--rrn-border-strong) !important;
+}
+
+:root[data-theme="light"] body :where(
+  input,select,textarea,
+  .btn:not(.primary):not(.btn-primary),
+  .button:not(.primary):not(.btn-primary),
+  .action-btn:not(.primary),
+  .icon-btn,.mini,.store-btn,
+  .filter-btn:not(.active),
+  .tab-button:not(.active),
+  .category-button:not(.active),
+  .sector-category-button:not(.active),
+  .pagination button:not(.active),
+  .page-btn:not(.active),
+  .settings-btn,.settings-action,
+  .modal button:not(.primary)
+) {
+  background-color: var(--rrn-surface-2) !important;
+  color: var(--rrn-heading) !important;
+  -webkit-text-fill-color: var(--rrn-heading) !important;
+  box-shadow: 0 1px 3px rgba(16,59,75,.06) !important;
+}
+
+:root[data-theme="light"] body :where(
+  input,select,textarea
+) {
+  background-color: var(--rrn-input) !important;
+  color: var(--rrn-text) !important;
+}
+
+:root[data-theme="light"] body :where(
+  button:hover,.btn:hover,.button:hover,
+  .action-btn:hover,.icon-btn:hover,.mini:hover,
+  .store-btn:hover,.filter-btn:not(.active):hover,
+  .tab-button:not(.active):hover,
+  .category-button:not(.active):hover,
+  .sector-category-button:not(.active):hover,
+  .pagination button:not(.active):hover,
+  .page-btn:not(.active):hover,
+  .settings-btn:hover,.settings-action:hover
+) {
+  background-color: var(--rrn-surface-soft) !important;
+  border-color: var(--rrn-primary) !important;
+}
+
+:root[data-theme="light"] body :where(
+  button:disabled,input:disabled,select:disabled,textarea:disabled
+) {
+  background-color: var(--rrn-surface-soft) !important;
+  color: var(--rrn-muted) !important;
+  -webkit-text-fill-color: var(--rrn-muted) !important;
+  opacity: .72 !important;
+}
+
+/* Filled/semantic controls keep their intentional color. */
+:root[data-theme="light"] body :where(
+  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
+  .save-btn,.upload-btn,.btn-confirmar,
+  button.primary,.primary-button,
+  .filter-btn.active,.tab-button.active,
+  .dashboard-tab.active,.category-button.active,
+  .sector-category-button.active,
+  .pagination button.active,.page-btn.active
+) {
+  background: var(--rrn-primary) !important;
+  border-color: var(--rrn-primary) !important;
+  color: var(--rrn-on-primary) !important;
+  -webkit-text-fill-color: var(--rrn-on-primary) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .btn-primary:hover,.rrn-btn-primary:hover,
+  .settings-primary-btn:hover,.save-btn:hover,
+  .upload-btn:hover,.btn-confirmar:hover,
+  button.primary:hover,.primary-button:hover,
+  .filter-btn.active:hover,.tab-button.active:hover,
+  .dashboard-tab.active:hover,.category-button.active:hover,
+  .sector-category-button.active:hover,
+  .pagination button.active:hover,.page-btn.active:hover
+) {
+  background: var(--rrn-primary-hover) !important;
+  border-color: var(--rrn-primary-hover) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Standalone icon controls should never disappear into the white canvas. */
+:root[data-theme="light"] body :where(
+  .icon-button,.btn-icon,.action-icon,
+  button[aria-label],button[title]
+) {
+  background-color: var(--rrn-surface-2) !important;
+  border: 1px solid var(--rrn-border-strong) !important;
+  color: var(--rrn-primary) !important;
+  -webkit-text-fill-color: var(--rrn-primary) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .icon-button:hover,.btn-icon:hover,.action-icon:hover,
+  button[aria-label]:hover,button[title]:hover
+) {
+  background-color: var(--rrn-surface-soft) !important;
+  border-color: var(--rrn-primary) !important;
+}
