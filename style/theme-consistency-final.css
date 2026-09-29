@@ -959,3 +959,118 @@
     box-shadow:0 1px 2px rgba(16,59,75,.035) !important;
   }
 }
+
+
+/* ==========================================================================
+   16. LIGHT MODE — SEMANTIC TEXT COLORS
+   Restore visual hierarchy for labels, metrics, links and status copy.
+   ========================================================================== */
+
+:root[data-theme="light"] body :where(
+  .eyebrow,.section-kicker,.section-label,
+  .rrn-sector-bar-value,.rrn-sector-bar-label,
+  .rrn-alert-column h4,.rrn-health-copy strong,
+  .rrn-portal-ticket-head strong,
+  .rrn-agent-location-head h3,
+  .rrn-agent-history summary,
+  .rrn-trash-header span,.rrn-trash-header strong,
+  .cell-main strong,.picker-item strong,.cart-item strong,
+  .summary-box strong
+) {
+  color: var(--rrn-heading) !important;
+  -webkit-text-fill-color: var(--rrn-heading) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .rrn-sector-bar-value,
+  .rrn-service-ticket-pill,
+  .badge:not(.warn):not(.danger):not(.muted),
+  .rrn-user-assets-badge,
+  .stock-low
+) {
+  color: var(--rrn-secondary) !important;
+  -webkit-text-fill-color: var(--rrn-secondary) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .rrn-sector-maint,.rrn-priority,.rrn-warranty-days,
+  .rrn-sla-paused,.stock-low,
+  .badge.warn
+) {
+  color: var(--rrn-warning) !important;
+  -webkit-text-fill-color: var(--rrn-warning) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .stock-zero,.badge.danger,.mini.danger,
+  .rrn-maintenance-ticket-status,
+  .settings-danger-zone .settings-card-head h2
+) {
+  color: var(--rrn-danger) !important;
+  -webkit-text-fill-color: var(--rrn-danger) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .rrn-portal-ticket-head span,
+  .rrn-agent-location-head p,
+  .rrn-agent-location-meta span,
+  .rrn-agent-location-meta strong,
+  .rrn-agent-history-row strong,
+  .rrn-agent-history-row small,
+  .rrn-ticket-top small,
+  .rrn-ticket-empty,
+  .rrn-email-fallback-note,
+  .rrn-password-hint,
+  .rrn-password-message,
+  .rrn-related-assets-head small
+) {
+  color: var(--rrn-muted) !important;
+  -webkit-text-fill-color: var(--rrn-muted) !important;
+}
+
+/* Links and interactive text retain the accent instead of becoming flat gray. */
+:root[data-theme="light"] body :where(
+  .rrn-agent-location-actions a,
+  .rrn-agent-location-actions button,
+  .rrn-alert-action,
+  .mini,
+  .store-tab.active
+) {
+  color: var(--rrn-primary) !important;
+  -webkit-text-fill-color: var(--rrn-primary) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .rrn-password-message.success
+) {
+  color: var(--rrn-success) !important;
+  -webkit-text-fill-color: var(--rrn-success) !important;
+}
+
+:root[data-theme="light"] body :where(
+  .rrn-password-message.error,
+  .rrn-company-cnpj-invalid
+) {
+  color: var(--rrn-danger) !important;
+  -webkit-text-fill-color: var(--rrn-danger) !important;
+}
+
+/* Keep the navbar / hero / filled controls white after semantic accents. */
+:root[data-theme="light"] body :where(
+  .navbar,.rrn-home-hero,
+  .btn-primary,.rrn-btn-primary,.settings-primary-btn,
+  .save-btn,.upload-btn,.btn-confirmar,
+  button.primary,.primary-button,
+  .tab-button.active,.dashboard-tab.active,
+  .filter-btn.active,.category-button.active,
+  .sector-category-button.active,
+  .pagination button.active,.page-btn.active,
+  [aria-current="page"],.modal-title,.modal-header,
+  .close-btn,.modal .close,.modal-transferencia .close
+) :where(
+  div,span,p,a,li,dt,dd,td,th,label,strong,b,small,
+  button,h1,h2,h3,h4,h5,h6
+) {
+  color:#FFFFFF !important;
+  -webkit-text-fill-color:#FFFFFF !important;
+}
