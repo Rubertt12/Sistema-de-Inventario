@@ -8,10 +8,10 @@
   color-scheme: light;
 
   /* Base palette */
-  --rrn-bg: #F7F9FA;
+  --rrn-bg: #F1F3F4;
   --rrn-surface: #FFFFFF;
-  --rrn-surface-2: #FAFCFC;
-  --rrn-surface-soft: #F2F6F6;
+  --rrn-surface-2: #FBFCFC;
+  --rrn-surface-soft: #E8ECEE;
 
   /* Typography */
   --rrn-text: #24343B;
@@ -31,8 +31,8 @@
   --rrn-danger: #B74740;
 
   /* Lines / focus */
-  --rrn-border: rgba(18,59,74,.12);
-  --rrn-border-strong: rgba(18,59,74,.20);
+  --rrn-border: rgba(18,59,74,.14);
+  --rrn-border-strong: rgba(18,59,74,.22);
   --rrn-focus: rgba(35,135,127,.18);
 
   --rrn-navbar: #123B4A;
