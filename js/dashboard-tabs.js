@@ -164,6 +164,9 @@
     const style = document.createElement('style');
     style.id = 'rrn-dashboard-stage2-style';
     style.textContent = `
+      /* O visual atual é a Visão Geral; controles antigos aparecem só no Inventário. */
+      body.rrn-tab-dashboard .dashboard-actions{display:none!important}
+      body.rrn-tab-dashboard .rrn-dashboard-overview{display:none!important}
       .rrn-health-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 14px}
       .rrn-health-item{display:flex;align-items:center;gap:9px;min-width:0;padding:10px 12px;border:1px solid rgba(41,89,145,.12);border-radius:11px;background:rgba(255,255,255,.58)}
       .rrn-health-icon{display:grid;flex:0 0 31px;width:31px;height:31px;place-items:center;border-radius:9px;background:rgba(41,89,145,.08);color:var(--rrn-blue)}
