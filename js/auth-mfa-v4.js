@@ -81,7 +81,7 @@
       </form>
       <form id="formMfaChallenge" class="auth-form rrn-mfa-form rrn-mfa-challenge" novalidate>
         <div class="rrn-mfa-topline"><span class="rrn-mfa-security-icon" aria-hidden="true"><span></span></span><div><strong>Autenticação em duas etapas</strong><small>SEGURANÇA DA CONTA · ETAPA 2 DE 2</small></div></div>
-        <div class="rrn-mfa-intro"><h3>Confirme sua identidade</h3><p>Abra seu aplicativo autenticador e informe o código temporário de 6 dígitos para continuar.</p></div>
+        <div class="rrn-mfa-intro"><h3>Confirme sua identidade</h3><p>Abra seu aplicativo autenticador e informe o código temporário de 6 dígitos para continuar.</p><p id="mfaChallengeCountdown" role="timer" aria-live="polite" style="font-weight:600;text-align:center;margin-top:10px">Tempo restante: 02:00</p></div>
         <div id="mfaFactorField" class="rrn-mfa-factor" hidden><select id="mfaFactorSelect" aria-label="Dispositivo de autenticação"></select></div>
         <label class="field"><span>Código de autenticação</span><input id="mfaChallengeCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" required><small>Abra seu aplicativo autenticador e informe o código atual de 6 dígitos.</small></label>
         <button type="submit" class="btn-primary" id="mfaChallengeButton">Verificar e entrar</button>
@@ -187,30 +187,71 @@
     setTimeout(() => $('mfaChallengeCode')?.focus(), 0);
 
     return new Promise((resolve, reject) => {
+      const deadline = Date.now() + 120000;
+      let expired = false;
+      let settled = false;
+      const countdown = $('mfaChallengeCountdown');
+      const button = $('mfaChallengeButton');
+
+      const updateCountdown = () => {
+        const remaining = Math.max(0, deadline - Date.now());
+        const seconds = Math.ceil(remaining / 1000);
+        if (countdown) {
+          countdown.textContent = `Tempo restante: ${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+          countdown.style.color = seconds <= 30 ? '#b42318' : '';
+        }
+        return remaining;
+      };
+
+      const timer = setInterval(() => {
+        if (updateCountdown() > 0 || expired || settled) return;
+        expired = true;
+        clearInterval(timer);
+        if (button) button.disabled = true;
+        $('mfaChallengeCode').disabled = true;
+        setMessage($('mfaChallengeMsg'), 'Tempo expirado. Entre novamente com seu e-mail e senha.', 'error');
+        client.auth.signOut({ scope: 'local' }).catch(() => undefined).finally(() => {
+          reject(new Error('MFA_TIMEOUT'));
+          location.replace('/login.html?reason=mfa-timeout');
+        });
+      }, 250);
+
+      updateCountdown();
+
       $('formMfaChallenge').onsubmit = async event => {
         event.preventDefault();
+        if (expired || settled) return;
         const code = $('mfaChallengeCode').value.trim();
         if (!/^\d{6}$/.test(code)) return setMessage($('mfaChallengeMsg'), 'Digite o código de 6 dígitos.', 'error');
-        setBusy($('mfaChallengeButton'), true, 'Verificando...');
+        setBusy(button, true, 'Verificando...');
         try {
           const { error } = await client.auth.mfa.challengeAndVerify({ factorId: select.value, code });
+          if (expired || settled) return;
           if (error) throw error;
           const { data: aal } = await client.auth.mfa.getAuthenticatorAssuranceLevel();
+          if (expired || settled) return;
           if (aal?.currentLevel !== 'aal2') throw new Error('Não foi possível elevar a sessão para AAL2.');
+          settled = true;
+          clearInterval(timer);
           resolve(true);
         } catch {
+          if (expired || settled) return;
           setMessage($('mfaChallengeMsg'), 'Código inválido ou expirado. Tente novamente.', 'error');
           $('mfaChallengeCode').select();
-        } finally { setBusy($('mfaChallengeButton'), false); }
+        } finally {
+          if (!expired) setBusy(button, false);
+        }
       };
-      document.querySelectorAll('[data-mfa-signout]').forEach(button => button.onclick = async () => {
-        await client.auth.signOut().catch(() => undefined);
+      document.querySelectorAll('[data-mfa-signout]').forEach(signoutButton => signoutButton.onclick = async () => {
+        if (settled || expired) return;
+        settled = true;
+        clearInterval(timer);
+        await client.auth.signOut({ scope: 'local' }).catch(() => undefined);
         reject(new Error('MFA_CANCELLED'));
         location.replace('/login.html');
       });
     });
   }
-
   function offerMfaSetup() {
     hideForms(); showTabs(false);
     setHeader('Segurança da conta', 'Sua senha foi validada. O 2FA é opcional e pode ser ativado agora.');
