@@ -19,12 +19,19 @@
 
   function calculateStats() {
     const lista = readLocalSetores();
-    const maquinas = lista.flatMap(setor => Array.isArray(setor.maquinas) ? setor.maquinas : []);
-    return {
-      setores: lista.length,
-      equipamentos: maquinas.length,
-      manutencao: maquinas.filter(item => item?.emManutencao).length
-    };
+    let equipamentos = 0;
+    let manutencao = 0;
+
+    // Conta diretamente por setor, sem criar um array intermediário com todos os ativos.
+    for (const setor of lista) {
+      const assets = Array.isArray(setor?.maquinas) ? setor.maquinas : [];
+      equipamentos += assets.length;
+      for (const asset of assets) {
+        if (asset?.emManutencao) manutencao += 1;
+      }
+    }
+
+    return { setores: lista.length, equipamentos, manutencao };
   }
 
   function updateOverview() {
@@ -34,34 +41,6 @@
     overview.querySelector('[data-stat="setores"]')?.replaceChildren(document.createTextNode(String(stats.setores)));
     overview.querySelector('[data-stat="equipamentos"]')?.replaceChildren(document.createTextNode(String(stats.equipamentos)));
     overview.querySelector('[data-stat="manutencao"]')?.replaceChildren(document.createTextNode(String(stats.manutencao)));
-  }
-
-  function installOverview() {
-    const container = document.getElementById('setoresContainer');
-    if (!container || document.querySelector('.rrn-dashboard-overview')) return;
-
-    const overview = document.createElement('section');
-    overview.className = 'rrn-dashboard-overview';
-    overview.innerHTML = `
-      <div class="rrn-overview-copy">
-        <span>Inventário organizado por setores</span>
-        <strong>Visão geral do ambiente</strong>
-        <small>Abra um setor para visualizar e administrar os equipamentos que pertencem a ele.</small>
-      </div>
-      <div class="rrn-overview-stats" aria-label="Resumo do inventário">
-        <div><span data-stat="setores">0</span><small>Setores</small></div>
-        <div><span data-stat="equipamentos">0</span><small>Equipamentos</small></div>
-        <div><span data-stat="manutencao">0</span><small>Manutenção</small></div>
-      </div>`;
-
-    container.parentNode.insertBefore(overview, container);
-    updateOverview();
-
-    const observer = new MutationObserver(() => updateOverview());
-    observer.observe(container, { childList: true, subtree: true });
-    window.addEventListener('storage', event => {
-      if (event.key === 'setores') updateOverview();
-    });
   }
 
   function settingsWorkspaceContent() {
@@ -236,7 +215,7 @@
 
   function boot() {
     enhanceSettings();
-    installOverview();
+    document.querySelectorAll('.rrn-dashboard-overview').forEach(node => node.remove());
     normalizeActionClasses();
   }
 

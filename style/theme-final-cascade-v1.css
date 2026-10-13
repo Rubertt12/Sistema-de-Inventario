@@ -269,3 +269,195 @@ html[data-theme="light"] .rrn-kpi strong{
   color:#123B4A!important;
   -webkit-text-fill-color:#123B4A!important;
 }
+
+
+/* ==========================================================================
+   16. MENU CONTRAST FIX — desktop, mobile, light and dark themes
+   Keep navigation surfaces consistent and guarantee readable labels/actions.
+   ========================================================================== */
+html[data-theme="light"] .navbar .nav-links > .rrn-theme-menu-toggle,
+html[data-theme="dark"] .navbar .nav-links > .rrn-theme-menu-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 40px !important;
+  padding: 9px 14px !important;
+  border: 1px solid rgba(255,255,255,.24) !important;
+  border-radius: 9px !important;
+  background: rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  font-size: .82rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] .navbar .nav-links > .rrn-theme-menu-toggle:hover,
+html[data-theme="dark"] .navbar .nav-links > .rrn-theme-menu-toggle:hover {
+  background: rgba(255,255,255,.18) !important;
+  border-color: rgba(255,255,255,.38) !important;
+}
+
+html[data-theme="light"] .navbar .user-menu,
+html[data-theme="dark"] .navbar .user-menu {
+  background: rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  border-radius: 10px !important;
+}
+html[data-theme="light"] .navbar .user-menu:hover,
+html[data-theme="dark"] .navbar .user-menu:hover {
+  background: rgba(255,255,255,.17) !important;
+}
+html[data-theme="light"] .navbar .user-menu span,
+html[data-theme="dark"] .navbar .user-menu span {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+html[data-theme="light"] .navbar .user-dropdown {
+  background: #fff !important;
+  color: #183642 !important;
+  border: 1px solid #d4e0e4 !important;
+  border-radius: 12px !important;
+  padding: 10px !important;
+  gap: 6px !important;
+  box-shadow: 0 16px 40px rgba(5,25,35,.22) !important;
+}
+html[data-theme="dark"] .navbar .user-dropdown {
+  background: #14232b !important;
+  color: #e8f0f3 !important;
+  border: 1px solid #344953 !important;
+  border-radius: 12px !important;
+  padding: 10px !important;
+  gap: 6px !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.45) !important;
+}
+html[data-theme="light"] .navbar .user-dropdown button {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 42px !important;
+  padding: 10px 12px !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: #183642 !important;
+  -webkit-text-fill-color: #183642 !important;
+  text-align: left !important;
+  font-size: .88rem !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+html[data-theme="dark"] .navbar .user-dropdown button {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 42px !important;
+  padding: 10px 12px !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: #e8f0f3 !important;
+  -webkit-text-fill-color: #e8f0f3 !important;
+  text-align: left !important;
+  font-size: .88rem !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] .navbar .user-dropdown button:hover {
+  background: #edf4f6 !important;
+  border-color: #d7e5e9 !important;
+}
+html[data-theme="dark"] .navbar .user-dropdown button:hover {
+  background: #20343e !important;
+  border-color: #3a525e !important;
+}
+html[data-theme="light"] .navbar .user-dropdown .logout-btn,
+html[data-theme="light"] .navbar .user-dropdown .excluir-tudo-btn {
+  color: #a72d37 !important;
+  -webkit-text-fill-color: #a72d37 !important;
+}
+html[data-theme="dark"] .navbar .user-dropdown .logout-btn,
+html[data-theme="dark"] .navbar .user-dropdown .excluir-tudo-btn {
+  color: #ff9b9f !important;
+  -webkit-text-fill-color: #ff9b9f !important;
+}
+html[data-theme="light"] .navbar .user-dropdown .logout-btn:hover,
+html[data-theme="light"] .navbar .user-dropdown .excluir-tudo-btn:hover {
+  background: #fff0f0 !important;
+}
+html[data-theme="dark"] .navbar .user-dropdown .logout-btn:hover,
+html[data-theme="dark"] .navbar .user-dropdown .excluir-tudo-btn:hover {
+  background: #3a2429 !important;
+}
+
+@media (max-width: 930px) {
+  html[data-theme="light"] .navbar .nav-links.active,
+  html[data-theme="dark"] .navbar .nav-links.active {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 14px !important;
+    background: #10252e !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    border-radius: 0 0 14px 14px !important;
+    box-shadow: 0 18px 35px rgba(0,0,0,.28) !important;
+  }
+  html[data-theme="light"] .navbar .nav-links.active > *,
+  html[data-theme="dark"] .navbar .nav-links.active > * {
+    max-width: 100%;
+  }
+  html[data-theme="light"] .navbar .nav-links.active #searchInput,
+  html[data-theme="dark"] .navbar .nav-links.active #searchInput {
+    width: 100% !important;
+    min-height: 42px !important;
+    padding: 10px 12px !important;
+    border: 1px solid #49616b !important;
+    border-radius: 9px !important;
+    background: #f8fbfc !important;
+    color: #183642 !important;
+    -webkit-text-fill-color: #183642 !important;
+  }
+  html[data-theme="light"] .navbar .nav-links.active #searchInput::placeholder,
+  html[data-theme="dark"] .navbar .nav-links.active #searchInput::placeholder {
+    color: #627781 !important;
+    -webkit-text-fill-color: #627781 !important;
+  }
+  html[data-theme="light"] .navbar .nav-links.active .user-menu,
+  html[data-theme="dark"] .navbar .nav-links.active .user-menu {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+  html[data-theme="light"] .navbar .nav-links.active .user-dropdown,
+  html[data-theme="dark"] .navbar .nav-links.active .user-dropdown {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin-top: 8px !important;
+    max-height: 45vh !important;
+    overflow-y: auto !important;
+  }
+  html[data-theme="light"] .navbar .nav-links.active .user-dropdown {
+    background: #fff !important;
+    color: #183642 !important;
+  }
+  html[data-theme="dark"] .navbar .nav-links.active .user-dropdown {
+    background: #14232b !important;
+    color: #e8f0f3 !important;
+  }
+  html[data-theme="light"] .navbar .nav-links.active .rrn-theme-menu-toggle,
+  html[data-theme="dark"] .navbar .nav-links.active .rrn-theme-menu-toggle {
+    width: 100% !important;
+    min-height: 44px !important;
+  }
+}
+
+/* Respect the native hidden state even if a legacy display rule is present. */
+.user-dropdown[hidden],
+.nav-links[hidden],
+[hidden].user-dropdown,
+[hidden].nav-links {
+  display: none !important;
+}
