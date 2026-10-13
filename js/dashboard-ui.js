@@ -43,46 +43,6 @@
     overview.querySelector('[data-stat="manutencao"]')?.replaceChildren(document.createTextNode(String(stats.manutencao)));
   }
 
-  function installOverview() {
-    const container = document.getElementById('setoresContainer');
-    if (!container || document.querySelector('.rrn-dashboard-overview')) return;
-
-    const overview = document.createElement('section');
-    overview.className = 'rrn-dashboard-overview';
-    overview.innerHTML = `
-      <div class="rrn-overview-copy">
-        <span>Inventário organizado por setores</span>
-        <strong>Visão geral do ambiente</strong>
-        <small>Abra um setor para visualizar e administrar os equipamentos que pertencem a ele.</small>
-      </div>
-      <div class="rrn-overview-stats" aria-label="Resumo do inventário">
-        <div><span data-stat="setores">0</span><small>Setores</small></div>
-        <div><span data-stat="equipamentos">0</span><small>Equipamentos</small></div>
-        <div><span data-stat="manutencao">0</span><small>Manutenção</small></div>
-      </div>`;
-
-    container.parentNode.insertBefore(overview, container);
-    updateOverview();
-
-    // Vários enhancers podem alterar a lista em sequência. Consolida os recálculos
-    // para no máximo um por frame, evitando varrer o inventário repetidamente.
-    let overviewUpdateScheduled = false;
-    const scheduleOverviewUpdate = () => {
-      if (overviewUpdateScheduled) return;
-      overviewUpdateScheduled = true;
-      requestAnimationFrame(() => {
-        overviewUpdateScheduled = false;
-        updateOverview();
-      });
-    };
-
-    const observer = new MutationObserver(scheduleOverviewUpdate);
-    observer.observe(container, { childList: true, subtree: true });
-    window.addEventListener('storage', event => {
-      if (event.key === 'setores') scheduleOverviewUpdate();
-    });
-  }
-
   function settingsWorkspaceContent() {
     let local = {};
     try { local = JSON.parse(localStorage.getItem('usuarioLogado') || '{}'); } catch {}
@@ -255,7 +215,7 @@
 
   function boot() {
     enhanceSettings();
-    installOverview();
+    document.querySelectorAll('.rrn-dashboard-overview').forEach(node => node.remove());
     normalizeActionClasses();
   }
 
