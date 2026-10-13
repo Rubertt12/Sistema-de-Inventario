@@ -19,12 +19,19 @@
 
   function calculateStats() {
     const lista = readLocalSetores();
-    const maquinas = lista.flatMap(setor => Array.isArray(setor.maquinas) ? setor.maquinas : []);
-    return {
-      setores: lista.length,
-      equipamentos: maquinas.length,
-      manutencao: maquinas.filter(item => item?.emManutencao).length
-    };
+    let equipamentos = 0;
+    let manutencao = 0;
+
+    // Conta diretamente por setor, sem criar um array intermediário com todos os ativos.
+    for (const setor of lista) {
+      const assets = Array.isArray(setor?.maquinas) ? setor.maquinas : [];
+      equipamentos += assets.length;
+      for (const asset of assets) {
+        if (asset?.emManutencao) manutencao += 1;
+      }
+    }
+
+    return { setores: lista.length, equipamentos, manutencao };
   }
 
   function updateOverview() {
@@ -57,10 +64,22 @@
     container.parentNode.insertBefore(overview, container);
     updateOverview();
 
-    const observer = new MutationObserver(() => updateOverview());
+    // Vários enhancers podem alterar a lista em sequência. Consolida os recálculos
+    // para no máximo um por frame, evitando varrer o inventário repetidamente.
+    let overviewUpdateScheduled = false;
+    const scheduleOverviewUpdate = () => {
+      if (overviewUpdateScheduled) return;
+      overviewUpdateScheduled = true;
+      requestAnimationFrame(() => {
+        overviewUpdateScheduled = false;
+        updateOverview();
+      });
+    };
+
+    const observer = new MutationObserver(scheduleOverviewUpdate);
     observer.observe(container, { childList: true, subtree: true });
     window.addEventListener('storage', event => {
-      if (event.key === 'setores') updateOverview();
+      if (event.key === 'setores') scheduleOverviewUpdate();
     });
   }
 
