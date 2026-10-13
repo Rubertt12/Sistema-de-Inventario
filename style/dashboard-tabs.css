@@ -58,3 +58,33 @@ body.rrn-tab-inventory .rrn-dashboard-home{display:none!important}
   .rrn-kpi-grid{gap:16px}
   .rrn-home-grid{gap:18px}
 }
+
+
+/* Seletor de tema acessível também no desktop; no mobile acompanha o menu. */
+.navbar .nav-links > .rrn-theme-menu-toggle{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:38px;
+  padding:8px 12px;
+  border:1px solid rgba(41,89,145,.24)!important;
+  border-radius:9px!important;
+  background:var(--rrn-card,rgba(255,255,255,.8))!important;
+  color:var(--rrn-blue,#295991)!important;
+  font:inherit;
+  font-size:.75rem;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.navbar .nav-links > .rrn-theme-menu-toggle:hover{filter:brightness(.97)}
+html[data-theme="dark"] .navbar .nav-links > .rrn-theme-menu-toggle{
+  border-color:rgba(255,255,255,.18)!important;
+  background:#202938!important;
+  color:#f3f6fb!important;
+}
+@media(max-width:930px){
+  .navbar .nav-links:not(.active) > .rrn-theme-menu-toggle{display:none!important}
+  .navbar .nav-links.active > .rrn-theme-menu-toggle{display:flex!important;width:100%!important;order:3!important}
+}
