@@ -1,0 +1,369 @@
+/* RRN Manager — contrast and control normalization
+   Shared final layer for every screen that loads theme-mode.js.
+   Keeps semantic states intact while removing washed-out text and controls. */
+
+:root {
+  --rrn-control-height: 40px;
+  --rrn-control-radius: 10px;
+  --rrn-control-text: var(--rrn-text);
+  --rrn-control-bg: var(--rrn-surface-2);
+  --rrn-control-border: var(--rrn-border-strong);
+  --rrn-control-muted: var(--rrn-muted);
+  --rrn-control-primary-bg: #287F7A;
+  --rrn-control-primary-text: #FFFFFF;
+}
+
+:root[data-theme="dark"] {
+  --rrn-control-bg: #17252C;
+  --rrn-control-border: rgba(190, 215, 221, .30);
+  --rrn-control-muted: #B8C5CA;
+  --rrn-control-primary-bg: #287F7A;
+  --rrn-control-primary-text: #FFFFFF;
+}
+
+:root[data-theme="light"] {
+  --rrn-control-bg: #FFFFFF;
+  --rrn-control-border: rgba(16, 59, 75, .28);
+  --rrn-control-muted: #536A74;
+  --rrn-control-primary-bg: #14566B;
+  --rrn-control-primary-text: #FFFFFF;
+}
+
+/* Text hierarchy: use solid semantic colors instead of inherited low opacity. */
+:root[data-theme] body,
+:root[data-theme] main,
+:root[data-theme] .main-content,
+:root[data-theme] .dashboard-content,
+:root[data-theme] .content-wrapper,
+:root[data-theme] .tab-content,
+:root[data-theme] .admin-shell,
+:root[data-theme] .settings-shell {
+  color: var(--rrn-text);
+}
+
+:root[data-theme] main :where(p, li, label, dt, dd, figcaption, .description, .subtitle, .helper-text, .form-hint) {
+  color: var(--rrn-text);
+}
+
+:root[data-theme] main :where(small, .muted, .meta, .card-meta, .machine-meta, .equipment-meta, .field-hint, .help-text) {
+  color: var(--rrn-control-muted);
+  opacity: 1;
+}
+
+:root[data-theme] main :where(h1, h2, h3, h4, h5, h6, legend, .section-title, .card-title) {
+  color: var(--rrn-heading);
+  opacity: 1;
+}
+
+/* Inputs, selects and textareas remain readable in both themes. */
+:root[data-theme] :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  select, textarea
+) {
+  min-height: var(--rrn-control-height);
+  color: var(--rrn-text) !important;
+  -webkit-text-fill-color: var(--rrn-text) !important;
+  background: var(--rrn-control-bg) !important;
+  border: 1px solid var(--rrn-control-border) !important;
+  border-radius: var(--rrn-control-radius);
+  opacity: 1;
+}
+
+:root[data-theme] :where(input, textarea)::placeholder {
+  color: var(--rrn-control-muted) !important;
+  -webkit-text-fill-color: var(--rrn-control-muted) !important;
+  opacity: 1;
+}
+
+:root[data-theme] select option {
+  color: var(--rrn-text);
+  background: var(--rrn-surface);
+}
+
+:root[data-theme] :where(input, select, textarea):focus-visible {
+  outline: 2px solid var(--rrn-secondary) !important;
+  outline-offset: 2px;
+  border-color: var(--rrn-secondary) !important;
+  box-shadow: 0 0 0 3px var(--rrn-focus) !important;
+}
+
+/* Buttons: explicit neutral, primary, destructive and disabled states. */
+:root[data-theme] main :where(
+  button:not(.rrn-home-action):not(.btn-primary):not(.rrn-btn-primary):not(.primary-button):not(.btn-confirmar):not(.save-btn):not(.upload-btn):not(.settings-primary-btn):not(.logout-btn):not(.danger):not(.delete-btn):not(.excluir-tudo-btn),
+  .btn-secondary, .secondary-button, .btn-ghost, .settings-ghost-btn,
+  .settings-back-btn, .action-btn, .rrn-action-btn, .rrn-icon-btn
+) {
+  min-height: 36px;
+  color: var(--rrn-heading) !important;
+  -webkit-text-fill-color: var(--rrn-heading) !important;
+  background: var(--rrn-control-bg) !important;
+  border: 1px solid var(--rrn-control-border) !important;
+  border-radius: var(--rrn-control-radius);
+  opacity: 1;
+  text-shadow: none;
+}
+
+:root[data-theme] main :where(
+  button:not(:disabled):not(.rrn-home-action):not(.btn-primary):not(.rrn-btn-primary):not(.primary-button):not(.btn-confirmar):not(.save-btn):not(.upload-btn):not(.settings-primary-btn):not(.logout-btn):not(.danger):not(.delete-btn):not(.excluir-tudo-btn),
+  .btn-secondary, .secondary-button, .btn-ghost, .settings-ghost-btn,
+  .settings-back-btn, .action-btn, .rrn-action-btn, .rrn-icon-btn
+):hover {
+  filter: brightness(1.08);
+  border-color: var(--rrn-secondary) !important;
+}
+
+:root[data-theme] main :where(
+  .btn-primary, .rrn-btn-primary, .primary-button, .btn-confirmar,
+  .save-btn, .upload-btn, .settings-primary-btn, button.primary,
+  .rrn-home-action.primary
+) {
+  min-height: 38px;
+  color: var(--rrn-control-primary-text) !important;
+  -webkit-text-fill-color: var(--rrn-control-primary-text) !important;
+  background: var(--rrn-control-primary-bg) !important;
+  border: 1px solid var(--rrn-control-primary-bg) !important;
+  opacity: 1;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+:root[data-theme] main :where(
+  .btn-primary, .rrn-btn-primary, .primary-button, .btn-confirmar,
+  .save-btn, .upload-btn, .settings-primary-btn, button.primary,
+  .rrn-home-action.primary
+):hover {
+  filter: brightness(1.12);
+}
+
+:root[data-theme] main :where(
+  button.danger, .delete-btn, .logout-btn, .excluir-tudo-btn,
+  .btn-danger, .remove-btn
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  background: #A93636 !important;
+  border: 1px solid #A93636 !important;
+  opacity: 1;
+}
+
+:root[data-theme] :where(button, input, select, textarea, [role="button"]):disabled,
+:root[data-theme] :where(button, [role="button"])[aria-disabled="true"] {
+  opacity: .68 !important;
+  cursor: not-allowed !important;
+  filter: none !important;
+}
+
+/* Active tabs and pagination need a strong selected state. */
+:root[data-theme] main :where(
+  .tab-button.active, .dashboard-tab.active, .filter-btn.active,
+  .category-button.active, .sector-category-button.active,
+  .view-toggle button.active, .pagination button.active,
+  .page-btn.active, [aria-current="page"], [aria-selected="true"]
+) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  background: var(--rrn-secondary) !important;
+  border-color: var(--rrn-secondary) !important;
+  opacity: 1;
+}
+
+/* Keep the dark navigation readable and visually consistent. */
+:root[data-theme] .navbar,
+:root[data-theme] .topbar,
+:root[data-theme] .settings-topbar,
+:root[data-theme] .admin-topbar {
+  color: #FFFFFF;
+}
+
+:root[data-theme] .navbar :where(h1, h2, h3, a, button, strong, b, small, span, label) {
+  color: #FFFFFF;
+  -webkit-text-fill-color: currentColor;
+}
+
+:root[data-theme] .navbar :where(button, input) {
+  opacity: 1;
+}
+
+/* Dialogs, dropdowns and popovers must not inherit low-contrast legacy colors. */
+:root[data-theme] :where(
+  .modal-content, .config-modal, .modal-transferencia-content,
+  .user-dropdown, .dropdown-menu, .popover, .autocomplete-menu,
+  .autocomplete-list, .autocomplete-results, .search-results,
+  .rrn-search-popover, .settings-card, .admin-card
+) {
+  color: var(--rrn-text);
+}
+
+:root[data-theme] :where(
+  .modal-content, .config-modal, .modal-transferencia-content,
+  .user-dropdown, .dropdown-menu, .popover, .autocomplete-menu,
+  .autocomplete-list, .autocomplete-results, .search-results,
+  .rrn-search-popover
+) :where(p, li, label, span, small, strong, b, h1, h2, h3, h4) {
+  opacity: 1;
+}
+
+:root[data-theme="dark"] :where(
+  .modal-content, .config-modal, .modal-transferencia-content,
+  .user-dropdown, .dropdown-menu, .popover, .autocomplete-menu,
+  .autocomplete-list, .autocomplete-results, .search-results,
+  .rrn-search-popover
+) {
+  background-color: #142128;
+  border-color: rgba(190, 215, 221, .24);
+  color: #E8EFF2;
+}
+
+:root[data-theme="light"] :where(
+  .modal-content, .config-modal, .modal-transferencia-content,
+  .user-dropdown, .dropdown-menu, .popover, .autocomplete-menu,
+  .autocomplete-list, .autocomplete-results, .search-results,
+  .rrn-search-popover
+) {
+  background-color: #FFFFFF;
+  border-color: rgba(16, 59, 75, .22);
+  color: #23343B;
+}
+
+/* Tables and badges: legibility without erasing status colors. */
+:root[data-theme] table :where(th, td) {
+  opacity: 1;
+}
+
+:root[data-theme] table th {
+  color: var(--rrn-heading);
+}
+
+:root[data-theme] table td {
+  color: var(--rrn-text);
+}
+
+:root[data-theme] :where(.badge, .status, .chip, .tag, .pill) {
+  opacity: 1;
+  font-weight: 700;
+}
+
+/* Do not dim complete sections; reserve opacity for disabled controls only. */
+:root[data-theme] main :where(.card, .panel, .settings-card, .rrn-home-panel, .rrn-kpi, .machine-card, .sector-card) {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme] main :where(button, .btn-secondary, .btn-primary, .rrn-btn-primary) {
+    transition: background-color .16s ease, border-color .16s ease, color .16s ease, filter .16s ease;
+  }
+}
+
+
+/* RRN Manager — final navbar repair (contrast cascade) */
+:root[data-theme] .navbar .menu-toggle {
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 0 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  background: rgba(255,255,255,.09) !important;
+  border: 1px solid rgba(255,255,255,.24) !important;
+  border-radius: 11px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: relative !important;
+  z-index: 2401 !important;
+}
+:root[data-theme] .navbar .rrn-menu-bars {
+  width: 20px !important;
+  height: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+:root[data-theme] .navbar .rrn-menu-bars span {
+  display: block !important;
+  width: 100% !important;
+  height: 2px !important;
+  border-radius: 99px !important;
+  background: #FFFFFF !important;
+  opacity: 1 !important;
+}
+:root[data-theme] .navbar .menu-toggle[aria-expanded="true"] .rrn-menu-bars span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg) !important;
+}
+:root[data-theme] .navbar .menu-toggle[aria-expanded="true"] .rrn-menu-bars span:nth-child(2) {
+  opacity: 0 !important;
+}
+:root[data-theme] .navbar .menu-toggle[aria-expanded="true"] .rrn-menu-bars span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg) !important;
+}
+:root[data-theme] .navbar .rrn-navbar-brand-mark {
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  flex: 0 0 42px !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+:root[data-theme] .navbar .rrn-navbar-brand-mark img.navbar-icon {
+  display: block !important;
+  width: 30px !important;
+  height: 30px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+:root[data-theme] .navbar .nav-links.active {
+  color: #FFFFFF !important;
+}
+:root[data-theme] .navbar .nav-links.active :where(a, button, label, span, strong, small) {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: currentColor !important;
+  opacity: 1 !important;
+}
+@media (max-width: 780px) {
+  :root[data-theme] .navbar .menu-toggle {
+    display: inline-flex !important;
+    flex: 0 0 44px !important;
+    margin-left: auto !important;
+    cursor: pointer !important;
+  }
+  :root[data-theme] .navbar .nav-links:not(.active) {
+    display: none !important;
+  }
+  :root[data-theme] .navbar .nav-links.active {
+    display: flex !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 2400 !important;
+    max-height: min(76vh, 610px) !important;
+    overflow-y: auto !important;
+    padding: 12px !important;
+    gap: 10px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    background: linear-gradient(160deg, #12313D, #1B5960) !important;
+    border: 1px solid rgba(255,255,255,.18) !important;
+    border-top: 0 !important;
+    border-radius: 0 0 14px 14px !important;
+    box-shadow: 0 24px 55px rgba(5,23,31,.35) !important;
+  }
+  :root[data-theme] .navbar .nav-links.active .rrn-theme-menu-toggle {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    justify-content: center !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    background: rgba(255,255,255,.09) !important;
+    border: 1px solid rgba(255,255,255,.24) !important;
+  }
+}

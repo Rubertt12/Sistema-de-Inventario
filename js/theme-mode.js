@@ -81,6 +81,22 @@
     }
   }
 
+  function ensureContrastCascade() {
+    const link = document.querySelector('link[data-rrn-theme-contrast-final]');
+    const target = document.body || document.head;
+    if (!target) return;
+    if (link) {
+      if (document.body && link.parentNode !== document.body) document.body.appendChild(link);
+      return;
+    }
+    const finalLink = document.createElement('link');
+    finalLink.rel = 'stylesheet';
+    finalLink.href = '/style/theme-contrast-accessibility-v1.css?v=20261103-2';
+    finalLink.setAttribute('data-rrn-theme-contrast-final', '1');
+    target.appendChild(finalLink);
+    if (document.body && finalLink.parentNode !== document.body) document.body.appendChild(finalLink);
+  }
+
   function ensureFooter() {
     const path = location.pathname.toLowerCase();
     if (path === '/' || path.endsWith('/index.html')) return;
@@ -98,6 +114,7 @@
     ensureThemeFixes();
     ensureFinalThemeCascade();
     ensureFinalDashboardCascade();
+    ensureContrastCascade();
     document.documentElement.dataset.theme = normalized;
     if (persist) localStorage.setItem(KEY, normalized);
     document.documentElement.style.colorScheme = normalized;
@@ -151,6 +168,7 @@
     ensureThemeFixes();
     ensureFinalThemeCascade();
     ensureFinalDashboardCascade();
+    ensureContrastCascade();
     ensureFooter();
     bindThemeButtons();
     mountSecurityLink();

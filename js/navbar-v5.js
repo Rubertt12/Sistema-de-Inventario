@@ -17,7 +17,7 @@
   }
 
   function ensureCss() {
-    ensureStylesheet('/style/navbar-v5.css', 'data-rrn-navbar-v5');
+    ensureStylesheet('/style/navbar-v5.css?v=20261103-2', 'data-rrn-navbar-v5');
     ensureStylesheet('/style/navbar-flat-tabs.css?v=20260929-2', 'data-rrn-navbar-flat-tabs');
   }
 
@@ -58,7 +58,7 @@
     }
 
     const icon = brand.querySelector('.navbar-icon');
-    const src = icon?.getAttribute('src') || './img/icon-png.png';
+    const src = '/img/icon-png.png?v=20261103-2';
     brand.dataset.rrnNavbarV5 = '1';
     brand.innerHTML = `
       <span class="rrn-navbar-brand-mark"><img src="${src}" alt="" class="navbar-icon"></span>
