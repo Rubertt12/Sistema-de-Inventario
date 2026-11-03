@@ -18,7 +18,6 @@
   if (client) window.RRN_SUPABASE_CLIENT = client;
 
   const normalize = value => String(value || '').trim().toLowerCase();
-  const escHtml = value => String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[ch]));
   function safeLogoUrl(value){try{const url=new URL(String(value || '/img/icon-png.png'),location.origin);if(url.protocol==='https:'||url.origin===location.origin)return url.href;}catch{}return '/img/icon-png.png';}
   let targetTenant = null;
   let portalValid = false;
