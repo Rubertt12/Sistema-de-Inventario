@@ -84,8 +84,8 @@ as $$
     select case
       when s.status='grandfathered' then true
       when s.status='trialing' then s.trial_ends_at > now()
-      when s.status='authorized' then s.current_period_end is null or s.current_period_end >= now()
-      when s.status='past_due' then coalesce(s.current_period_end,now()) + interval '5 days' >= now()
+      when s.status='authorized' then s.current_period_end is not null and s.current_period_end >= now()
+      when s.status='past_due' then s.current_period_end is not null and s.current_period_end + interval '5 days' >= now()
       when s.status='cancelled' then s.current_period_end is not null and s.current_period_end >= now()
       else false
     end
