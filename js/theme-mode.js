@@ -91,7 +91,7 @@
     }
     const finalLink = document.createElement('link');
     finalLink.rel = 'stylesheet';
-    finalLink.href = '/style/theme-contrast-accessibility-v1.css?v=20261103-2';
+    finalLink.href = '/style/theme-contrast-accessibility-v1.css?v=20261103-3';
     finalLink.setAttribute('data-rrn-theme-contrast-final', '1');
     target.appendChild(finalLink);
     if (document.body && finalLink.parentNode !== document.body) document.body.appendChild(finalLink);
