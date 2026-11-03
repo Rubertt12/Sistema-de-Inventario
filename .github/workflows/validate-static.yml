@@ -3,11 +3,13 @@ name: Validate RRN Manager frontend
 on:
   push:
     branches:
-      - agent/multi-tenant-professional-ui
+      - main
+      - chore/**
+      - fix/**
   pull_request:
 
 jobs:
-  javascript-syntax:
+  static-quality:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,29 +20,5 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Check JavaScript syntax
-        shell: bash
-        run: |
-          set -euo pipefail
-          files=(
-            js/auth-v2.js
-            js/auth-email-fallback.js
-            js/auth-email-fallback-return.js
-            js/index.js
-            js/script.js
-            js/tenant-runtime.js
-            js/usuarios.js
-            js/dashboard-ui.js
-            js/asset-history.js
-            js/backup-v3.js
-            js/backend-v2.js
-            js/backend-status.js
-            js/trash-v2.js
-            js/insights.js
-            js/reports-v2.js
-          )
-
-          for file in "${files[@]}"; do
-            echo "Checking $file"
-            node --check "$file"
-          done
+      - name: Validate JavaScript, CSS and local HTML assets
+        run: npm test
