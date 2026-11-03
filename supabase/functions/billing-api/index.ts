@@ -143,23 +143,26 @@ async function handle(req: Request) {
 
     const externalReference = crypto.randomUUID();
     const { error: pendingError } = await admin.from("tenant_subscriptions").update({
-      plan_id: plan.id, status: "pending", external_reference: externalReference,
-      mp_preapproval_id: null, mp_status: "pending", current_period_start: null,
-      current_period_end: null, cancel_at_period_end: false
+      pending_plan_id: plan.id, external_reference: externalReference,
+      mp_preapproval_id: null, mp_status: "pending", cancel_at_period_end: false
     }).eq("tenant_id", caller.profile.tenant_id);
     if (pendingError) throw new Error("BILLING_SAVE_FAILED");
 
     try {
       const payerEmail = caller.user.email || caller.profile.email;
       if (!payerEmail) throw new Error("EMAIL_REQUIRED");
+      const recurring: Record<string, unknown> = {
+        frequency: 1, frequency_type: "months",
+        transaction_amount: Number(plan.monthly_price), currency_id: "BRL"
+      };
+      if (current.status === "trialing" && current.trial_ends_at && new Date(current.trial_ends_at) > new Date()) {
+        recurring.start_date = current.trial_ends_at;
+      }
       const created = await mpRequest("/preapproval", "POST", {
         reason: `RRN Manager - ${plan.name}`,
         external_reference: externalReference,
         payer_email: payerEmail,
-        auto_recurring: {
-          frequency: 1, frequency_type: "months",
-          transaction_amount: Number(plan.monthly_price), currency_id: "BRL"
-        },
+        auto_recurring: recurring,
         back_url: `${APP_URL}/assinatura.html?checkout=return`,
         notification_url: `${SUPABASE_URL}/functions/v1/mercadopago-webhook`
       });
@@ -174,8 +177,9 @@ async function handle(req: Request) {
       return json({ ok: true, init_point: created.init_point }, 200, origin);
     } catch (error) {
       await admin.from("tenant_subscriptions").update({
-        plan_id: current.plan_id, status: current.status, external_reference: current.external_reference,
-        mp_preapproval_id: current.mp_preapproval_id, mp_status: current.mp_status,
+        pending_plan_id: current.pending_plan_id || null,
+        external_reference: current.external_reference, mp_preapproval_id: current.mp_preapproval_id,
+        mp_status: current.mp_status, status: current.status, plan_id: current.plan_id,
         current_period_start: current.current_period_start, current_period_end: current.current_period_end
       }).eq("tenant_id", caller.profile.tenant_id).eq("external_reference", externalReference);
       throw error;
