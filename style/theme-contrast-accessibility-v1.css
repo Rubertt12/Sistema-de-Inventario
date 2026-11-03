@@ -136,7 +136,7 @@
 }
 
 :root[data-theme] main :where(
-  button.danger, .danger, .delete-btn, .logout-btn, .excluir-tudo-btn,
+  button.danger, .delete-btn, .logout-btn, .excluir-tudo-btn,
   .btn-danger, .remove-btn
 ) {
   color: #FFFFFF !important;
