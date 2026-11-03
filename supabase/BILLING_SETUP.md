@@ -15,7 +15,7 @@ No projeto RRN Manager, abra **Project Settings / Edge Functions / Secrets** e c
 |---|---|
 | `MP_ACCESS_TOKEN` | Access Token da aplicação Mercado Pago. Comece com credenciais de teste. |
 | `MP_WEBHOOK_SECRET` | Segredo HMAC gerado em Mercado Pago Developers > sua aplicação > Webhooks. |
-| `APP_BASE_URL` | URL pública canônica do RRN Manager, sem barra no final. |
+| `APP_BASE_URL` | URL pública canônica do RRN Manager, sem barra no final. Neste projeto: `https://rrnmanager.vercel.app`. |
 
 Não coloque esses valores no GitHub, no frontend, em mensagens ou em variáveis `VITE_` / `NEXT_PUBLIC_`.
 
