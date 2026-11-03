@@ -27,7 +27,7 @@
 
 
   function ensureFinalDashboardCascade() {
-    const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\\.html$/i.test(location.pathname);
+    const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\.html$/i.test(location.pathname);
     if (!isDashboard) return;
     const link = document.querySelector('link[data-rrn-dashboard-light-final]');
     const target = document.body || document.head;
