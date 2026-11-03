@@ -4,7 +4,8 @@
   window.__RRN_TENANT_LOGIN_CONTEXT__ = true;
 
   const params = new URLSearchParams(location.search);
-  const requestedSlug = (params.get('org') || '').trim().toLowerCase();
+  const rawRequestedSlug = (params.get('org') || '').trim().toLowerCase();
+  const requestedSlug = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(rawRequestedSlug) ? rawRequestedSlug : '';
   if (!requestedSlug || !document.getElementById('formLogin')) {
     window.RRN_TENANT_LOGIN_READY = Promise.resolve();
     return;
@@ -17,6 +18,8 @@
   if (client) window.RRN_SUPABASE_CLIENT = client;
 
   const normalize = value => String(value || '').trim().toLowerCase();
+  const escHtml = value => String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[ch]));
+  function safeLogoUrl(value){try{const url=new URL(String(value || '/img/icon-png.png'),location.origin);if(url.protocol==='https:'||url.origin===location.origin)return url.href;}catch{}return '/img/icon-png.png';}
   let targetTenant = null;
   let portalValid = false;
 
@@ -58,9 +61,16 @@
     const box = document.createElement('div');
     box.id = 'rrnTenantPortal';
     box.className = `rrn-tenant-portal${invalid ? ' rrn-tenant-invalid' : ''}`;
-    const name = tenant?.tenant_name || 'Ambiente não encontrado';
-    const logo = tenant?.logo_url || '/img/icon-png.png';
-    box.innerHTML = `<img class="rrn-tenant-portal-logo" src="${logo}" alt=""><div class="rrn-tenant-portal-copy"><small>${invalid ? 'Portal indisponível' : 'Portal da empresa'}</small><strong>${name}</strong><code>${requestedSlug}</code>${invalid ? '<a class="rrn-tenant-generic-link" href="/login.html">Ir para o acesso geral</a>' : ''}</div>`;
+    const name = String(tenant?.tenant_name || 'Ambiente não encontrado').slice(0, 120);
+    const logo = safeLogoUrl(tenant?.logo_url);
+    const image = document.createElement('img'); image.className = 'rrn-tenant-portal-logo'; image.src = logo; image.alt = '';
+    const copy = document.createElement('div'); copy.className = 'rrn-tenant-portal-copy';
+    const label = document.createElement('small'); label.textContent = invalid ? 'Portal indisponível' : 'Portal da empresa';
+    const title = document.createElement('strong'); title.textContent = name;
+    const slug = document.createElement('code'); slug.textContent = requestedSlug;
+    copy.append(label, title, slug);
+    if (invalid) { const link = document.createElement('a'); link.className = 'rrn-tenant-generic-link'; link.href = '/login.html'; link.textContent = 'Ir para o acesso geral'; copy.append(link); }
+    box.replaceChildren(image, copy);
     header.insertAdjacentElement('afterend', box);
     if (!invalid) {
       const title = document.getElementById('authTitle');
