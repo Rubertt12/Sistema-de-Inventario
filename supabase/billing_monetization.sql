@@ -15,8 +15,8 @@ create table if not exists public.billing_plans (
 
 insert into public.billing_plans(id,name,description,monthly_price,max_users,max_assets,features,active,sort_order)
 values
- ('starter','Starter','Para equipes pequenas que precisam organizar o inventário.',39.90,2,100,'{"asset_inventory":true,"sectors":true,"movements":true,"maintenance":false,"advanced_reports":false,"audit":false}'::jsonb,true,1),
- ('professional','Professional','Mais capacidade e recursos para equipes em crescimento.',89.90,10,1000,'{"asset_inventory":true,"sectors":true,"movements":true,"maintenance":true,"advanced_reports":true,"audit":false}'::jsonb,true,2),
+ ('starter','Starter','Para equipes pequenas que precisam organizar o inventário.',39.90,2,100,'{"asset_inventory":true,"sectors":true,"movements":true,"maintenance":true,"advanced_reports":true,"audit":true}'::jsonb,true,1),
+ ('professional','Professional','Mais capacidade e recursos para equipes em crescimento.',89.90,10,1000,'{"asset_inventory":true,"sectors":true,"movements":true,"maintenance":true,"advanced_reports":true,"audit":true}'::jsonb,true,2),
  ('enterprise','Enterprise','Gestão ampliada para operações maiores.',199.90,30,5000,'{"asset_inventory":true,"sectors":true,"movements":true,"maintenance":true,"advanced_reports":true,"audit":true}'::jsonb,true,3),
  ('legacy','Acesso legado','Plano de transição para workspaces existentes.',0,999999,999999,'{"asset_inventory":true,"sectors":true,"movements":true,"maintenance":true,"advanced_reports":true,"audit":true}'::jsonb,false,99)
 on conflict (id) do update set
@@ -156,6 +156,9 @@ for each row execute function public.billing_require_current_subscription();
 drop trigger if exists billing_guard_maintenance on public.maintenance_records;
 create trigger billing_guard_maintenance before insert or update or delete on public.maintenance_records
 for each row execute function public.billing_require_current_subscription();
+drop trigger if exists billing_guard_invitations on public.tenant_invitations;
+create trigger billing_guard_invitations before insert or update or delete on public.tenant_invitations
+for each row execute function public.billing_require_current_subscription();
 
 create or replace function public.billing_enforce_asset_limit()
 returns trigger
@@ -197,6 +200,10 @@ as $$
 declare v_limit integer; v_count integer;
 begin
   if new.status<>'active' then return new; end if;
+  if not public.billing_is_entitled(new.tenant_id) then
+    raise exception 'BILLING_REQUIRED: assinatura inativa. Acesse Plano e cobrança para continuar.'
+      using errcode='P0001';
+  end if;
   if tg_op='UPDATE' and old.status='active' and old.tenant_id=new.tenant_id then return new; end if;
   select p.max_users into v_limit
   from public.tenant_subscriptions s join public.billing_plans p on p.id=s.plan_id
