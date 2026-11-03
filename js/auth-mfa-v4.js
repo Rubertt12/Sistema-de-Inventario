@@ -336,9 +336,10 @@
   }
 
   function showForgot() {
-    hideForms(); showTabs(false); $('formForgotPassword')?.classList.add('active');
-    if ($('forgotEmail')) $('forgotEmail').value = $('loginEmail')?.value.trim() || '';
-    setHeader('Recuperar senha', 'Informe seu e-mail para receber um link seguro de recuperação.');
+    const email = $('loginEmail')?.value.trim().toLowerCase() || '';
+    const destination = new URL('/recuperar-senha.html', location.origin);
+    if (email) destination.searchParams.set('email', email);
+    location.assign(destination.toString());
   }
 
   function showReset() {
@@ -375,7 +376,7 @@
     if (!email) return setMessage($('forgotPasswordMsg'), 'Informe seu e-mail.', 'error');
     setBusy($('forgotPasswordSubmit'), true, 'Enviando...');
     try {
-      const recoveryRedirect = new URL('/login.html', location.origin);
+      const recoveryRedirect = new URL('/recuperar-senha.html', location.origin);
       recoveryRedirect.searchParams.set('type', 'recovery');
       const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: recoveryRedirect.toString() });
       if (error) throw error;
