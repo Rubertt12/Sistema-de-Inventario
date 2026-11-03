@@ -42,6 +42,9 @@
     button.textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
   }));
 
+  const emailFromQuery = params.get('email');
+  if (emailFromQuery && $('email')) $('email').value = emailFromQuery;
+
   if (!client) {
     show('requestPanel');
     message('requestMessage', 'Não foi possível conectar ao serviço de autenticação. Atualize a página ou tente novamente mais tarde.', 'error');
