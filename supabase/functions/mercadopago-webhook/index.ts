@@ -27,7 +27,7 @@ async function validSignature(req: Request, dataId: string) {
   const received = parts.v1 || "";
   if (!ts || !received || !requestId || !/^\d+$/.test(ts)) return false;
   const timestamp = Number(ts);
-  if (!Number.isFinite(timestamp) || Math.abs(Date.now() - timestamp * 1000) > 5 * 60 * 1000) return false;
+  if (!Number.isFinite(timestamp) || Math.abs(Date.now() - timestamp * 1000) > 24 * 60 * 60 * 1000) return false;
   const manifest = `id:${dataId.toLowerCase()};request-id:${requestId};ts:${ts};`;
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(MP_WEBHOOK_SECRET),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -81,7 +81,7 @@ Deno.serve(async (req: Request) => {
         await admin.from("billing_webhook_events").update({ processing_status: "ignored", processed_at: new Date().toISOString() }).eq("provider_event_id", eventId);
         return new Response("Ignored", { status: 200 });
       }
-      const { data: local, error } = await admin.from("tenant_subscriptions").select("id,tenant_id,mp_preapproval_id,current_period_end")
+      const { data: local, error } = await admin.from("tenant_subscriptions").select("id,tenant_id,mp_preapproval_id,current_period_end,mp_status,status,pending_plan_id")
         .eq("external_reference", externalReference).maybeSingle();
       if (error) throw error;
       if (!local || (local.mp_preapproval_id && local.mp_preapproval_id !== String(subscription.id))) {
@@ -90,29 +90,42 @@ Deno.serve(async (req: Request) => {
       }
       const mapped = mapStatus(subscription.status);
       const periodEnd = subscription.next_payment_date || local.current_period_end || null;
-      const { error: updateError } = await admin.from("tenant_subscriptions").update({
+      const preservePreviousAccess = mapped === "pending" || (mapped === "cancelled" && local.mp_status === "pending");
+      const nextStatus = preservePreviousAccess ? local.status : mapped;
+      const update: Record<string, unknown> = {
         mp_preapproval_id: String(subscription.id), mp_status: String(subscription.status || ""),
-        status: mapped,
-        current_period_start: subscription.date_created || new Date().toISOString(),
-        current_period_end: periodEnd
-      }).eq("id", local.id);
+        status: nextStatus, current_period_end: periodEnd
+      };
+      if (mapped === "authorized") {
+        if (local.pending_plan_id) update.plan_id = local.pending_plan_id;
+        update.pending_plan_id = null;
+        update.current_period_start = subscription.date_created || new Date().toISOString();
+      } else if (mapped === "cancelled") {
+        update.pending_plan_id = null;
+      }
+      const { error: updateError } = await admin.from("tenant_subscriptions").update(update).eq("id", local.id);
       if (updateError) throw updateError;
     } else if (eventType === "subscription_authorized_payment") {
       const payment = await providerGet(`/authorized_payments/${encodeURIComponent(dataId)}`);
       const preapprovalId = String(payment.preapproval_id || payment.subscription_id || "");
       if (preapprovalId) {
-        const { data: local, error } = await admin.from("tenant_subscriptions").select("id,status,current_period_end")
+        const { data: local, error } = await admin.from("tenant_subscriptions").select("id,status,current_period_end,pending_plan_id")
           .eq("mp_preapproval_id", preapprovalId).maybeSingle();
         if (error) throw error;
         if (local) {
           const paymentStatus = String(payment.status || "").toLowerCase();
           const nextStatus = ["approved", "processed", "authorized"].includes(paymentStatus) ? "authorized" :
             ["rejected", "cancelled", "refunded"].includes(paymentStatus) ? "past_due" : local.status;
-          const { error: updateError } = await admin.from("tenant_subscriptions").update({
+          const update: Record<string, unknown> = {
             status: nextStatus, mp_status: paymentStatus,
             current_period_start: payment.date_created || new Date().toISOString(),
             current_period_end: payment.date_of_expiration || local.current_period_end
-          }).eq("id", local.id);
+          };
+          if (nextStatus === "authorized" && local.pending_plan_id) {
+            update.plan_id = local.pending_plan_id;
+            update.pending_plan_id = null;
+          }
+          const { error: updateError } = await admin.from("tenant_subscriptions").update(update).eq("id", local.id);
           if (updateError) throw updateError;
         }
       }
