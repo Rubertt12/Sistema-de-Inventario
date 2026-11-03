@@ -1,0 +1,13 @@
+# Internal source and operational material are not part of the public web deployment.
+/.github/
+/supabase/
+/SECURITY.md
+/SETUP_SUPABASE.md
+/PREVIEW.md
+/server.js
+
+# Keep the PowerShell installation entrypoints public; omit the Agent source code.
+/agent/README.md
+/agent/**/*.cs
+/agent/**/*.csproj
+/agent/**/*.manifest
