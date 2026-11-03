@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RRN Manager | Gestão de ativos e inventário</title>
-  <meta name="description" content="RRN Manager: organize ativos, setores, responsáveis, movimentações e manutenção em um único ambiente." />
+  <title>RRN Manager | Inventário e gestão de ativos</title>
+  <meta name="description" content="Conheça o RRN Manager: organize ativos, setores, responsáveis, movimentações, manutenção e acessos em um ambiente de gestão por empresa." />
+  <meta name="theme-color" content="#163A4D" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style/landing-v2.css?v=20260825-2" />
-  <link rel="stylesheet" href="/style/landing-polish-v2.css?v=20260825-2" />
+  <link rel="stylesheet" href="/style/landing-v2.css?v=20261103-1" />
+  <link rel="stylesheet" href="/style/landing-polish-v2.css?v=20261103-1" />
   <link rel="stylesheet" href="/style/landing-support-chat.css?v=20260825-2" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
 </head>
@@ -19,25 +20,94 @@
       <a class="landing-brand" href="#topo" aria-label="RRN Manager - início"><img src="/img/icon-png.png" alt="" /><span>RRN Manager</span></a>
       <button class="landing-menu-toggle" id="landingMenuToggle" type="button" aria-expanded="false" aria-controls="landingNav">Menu</button>
       <nav class="landing-nav" id="landingNav" aria-label="Navegação principal">
-        <a href="#apresentacao">Apresentação</a><a href="#recursos">Recursos</a><a href="#como-funciona">Como funciona</a><a href="#empresas">Para empresas</a><a href="#seguranca">Segurança</a>
+        <a href="#apresentacao">Visão geral</a><a href="#recursos">Funcionalidades</a><a href="#fluxo">Como funciona</a><a href="#seguranca">Segurança</a><a href="#duvidas">Dúvidas</a>
       </nav>
-      <div class="landing-nav-actions"><a class="landing-btn landing-btn-ghost" href="/login.html">Login</a><a class="landing-btn landing-btn-primary" href="/login.html?mode=register">Criar acesso</a></div>
+      <div class="landing-nav-actions"><a class="landing-btn landing-btn-ghost" href="/login.html">Entrar</a><a class="landing-btn landing-btn-primary" href="/login.html?mode=register">Solicitar acesso</a></div>
     </div>
   </header>
   <main>
-    <section class="landing-hero"><div class="landing-container landing-hero-grid">
-      <div class="landing-hero-copy"><span class="landing-eyebrow">Inventário, movimentação e controle em um só lugar</span><h1>Tenha uma visão clara do seu parque de equipamentos.</h1><p>O RRN Manager centraliza setores, ativos, responsáveis, movimentações, manutenção e histórico para facilitar a operação diária e reduzir a dependência de planilhas dispersas.</p><div class="landing-hero-actions"><a class="landing-btn landing-btn-primary landing-btn-lg" href="/login.html">Acessar plataforma</a><a class="landing-btn landing-btn-secondary landing-btn-lg" href="#apresentacao">Ver apresentação</a></div><div class="landing-proof-row" aria-label="Principais benefícios"><span>Ambientes separados por empresa</span><span>Histórico de movimentações</span><span>Gestão de acessos</span></div></div>
-      <div class="landing-product-card" aria-label="Prévia do RRN Manager"><div class="landing-product-top"><div><small>Visão geral</small><strong>Inventário operacional</strong></div><span class="landing-status">Ambiente ativo</span></div><div class="landing-kpis"><article><small>Setores</small><strong>12</strong><span>organizados</span></article><article><small>Equipamentos</small><strong>248</strong><span>catalogados</span></article><article><small>Manutenção</small><strong>7</strong><span>em acompanhamento</span></article></div><div class="landing-product-list"><div class="landing-product-row"><span class="landing-dot"></span><div><strong>Administrativo</strong><small>Notebooks, monitores e impressoras</small></div><b>82 ativos</b></div><div class="landing-product-row"><span class="landing-dot"></span><div><strong>Operações</strong><small>Equipamentos com responsáveis definidos</small></div><b>116 ativos</b></div><div class="landing-product-row"><span class="landing-dot"></span><div><strong>Estoque</strong><small>Itens disponíveis e em movimentação</small></div><b>50 ativos</b></div></div></div>
+    <section class="landing-hero" id="apresentacao"><div class="landing-container landing-hero-grid">
+      <div class="landing-hero-copy">
+        <span class="landing-eyebrow">Gestão de ativos • Inventário • Rastreabilidade</span>
+        <h1>Saiba o que sua empresa tem, onde está e quem é responsável.</h1>
+        <p>O RRN Manager reúne as informações do inventário em um só ambiente. Cadastre equipamentos, organize por setores, acompanhe responsáveis e registre movimentações e necessidades de manutenção — com mais clareza para a rotina da equipe.</p>
+        <div class="landing-hero-actions"><a class="landing-btn landing-btn-primary landing-btn-lg" href="/login.html">Acessar plataforma</a><a class="landing-btn landing-btn-secondary landing-btn-lg" href="#recursos">Conhecer funcionalidades</a></div>
+        <div class="landing-proof-row" aria-label="Destaques da plataforma"><span>Organização por empresa</span><span>Histórico operacional</span><span>Perfis de acesso</span></div>
+        <p class="landing-hero-note">Para equipes que precisam manter o inventário organizado e consultar informações sem depender de várias planilhas.</p>
+      </div>
+      <div class="landing-product-card" aria-label="Exemplo ilustrativo de organização do inventário">
+        <div class="landing-product-top"><div><small>Exemplo ilustrativo</small><strong>Visão do inventário</strong></div><span class="landing-status">Organizado por setor</span></div>
+        <div class="landing-demo-intro"><strong>Um cadastro, várias informações úteis.</strong><span>Consulte os dados do ativo e seu contexto operacional.</span></div>
+        <div class="landing-kpis"><article><small>Identificação</small><strong>Patrimônio</strong><span>código e descrição</span></article><article><small>Localização</small><strong>Setor</strong><span>onde está alocado</span></article><article><small>Responsável</small><strong>Usuário</strong><span>vínculo de responsabilidade</span></article></div>
+        <div class="landing-product-list"><div class="landing-product-row"><span class="landing-dot"></span><div><strong>Notebook corporativo</strong><small>Identificação, setor e responsável</small></div><b>Ativo</b></div><div class="landing-product-row"><span class="landing-dot"></span><div><strong>Monitor</strong><small>Localização e informações de cadastro</small></div><b>Ativo</b></div><div class="landing-product-row"><span class="landing-dot"></span><div><strong>Equipamento em manutenção</strong><small>Registro para acompanhamento</small></div><b>Atenção</b></div></div>
+        <small class="landing-demo-disclaimer">Os itens acima são apenas exemplos visuais, não representam dados reais de uma empresa.</small>
+      </div>
     </div></section>
-    <section class="landing-section landing-video-section" id="apresentacao"><div class="landing-container"><div class="landing-section-heading"><span class="landing-eyebrow">Conheça a plataforma</span><h2>Veja o RRN Manager em 1 minuto.</h2><p>Uma visão rápida de como o sistema centraliza inventário, movimentações, setores, manutenção e controle operacional.</p></div><div class="landing-video-shell"><video class="landing-video" controls preload="none" playsinline aria-label="Vídeo institucional do RRN Manager"><source src="/media/RRN_Manager_Institucional.mp4" type="video/mp4" />Seu navegador não suporta reprodução de vídeo.</video></div><div class="landing-video-benefits"><span>Gestão centralizada</span><span>Rastreabilidade dos ativos</span><span>Menos dependência de planilhas</span></div></div></section>
-    <section class="landing-section" id="recursos"><div class="landing-container"><div class="landing-section-heading"><span class="landing-eyebrow">Recursos</span><h2>Ferramentas para organizar a rotina de ativos.</h2><p>Estruture o inventário sem transformar a operação em um processo complicado.</p></div><div class="landing-feature-grid"><article class="landing-feature"><span class="landing-feature-number">01</span><h3>Inventário por setores</h3><p>Organize equipamentos em setores e visualize rapidamente o que pertence a cada ambiente.</p></article><article class="landing-feature"><span class="landing-feature-number">02</span><h3>Movimentações e transferências</h3><p>Registre mudanças de setor e mantenha o histórico operacional dos equipamentos.</p></article><article class="landing-feature"><span class="landing-feature-number">03</span><h3>Manutenção e chamados</h3><p>Acompanhe observações, prioridades e equipamentos que precisam de atenção.</p></article><article class="landing-feature"><span class="landing-feature-number">04</span><h3>Usuários e permissões</h3><p>Separe funções administrativas, operacionais e de monitoramento conforme a necessidade.</p></article><article class="landing-feature"><span class="landing-feature-number">05</span><h3>Identidade por empresa</h3><p>Personalize portal, logo, cores e experiência de entrada para cada organização.</p></article><article class="landing-feature"><span class="landing-feature-number">06</span><h3>Importação e exportação</h3><p>Conte com recursos de portabilidade para apoiar backup, integração e conferência de dados.</p></article></div></div></section>
-    <section class="landing-section landing-section-soft" id="como-funciona"><div class="landing-container landing-split"><div class="landing-section-heading align-left"><span class="landing-eyebrow">Como funciona</span><h2>Do cadastro ao acompanhamento diário.</h2><p>Uma estrutura direta para quem precisa saber onde cada ativo está e o que aconteceu com ele.</p></div><div class="landing-steps"><article><span>1</span><div><h3>Crie ou acesse o ambiente da empresa</h3><p>Cada organização possui contexto próprio, usuários e identidade visual.</p></div></article><article><span>2</span><div><h3>Estruture setores e equipamentos</h3><p>Cadastre o ambiente de forma compatível com a operação real da empresa.</p></div></article><article><span>3</span><div><h3>Acompanhe alterações e manutenção</h3><p>Use histórico e registros operacionais para manter rastreabilidade.</p></div></article></div></div></section>
-    <section class="landing-section" id="empresas"><div class="landing-container landing-business-card"><div><span class="landing-eyebrow">Para empresas</span><h2>Um portal próprio para cada organização.</h2><p>Empresas podem ter endereço de acesso específico, identidade visual própria e dados isolados no ambiente correspondente.</p></div><div class="landing-url-card"><small>Exemplo de portal</small><code>rrnmanager.com/login.html?org=sua-empresa</code><span>O usuário vê claramente qual ambiente está acessando.</span></div></div></section>
-    <section class="landing-section landing-section-dark" id="seguranca"><div class="landing-container landing-security-grid"><div><span class="landing-eyebrow">Segurança e controle</span><h2>Acesso orientado ao ambiente correto.</h2><p>O sistema valida o usuário autenticado e o ambiente da empresa antes de liberar o acesso aos dados correspondentes.</p></div><div class="landing-security-points"><article><strong>Acesso autenticado</strong><span>Login por e-mail e senha com sessão segura.</span></article><article><strong>Isolamento por empresa</strong><span>Dados e contexto associados ao tenant do usuário.</span></article><article><strong>Perfis de acesso</strong><span>Permissões diferentes para administração, operação e monitoramento.</span></article></div></div></section>
-    <section class="landing-cta"><div class="landing-container landing-cta-inner"><div><span class="landing-eyebrow">RRN Manager</span><h2>Organize seu inventário com mais clareza.</h2><p>Acesse seu ambiente ou crie uma nova organização para começar.</p></div><div class="landing-cta-actions"><a class="landing-btn landing-btn-primary landing-btn-lg" href="/login.html">Entrar</a><a class="landing-btn landing-btn-secondary landing-btn-lg" href="/login.html?mode=register">Criar acesso</a></div></div></section>
+
+    <section class="landing-section landing-video-section" id="video"><div class="landing-container">
+      <div class="landing-section-heading"><span class="landing-eyebrow">Veja na prática</span><h2>Conheça a experiência do RRN Manager.</h2><p>Assista à apresentação para entender a proposta da plataforma e como ela apoia a organização do inventário.</p></div>
+      <div class="landing-video-shell"><video class="landing-video" controls preload="none" playsinline aria-label="Vídeo de apresentação do RRN Manager"><source src="/media/RRN_Manager_Institucional.mp4" type="video/mp4" />Seu navegador não suporta reprodução de vídeo.</video></div>
+      <div class="landing-video-benefits"><span>Informações centralizadas</span><span>Organização por setores</span><span>Acompanhamento operacional</span></div>
+    </div></section>
+
+    <section class="landing-section" id="recursos"><div class="landing-container">
+      <div class="landing-section-heading"><span class="landing-eyebrow">O que você pode organizar</span><h2>Recursos para acompanhar o ciclo dos ativos.</h2><p>O objetivo não é complicar o inventário com mais controles. É reunir as informações importantes e facilitar a consulta e o acompanhamento.</p></div>
+      <div class="landing-feature-grid">
+        <article class="landing-feature"><span class="landing-feature-number">01</span><h3>Cadastro de ativos</h3><p>Registre os equipamentos e seus dados de identificação para manter uma base de inventário consultável e organizada.</p><ul><li>Identificação e descrição</li><li>Informações de cadastro</li><li>Consulta dos registros</li></ul></article>
+        <article class="landing-feature"><span class="landing-feature-number">02</span><h3>Setores e localização</h3><p>Estruture a empresa em setores e associe os equipamentos aos ambientes correspondentes para entender onde cada item está alocado.</p><ul><li>Organização por setor</li><li>Consulta por ambiente</li><li>Visão da distribuição</li></ul></article>
+        <article class="landing-feature"><span class="landing-feature-number">03</span><h3>Responsáveis</h3><p>Associe informações de responsabilidade aos registros para facilitar conferências e identificar com quem o equipamento está relacionado.</p><ul><li>Vínculo com usuários</li><li>Consulta de responsabilidade</li><li>Apoio à conferência</li></ul></article>
+        <article class="landing-feature"><span class="landing-feature-number">04</span><h3>Movimentações</h3><p>Registre transferências e alterações de alocação para manter um histórico operacional e dar contexto às mudanças realizadas.</p><ul><li>Registro de transferências</li><li>Histórico de alterações</li><li>Rastreabilidade operacional</li></ul></article>
+        <article class="landing-feature"><span class="landing-feature-number">05</span><h3>Manutenção e acompanhamento</h3><p>Mantenha observações e registros relacionados a equipamentos que precisam de atenção, apoiando o acompanhamento pela equipe.</p><ul><li>Registros e observações</li><li>Prioridades de acompanhamento</li><li>Contexto do equipamento</li></ul></article>
+        <article class="landing-feature"><span class="landing-feature-number">06</span><h3>Usuários e permissões</h3><p>Organize quem acessa o ambiente e considere diferentes responsabilidades de uso, conforme os perfis e permissões configurados.</p><ul><li>Acesso autenticado</li><li>Perfis de utilização</li><li>Gestão de usuários</li></ul></article>
+      </div>
+    </div></section>
+
+    <section class="landing-section landing-section-soft" id="fluxo"><div class="landing-container landing-split">
+      <div class="landing-section-heading align-left"><span class="landing-eyebrow">Comece com uma estrutura clara</span><h2>Como funciona o acesso e a organização?</h2><p>O processo começa pela identificação do usuário e do ambiente da organização. Depois, a equipe estrutura os dados de acordo com sua operação.</p><p class="landing-flow-note">O acesso a uma organização pode depender de convite ou liberação administrativa.</p></div>
+      <div class="landing-steps">
+        <article><span>1</span><div><h3>Entre ou solicite seu acesso</h3><p>Use seu e-mail e senha. Se recebeu um código de convite da empresa, informe-o durante o cadastro para entrar no ambiente correspondente.</p></div></article>
+        <article><span>2</span><div><h3>Configure a estrutura da empresa</h3><p>Organize os setores e prepare os cadastros necessários para representar os ambientes e equipamentos da operação.</p></div></article>
+        <article><span>3</span><div><h3>Cadastre e associe os ativos</h3><p>Inclua os equipamentos, suas informações e os vínculos de localização e responsabilidade disponíveis.</p></div></article>
+        <article><span>4</span><div><h3>Acompanhe o que muda</h3><p>Registre movimentações e informações de manutenção para consultar o histórico e apoiar as conferências do inventário.</p></div></article>
+      </div>
+    </div></section>
+
+    <section class="landing-section" id="empresas"><div class="landing-container landing-business-card">
+      <div><span class="landing-eyebrow">Estrutura multiempresa</span><h2>Um ambiente adequado para cada organização.</h2><p>O RRN Manager foi estruturado para trabalhar com contexto por empresa. Isso permite que cada organização tenha seus próprios dados, usuários e identidade de acesso, de acordo com as configurações e permissões do ambiente.</p><p>Na prática, cada equipe trabalha no contexto da organização à qual possui acesso, sem misturar o inventário de empresas diferentes.</p></div>
+      <div class="landing-url-card"><small>Exemplo ilustrativo de endereço</small><code>rrnmanager.com/login.html?org=sua-empresa</code><span>O endereço e a identificação do ambiente podem variar conforme a configuração da organização.</span></div>
+    </div></section>
+
+    <section class="landing-section landing-section-dark" id="seguranca"><div class="landing-container landing-security-grid">
+      <div><span class="landing-eyebrow">Acesso e proteção de dados</span><h2>O acesso precisa respeitar o ambiente correto.</h2><p>A plataforma utiliza autenticação para identificar o usuário e regras de acesso para limitar o que cada perfil pode consultar ou administrar. O isolamento por organização é parte central da estrutura multiempresa.</p></div>
+      <div class="landing-security-points">
+        <article><strong>Autenticação</strong><span>O usuário entra com suas credenciais e uma sessão autenticada.</span></article>
+        <article><strong>Contexto da organização</strong><span>O ambiente e os dados são associados à organização correspondente ao acesso do usuário.</span></article>
+        <article><strong>Permissões</strong><span>As ações disponíveis dependem do perfil e das permissões atribuídas.</span></article>
+        <article><strong>Recuperação de senha</strong><span>O fluxo de recuperação é feito por e-mail, com link para definir uma nova senha.</span></article>
+      </div>
+    </div></section>
+
+    <section class="landing-section landing-faq-section" id="duvidas"><div class="landing-container">
+      <div class="landing-section-heading"><span class="landing-eyebrow">Perguntas frequentes</span><h2>Antes de começar, tire suas dúvidas.</h2><p>Informações rápidas sobre cadastro, acesso e utilização da plataforma.</p></div>
+      <div class="landing-faq-list">
+        <details><summary>Qualquer pessoa pode criar uma conta?</summary><p>É possível solicitar o cadastro pelo site. Se você tiver um código de convite, poderá informar no cadastro para acessar o ambiente definido pela empresa. Sem convite, a solicitação fica aguardando liberação do Administrador Geral.</p></details>
+        <details><summary>O que faço se minha empresa me enviou um convite?</summary><p>Acesse a opção “Solicitar acesso” ou “Criar conta”, preencha seus dados e informe o código recebido no campo de convite. Confira se está usando o e-mail correto.</p></details>
+        <details><summary>Posso acessar os dados de outra empresa?</summary><p>O acesso é vinculado à organização e às permissões atribuídas ao usuário. Você só deve visualizar os ambientes para os quais recebeu autorização.</p></details>
+        <details><summary>Esqueci minha senha. Como recupero?</summary><p>Na tela de login, escolha a opção de recuperação de senha, informe o e-mail da conta e solicite o link. Abra a mensagem recebida e siga as instruções para cadastrar uma nova senha. Se o e-mail não chegar, confira spam e aguarde antes de solicitar outro envio.</p></details>
+        <details><summary>O RRN Manager substitui todos os processos de inventário?</summary><p>A plataforma apoia o cadastro, a organização e o acompanhamento dos ativos. A qualidade do inventário também depende da atualização dos registros e dos procedimentos de conferência adotados pela própria empresa.</p></details>
+        <details><summary>Preciso instalar algum programa?</summary><p>O RRN Manager é acessado pelo navegador. Utilize um navegador atualizado e uma conexão com a internet.</p></details>
+      </div>
+    </div></section>
+
+    <section class="landing-cta"><div class="landing-container landing-cta-inner"><div><span class="landing-eyebrow">RRN Manager</span><h2>Mais clareza para cuidar dos ativos da sua empresa.</h2><p>Acesse seu ambiente ou solicite uma conta para começar.</p></div><div class="landing-cta-actions"><a class="landing-btn landing-btn-primary landing-btn-lg" href="/login.html">Entrar</a><a class="landing-btn landing-btn-secondary landing-btn-lg" href="/login.html?mode=register">Solicitar acesso</a></div></div></section>
   </main>
-  <footer class="landing-footer"><div class="landing-container landing-footer-grid"><div class="landing-footer-brand"><a class="landing-brand" href="#topo"><img src="/img/icon-png.png" alt="" /><span>RRN Manager</span></a><p>Gestão de ativos, inventário e movimentações em ambientes organizados por empresa.</p></div><div class="landing-footer-column"><strong>Produto</strong><a href="#apresentacao">Apresentação</a><a href="#recursos">Recursos</a><a href="#como-funciona">Como funciona</a><a href="#seguranca">Segurança</a></div><div class="landing-footer-column"><strong>Acesso</strong><a href="/login.html">Login</a><a href="/login.html?mode=register">Criar acesso</a></div><div class="landing-footer-column"><strong>Ambiente</strong><span>Plataforma web responsiva</span><span>Gestão multiempresa</span><span>Identidade personalizável</span></div></div><div class="landing-container landing-footer-bottom"><span>© <span id="landingYear"></span> RRN Manager. Todos os direitos reservados.</span><a href="#topo">Voltar ao topo</a></div></footer>
-  <script src="/js/landing-v2.js?v=20260825-2" defer></script>
+  <footer class="landing-footer"><div class="landing-container landing-footer-grid">
+    <div class="landing-footer-brand"><a class="landing-brand" href="#topo"><img src="/img/icon-png.png" alt="" /><span>RRN Manager</span></a><p>Gestão de ativos, inventário e movimentações em ambientes organizados por empresa.</p></div>
+    <div class="landing-footer-column"><strong>Plataforma</strong><a href="#recursos">Funcionalidades</a><a href="#fluxo">Como funciona</a><a href="#seguranca">Segurança</a><a href="#duvidas">Perguntas frequentes</a></div>
+    <div class="landing-footer-column"><strong>Acesso</strong><a href="/login.html">Entrar</a><a href="/login.html?mode=register">Solicitar acesso</a></div>
+    <div class="landing-footer-column"><strong>Informações</strong><span>Aplicação web responsiva</span><span>Ambientes por organização</span><span>Gestão de inventário</span></div>
+  </div><div class="landing-container landing-footer-bottom"><span>© <span id="landingYear"></span> RRN Manager. Todos os direitos reservados.</span><a href="#topo">Voltar ao topo</a></div></footer>
+  <script src="/js/landing-v2.js?v=20261103-1" defer></script>
   <script src="/js/landing-support.js?v=20260825-2" defer></script>
 </body>
 </html>
