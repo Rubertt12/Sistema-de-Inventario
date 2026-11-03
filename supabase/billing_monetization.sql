@@ -218,9 +218,12 @@ create trigger billing_user_quota before insert or update of status,tenant_id on
 for each row execute function public.billing_enforce_user_limit();
 
 create or replace function public.billing_touch_updated_at()
-returns trigger language plpgsql as $$
+returns trigger
+language plpgsql
+set search_path=public,pg_temp
+as $
 begin new.updated_at=now(); return new; end;
-$$;
+$;
 drop trigger if exists tenant_subscriptions_touch_updated_at on public.tenant_subscriptions;
 create trigger tenant_subscriptions_touch_updated_at before update on public.tenant_subscriptions
 for each row execute function public.billing_touch_updated_at();
