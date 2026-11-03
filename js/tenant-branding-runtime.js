@@ -149,12 +149,17 @@
     setToken(root, '--rrn-overlay', rgba(primaryBase, 0.68));
   }
 
+  function safeBrandAssetUrl(value) {
+    try { const url = new URL(String(value || ''), location.origin); if (url.protocol === 'https:' || url.origin === location.origin) return url.href; } catch {}
+    return '';
+  }
+
   function applyBrand(rawBrand = {}) {
     const brand = { ...DEFAULT_BRAND, ...rawBrand };
     applyThemeTokens(brand);
 
     document.querySelectorAll('.brand-mark img,.mobile-brand img,.navbar-icon,.brand img,.settings-brand img')
-      .forEach(img => { img.src = brand.logo_url || DEFAULT_LOGO; });
+      .forEach(img => { img.src = safeBrandAssetUrl(brand.logo_url) || DEFAULT_LOGO; });
 
     const title = document.getElementById('brandTitle');
     const subtitle = document.getElementById('brandSubtitle');
@@ -163,12 +168,13 @@
 
     const panel = document.querySelector('.brand-panel');
     if (panel) {
-      if (brand.login_background_url) {
+      const backgroundUrl = safeBrandAssetUrl(brand.login_background_url);
+      if (backgroundUrl) {
         const primary = normalizeHex(brand.primary_color, DEFAULT_BRAND.primary_color);
         const secondary = normalizeHex(brand.secondary_color, DEFAULT_BRAND.secondary_color);
         panel.style.setProperty(
           'background-image',
-          `linear-gradient(145deg,${rgba(primary, 0.90)},${rgba(secondary, 0.74)}),url('${brand.login_background_url}')`,
+          `linear-gradient(145deg,${rgba(primary, 0.90)},${rgba(secondary, 0.74)}),url("${backgroundUrl}")`,
           'important'
         );
         panel.style.backgroundSize = 'cover';
