@@ -60,11 +60,21 @@
   }
 
   async function uploadAvatar(file,folder){
-    if(!file)return null; if(!file.type.startsWith('image/'))throw new Error('Selecione uma imagem válida.'); if(file.size>2*1024*1024)throw new Error('A imagem deve ter no máximo 2 MB.');
-    const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
-    const path=`${session.user.id}/${folder}.${ext||'jpg'}`;
-    const{error}=await client.storage.from('support-avatars').upload(path,file,{upsert:true,contentType:file.type}); if(error)throw error;
-    return client.storage.from('support-avatars').getPublicUrl(path).data.publicUrl+`?v=${Date.now()}`;
+    if(!file)return null;
+    const formats={
+      'image/png':{ext:'png',valid:b=>b.length>=8&&[137,80,78,71,13,10,26,10].every((v,i)=>b[i]===v)},
+      'image/jpeg':{ext:'jpg',valid:b=>b.length>=3&&b[0]===255&&b[1]===216&&b[2]===255},
+      'image/webp':{ext:'webp',valid:b=>b.length>=12&&String.fromCharCode(...b.slice(0,4))==='RIFF'&&String.fromCharCode(...b.slice(8,12))==='WEBP'}
+    };
+    const format=formats[file.type];
+    if(!format)throw new Error('Use somente imagens PNG, JPG ou WebP. SVG e outros formatos não são aceitos.');
+    if(file.size>2*1024*1024)throw new Error('A imagem deve ter no máximo 2 MB.');
+    const header=new Uint8Array(await file.slice(0,12).arrayBuffer());
+    if(!format.valid(header))throw new Error('O arquivo não corresponde ao formato de imagem informado.');
+    const path=session.user.id+'/'+folder+'.'+format.ext;
+    const{error}=await client.storage.from('support-avatars').upload(path,file,{upsert:true,contentType:file.type});
+    if(error)throw error;
+    return client.storage.from('support-avatars').getPublicUrl(path).data.publicUrl+'?v='+Date.now();
   }
 
   function ensureModal(mode){
