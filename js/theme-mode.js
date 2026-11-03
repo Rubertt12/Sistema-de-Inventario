@@ -27,7 +27,7 @@
 
 
   function ensureFinalDashboardCascade() {
-    const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\\.html$/i.test(location.pathname);
+    const isDashboard = Boolean(document.getElementById('setoresContainer')) || /dashboard\.html$/i.test(location.pathname);
     if (!isDashboard) return;
     const link = document.querySelector('link[data-rrn-dashboard-light-final]');
     const target = document.body || document.head;
@@ -81,6 +81,10 @@
     }
   }
 
+  function ensureSiteQualityBaseline() {
+    addStylesheet('/style/site-quality-baseline.css?v=20261103-1', 'data-rrn-site-quality-baseline');
+  }
+
   function ensureContrastCascade() {
     const link = document.querySelector('link[data-rrn-theme-contrast-final]');
     const target = document.body || document.head;
@@ -112,6 +116,7 @@
   function apply(mode, persist = true) {
     const normalized = mode === 'light' ? 'light' : 'dark';
     ensureThemeFixes();
+    ensureSiteQualityBaseline();
     ensureFinalThemeCascade();
     ensureFinalDashboardCascade();
     ensureContrastCascade();
@@ -166,6 +171,7 @@
 
   function mount() {
     ensureThemeFixes();
+    ensureSiteQualityBaseline();
     ensureFinalThemeCascade();
     ensureFinalDashboardCascade();
     ensureContrastCascade();
