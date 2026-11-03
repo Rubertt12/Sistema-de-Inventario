@@ -53,6 +53,8 @@
     const grid=$('plansGrid');grid.replaceChildren();
     (data.plans||[]).forEach(plan=>grid.append(renderPlanCard(plan,sub)));
     if(!data.can_manage)showNotice('Você está em modo de consulta. Somente o administrador da empresa pode alterar o plano ou cancelar a assinatura.');
+    else if(sub?.mp_status==='pending')showNotice('Checkout iniciado. Estamos aguardando a autorização do Mercado Pago; o plano será ativado automaticamente após a confirmação.');
+    else if(sub?.mp_status==='checkout_error')showNotice('Não foi possível concluir o checkout. Você pode tentar novamente sem gerar uma nova assinatura.');
     else if(!data.entitled&&sub?.status!=='pending')showNotice('O período de teste ou a assinatura terminou. Escolha um plano para reativar as operações.',true);
     else if(sub?.status==='trialing')showNotice(`Você está no teste grátis. Restam ${data.trial_days_remaining??0} dia(s) para escolher um plano.`);
   }
