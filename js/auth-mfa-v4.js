@@ -376,7 +376,7 @@
     if (!email) return setMessage($('forgotPasswordMsg'), 'Informe seu e-mail.', 'error');
     setBusy($('forgotPasswordSubmit'), true, 'Enviando...');
     try {
-      const recoveryRedirect = new URL('/recuperar-senha.html', location.origin);
+      const recoveryRedirect = new URL('https://rrnmanager.vercel.app/recuperar-senha.html');
       recoveryRedirect.searchParams.set('type', 'recovery');
       const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: recoveryRedirect.toString() });
       if (error) throw error;
