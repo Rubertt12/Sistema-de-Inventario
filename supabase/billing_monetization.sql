@@ -163,7 +163,9 @@ as $$
 declare v_limit integer; v_count integer;
 begin
   if new.deleted_at is not null then return new; end if;
-  if tg_op='UPDATE' then\n    if old.deleted_at is null and old.tenant_id=new.tenant_id then return new; end if;\n  end if;
+  if tg_op='UPDATE' then
+    if old.deleted_at is null and old.tenant_id=new.tenant_id then return new; end if;
+  end if;
   select p.max_assets into v_limit
   from public.tenant_subscriptions s join public.billing_plans p on p.id=s.plan_id
   where s.tenant_id=new.tenant_id;
