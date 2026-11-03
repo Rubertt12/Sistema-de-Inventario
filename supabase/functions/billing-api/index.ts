@@ -45,13 +45,13 @@ async function callerFrom(req: Request) {
   return { user: data.user, profile, platformAdmin: !!platform?.user_id };
 }
 
-async function mpRequest(path: string, method = "GET", body?: unknown) {
+async function mpRequest(path: string, method = "GET", body?: unknown, idempotencyKey = crypto.randomUUID()) {
   const response = await fetch(`https://api.mercadopago.com${path}`, {
     method,
     headers: {
       "Authorization": `Bearer ${MP_ACCESS_TOKEN}`,
       "Content-Type": "application/json",
-      "X-Idempotency-Key": crypto.randomUUID()
+      "X-Idempotency-Key": idempotencyKey
     },
     ...(body ? { body: JSON.stringify(body) } : {})
   });
@@ -141,7 +141,9 @@ async function handle(req: Request) {
       return json({ error: "Sua assinatura atual permanece válida até o fim do período contratado. Aguarde a data de encerramento para contratar outro plano." }, 409, origin);
     }
 
-    const externalReference = crypto.randomUUID();
+    const reusePendingCheckout = current.pending_plan_id === plan.id && !current.mp_preapproval_id &&
+      ["pending", "checkout_error"].includes(String(current.mp_status || ""));
+    const externalReference = reusePendingCheckout ? current.external_reference : crypto.randomUUID();
     const { error: pendingError } = await admin.from("tenant_subscriptions").update({
       pending_plan_id: plan.id, external_reference: externalReference,
       mp_preapproval_id: null, mp_status: "pending", cancel_at_period_end: false
@@ -165,7 +167,7 @@ async function handle(req: Request) {
         auto_recurring: recurring,
         back_url: `${APP_URL}/assinatura.html?checkout=return`,
         notification_url: `${SUPABASE_URL}/functions/v1/mercadopago-webhook`
-      });
+      }, externalReference);
       if (!created.init_point || !created.id) throw new Error("CHECKOUT_URL_MISSING");
       const { error: saveError } = await admin.from("tenant_subscriptions").update({
         mp_preapproval_id: String(created.id), mp_status: String(created.status || "pending")
@@ -176,12 +178,8 @@ async function handle(req: Request) {
       }
       return json({ ok: true, init_point: created.init_point }, 200, origin);
     } catch (error) {
-      await admin.from("tenant_subscriptions").update({
-        pending_plan_id: current.pending_plan_id || null,
-        external_reference: current.external_reference, mp_preapproval_id: current.mp_preapproval_id,
-        mp_status: current.mp_status, status: current.status, plan_id: current.plan_id,
-        current_period_start: current.current_period_start, current_period_end: current.current_period_end
-      }).eq("tenant_id", caller.profile.tenant_id).eq("external_reference", externalReference);
+      await admin.from("tenant_subscriptions").update({ mp_status: "checkout_error" })
+        .eq("tenant_id", caller.profile.tenant_id).eq("external_reference", externalReference);
       throw error;
     }
   }
