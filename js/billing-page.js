@@ -13,15 +13,13 @@
   function statusClass(status){return ['trialing','authorized','grandfathered'].includes(status)?'':(['pending','past_due'].includes(status)?'warn':'off')}
   async function invoke(action,extra={}){const {data,error}=await client.functions.invoke('billing-api',{body:{action,...extra}});if(error)throw error;if(data?.error)throw new Error(data.error);return data}
   function renderPlanCard(plan,current){
-    const features=plan.features||{};
     const lines=[
       `Até ${plan.max_users.toLocaleString('pt-BR')} usuários`,
       `Até ${plan.max_assets.toLocaleString('pt-BR')} equipamentos`,
-      features.movements?'Histórico de movimentações':null,
-      features.maintenance?'Controle de manutenção':null,
-      features.advanced_reports?'Relatórios avançados':null,
-      features.audit?'Auditoria de operações':null
-    ].filter(Boolean);
+      'Cadastro e consulta de ativos',
+      'Setores e movimentações',
+      'Perfis e permissões por usuário'
+    ];
     const card=document.createElement('article');card.className='bill-plan'+(plan.id==='professional'?' featured':'');
     const title=document.createElement('h3');title.textContent=plan.name;
     const desc=document.createElement('p');desc.textContent=plan.description||'Plano mensal para sua equipe.';
