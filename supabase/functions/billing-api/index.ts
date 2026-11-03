@@ -6,7 +6,7 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const MP_ACCESS_TOKEN = Deno.env.get("MP_ACCESS_TOKEN") || "";
 const APP_URL = (Deno.env.get("APP_BASE_URL") || "https://sistema-de-inventario-pearl.vercel.app").replace(/\/$/, "");
 const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
-const allowedOrigins = new Set([APP_URL, "https://rrnmanager.vercel.app", "http://localhost:3000", "http://127.0.0.1:3000"]);
+const allowedOrigins = new Set([APP_URL, "https://rrnmanager.vercel.app", "https://sistema-de-inventario-git-feat-rrn-man-ee02d2-rubertts-projects.vercel.app", "http://localhost:3000", "http://127.0.0.1:3000"]);
 const headersFor = (origin: string | null) => ({
   "Access-Control-Allow-Origin": origin && allowedOrigins.has(origin) ? origin : APP_URL,
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
