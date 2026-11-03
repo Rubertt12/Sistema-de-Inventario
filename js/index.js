@@ -464,7 +464,7 @@
       ensureAgentsLazyTab();
       handleLazyHash();
       await load('/js/nav-label-fix.js?v=20260814-1');
-      await load('/js/navbar-v5.js');
+      await load('/js/navbar-v5.js?v=20261103-2');
       installConfigLazyLoader();
       await load('/js/search-center-v2.js');
       document.querySelector('link[data-rrn-search-center-v2]')?.setAttribute('data-rrn-search-center', '1');
