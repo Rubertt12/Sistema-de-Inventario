@@ -1,53 +1,20 @@
 import express from "express";
-import nodemailer from "nodemailer";
-import cors from "cors";
-import dotenv from "dotenv";
-dotenv.config();
 
+// Legacy endpoint retired: account registration and email verification are
+// handled by the official Supabase Auth flow. This server intentionally does
+// not send mail or accept arbitrary recipient addresses.
 const app = express();
-app.use(cors());
-app.use(express.json());
+app.disable("x-powered-by");
+app.use(express.json({ limit: "8kb", strict: true }));
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
+app.all("/cadastro", (_req, res) => {
+  res.set("Cache-Control", "no-store");
+  return res.status(410).json({
+    msg: "Este endpoint foi desativado. Utilize o fluxo oficial de acesso da plataforma."
+  });
 });
 
-app.post("/cadastro", async (req, res) => {
-  const { nome, email } = req.body;
-
-  if (!nome || !email) return res.status(400).json({ msg: "Campos obrigatórios" });
-
-  try {
-    const linkConfirmacao = `https://sistema-de-inventario-pearl.vercel.app/index.html?email=${encodeURIComponent(email)}`;
-
-    await transporter.sendMail({
-      from: `"Sistema de Cadastro" <${process.env.GMAIL_USER}>`,
-      to: email,
-      subject: "Confirmação de Cadastro",
-      html: `
-        <h2>Olá, ${nome}!</h2>
-        <p>Obrigado por se cadastrar. Para confirmar seu cadastro, clique no botão abaixo:</p>
-        <a href="${linkConfirmacao}" style="
-          display:inline-block;
-          padding: 10px 20px;
-          background-color: #4CAF50;
-          color: white;
-          text-decoration: none;
-          border-radius: 5px;
-        ">Confirmar Cadastro</a>
-      `,
-    });
-
-    res.status(200).json({ msg: "Email enviado com sucesso!" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Erro ao enviar email" });
-  }
+const PORT = Number(process.env.PORT) || 3000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Legacy registration endpoint disabled.");
 });
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
