@@ -65,7 +65,9 @@ drop policy if exists billing_subscription_admin_read on public.tenant_subscript
 create policy billing_subscription_admin_read on public.tenant_subscriptions for select to authenticated
 using (tenant_id=public.current_tenant_id() and public.current_role()='admin');
 
-grant select on public.billing_plans to anon, authenticated;
+grant select on public.billing_plans to anon, authenticated, service_role;
+grant all on public.tenant_subscriptions to service_role;
+grant all on public.billing_webhook_events to service_role;
 grant select on public.tenant_subscriptions to authenticated;
 revoke all on public.billing_webhook_events from anon, authenticated;
 revoke insert, update, delete on public.billing_plans from anon, authenticated;
@@ -94,6 +96,7 @@ as $$
   ),false);
 $$;
 revoke all on function public.billing_is_entitled(uuid) from public,anon,authenticated;
+grant execute on function public.billing_is_entitled(uuid) to service_role;
 
 create or replace function public.billing_new_tenant_trial()
 returns trigger
