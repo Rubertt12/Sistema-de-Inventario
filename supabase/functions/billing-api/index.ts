@@ -165,6 +165,7 @@ async function handle(req: Request) {
         external_reference: externalReference,
         payer_email: payerEmail,
         auto_recurring: recurring,
+        status: "pending",
         back_url: `${APP_URL}/assinatura.html?checkout=return`,
         notification_url: `${SUPABASE_URL}/functions/v1/mercadopago-webhook`
       }, externalReference);
