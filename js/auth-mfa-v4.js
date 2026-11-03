@@ -375,7 +375,9 @@
     if (!email) return setMessage($('forgotPasswordMsg'), 'Informe seu e-mail.', 'error');
     setBusy($('forgotPasswordSubmit'), true, 'Enviando...');
     try {
-      const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: `${location.origin}/login.html` });
+      const recoveryRedirect = new URL('/login.html', location.origin);
+      recoveryRedirect.searchParams.set('type', 'recovery');
+      const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: recoveryRedirect.toString() });
       if (error) throw error;
       setMessage($('forgotPasswordMsg'), 'Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha.', 'success');
     } catch (error) { setMessage($('forgotPasswordMsg'), error.message || 'Não foi possível enviar o link.', 'error'); }
@@ -433,9 +435,22 @@
       await resolvePortal();
       if (params.get('mode') === 'register') switchTab('register');
       if (params.get('invite')) { switchTab('register'); if ($('registerInvite')) $('registerInvite').value = params.get('invite'); }
-      if (recoveryHint) return showReset();
-      const { data } = await client.auth.getSession();
-      if (data.session?.user) await finishLogin(data.session.user.id, { offerSetup: false });
+
+      // Aguarda o Supabase concluir a leitura do link (hash/PKCE) antes de liberar
+      // o formulário. Sem isso, o usuário pode tentar updateUser antes da sessão existir.
+      const { data: authState, error: sessionError } = await client.auth.getSession();
+      if (sessionError) throw sessionError;
+
+      // PASSWORD_RECOVERY também cobre links PKCE que retornam apenas com ?code=.
+      if (recoveryHint || recoveryActive) {
+        showReset();
+        if (!authState.session?.user) {
+          setMessage($('resetPasswordMsg'), 'Este link de recuperação expirou ou já foi utilizado. Solicite um novo link.', 'error');
+        }
+        return;
+      }
+
+      if (authState.session?.user) await finishLogin(authState.session.user.id, { offerSetup: false });
     } catch (error) {
       if (error.message === 'MFA_CANCELLED') return;
       if (requestedSlug && /não existe|inativa/i.test(error.message || '')) {
