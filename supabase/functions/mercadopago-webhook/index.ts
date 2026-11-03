@@ -90,7 +90,7 @@ Deno.serve(async (req: Request) => {
       }
       const mapped = mapStatus(subscription.status);
       const periodEnd = subscription.next_payment_date || local.current_period_end || null;
-      const preservePreviousAccess = mapped === "pending" || (mapped === "cancelled" && local.mp_status === "pending");
+      const preservePreviousAccess = mapped === "pending" || (mapped === "cancelled" && ["pending", "checkout_error"].includes(String(local.mp_status || "")));
       const nextStatus = preservePreviousAccess ? local.status : mapped;
       const update: Record<string, unknown> = {
         mp_preapproval_id: String(subscription.id), mp_status: String(subscription.status || ""),
