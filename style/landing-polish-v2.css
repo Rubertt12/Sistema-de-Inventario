@@ -161,3 +161,27 @@
   }
   .landing-chat-fab span{display:none!important}
 }
+
+/* Conteúdo explicativo da landing page */
+.landing-hero-note{margin:18px 0 0!important;font-size:.84rem!important;color:#71818a!important}
+.landing-demo-intro{display:flex;flex-direction:column;gap:3px;margin:18px 0 0}
+.landing-demo-intro strong{font-size:.9rem;color:var(--rrn-primary)}
+.landing-demo-intro span,.landing-demo-disclaimer{font-size:.75rem;color:var(--rrn-muted)}
+.landing-demo-disclaimer{display:block;margin-top:13px;line-height:1.5}
+.landing-kpis article{min-height:120px;justify-content:center}
+.landing-kpis strong{font-size:1.05rem;line-height:1.25;margin:5px 0}
+.landing-feature{min-height:280px}
+.landing-feature ul{padding-left:18px;margin:14px 0 0;color:#60727a;font-size:.82rem;display:grid;gap:5px}
+.landing-feature li::marker{color:var(--rrn-secondary)}
+.landing-flow-note{padding:13px 15px;border-left:3px solid var(--rrn-secondary);background:rgba(47,125,120,.07);border-radius:0 10px 10px 0;font-size:.88rem}
+.landing-faq-section{background:#f7fafa}
+.landing-faq-list{max-width:900px;margin:0 auto;display:grid;gap:11px}
+.landing-faq-list details{background:#fff;border:1px solid var(--rrn-border);border-radius:14px;padding:0 20px;transition:border-color .18s ease,box-shadow .18s ease}
+.landing-faq-list details[open]{border-color:rgba(47,125,120,.42);box-shadow:0 10px 28px rgba(22,58,77,.06)}
+.landing-faq-list summary{cursor:pointer;list-style:none;position:relative;padding:19px 34px 19px 0;color:var(--rrn-primary);font-weight:700;font-size:.95rem}
+.landing-faq-list summary::-webkit-details-marker{display:none}
+.landing-faq-list summary::after{content:"+";position:absolute;right:0;top:50%;transform:translateY(-50%);width:25px;height:25px;display:grid;place-items:center;border-radius:50%;background:#eef4f4;color:var(--rrn-secondary);font-size:1.1rem}
+.landing-faq-list details[open] summary::after{content:"−"}
+.landing-faq-list details p{margin:0;padding:0 34px 19px 0;color:var(--rrn-muted);font-size:.9rem;line-height:1.7}
+.landing-faq-list summary:focus-visible{outline:3px solid rgba(47,125,120,.25);outline-offset:4px;border-radius:4px}
+@media(max-width:680px){.landing-feature{min-height:0}.landing-kpis article{min-height:95px}.landing-faq-list details{padding:0 15px}.landing-faq-list summary{font-size:.88rem;padding:17px 32px 17px 0}.landing-faq-list details p{font-size:.85rem;padding-right:4px}}
