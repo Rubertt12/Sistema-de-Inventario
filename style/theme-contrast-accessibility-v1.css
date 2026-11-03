@@ -367,3 +367,77 @@
     border: 1px solid rgba(255,255,255,.24) !important;
   }
 }
+
+
+/* WHITE MODE — hierarchy and surface separation (2026-11-03) */
+:root[data-theme="light"] {
+  --rrn-bg: #EAF0F2;
+  --rrn-surface: #FFFFFF;
+  --rrn-surface-2: #FFFFFF;
+  --rrn-surface-soft: #F1F5F6;
+  --rrn-text: #2B3D44;
+  --rrn-heading: #153B4A;
+  --rrn-muted: #586D75;
+  --rrn-border: #C9D7DC;
+  --rrn-input: #FFFFFF;
+}
+:root[data-theme="light"] body {
+  background-color: var(--rrn-bg) !important;
+  color: var(--rrn-text) !important;
+}
+:root[data-theme="light"] :where(
+  .settings-card, .settings-user-card, .card, .rrn-card, .dashboard-card,
+  .kpi-card, .overview-card, .summary-card, .panel, .chart-card,
+  .activity-card, .machine-card, .equipment-card, .sector-card,
+  .setor-card, .detail-card, .admin-card, .security-card
+) {
+  background-color: #FFFFFF !important;
+  border: 1px solid #C9D7DC !important;
+  box-shadow: 0 8px 24px rgba(19, 52, 65, .075) !important;
+}
+:root[data-theme="light"] :where(
+  .settings-sidebar, .sidebar, .dashboard-sidebar, .workspace-summary,
+  .settings-sidebar-note, .settings-kpis > div, .settings-segment,
+  .toolbar, .tabs, .dashboard-tabs, .filters-bar, .filter-group,
+  .view-toggle, .category-bar
+) {
+  background-color: #F1F5F6 !important;
+  border-color: #C9D7DC !important;
+}
+:root[data-theme="light"] :where(
+  .settings-card, .card, .rrn-card, .dashboard-card, .kpi-card,
+  .overview-card, .summary-card, .panel, .chart-card, .activity-card,
+  .machine-card, .equipment-card, .sector-card, .setor-card,
+  .detail-card, .admin-card, .security-card
+) :where(p, span, small, label, li, td, .muted, .subtitle, .description, .meta) {
+  color: #586D75 !important;
+}
+:root[data-theme="light"] :where(
+  .settings-card, .card, .rrn-card, .dashboard-card, .kpi-card,
+  .overview-card, .summary-card, .panel, .chart-card, .activity-card,
+  .machine-card, .equipment-card, .sector-card, .setor-card,
+  .detail-card, .admin-card, .security-card
+) :where(h1, h2, h3, h4, h5, h6, strong, b, .card-title, .section-title) {
+  color: #153B4A !important;
+}
+:root[data-theme="light"] :where(input, select, textarea, .settings-input-action input) {
+  background: #FFFFFF !important;
+  border-color: #BFCFD5 !important;
+  color: #2B3D44 !important;
+}
+:root[data-theme="light"] :where(button, .settings-back-btn, .settings-ghost-btn, .btn-secondary, .secondary-button, .btn-ghost) {
+  border-color: #C2D1D6;
+}
+:root[data-theme="light"] :where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(47, 125, 120, .32) !important;
+  outline-offset: 2px !important;
+}
+:root[data-theme="light"] .settings-nav button.active {
+  background: #E4F0EF !important;
+  border-color: #8FBAB5 !important;
+  box-shadow: inset 3px 0 0 #2F7D78, 0 5px 16px rgba(22, 58, 77, .06) !important;
+}
+:root[data-theme="light"] .settings-page-heading,
+:root[data-theme="light"] .settings-card-head {
+  border-color: #D7E1E4 !important;
+}
