@@ -80,7 +80,7 @@
           <label class="field"><span>Perfil</span><select id="rrnUserRole"><option value="operador">Operador</option><option value="monitoramento">Monitoramento</option><option value="admin">Administrador da empresa</option></select></label>
           <label class="field"><span>Nome completo</span><input id="rrnUserName" autocomplete="off" required></label>
           <label class="field"><span>E-mail</span><input id="rrnUserEmail" type="email" autocomplete="off" required></label>
-          <label class="field full"><span>Senha inicial (opcional)</span><input id="rrnUserPassword" type="text" minlength="8" placeholder="Deixe em branco para gerar uma senha temporária automaticamente" autocomplete="off"></label>
+          <label class="field full"><span>Senha inicial (opcional)</span><input id="rrnUserPassword" type="password" minlength="12" maxlength="128" placeholder="Mínimo de 12 caracteres; deixe em branco para gerar uma senha temporária" autocomplete="new-password"></label>
         </div>
         <div class="rrn-user-create-actions">
           <button type="submit" class="btn-primary" id="rrnCreateUserButton">Criar usuário</button>
