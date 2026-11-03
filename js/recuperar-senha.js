@@ -62,7 +62,7 @@
     busy($('sendButton'), true, 'Enviando...');
     message('requestMessage');
     try {
-      const redirectTo = new URL('/recuperar-senha.html', location.origin);
+      const redirectTo = new URL('https://rrnmanager.vercel.app/recuperar-senha.html');
       redirectTo.searchParams.set('type', 'recovery');
       const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: redirectTo.toString() });
       if (error) throw error;
