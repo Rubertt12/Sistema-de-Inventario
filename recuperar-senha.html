@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b46">
+  <title>Recuperar senha | RRN Manager</title>
+  <meta name="description" content="Recupere o acesso à sua conta RRN Manager com segurança.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style/style.css">
+  <link rel="icon" href="/img/icon-png.png" type="image/png">
+  <style>
+    :root{color-scheme:light;--rrn-navy:#102b46;--rrn-blue:#245b91;--rrn-muted:#68788a;--rrn-border:#e4eaf0}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:Inter, sans-serif;background:radial-gradient(circle at 12% 15%,rgba(44,105,160,.18),transparent 32%),radial-gradient(circle at 90% 85%,rgba(242,191,79,.16),transparent 30%),#f2f5f8;color:var(--rrn-navy);display:grid;place-items:center;padding:28px}
+    .recovery-shell{width:min(100%,1000px);min-height:610px;display:grid;grid-template-columns: .95fr 1.05fr;background:#fff;border:1px solid rgba(16,43,70,.08);border-radius:28px;overflow:hidden;box-shadow:0 28px 80px rgba(16,43,70,.13)}
+    .recovery-aside{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;padding:42px;background:linear-gradient(150deg,#102b46 0%,#1e4d78 100%);color:#fff;overflow:hidden}
+    .recovery-aside:before,.recovery-aside:after{content:"";position:absolute;z-index:-1;border:1px solid rgba(255,255,255,.11);border-radius:50%;width:390px;height:390px;right:-190px;bottom:-110px}
+    .recovery-aside:after{width:280px;height:280px;right:-125px;bottom:-55px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em;font-family:Manrope,Inter,sans-serif}
+    .brand img{width:42px;height:42px;object-fit:contain;border-radius:12px;background:#fff;padding:5px}
+    .aside-copy{max-width:390px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#f2bf4f}
+    .eyebrow:before{content:"";width:20px;height:2px;background:#f2bf4f}
+    .aside-copy h1{font:800 clamp(2rem,4vw,3.2rem)/1.08 Manrope,Inter,sans-serif;letter-spacing:-.055em;margin:18px 0}
+    .aside-copy p{color:rgba(255,255,255,.76);line-height:1.75;margin:0;font-size:.96rem}
+    .aside-foot{color:rgba(255,255,255,.55);font-size:.75rem}
+    .recovery-main{display:flex;align-items:center;justify-content:center;padding:clamp(28px,5vw,64px)}
+    .recovery-card{width:100%;max-width:390px}
+    .mobile-brand{display:none;align-items:center;gap:10px;margin-bottom:34px;font-weight:800;font-family:Manrope,Inter,sans-serif}
+    .mobile-brand img{width:36px;height:36px;object-fit:contain}
+    .step-icon{width:54px;height:54px;border-radius:17px;background:#edf4fa;color:#245b91;display:grid;place-items:center;margin-bottom:25px}
+    .step-icon svg{width:25px;height:25px}
+    .recovery-card h2{font:800 clamp(1.7rem,3vw,2.15rem)/1.15 Manrope,Inter,sans-serif;letter-spacing:-.045em;margin:0 0 12px}
+    .intro{color:var(--rrn-muted);font-size:.91rem;line-height:1.65;margin:0 0 28px}
+    .field{display:grid;gap:9px;margin:0 0 18px}
+    .field label{font-size:.8rem;font-weight:700;color:#30465d}
+    .field input{width:100%;height:52px;border:1px solid #dbe3eb;border-radius:12px;padding:0 15px;font:500 .94rem Inter,sans-serif;color:#102b46;background:#fff;outline:none;transition:border .2s,box-shadow .2s}
+    .field input:focus{border-color:#3979b5;box-shadow:0 0 0 4px rgba(57,121,181,.12)}
+    .password-wrap{position:relative}
+    .password-wrap input{padding-right:76px}
+    .toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#3979b5;font-weight:700;font-size:.75rem;cursor:pointer}
+    .primary{width:100%;height:52px;border:0;border-radius:12px;background:linear-gradient(110deg,#1d5688,#2e73ad);color:white;font:700 .9rem Inter,sans-serif;cursor:pointer;box-shadow:0 9px 20px rgba(36,91,145,.2);transition:transform .2s,filter .2s}
+    .primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+    .primary:disabled{opacity:.65;cursor:wait;transform:none}
+    .message{min-height:22px;margin:14px 0 0;font-size:.82rem;line-height:1.5;color:var(--rrn-muted)}
+    .message.error{color:#b42318}.message.success{color:#167647}
+    .back{display:inline-flex;align-items:center;gap:8px;margin-top:24px;color:#52708d;text-decoration:none;font-size:.82rem;font-weight:700}
+    .back:hover{color:#1d5688}
+    .security-note{display:flex;align-items:flex-start;gap:9px;margin-top:28px;padding:13px;border:1px solid #e6edf3;border-radius:12px;color:#738295;font-size:.74rem;line-height:1.55}
+    .security-note svg{flex:none;width:17px;height:17px;color:#3979b5}
+    [hidden]{display:none!important}
+    @media(max-width:760px){body{padding:14px;background:#f2f5f8}.recovery-shell{grid-template-columns:1fr;min-height:0;border-radius:22px}.recovery-aside{display:none}.recovery-main{padding:30px 24px 34px;min-height:calc(100vh - 28px)}.mobile-brand{display:flex}.step-icon{margin-bottom:20px}.recovery-card{max-width:440px}}
+  </style>
+</head>
+<body>
+  <main class="recovery-shell">
+    <aside class="recovery-aside">
+      <div class="brand"><img src="/img/icon-png.png" alt=""><span>RRN Manager</span></div>
+      <div class="aside-copy">
+        <span class="eyebrow">Acesso seguro</span>
+        <h1>Seu controle. Seu acesso. Sua segurança.</h1>
+        <p>Recupere sua senha de forma simples e segura. Enviaremos um link exclusivo para o e-mail associado à sua conta.</p>
+      </div>
+      <div class="aside-foot">RRN Manager · Gestão de ativos e inventário</div>
+    </aside>
+    <section class="recovery-main">
+      <div class="recovery-card">
+        <div class="mobile-brand"><img src="/img/icon-png.png" alt=""><span>RRN Manager</span></div>
+        <div class="step-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>
+        </div>
+        <section id="requestPanel">
+          <h2>Esqueceu sua senha?</h2>
+          <p class="intro">Informe o e-mail cadastrado no RRN Manager. Se a conta existir, enviaremos um link para criar uma nova senha.</p>
+          <form id="requestForm" novalidate>
+            <div class="field"><label for="email">E-mail da sua conta</label><input id="email" type="email" autocomplete="email" placeholder="voce@empresa.com" required></div>
+            <button class="primary" id="sendButton" type="submit">Enviar link de recuperação</button>
+            <p class="message" id="requestMessage" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+        <section id="resetPanel" hidden>
+          <h2>Crie uma nova senha</h2>
+          <p class="intro">Escolha uma senha forte. Ela será usada no próximo acesso ao seu workspace.</p>
+          <form id="resetForm" novalidate>
+            <div class="field"><label for="newPassword">Nova senha</label><div class="password-wrap"><input id="newPassword" type="password" autocomplete="new-password" minlength="12" placeholder="Mínimo de 12 caracteres" required><button class="toggle" type="button" data-toggle="newPassword">Mostrar</button></div></div>
+            <div class="field"><label for="confirmPassword">Confirme a nova senha</label><div class="password-wrap"><input id="confirmPassword" type="password" autocomplete="new-password" minlength="12" placeholder="Digite a senha novamente" required><button class="toggle" type="button" data-toggle="confirmPassword">Mostrar</button></div></div>
+            <button class="primary" id="saveButton" type="submit">Salvar nova senha</button>
+            <p class="message" id="resetMessage" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+        <section id="donePanel" hidden>
+          <h2>Senha atualizada!</h2>
+          <p class="intro">Sua senha foi alterada. Agora você já pode entrar no RRN Manager usando a nova senha.</p>
+          <a class="primary" href="/login.html" style="display:grid;place-items:center;text-decoration:none">Voltar para o login</a>
+        </section>
+        <div class="security-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Por segurança, o link é individual e pode expirar. Nunca compartilhe esse link com outras pessoas.</span>
+        </div>
+        <a class="back" id="backLink" href="/login.html">← Voltar para o login</a>
+      </div>
+    </section>
+  </main>
+  <script src="/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/recuperar-senha.js"></script>
+</body>
+</html>
