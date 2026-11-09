@@ -1,0 +1,30 @@
+/* RRN Manager V3 — shared design foundation
+   New visual language: graphite / mist / teal. No data or business logic here. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+  --v3-bg:#0b1218; --v3-surface:#111c24; --v3-surface-2:#172630; --v3-surface-3:#1d303b;
+  --v3-text:#e7eff2; --v3-muted:#9aadb5; --v3-subtle:#70858e; --v3-border:rgba(187,211,219,.13);
+  --v3-primary:#65c5b6; --v3-primary-strong:#2e9d91; --v3-primary-ink:#06201f;
+  --v3-accent:#e3a477; --v3-success:#6cc6a1; --v3-warning:#e7b36d; --v3-danger:#ef8585;
+  --v3-shadow:0 18px 48px rgba(0,0,0,.22); --v3-radius:18px; --v3-radius-sm:11px;
+  --v3-focus:0 0 0 3px rgba(101,197,182,.22);
+  color-scheme:dark;
+}
+:root[data-theme="light"] {
+  --v3-bg:#f1f5f6; --v3-surface:#ffffff; --v3-surface-2:#f8fafb; --v3-surface-3:#edf3f4;
+  --v3-text:#20343c; --v3-muted:#5e737b; --v3-subtle:#81939a; --v3-border:rgba(24,59,72,.12);
+  --v3-primary:#176b70; --v3-primary-strong:#12565d; --v3-primary-ink:#ffffff;
+  --v3-accent:#b96e43; --v3-success:#247b5b; --v3-warning:#a76528; --v3-danger:#b84444;
+  --v3-shadow:0 14px 36px rgba(27,55,65,.08); --v3-focus:0 0 0 3px rgba(23,107,112,.16);
+  color-scheme:light;
+}
+html,body { min-height:100%; }
+body { font-family:"DM Sans",Inter,system-ui,sans-serif; color:var(--v3-text); background:var(--v3-bg); }
+button,input,select,textarea { font:inherit; }
+button,a,input,select,textarea,[role="button"] { -webkit-tap-highlight-color:transparent; }
+:where(button,a,[role="button"],input,select,textarea):focus-visible { outline:0; box-shadow:var(--v3-focus); }
+:where(svg,i,.fa,.fas,.far,.bi,.lucide,[data-lucide],.material-icons,.rrn-icon) { color:currentColor; }
+button { cursor:pointer; }
+button:disabled,[aria-disabled="true"] { opacity:.55; cursor:not-allowed; }
+::selection { background:rgba(101,197,182,.28); color:var(--v3-text); }
