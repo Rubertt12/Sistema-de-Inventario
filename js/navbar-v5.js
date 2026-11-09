@@ -20,6 +20,7 @@
     ensureStylesheet('/style/navbar-v5.css?v=20261103-2', 'data-rrn-navbar-v5');
     ensureStylesheet('/style/navbar-flat-tabs.css?v=20260929-2', 'data-rrn-navbar-flat-tabs');
     ensureStylesheet('/style/dashboard-white-navbar-polish.css?v=20261109-2', 'data-rrn-dashboard-white-navbar-polish');
+    ensureStylesheet('/style/dashboard-nav-tabs-polish.css?v=20261109-1', 'data-rrn-dashboard-nav-tabs-polish');
   }
 
   function sessionInfo() {
