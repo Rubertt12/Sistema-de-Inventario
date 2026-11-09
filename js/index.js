@@ -38,7 +38,6 @@
     '/js/navbar-v5.js?v=20261109-3',
     '/js/search-center-v2.js',
     '/js/dashboard-quality-fixes.js',
-    '/js/service-desk-inventory-bridge.js',
     '/js/mobile-asset-page.js?v=20260817-1042',
     '/js/tenant-branding-runtime.js',
     '/js/maintenance-waiting-queue.js',
@@ -470,7 +469,6 @@
       document.querySelector('link[data-rrn-search-center-v2]')?.setAttribute('data-rrn-search-center', '1');
       document.querySelector('script[data-rrn-src="/js/search-center-v2.js"]')?.setAttribute('data-rrn-search-center', '1');
       await load('/js/dashboard-quality-fixes.js');
-      await load('/js/service-desk-inventory-bridge.js');
       await load('/js/mobile-asset-page.js?v=20260817-1042');
     }
 
