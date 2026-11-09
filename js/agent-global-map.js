@@ -69,7 +69,8 @@
     state.leafletCssPromise = (async () => {
       const urls = [
         'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-        'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'
+        'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css'
       ];
       for (const url of urls) {
         let link = document.querySelector('link[data-rrn-leaflet]');
@@ -135,12 +136,17 @@
     });
     state.leafletPromise = (async () => {
       await ensureLeafletStyles();
-      try {
-        return await loadFrom('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
-      } catch (firstError) {
-        console.warn('RRN mapa: CDN principal do Leaflet falhou; tentando alternativa.', firstError);
-        return await loadFrom('https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js');
+      const sources = [
+        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+        'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js'
+      ];
+      let lastError;
+      for (const source of sources) {
+        try { return await loadFrom(source); }
+        catch (error) { lastError = error; console.warn('RRN mapa: CDN Leaflet indisponível:', source, error); }
       }
+      throw lastError || new Error('Todos os CDNs do Leaflet falharam.');
     })().catch(error => {
       state.leafletPromise = null;
       throw error;
@@ -476,9 +482,46 @@
     return L;
   }
 
+  function showMapFallback(rows, error) {
+    const view = ensureView();
+    const canvas = view.querySelector('#rrnGlobalMapCanvas');
+    const empty = view.querySelector('[data-map-empty]');
+    const points = rows.filter(rowHasCoordinates);
+    if (!canvas) return;
+    if (points.length) {
+      const lats = points.map(row => Number(row.latitude));
+      const lngs = points.map(row => Number(row.longitude));
+      const minLat = Math.max(-85, Math.min(...lats) - 1.5);
+      const maxLat = Math.min(85, Math.max(...lats) + 1.5);
+      const minLng = Math.max(-180, Math.min(...lngs) - 1.5);
+      const maxLng = Math.min(180, Math.max(...lngs) + 1.5);
+      const centerLat = (minLat + maxLat) / 2;
+      const centerLng = (minLng + maxLng) / 2;
+      const bbox = [minLng, minLat, maxLng, maxLat].join('%2C');
+      canvas.innerHTML = `<iframe title="Mapa de localidades RRN" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${centerLat}%2C${centerLng}" style="width:100%;height:100%;min-height:340px;border:0;display:block"></iframe>`;
+      canvas.dataset.rrnMapFallback = '1';
+      if (empty) {
+        empty.textContent = 'Visualização simplificada ativada. O mapa interativo está temporariamente indisponível; a lista de localidades segue funcionando.';
+        empty.classList.add('show');
+      }
+    } else {
+      canvas.innerHTML = '<div class="rrn-map-fallback-message">Nenhuma coordenada disponível para exibir no mapa.</div>';
+      if (empty) {
+        empty.textContent = 'As localidades cadastradas não possuem coordenadas para posicionar no mapa.';
+        empty.classList.add('show');
+      }
+    }
+    console.warn('RRN mapa: ativado modo de contingência.', error);
+  }
+
   async function renderMap(rows) {
     const empty = ensureView().querySelector('[data-map-empty]');
+    const canvas = ensureView().querySelector('#rrnGlobalMapCanvas');
     try {
+      if (canvas?.dataset.rrnMapFallback === '1') {
+        canvas.innerHTML = '';
+        delete canvas.dataset.rrnMapFallback;
+      }
       const L = await ensureMap();
       if (!L || !state.map || !state.markerLayer) return;
       state.markerLayer.clearLayers();
@@ -502,17 +545,13 @@
         state.markerByKey.set(markerKey(row), marker);
         bounds.push([lat, lng]);
       });
-      empty?.classList.toggle('show', bounds.length === 0);
+      empty?.classList.remove('show');
       if (bounds.length === 1) state.map.setView(bounds[0], state.platformAdmin ? 5 : 9);
       else if (bounds.length > 1) state.map.fitBounds(bounds, { padding:[35,35], maxZoom:state.platformAdmin ? 6 : 10 });
       else state.map.setView([18, 0], 2);
-      setTimeout(() => state.map?.invalidateSize({ pan:false }), 120);
+      setTimeout(() => state.map?.invalidateSize({ pan:false }), 160);
     } catch (error) {
-      console.warn('RRN mapa de instalações:', error);
-      if (empty) {
-        empty.textContent = 'Não foi possível carregar o mapa agora. A lista de localidades continua disponível abaixo.';
-        empty.classList.add('show');
-      }
+      showMapFallback(rows, error);
     }
   }
 
