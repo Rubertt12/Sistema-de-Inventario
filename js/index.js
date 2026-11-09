@@ -7,7 +7,7 @@
   // Apenas módulos necessários para a primeira tela utilizável entram no warm-up.
   const dashboardCriticalScriptQueue = [
     '/js/supabase-config.js',
-    '/js/theme-mode.js?v=20260929-17',
+    '/js/theme-mode.js?v=20261109-18',
     '/js/preview-demo.js',
     '/js/icons-v2.js',
     '/js/icon-mutation-bridge.js',
