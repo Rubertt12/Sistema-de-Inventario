@@ -5,7 +5,7 @@ const cfg=window.RRN_SUPABASE||{};
 if(!cfg.url||!cfg.anonKey||!window.supabase?.createClient) return;
 const client=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'rrn-guest-support-auth'}});
 const $=id=>document.getElementById(id);
-const views=['quickStart','quickIdentify','quickHome','quickOpenTicket','quickChat','quickFinished'];
+const views=['quickStart','quickLogin','quickIdentify','quickHome','quickOpenTicket','quickChat','quickFinished'];
 const state={user:null,customer:null,ticket:null,channels:[],busy:false,tickets:[],ticketFilter:'all',ticketSearch:''};
 const labels={new:'Novo',assigned:'Atribuído',in_progress:'Em atendimento',waiting_requester:'Aguardando você',resolved:'Resolvido',closed:'Encerrado',reopened:'Reaberto'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -16,6 +16,36 @@ function slug(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,'-');}
 function friendly(e){const m=String(e?.message||'');if(/anonymous.*(disabled|not enabled)/i.test(m))return 'O acesso sem senha está temporariamente indisponível. Tente entrar com sua conta ou avise a equipe.';if(/rate limit/i.test(m))return 'Muitas tentativas em pouco tempo. Aguarde um minuto e tente novamente.';if(/empresa|portal/i.test(m))return 'Não conseguimos identificar a empresa. Confira o nome/código do portal ou contate o suporte.';return m||'Não foi possível concluir. Tente novamente.';}
 function busyButton(btn,on,label){if(!btn)return;btn.disabled=on;if(on){btn.dataset.old=btn.textContent;btn.textContent=label||'Aguarde...';}else{btn.textContent=btn.dataset.old||btn.textContent;delete btn.dataset.old;}}
 async function sessionUser(){const {data,error}=await client.auth.getSession();if(error)throw error;return data.session?.user||null;}
+async function loginAccount(e){
+ e.preventDefault();if(state.busy)return;alert('quickLoginAlert');
+ const email=$('quickLoginEmail').value.trim(),password=$('quickLoginPassword').value;
+ if(!email||!password)return alert('quickLoginAlert','Informe seu e-mail e sua senha.');
+ const btn=$('quickLoginForm').querySelector('[type=submit]');state.busy=true;busyButton(btn,true,'Validando acesso...');
+ try{
+  const {data,error}=await client.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  const user=data.user;if(!user||user.is_anonymous)throw new Error('Não foi possível validar esta conta.');
+  const {data:customer,error:customerError}=await client.from('support_customers').select('id,user_id,tenant_id,name,email,phone,employee_number,status').eq('user_id',user.id).maybeSingle();
+  if(customerError)throw customerError;
+  if(!customer){await client.auth.signOut();throw new Error('Esta conta ainda não está vinculada ao Portal de Suporte. Confira o e-mail ou solicite o vínculo à empresa.');}
+  if(customer.status!=='active'){await client.auth.signOut();throw new Error('Seu acesso ao suporte está bloqueado. Procure a equipe responsável.');}
+  state.user=user;state.customer=customer;state.ticket=null;state.ticketFilter='all';state.ticketSearch='';
+  $('quickLoginForm').reset();await showHome();
+ }catch(err){console.error('[RRN chat] account login',err);alert('quickLoginAlert',friendly(err));}
+ finally{state.busy=false;busyButton(btn,false);}
+}
+async function recoverPassword(){
+ alert('quickLoginAlert');
+ const email=$('quickLoginEmail').value.trim();
+ if(!email)return alert('quickLoginAlert','Informe seu e-mail no campo acima para receber o link de recuperação.');
+ const btn=$('quickForgotPassword');btn.disabled=true;
+ try{
+  const {error}=await client.auth.resetPasswordForEmail(email);
+  if(error)throw error;
+  alert('quickLoginAlert','Se o e-mail estiver cadastrado, você receberá as instruções para redefinir sua senha.');
+ }catch(err){console.error('[RRN chat] password recovery',err);alert('quickLoginAlert',friendly(err));}
+ finally{btn.disabled=false;}
+}
 async function identify(e){
  e.preventDefault();if(state.busy)return;alert('quickIdentifyAlert');
  const name=$('quickName').value.trim(),email=$('quickEmail').value.trim(),phone=$('quickPhone').value.trim(),org=slug($('quickOrg').value),employee=$('quickEmployee').value.trim();
@@ -35,9 +65,10 @@ async function identify(e){
  finally{state.busy=false;busyButton(btn,false);}
 }
 async function restore(){
- const user=await sessionUser();if(!user?.is_anonymous)return false;state.user=user;
- const {data,error}=await client.from('support_customers').select('*').eq('user_id',user.id).eq('status','active').maybeSingle();
- if(error)throw error;if(!data)return false;state.customer=data;return true;
+ const user=await sessionUser();if(!user)return false;
+ const {data,error}=await client.from('support_customers').select('id,user_id,tenant_id,name,email,phone,employee_number,status').eq('user_id',user.id).maybeSingle();
+ if(error)throw error;if(!data||data.status!=='active')return false;
+ state.user=user;state.customer=data;return true;
 }
 async function showHome(){
  if(!state.customer)return; $('quickUserName').textContent=state.customer.name||'Usuário';$('quickAvatar').textContent=(state.customer.name||'U').trim().charAt(0).toUpperCase();
@@ -111,7 +142,7 @@ function subscribe(){
  const ticket=client.channel('rrn-chat-ticket-'+state.ticket.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'support_tickets',filter:'id=eq.'+state.ticket.id},p=>{state.ticket=p.new;renderTicket();}).subscribe();
  state.channels=[msg,ticket];
 }
-async function changeIdentity(){if(!confirm('Deseja sair desta sessão de atendimento neste dispositivo?'))return;state.channels.forEach(c=>client.removeChannel(c));state.channels=[];await client.auth.signOut();state.user=state.customer=state.ticket=null;state.tickets=[];state.ticketFilter='all';state.ticketSearch='';$('quickIdentifyForm').reset();view('quickStart');}
+async function changeIdentity(){if(!confirm('Deseja sair desta sessão de atendimento neste dispositivo?'))return;state.channels.forEach(c=>client.removeChannel(c));state.channels=[];await client.auth.signOut();state.user=state.customer=state.ticket=null;state.tickets=[];state.ticketFilter='all';state.ticketSearch='';$('quickIdentifyForm').reset();$('quickLoginForm')?.reset();view('quickStart');}
 async function endTicket(){
  if(!state.ticket||state.ticket.status==='closed')return;if(!confirm('Deseja encerrar este atendimento?'))return;
  try{const {data,error}=await client.rpc('support_guest_close_ticket',{p_ticket_id:state.ticket.id});if(error)throw error;state.ticket=Array.isArray(data)?data[0]:data;renderTicket();await showHome();}
@@ -119,6 +150,10 @@ async function endTicket(){
 }
 function bind(){
  $('quickGuestBtn')?.addEventListener('click',()=>{view('quickIdentify');$('quickName')?.focus();});
+ $('quickAccountBtn')?.addEventListener('click',()=>{view('quickLogin');$('quickLoginEmail')?.focus();});
+ $('quickLoginForm')?.addEventListener('submit',loginAccount);
+ $('quickForgotPassword')?.addEventListener('click',recoverPassword);
+ document.querySelectorAll('[data-quick-start]').forEach(b=>b.addEventListener('click',()=>view('quickStart')));
  $('quickIdentifyForm')?.addEventListener('submit',identify);$('quickTicketForm')?.addEventListener('submit',createTicket);$('quickMessageForm')?.addEventListener('submit',sendMessage);
  $('quickNewTicket')?.addEventListener('click',()=>{alert('quickTicketAlert');$('quickTicketForm').reset();view('quickOpenTicket');});
  $('quickChangeIdentity')?.addEventListener('click',changeIdentity);
