@@ -1,82 +1,66 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RRN Manager | Suporte rápido</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style/rrn-theme-v2.css" />
-  <link rel="stylesheet" href="/style/support-quick.css?v=20260814-3" />
-  <link rel="stylesheet" href="/style/support-quick-controls.css?v=20260814-3" />
-  <link rel="stylesheet" href="/style/support-bot-runtime.css?v=20260814-3" />
-  <link rel="stylesheet" href="/style/footer-v2.css" />
-  <link rel="icon" href="/img/icon-png.png" type="image/png" />
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102f43">
+<title>RRN Manager | Central de atendimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style/rrn-theme-v2.css">
+<link rel="stylesheet" href="/style/support-quick.css?v=20261109-4">
+<link rel="icon" href="/img/icon-png.png" type="image/png">
 </head>
 <body class="quick-body">
-  <main class="quick-shell">
-    <section class="quick-start" id="quickStart">
-      <div class="quick-logo"><img src="/img/icon-png.png" alt="" /><span><strong>RRN Manager</strong><small>Suporte rápido</small></span></div>
-      <span class="quick-eyebrow">Fale com o suporte</span>
-      <h1>Como você quer continuar?</h1>
-      <p>Você pode entrar com sua conta ou somente se identificar. Sem senha, sem cadastro obrigatório.</p>
-      <div class="quick-choice-grid">
-        <button class="quick-choice primary" id="quickGuestBtn" type="button"><strong>Continuar sem login</strong><span>Informe seus dados e abra o chamado.</span></button>
-        <a class="quick-choice" href="/portal.html?from=chat"><strong>Entrar com minha conta</strong><span>Acesse seus chamados e histórico completo.</span></a>
-      </div>
-    </section>
+<main class="quick-shell">
+<section class="quick-start" id="quickStart">
+ <div class="quick-brand"><img src="/img/icon-png.png" alt=""><span><b>RRN Manager</b><small>Central de atendimento</small></span><i class="quick-online-dot"></i><small class="quick-online-label">Canal disponível</small></div>
+ <div class="quick-welcome"><span class="quick-eyebrow">Estamos aqui para ajudar</span><h1>Como podemos resolver isso?</h1><p>Abra uma solicitação, acompanhe as respostas e mantenha todo o histórico em um só lugar.</p></div>
+ <div class="quick-start-actions"><button class="quick-primary-card" id="quickGuestBtn" type="button"><span class="quick-card-icon">＋</span><span><b>Iniciar atendimento</b><small>Conte o que está acontecendo. Não precisa criar uma senha.</small></span><span class="quick-arrow">→</span></button><a class="quick-secondary-card" href="/portal.html?from=chat"><span class="quick-card-icon">↗</span><span><b>Já tenho uma conta</b><small>Entrar para consultar meus chamados.</small></span><span class="quick-arrow">→</span></a></div>
+ <div class="quick-trust"><span>●</span> Atendimento protegido e vinculado ao seu protocolo.</div>
+</section>
 
-    <section class="quick-card" id="quickIdentify" hidden>
-      <button class="quick-back" type="button" data-quick-back>← Voltar</button>
-      <span class="quick-eyebrow">Identificação</span>
-      <h2>Só precisamos saber quem está falando.</h2>
-      <form id="quickIdentifyForm" class="quick-form">
-        <label><span>Nome completo</span><input id="quickName" required autocomplete="name" /></label>
-        <label><span>Empresa <small>(opcional)</small></span><input id="quickOrg" placeholder="O RRN identifica automaticamente quando possível" /></label>
-        <label><span>E-mail</span><input id="quickEmail" type="email" autocomplete="email" placeholder="voce@empresa.com" /></label>
-        <label><span>Telefone</span><input id="quickPhone" type="tel" autocomplete="tel" placeholder="(51) 99999-9999" /></label>
-        <label><span>Matrícula <small>(opcional)</small></span><input id="quickEmployee" /></label>
-        <p class="quick-hint">Informe pelo menos e-mail ou telefone para facilitar o retorno. A empresa é identificada automaticamente quando há apenas um portal disponível.</p>
-        <button class="quick-btn primary" type="submit">Continuar</button>
-      </form>
-      <div class="quick-alert" id="quickIdentifyAlert" hidden></div>
-    </section>
+<section class="quick-card" id="quickIdentify" hidden>
+ <button class="quick-back" type="button" data-quick-back>← Voltar</button>
+ <span class="quick-step">ETAPA 1 DE 2</span><h2>Antes de começar, quem é você?</h2><p class="quick-subtitle">Usaremos esses dados apenas para identificar sua solicitação e retornar o contato.</p>
+ <form id="quickIdentifyForm" class="quick-form">
+  <label><span>Nome completo *</span><input id="quickName" required maxlength="120" autocomplete="name" placeholder="Seu nome"></label>
+  <label><span>E-mail</span><input id="quickEmail" type="email" maxlength="180" autocomplete="email" placeholder="voce@empresa.com"></label>
+  <label><span>Telefone / WhatsApp</span><input id="quickPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="(00) 00000-0000"></label>
+  <details class="quick-more"><summary>Informações adicionais (opcional)</summary><div class="quick-more-fields"><label><span>Empresa ou código do portal</span><input id="quickOrg" maxlength="120" placeholder="Nome da empresa"></label><label><span>Matrícula</span><input id="quickEmployee" maxlength="80" placeholder="Sua matrícula"></label></div></details>
+  <p class="quick-hint">Informe pelo menos um meio de contato: e-mail ou telefone.</p>
+  <button class="quick-btn primary" type="submit">Continuar <span>→</span></button>
+ </form><div class="quick-alert" id="quickIdentifyAlert" role="alert" hidden></div>
+</section>
 
-    <section class="quick-card" id="quickOpenTicket" hidden>
-      <div class="quick-user"><div><small id="quickCompany">Suporte</small><strong id="quickUserName">Usuário</strong></div><button class="quick-link-btn" id="quickChangeIdentity" type="button">Trocar identificação</button></div>
-      <span class="quick-eyebrow">Novo chamado</span>
-      <h2>O que está acontecendo?</h2>
-      <form id="quickTicketForm" class="quick-form">
-        <label><span>Equipamento</span><input id="quickMachine" placeholder="Patrimônio, serial, hostname ou usuário responsável" /></label>
-        <label><span>Problema</span><textarea id="quickProblem" required rows="5" placeholder="Descreva o problema com o máximo de clareza."></textarea></label>
-        <div class="quick-info">A prioridade será definida pela equipe de suporte após a triagem.</div>
-        <button class="quick-btn primary" type="submit">Abrir chamado</button>
-      </form>
-      <div class="quick-alert" id="quickTicketAlert" hidden></div>
-    </section>
+<section class="quick-card quick-home" id="quickHome" hidden>
+ <div class="quick-user"><div class="quick-avatar" id="quickAvatar">U</div><div><small>Bem-vindo(a)</small><strong id="quickUserName">Usuário</strong></div><button class="quick-link-btn" id="quickChangeIdentity" type="button">Sair</button></div>
+ <div class="quick-home-heading"><div><span class="quick-eyebrow">Sua central</span><h2>O que deseja fazer?</h2></div><button class="quick-btn primary compact" id="quickNewTicket" type="button">＋ Novo chamado</button></div>
+ <div class="quick-ticket-list" id="quickTicketList"><div class="quick-empty">Carregando seus atendimentos...</div></div>
+ <div class="quick-alert" id="quickHomeAlert" role="alert" hidden></div>
+</section>
 
-    <section class="quick-chat" id="quickChat" hidden>
-      <header class="quick-chat-head"><div><small id="quickTicketNumber">Chamado</small><strong id="quickTicketTitle">Atendimento</strong></div><span id="quickTicketStatus">Novo</span></header>
-      <div class="quick-chat-meta" id="quickTicketMeta"></div>
-      <div class="quick-messages" id="quickMessages"></div>
-      <form class="quick-compose" id="quickMessageForm"><input id="quickMessageInput" autocomplete="off" placeholder="Digite sua mensagem..." /><button class="quick-btn primary" type="submit">Enviar</button></form>
-    </section>
+<section class="quick-card" id="quickOpenTicket" hidden>
+ <button class="quick-back" type="button" data-quick-home>← Meus atendimentos</button>
+ <span class="quick-step">ETAPA 2 DE 2</span><h2>Descreva sua solicitação.</h2><p class="quick-subtitle">Quanto mais detalhes você informar, mais rápido nossa equipe poderá ajudar.</p>
+ <form id="quickTicketForm" class="quick-form">
+  <label><span>Equipamento ou usuário <small>opcional</small></span><input id="quickMachine" maxlength="180" placeholder="Patrimônio, serial, hostname ou usuário"></label>
+  <label><span>O que está acontecendo? *</span><textarea id="quickProblem" required minlength="8" maxlength="5000" rows="5" placeholder="Descreva o problema, quando começou e o que você já tentou."></textarea></label>
+  <div class="quick-info"><b>Próximo passo</b><span>Você receberá um protocolo e poderá conversar com a equipe por aqui.</span></div>
+  <button class="quick-btn primary" type="submit">Abrir chamado <span>→</span></button>
+ </form><div class="quick-alert" id="quickTicketAlert" role="alert" hidden></div>
+</section>
 
-    <section class="quick-card quick-finished" id="quickFinished" hidden>
-      <span class="quick-eyebrow">Atendimento encerrado</span>
-      <h2>Chamado finalizado.</h2>
-      <div class="quick-protocol"><span>Protocolo</span><strong id="quickProtocolNumber">#000000</strong></div>
-      <p id="quickFinishedMeta">Seu atendimento foi encerrado.</p>
-      <button class="quick-btn primary" id="quickNewAttendance" type="button">Voltar ao início do chat</button>
-    </section>
-  </main>
+<section class="quick-chat" id="quickChat" hidden>
+ <header class="quick-chat-head"><button class="quick-chat-back" type="button" data-quick-home aria-label="Voltar aos chamados">←</button><div class="quick-chat-title"><small id="quickTicketNumber">PROTOCOLO</small><strong id="quickTicketTitle">Atendimento</strong></div><div class="quick-chat-head-actions"><span id="quickTicketStatus" class="quick-status">Novo</span><button class="quick-menu" id="quickChatMenu" type="button" aria-label="Opções">⋯</button></div></header>
+ <div class="quick-ticket-context"><span class="quick-context-icon">▤</span><div><b id="quickContextStatus">Aguardando equipe</b><small id="quickTicketMeta">Seu atendimento está registrado.</small></div></div>
+ <div class="quick-messages" id="quickMessages" aria-live="polite"><div class="quick-empty">Carregando conversa...</div></div>
+ <div class="quick-closed-note" id="quickClosedNote" hidden>Este chamado foi encerrado. Você pode abrir um novo atendimento pela sua central.</div>
+ <form class="quick-compose" id="quickMessageForm"><textarea id="quickMessageInput" rows="1" maxlength="4000" placeholder="Escreva sua mensagem..." aria-label="Mensagem"></textarea><button type="submit" aria-label="Enviar mensagem" id="quickSendButton">↑</button></form>
+ <div class="quick-compose-foot">Não compartilhe senhas ou códigos de autenticação.</div>
+</section>
 
-  <script src="/js/supabase-config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/support-quick.js?v=20260814-3"></script>
-  <script src="/js/support-bot-runtime.js?v=20260814-3"></script>
-  <script src="/js/support-quick-controls.js?v=20260814-3"></script>
-  <script src="/js/footer-v2.js"></script>
-</body>
-</html>
+<section class="quick-card quick-finished" id="quickFinished" hidden><div class="quick-finish-icon">✓</div><span class="quick-eyebrow">Atendimento encerrado</span><h2>Solicitação finalizada.</h2><p class="quick-subtitle">Seu protocolo continua disponível no histórico.</p><div class="quick-protocol"><span>Protocolo</span><strong id="quickProtocolNumber">—</strong></div><button class="quick-btn primary" id="quickNewAttendance" type="button">Voltar aos atendimentos</button></section>
+</main>
+<script src="/js/supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/support-quick.js?v=20261109-4"></script>
+</body></html>
