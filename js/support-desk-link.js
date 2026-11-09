@@ -10,7 +10,7 @@
     const style = document.createElement('style');
     style.id = 'rrn-support-platform-link-style';
     style.textContent = `
-      .rrn-support-platform-entry{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:9px 15px;border:1px solid rgba(47,125,120,.24);border-radius:11px;background:rgba(47,125,120,.09);color:var(--rrn-heading,#163a4d);font:700 .82rem/1.2 inherit;text-decoration:none;cursor:pointer;transition:background .18s ease,transform .18s ease}
+      .rrn-support-platform-entry{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:9px 15px;border:1px solid rgba(47,125,120,.24);border-radius:11px;background:rgba(47,125,120,.09);color:var(--rrn-heading,#163a4d);font-family:inherit;font-size:.82rem;font-weight:700;line-height:1.2;text-decoration:none;cursor:pointer;transition:background .18s ease,transform .18s ease}
       .rrn-support-platform-entry:hover{background:rgba(47,125,120,.16);transform:translateY(-1px)}
       .rrn-support-platform-entry .rrn-support-platform-icon{display:grid;place-items:center;width:23px;height:23px;border-radius:7px;background:rgba(47,125,120,.14);font-size:.9rem}
       #userDropdown .rrn-support-platform-entry{display:flex;width:100%;justify-content:flex-start;margin:5px 0;padding:10px 12px;background:transparent;border:0;box-shadow:none;transform:none}
