@@ -13,3 +13,155 @@ html[data-theme="dark"]{--ops-bg:#0e151a;--ops-panel:#151f26;--ops-panel2:#1b283
 @media(max-width:1150px){.ops-main{padding:0 17px 18px}.ops-ticket-view{grid-template-columns:minmax(0,1fr) 245px}.ops-console{grid-template-columns:290px minmax(0,1fr)}.ops-inspector{padding:14px 11px}}
 @media(max-width:850px){.ops-console{height:auto;min-height:calc(100vh - 240px);grid-template-columns:1fr}.ops-inbox{border-right:0;border-bottom:1px solid var(--ops-line)}.ops-ticket-list{max-height:245px;min-height:70px;flex:none}.ops-ticket-view{height:auto;min-height:650px}.ops-message-stream{min-height:350px;max-height:520px}.ops-inspector{overflow:visible}}
 @media(max-width:600px){.ops-rail{width:54px;padding-top:12px}.ops-brand{width:34px;height:34px}.ops-brand img{width:22px;height:22px}.ops-rail-label{margin:22px 0 12px}.ops-nav{padding:0 7px}.ops-nav a{height:42px}.ops-nav a.active:before{left:-7px}.ops-main{margin-left:54px;padding:0 10px 14px}.ops-topbar{height:53px}.ops-breadcrumb{font-size:7px;gap:5px}.ops-top-actions{gap:5px}.ops-operator{display:none}.ops-theme{width:31px;height:31px}.ops-refresh{height:31px;padding:0 7px;font-size:9px}.ops-heading{padding:19px 0 14px;align-items:flex-start}.ops-heading h1{font-size:24px}.ops-heading p{font-size:9px;max-width:270px;line-height:1.5}.ops-heading-state{font-size:7px;white-space:nowrap}.ops-stats{grid-template-columns:1fr 1fr;margin-bottom:10px}.ops-stat{min-height:68px;padding:9px}.ops-stat strong{font-size:20px}.ops-stat small{display:block;font-size:8px}.ops-stat>span{font-size:7px}.ops-console{border-radius:7px;min-height:0}.ops-inbox-head{padding:13px 11px 10px}.ops-filters{padding:0 7px 8px;gap:1px}.ops-filters button{font-size:8px;padding:7px 6px}.ops-tools{padding:8px}.ops-ticket-list{max-height:225px}.ops-ticket-list .desk-ticket-card{padding:10px}.ops-ticket-view{display:flex;flex-direction:column;min-height:0}.ops-conversation{order:2;min-height:470px}.ops-inspector{order:1;border-left:0;border-bottom:1px solid var(--ops-line);padding:12px}.ops-inspector-head{padding-bottom:9px}.ops-inspector-block{padding:10px 0}.ops-sla-block{display:grid;grid-template-columns:1fr 1fr;column-gap:9px}.ops-sla-block>.ops-field-label{grid-column:1/-1}.ops-sla-block>div:last-child{grid-column:1/-1}.ops-actions{grid-template-columns:1fr 1fr;padding-top:10px}.ops-conversation-head{padding:12px 10px;flex-direction:column}.ops-conversation-title{flex-wrap:wrap;gap:6px}.ops-conversation-title h2{font-size:12px}.ops-conversation-status{justify-content:flex-start}.ops-message-stream{padding:11px;min-height:310px;max-height:430px}.desk-message{max-width:93%}.ops-composer{padding:9px;gap:6px}.ops-composer-field{height:36px;padding:0 7px}.ops-composer input{font-size:9px}.ops-send{padding:0 9px;font-size:9px}.ops-composer>small{font-size:6px}.ops-empty{min-height:320px}.ops-empty h2{font-size:16px}}
+
+
+/* Responsive overhaul — Service Desk */
+@media (max-width: 1100px) {
+  .ops-console { height: auto; min-height: 0; }
+  .ops-inbox { min-height: 360px; }
+  .ops-detail { min-height: 420px; }
+}
+@media (max-width: 850px) {
+  .ops-main { padding-left: 16px; padding-right: 16px; }
+  .ops-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ops-console { display: flex; flex-direction: column; }
+  .ops-inbox { min-height: 0; border-right: 0; border-bottom: 1px solid var(--ops-line); }
+  .ops-ticket-list { max-height: 290px; min-height: 90px; }
+  .ops-detail { min-height: 0; }
+  .ops-ticket-view { height: auto; min-height: 0; grid-template-columns: minmax(0, 1fr) 230px; }
+  .ops-conversation { min-height: 560px; }
+  .ops-message-stream { min-height: 320px; max-height: none; }
+  .ops-inspector { overflow: visible; }
+  .ops-heading { align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  html, body { width: 100%; min-width: 0; overflow-x: hidden; }
+  body.desk-body { min-height: 100dvh; }
+  .ops-rail {
+    inset: auto 0 0 0;
+    width: 100%;
+    height: 62px;
+    padding: 7px 10px max(7px, env(safe-area-inset-bottom));
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 -5px 22px rgba(0,0,0,.13);
+  }
+  .ops-brand { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 11px; }
+  .ops-brand img { width: 24px; height: 24px; }
+  .ops-rail-label, .ops-rail-bottom { display: none; }
+  .ops-nav {
+    width: auto;
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+  }
+  .ops-nav a {
+    height: 46px;
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 2px;
+    border-radius: 8px;
+  }
+  .ops-nav a span:last-child { display: block; font-size: 8px; line-height: 1.1; white-space: nowrap; }
+  .ops-nav-icon { font-size: 16px; line-height: 1.1; }
+  .ops-nav a.active:before { left: 25%; right: 25%; top: auto; bottom: -2px; width: auto; height: 2px; }
+  .ops-main { margin: 0; width: 100%; padding: 0 12px calc(78px + env(safe-area-inset-bottom)); }
+  .ops-topbar { min-height: 54px; height: auto; gap: 8px; }
+  .ops-breadcrumb { min-width: 0; flex-wrap: wrap; font-size: 7px; gap: 4px; }
+  .ops-breadcrumb span { white-space: nowrap; }
+  .ops-breadcrumb strong { white-space: nowrap; }
+  .ops-top-actions { flex: 0 0 auto; gap: 5px; }
+  .ops-operator { display: none; }
+  .ops-theme { width: 32px; height: 32px; flex: 0 0 32px; }
+  .ops-refresh { height: 32px; padding: 0 8px; white-space: nowrap; }
+  .ops-heading { padding: 19px 0 13px; gap: 8px; flex-direction: column; }
+  .ops-heading h1 { font-size: clamp(23px, 7vw, 29px); }
+  .ops-heading p { max-width: 100%; font-size: 11px; line-height: 1.5; }
+  .ops-heading-state { padding: 0; font-size: 8px; }
+  .ops-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin-bottom: 12px; }
+  .ops-stat { min-width: 0; min-height: 72px; padding: 10px; }
+  .ops-stat > span { font-size: 7px; letter-spacing: .07em; }
+  .ops-stat strong { font-size: 21px; margin-right: 4px; }
+  .ops-stat small { display: block; font-size: 9px; line-height: 1.3; }
+  .ops-console { width: 100%; min-width: 0; border-radius: 9px; overflow: hidden; }
+  .ops-inbox-head { padding: 14px 12px 10px; }
+  .ops-inbox-head h2 { font-size: 15px; }
+  .ops-filters { display: flex; flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; padding: 0 10px 9px; scrollbar-width: thin; }
+  .ops-filters button { flex: 0 0 auto; min-height: 34px; padding: 7px 10px; font-size: 9px; }
+  .ops-tools { padding: 10px; }
+  .ops-search { min-width: 0; height: 39px; }
+  .ops-search input { font-size: 12px; }
+  .ops-selects { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 7px; }
+  .ops-selects select, .desk-assignee-filter-wrap select { height: 36px; font-size: 10px; }
+  .ops-ticket-list { max-height: 300px; min-height: 75px; }
+  .ops-ticket-list .desk-ticket-card { padding: 12px 11px; }
+  .desk-ticket-card h3 { font-size: 12px; }
+  .desk-ticket-card p { font-size: 10px; overflow-wrap: anywhere; }
+  .desk-ticket-footer { align-items: flex-start; flex-wrap: wrap; }
+  .desk-sla-text { max-width: 65%; overflow-wrap: anywhere; }
+  .ops-detail { min-width: 0; }
+  .ops-empty { min-height: 280px; padding: 24px 16px; }
+  .ops-ticket-view { display: flex; flex-direction: column; min-height: 0; }
+  .ops-inspector { order: 0; width: 100%; padding: 13px; border: 0; border-bottom: 1px solid var(--ops-line); }
+  .ops-inspector-head { padding-bottom: 10px; }
+  .ops-inspector-block { padding: 11px 0; }
+  .ops-inspector-block strong { font-size: 11px; }
+  .ops-inspector-block small { font-size: 10px; }
+  .ops-sla-block { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 12px; }
+  .ops-sla-block > .ops-field-label { grid-column: 1 / -1; }
+  .ops-sla-block > div:last-child { grid-column: 1 / -1; }
+  .ops-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; padding-top: 12px; }
+  .ops-actions button { min-width: 0; min-height: 40px; padding: 8px 6px; font-size: 10px; }
+  .ops-conversation { order: 1; width: 100%; min-width: 0; min-height: 500px; }
+  .ops-conversation-head { padding: 13px 12px; flex-direction: column; gap: 9px; }
+  .ops-conversation-title { flex-wrap: wrap; align-items: flex-start; gap: 5px 8px; }
+  .ops-conversation-title h2 { min-width: 0; font-size: 14px; overflow-wrap: anywhere; }
+  .ops-conversation-status { justify-content: flex-start; }
+  .ops-message-stream { min-height: 300px; max-height: 55dvh; padding: 12px; gap: 9px; }
+  .desk-message { max-width: 92%; padding: 10px; }
+  .desk-message p { font-size: 12px; line-height: 1.5; }
+  .desk-message small { font-size: 9px; }
+  .ops-composer { position: sticky; bottom: 0; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; padding: 10px; }
+  .ops-composer-field { min-width: 0; height: 42px; }
+  .ops-composer input { min-width: 0; font-size: 12px; }
+  .ops-send { min-height: 42px; padding: 0 12px; font-size: 11px; white-space: nowrap; }
+  .ops-composer > small { font-size: 8px; }
+  .desk-assignment-control, .desk-participation-actions { align-items: stretch; }
+  .desk-assignment-control select { min-height: 38px; font-size: 10px; }
+  .desk-assignment-control .desk-btn, .desk-participation-actions .desk-btn { min-height: 36px; font-size: 10px; }
+  .desk-participation-request { align-items: flex-start; flex-wrap: wrap; }
+  .desk-participation-request-actions { flex-wrap: wrap; }
+  .ops-modal { padding: 12px; align-items: end; }
+  .ops-modal-card { width: 100%; max-height: 88dvh; overflow: auto; padding: 18px; border-radius: 14px 14px 8px 8px; }
+  .ops-modal-card h2 { font-size: 19px; }
+  .ops-resolution-form label { font-size: 11px; }
+  .ops-resolution-form textarea { width: 100%; min-height: 100px; font-size: 12px; }
+  .ops-resolution-form > div { flex-wrap: wrap; }
+  .ops-resolution-form > div button { flex: 1; min-height: 42px; }
+  .ops-toast { right: 10px; bottom: calc(72px + env(safe-area-inset-bottom)); left: 10px; max-width: none; }
+}
+@media (max-width: 380px) {
+  .ops-main { padding-left: 9px; padding-right: 9px; }
+  .ops-brand { width: 34px; height: 34px; flex-basis: 34px; }
+  .ops-nav a span:last-child { font-size: 7px; }
+  .ops-breadcrumb { font-size: 6px; }
+  .ops-refresh { font-size: 8px; }
+  .ops-stat { padding: 8px; }
+  .ops-stat > span { font-size: 6px; }
+  .ops-actions { grid-template-columns: 1fr; }
+  .ops-composer { grid-template-columns: minmax(0, 1fr); }
+  .ops-send { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ops-rail *, .ops-main * { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
