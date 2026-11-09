@@ -1,0 +1,79 @@
+/* RRN Manager V3 — dashboard presentation layer */
+body:has(#setoresContainer) { padding:104px 24px 48px; background:var(--v3-bg); color:var(--v3-text); }
+body:has(#setoresContainer) .navbar {
+  position:fixed; inset:14px 18px auto; transform:none; width:auto; max-width:none; min-height:66px;
+  display:flex; align-items:center; gap:22px; padding:10px 18px; border:1px solid var(--v3-border);
+  border-radius:18px; background:rgba(15,27,35,.91); color:#edf5f6; box-shadow:0 14px 40px rgba(0,0,0,.22);
+  backdrop-filter:blur(18px); z-index:2000;
+}
+body:has(#setoresContainer) .navbar h1 { display:flex; align-items:center; gap:10px; margin:0; color:#f4fbfb; font:800 17px/1 "Manrope",sans-serif; letter-spacing:-.04em; text-shadow:none; text-transform:none; white-space:nowrap; }
+body:has(#setoresContainer) .navbar .navbar-icon { width:36px; height:36px; object-fit:contain; }
+body:has(#setoresContainer) .navbar .nav-links { display:flex; align-items:center; gap:8px; margin-left:auto; color:#dce9eb; font-size:13px; }
+body:has(#setoresContainer) .navbar .nav-links a,
+body:has(#setoresContainer) .navbar .nav-links button { min-height:40px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:0 13px; border:1px solid transparent; border-radius:11px; color:inherit; background:transparent; text-decoration:none; font-size:12px; font-weight:650; box-shadow:none; }
+body:has(#setoresContainer) .navbar .nav-links a:hover,
+body:has(#setoresContainer) .navbar .nav-links button:hover { background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.12); transform:none; }
+body:has(#setoresContainer) .navbar .nav-links #searchInput { width:min(25vw,290px); max-width:none; min-height:40px; padding:0 14px; border:1px solid rgba(255,255,255,.13); border-radius:11px; background:rgba(255,255,255,.07); color:#f3f8f9; box-shadow:none; }
+body:has(#setoresContainer) .navbar .nav-links #searchInput::placeholder { color:#9eb1b8; }
+body:has(#setoresContainer) .navbar .user-menu { position:relative; display:flex; align-items:center; gap:9px; padding:5px 9px; border:1px solid rgba(255,255,255,.12); border-radius:12px; color:#edf5f6; cursor:pointer; }
+body:has(#setoresContainer) .navbar .user-avatar { width:30px; height:30px; border-radius:50%; object-fit:cover; }
+body:has(#setoresContainer) .navbar .user-dropdown { position:absolute; top:calc(100% + 12px); right:0; min-width:220px; padding:8px; border:1px solid var(--v3-border); border-radius:14px; background:var(--v3-surface); box-shadow:var(--v3-shadow); }
+body:has(#setoresContainer) .navbar .user-dropdown button { width:100%; justify-content:flex-start; color:var(--v3-text); }
+body:has(#setoresContainer) .menu-toggle { display:none; color:#f3f8f9; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); box-shadow:none; }
+body:has(#setoresContainer) .dashboard-actions { max-width:1440px; margin:10px auto 18px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:0; }
+body:has(#setoresContainer) .dashboard-actions button { min-height:42px; padding:0 16px; border:1px solid var(--v3-border); border-radius:12px; background:var(--v3-surface-2); color:var(--v3-text); box-shadow:none; font-size:13px; font-weight:700; }
+body:has(#setoresContainer) .dashboard-actions button:first-child { border-color:transparent; background:var(--v3-primary); color:var(--v3-primary-ink); }
+body:has(#setoresContainer) .dashboard-actions button:hover { transform:translateY(-1px); filter:brightness(1.05); }
+body:has(#setoresContainer) main { width:min(1440px,100%); margin:0 auto; }
+body:has(#setoresContainer) #setoresContainer { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:16px; padding:0; margin:0; }
+body:has(#setoresContainer) #setoresContainer .setor { min-width:0; min-height:unset; margin:0; padding:19px; border:1px solid var(--v3-border); border-radius:17px; background:var(--v3-surface); color:var(--v3-text); box-shadow:var(--v3-shadow); transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease; }
+body:has(#setoresContainer) #setoresContainer .setor:hover { transform:translateY(-2px); border-color:rgba(101,197,182,.42); }
+body:has(#setoresContainer) .setor-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+body:has(#setoresContainer) .setor-header h2 { min-width:0; margin:0; color:var(--v3-text); font:750 17px/1.3 "Manrope",sans-serif; letter-spacing:-.025em; text-transform:none; }
+body:has(#setoresContainer) .setor-header > div { display:flex; gap:6px; }
+body:has(#setoresContainer) .setor-header button,
+body:has(#setoresContainer) .setor > button { min-height:34px; padding:0 11px; border:1px solid var(--v3-border); border-radius:9px; background:var(--v3-surface-2); color:var(--v3-muted); box-shadow:none; font-size:11px; font-weight:700; }
+body:has(#setoresContainer) .setor > button:first-of-type { background:rgba(101,197,182,.13); border-color:rgba(101,197,182,.22); color:var(--v3-primary); }
+body:has(#setoresContainer) .setor button:hover { transform:translateY(-1px); filter:brightness(1.08); }
+body:has(#setoresContainer) [id^="maquinas-"] { margin-top:14px; padding-top:8px; border-top:1px solid var(--v3-border); }
+body:has(#setoresContainer) [id^="maquinas-"] > div { display:flex; align-items:center; flex-wrap:wrap; gap:7px; min-width:0; margin:8px 0 !important; padding:11px 12px !important; border:1px solid var(--v3-border) !important; border-radius:11px !important; background:var(--v3-surface-2) !important; color:var(--v3-text); cursor:grab; }
+body:has(#setoresContainer) [id^="maquinas-"] > div[style*="#ff6b6b"] { background:rgba(239,133,133,.13) !important; border-color:rgba(239,133,133,.35) !important; }
+body:has(#setoresContainer) [id^="maquinas-"] > div strong { flex:1 1 100%; color:var(--v3-text); font-size:13px; }
+body:has(#setoresContainer) [id^="maquinas-"] > div button { min-height:30px; padding:0 10px; border:1px solid var(--v3-border); border-radius:8px; background:var(--v3-surface-3); color:var(--v3-muted); box-shadow:none; font-size:11px; }
+body:has(#setoresContainer) .setores-paginacao { display:flex; flex-wrap:wrap; justify-content:center; gap:7px; margin:24px auto; }
+body:has(#setoresContainer) .setores-paginacao button { min-width:38px; min-height:38px; border:1px solid var(--v3-border); border-radius:10px; background:var(--v3-surface); color:var(--v3-text); box-shadow:none; }
+body:has(#setoresContainer) .setores-paginacao button.ativo { background:var(--v3-primary); color:var(--v3-primary-ink); }
+body:has(#setoresContainer) :where(.modal,.modal-transferencia) { background:rgba(2,9,13,.72); backdrop-filter:blur(9px); }
+body:has(#setoresContainer) :where(.modal-content,.modal-transferencia-content,.config-modal) { border:1px solid var(--v3-border); border-radius:20px; background:var(--v3-surface); color:var(--v3-text); box-shadow:var(--v3-shadow); }
+body:has(#setoresContainer) :where(.modal-content h2,.modal-transferencia-content h2,.config-modal h2) { color:var(--v3-text); font:750 21px/1.25 "Manrope",sans-serif; }
+body:has(#setoresContainer) :where(input:not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea) { max-width:100%; border:1px solid var(--v3-border); border-radius:10px; background:var(--v3-surface-2); color:var(--v3-text); box-shadow:none; }
+body:has(#setoresContainer) :where(input,select,textarea)::placeholder { color:var(--v3-subtle); }
+body:has(#setoresContainer) :where(.modal-content button,.modal-transferencia-content button,.config-modal button) { min-height:38px; border:1px solid var(--v3-border); border-radius:10px; background:var(--v3-surface-3); color:var(--v3-text); box-shadow:none; }
+body:has(#setoresContainer) :where(.close-btn,.close) { display:grid; place-items:center; width:38px; height:38px; min-height:38px; padding:0; border-radius:11px; background:var(--v3-surface-3); color:var(--v3-muted); }
+:root[data-theme="light"] body:has(#setoresContainer) .navbar { background:rgba(19,55,65,.96); }
+:root[data-theme="light"] body:has(#setoresContainer) .navbar :where(h1,a,button,span) { color:#edf7f7; }
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .nav-links #searchInput { color:#fff; }
+@media(max-width:900px) {
+ body:has(#setoresContainer) { padding:94px 16px 32px; }
+ body:has(#setoresContainer) .navbar { inset:10px 10px auto; min-height:60px; padding:8px 12px; }
+ body:has(#setoresContainer) .navbar .menu-toggle { display:inline-flex; align-items:center; justify-content:center; margin-left:auto; }
+ body:has(#setoresContainer) .navbar .nav-links { display:none; position:absolute; top:calc(100% + 8px); left:0; right:0; max-height:calc(100dvh - 100px); overflow:auto; padding:12px; flex-direction:column; align-items:stretch; gap:6px; border:1px solid var(--v3-border); border-radius:15px; background:var(--v3-surface); color:var(--v3-text); box-shadow:var(--v3-shadow); }
+ body:has(#setoresContainer) .navbar .nav-links.active { display:flex; }
+ body:has(#setoresContainer) .navbar .nav-links a,
+ body:has(#setoresContainer) .navbar .nav-links button { justify-content:flex-start; width:100%; color:var(--v3-text); }
+ body:has(#setoresContainer) .navbar .nav-links #searchInput { width:100%; color:var(--v3-text); background:var(--v3-surface-2); border-color:var(--v3-border); }
+ body:has(#setoresContainer) .navbar .user-menu { width:100%; }
+ body:has(#setoresContainer) .navbar .user-dropdown { position:static; width:100%; margin-top:8px; }
+ body:has(#setoresContainer) .dashboard-actions { gap:8px; }
+ body:has(#setoresContainer) .dashboard-actions button { flex:1 1 190px; }
+}
+@media(max-width:560px) {
+ body:has(#setoresContainer) { padding:84px 12px 24px; }
+ body:has(#setoresContainer) .navbar { min-height:54px; border-radius:14px; }
+ body:has(#setoresContainer) .navbar h1 { font-size:15px; }
+ body:has(#setoresContainer) .navbar .navbar-icon { width:30px; height:30px; }
+ body:has(#setoresContainer) #setoresContainer { grid-template-columns:minmax(0,1fr); gap:12px; }
+ body:has(#setoresContainer) #setoresContainer .setor { padding:15px; }
+ body:has(#setoresContainer) .dashboard-actions button { flex:1 1 100%; }
+}
+@media(prefers-reduced-motion:reduce) { body:has(#setoresContainer) *,body:has(#setoresContainer) *::before,body:has(#setoresContainer) *::after { transition:none !important; animation:none !important; } }
