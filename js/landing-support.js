@@ -70,7 +70,7 @@
     loading = (async () => {
       const content = document.getElementById('rrnLandingSupportContent');
       try {
-        addStylesheet('/style/support-quick.css?v=20261109-5');
+        addStylesheet('/style/support-quick.css?v=20261109-6');
         const response = await fetch('/suporte-rapido.html', { credentials:'same-origin' });
         if (!response.ok) throw new Error('Não foi possível abrir o atendimento (' + response.status + ').');
         const html = await response.text();
@@ -81,7 +81,7 @@
         content.appendChild(document.importNode(shell,true));
         await loadScript('/js/supabase-config.js');
         await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
-        await loadScript('/js/support-quick.js?v=20261109-5');
+        await loadScript('/js/support-quick.js?v=20261109-6');
         mounted = true;
       } catch (error) {
         console.error('RRN landing support:',error);
