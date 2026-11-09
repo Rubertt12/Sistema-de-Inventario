@@ -84,20 +84,21 @@
 
     const loadFrom = (url) => new Promise((resolve, reject) => {
       if (window.L) return resolve(window.L);
-      const existing = [...document.scripts].find(script =>
-        script.src === url || script.dataset.rrnLeaflet === '1'
-      );
+      const existing = [...document.scripts].find(script => script.src === url);
       if (existing) {
         if (window.L || existing.dataset.rrnLoaded === '1') return resolve(window.L);
-        const onLoad = () => {
-          cleanup();
-          window.L ? resolve(window.L) : reject(new Error('Leaflet não inicializou.'));
-        };
-        const onError = () => { cleanup(); reject(new Error('Falha ao carregar Leaflet.')); };
-        const cleanup = () => {
+        let settled = false;
+        const finish = (ok) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
           existing.removeEventListener('load', onLoad);
           existing.removeEventListener('error', onError);
+          ok && window.L ? resolve(window.L) : reject(new Error('Falha ao carregar Leaflet.'));
         };
+        const onLoad = () => finish(true);
+        const onError = () => finish(false);
+        const timeout = setTimeout(() => finish(Boolean(window.L)), 5000);
         existing.addEventListener('load', onLoad, { once:true });
         existing.addEventListener('error', onError, { once:true });
         return;
