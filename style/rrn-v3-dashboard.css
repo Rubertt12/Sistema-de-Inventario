@@ -77,3 +77,92 @@ body:has(#setoresContainer) :where(.close-btn,.close) { display:grid; place-item
  body:has(#setoresContainer) .dashboard-actions button { flex:1 1 100%; }
 }
 @media(prefers-reduced-motion:reduce) { body:has(#setoresContainer) *,body:has(#setoresContainer) *::before,body:has(#setoresContainer) *::after { transition:none !important; animation:none !important; } }
+
+
+/* V3 module layer — stock, map and agents share the same design system. */
+:root{
+  --rrn-stock-bg:var(--v3-bg);--rrn-stock-surface:var(--v3-surface);
+  --rrn-stock-surface-2:var(--v3-surface-2);--rrn-stock-surface-soft:var(--v3-surface-3);
+  --rrn-stock-text:var(--v3-text);--rrn-stock-heading:var(--v3-text);
+  --rrn-stock-muted:var(--v3-muted);--rrn-stock-border:var(--v3-border);
+  --rrn-stock-primary:var(--v3-primary);--rrn-stock-secondary:var(--v3-accent);
+}
+body.rrn-tab-stock,body.rrn-tab-map,body.rrn-tab-agents{min-height:100vh;padding:104px 22px 42px!important;background:var(--v3-bg)!important;color:var(--v3-text)!important}
+body.rrn-tab-stock>main,body.rrn-tab-map>main,body.rrn-tab-agents>main{width:100%!important;max-width:none!important;margin:0!important}
+body.rrn-tab-stock .rrn-stock-view,body.rrn-tab-map .rrn-global-map-view,body.rrn-tab-agents .rrn-agent-view{width:min(1480px,100%)!important;margin:18px auto 38px!important;color:var(--v3-text)!important}
+:where(.rrn-stock-hero,.rrn-stock-panel,.rrn-stock-kpi,.rrn-stock-dialog,
+.rrn-map-hero,.rrn-map-panel,.rrn-map-kpi,.rrn-map-location-row,
+.rrn-agent-hero,.rrn-agent-panel,.rrn-agent-kpi,.rrn-agent-device){
+  border-color:var(--v3-border)!important;border-radius:16px!important;
+  background:var(--v3-surface)!important;color:var(--v3-text)!important;
+  box-shadow:var(--v3-shadow)!important;
+}
+:where(.rrn-stock-hero h2,.rrn-stock-total strong,.rrn-stock-kpi strong,.rrn-stock-main strong,
+.rrn-stock-meta strong,.rrn-stock-dialog h3,.rrn-stock-field span,
+.rrn-map-hero h2,.rrn-map-kpi strong,.rrn-map-list-head h3,.rrn-map-location-row strong,
+.rrn-agent-hero h2,.rrn-agent-kpi strong,.rrn-agent-panel h3,.rrn-agent-device strong){
+  color:var(--v3-text)!important;
+}
+:where(.rrn-stock-hero p,.rrn-stock-eyebrow,.rrn-stock-kpi span,.rrn-stock-main small,.rrn-stock-meta small,
+.rrn-map-hero p,.rrn-map-kpi span,.rrn-map-kpi small,.rrn-map-location-row small,
+.rrn-agent-hero p,.rrn-agent-panel>p,.rrn-agent-kpi span,.rrn-agent-device small){
+  color:var(--v3-muted)!important;
+}
+:where(.rrn-stock-row,.rrn-stock-total,.rrn-stock-toolbar input,.rrn-stock-toolbar select,
+.rrn-stock-field input,.rrn-stock-field select,.rrn-stock-command,.rrn-stock-dialog textarea,
+.rrn-map-location-row,.rrn-agent-device,.rrn-agent-command){
+  background:var(--v3-surface-2)!important;color:var(--v3-text)!important;border-color:var(--v3-border)!important;
+}
+:where(.rrn-stock-intake-actions button,.rrn-stock-actions button,.rrn-stock-dialog-actions button,
+.rrn-map-filter,.rrn-map-select,.rrn-map-location-row button,.rrn-agent-btn){
+  min-height:38px;border-radius:10px!important;border-color:var(--v3-border)!important;
+  background:var(--v3-surface-2)!important;color:var(--v3-text)!important;box-shadow:none!important;
+}
+:where(.rrn-stock-intake-actions button.primary,.rrn-stock-actions button.primary,
+.rrn-stock-dialog-actions button.primary,.rrn-map-refresh,.rrn-agent-btn.primary){
+  border-color:var(--v3-accent)!important;background:var(--v3-accent)!important;color:#fff!important;
+}
+:where(.rrn-stock-list,.rrn-agent-list,.rrn-map-location-list){gap:9px}
+.rrn-stock-row:hover,.rrn-map-location-row:hover,.rrn-agent-device:hover{border-color:var(--v3-accent)!important;transform:translateY(-1px)}
+.rrn-map-canvas-wrap{overflow:hidden;border-radius:0 0 16px 16px}
+.rrn-map-canvas{min-height:420px;background:#dce7e8}
+.rrn-map-toolbar{background:var(--v3-surface-2);border-color:var(--v3-border)}
+.rrn-map-empty{background:var(--v3-surface);color:var(--v3-muted);border-color:var(--v3-border)}
+.rrn-agent-code{background:color-mix(in srgb,var(--v3-accent) 10%,var(--v3-surface-2));color:var(--v3-text);border-color:var(--v3-accent)}
+.rrn-agent-status.ok{background:rgba(49,166,125,.15);color:#45b88e}
+.rrn-agent-status.warn{background:rgba(218,165,70,.16);color:#d9ae5b}
+.rrn-agent-status.off{background:rgba(210,93,85,.16);color:#e18a83}
+:root[data-theme="light"] .rrn-stock-row,:root[data-theme="light"] .rrn-map-location-row,
+:root[data-theme="light"] .rrn-agent-device{background:#f5f8f8!important}
+:root[data-theme="dark"] .rrn-stock-row,:root[data-theme="dark"] .rrn-map-location-row,
+:root[data-theme="dark"] .rrn-agent-device{background:#142128!important}
+@media(max-width:900px){
+  body.rrn-tab-stock,body.rrn-tab-map,body.rrn-tab-agents{padding:88px 14px 30px!important}
+  body.rrn-tab-stock .rrn-stock-view,body.rrn-tab-map .rrn-global-map-view,body.rrn-tab-agents .rrn-agent-view{width:100%!important;margin:14px auto 28px!important}
+}
+@media(max-width:640px){
+  body.rrn-tab-stock,body.rrn-tab-map,body.rrn-tab-agents{padding:80px 9px 24px!important}
+  .rrn-stock-hero,.rrn-map-hero,.rrn-agent-hero{grid-template-columns:1fr!important;padding:16px!important;gap:12px!important}
+  .rrn-stock-total{width:100%;text-align:left!important}
+  .rrn-stock-kpis,.rrn-map-kpis,.rrn-agent-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .rrn-stock-toolbar{grid-template-columns:1fr!important}
+  .rrn-stock-row{grid-template-columns:26px minmax(0,1fr)!important;gap:9px!important}
+  .rrn-stock-row>*:nth-child(n+3){grid-column:2}
+  .rrn-stock-actions{justify-content:flex-start!important;flex-wrap:wrap}
+  .rrn-stock-form-grid{grid-template-columns:1fr!important}
+  .rrn-stock-field.full{grid-column:auto!important}
+  .rrn-map-toolbar{grid-template-columns:1fr!important;padding:10px!important}
+  .rrn-map-filters{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .rrn-map-filter,.rrn-map-select{width:100%;max-width:none!important}
+  .rrn-map-canvas{height:52vh!important;min-height:320px!important}
+  .rrn-map-location-row{grid-template-columns:1fr 1fr!important}
+  .rrn-map-location-row button{grid-column:1/-1}
+  .rrn-agent-grid{grid-template-columns:1fr!important}
+  .rrn-agent-device{grid-template-columns:1fr 1fr!important;padding:12px!important}
+  .rrn-agent-hero-actions{display:grid!important;grid-template-columns:1fr!important}
+}
+@media(max-width:420px){
+  .rrn-stock-kpis,.rrn-map-kpis,.rrn-agent-kpis{grid-template-columns:1fr 1fr!important}
+  .rrn-map-location-row,.rrn-agent-device{grid-template-columns:1fr!important}
+  .rrn-map-location-row button{grid-column:auto}
+}
