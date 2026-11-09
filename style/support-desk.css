@@ -362,14 +362,14 @@ body.desk-body .ops-rail {
   position: fixed;
   inset: 14px auto auto 50%;
   transform: translateX(-50%);
-  width: min(720px, calc(100% - 36px));
-  height: 54px;
-  padding: 6px 10px;
+  width: min(590px, calc(100% - 36px));
+  height: 46px;
+  padding: 5px 8px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 7px;
   border: 1px solid rgba(255,255,255,.09);
   border-radius: 17px;
   background: rgba(17,26,32,.94);
@@ -378,10 +378,10 @@ body.desk-body .ops-rail {
   backdrop-filter: blur(18px);
 }
 body.desk-body .ops-brand {
-  flex: 0 0 34px;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  flex: 0 0 29px;
+  width: 29px;
+  height: 29px;
+  border-radius: 8px;
 }
 body.desk-body .ops-rail-label { display: none; }
 body.desk-body .ops-nav {
@@ -390,22 +390,22 @@ body.desk-body .ops-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 3px;
   padding: 0;
 }
 body.desk-body .ops-nav a {
-  height: 36px;
-  min-width: 98px;
+  height: 31px;
+  min-width: 84px;
   justify-content: center;
-  padding: 0 10px;
-  gap: 7px;
+  padding: 0 7px;
+  gap: 5px;
   border: 1px solid transparent;
   border-radius: 11px;
   color: #a7b4ba;
 }
 body.desk-body .ops-nav a span:last-child {
   display: inline;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -427,7 +427,7 @@ body.desk-body .ops-nav a.active:before {
   height: 2px;
   border-radius: 2px;
 }
-body.desk-body .ops-nav-icon { font-size: 13px; }
+body.desk-body .ops-nav-icon { font-size: 12px; }
 body.desk-body .ops-rail-bottom {
   margin: 0;
   display: flex;
@@ -457,39 +457,39 @@ body.desk-body .ops-rail-bottom > a {
 body.desk-body .ops-rail-bottom > a:hover { background: rgba(255,255,255,.12); color: #fff; }
 body.desk-body .ops-main {
   margin-left: 0;
-  padding-top: 78px;
+  padding-top: 68px;
 }
 @media (max-width: 850px) {
   body.desk-body .ops-rail {
     inset: 10px 12px auto 12px;
     transform: none;
     width: auto;
-    height: 50px;
-    padding: 5px 8px;
+    height: 43px;
+    padding: 4px 7px;
     gap: 8px;
     border-radius: 14px;
   }
   body.desk-body .ops-nav { gap: 3px; }
   body.desk-body .ops-nav a { min-width: 0; padding: 0 10px; }
-  body.desk-body .ops-main { margin: 0; padding-top: 68px; }
+  body.desk-body .ops-main { margin: 0; padding-top: 59px; }
 }
 @media (max-width: 600px) {
   body.desk-body .ops-rail {
     inset: 8px 8px auto 8px;
     width: auto;
-    height: 48px;
-    padding: 5px 7px;
+    height: 41px;
+    padding: 4px 6px;
     flex-direction: row;
     justify-content: space-between;
     gap: 5px;
   }
   body.desk-body .ops-brand {
-    width: 30px;
-    height: 30px;
-    flex: 0 0 30px;
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
     border-radius: 10px;
   }
-  body.desk-body .ops-brand img { width: 20px; height: 20px; }
+  body.desk-body .ops-brand img { width: 17px; height: 17px; }
   body.desk-body .ops-nav {
     flex: 1;
     width: auto;
@@ -502,7 +502,7 @@ body.desk-body .ops-main {
   }
   body.desk-body .ops-nav a {
     min-width: 0;
-    height: 34px;
+    height: 29px;
     flex: 1 1 0;
     flex-direction: row;
     justify-content: center;
@@ -513,10 +513,10 @@ body.desk-body .ops-main {
   }
   body.desk-body .ops-nav a span:last-child {
     display: inline;
-    font-size: 8px;
+    font-size: 7px;
     line-height: 1;
   }
-  body.desk-body .ops-nav-icon { font-size: 15px; }
+  body.desk-body .ops-nav-icon { font-size: 13px; }
   body.desk-body .ops-nav a.active:before {
     left: 22%;
     right: 22%;
@@ -528,12 +528,12 @@ body.desk-body .ops-main {
   body.desk-body .ops-rail-bottom { display: none; }
   body.desk-body .ops-main {
     margin: 0;
-    padding: 65px 12px calc(22px + env(safe-area-inset-bottom));
+    padding: 56px 12px calc(22px + env(safe-area-inset-bottom));
   }
 }
 @media (max-width: 390px) {
   body.desk-body .ops-rail { gap: 3px; padding-inline: 6px; }
-  body.desk-body .ops-brand { width: 28px; height: 28px; flex-basis: 28px; }
+  body.desk-body .ops-brand { width: 24px; height: 24px; flex-basis: 24px; }
   body.desk-body .ops-nav { gap: 2px; }
   body.desk-body .ops-nav a { gap: 3px; padding-inline: 3px; }
   body.desk-body .ops-nav a span:last-child { font-size: 7px; }
