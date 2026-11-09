@@ -61,7 +61,7 @@
       '/js/inventory-snapshots.js'
     ],
     machineLocation: ['/js/machine-location-map.js?v=20260817-1017'],
-    globalMap: ['/js/agent-global-map.js?v=20260816-1'],
+    globalMap: ['/js/agent-global-map.js?v=20261109-2'],
     agents: ['/js/agent-management.js?v=20260816-2']
   });
 
