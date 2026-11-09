@@ -163,14 +163,6 @@
     if (!img) return;
     const fallback = new URL(DEFAULT_LOGO, location.origin).href;
     const candidate = safeBrandAssetUrl(value) || fallback;
-    img.onerror = () => {
-      if (img.dataset.rrnLogoFallbackApplied === '1') {
-        img.style.visibility = 'hidden';
-        return;
-      }
-      img.dataset.rrnLogoFallbackApplied = '1';
-      img.src = fallback;
-    };
     img.dataset.rrnLogoFallbackApplied = '0';
     if (img.src !== candidate) img.src = candidate;
   }
