@@ -61,12 +61,12 @@
       '/js/inventory-snapshots.js'
     ],
     machineLocation: ['/js/machine-location-map.js?v=20260817-1017'],
-    globalMap: ['/js/agent-global-map.js?v=20261109-2'],
+    globalMap: ['/js/agent-global-map.js?v=20261109-3'],
     agents: ['/js/agent-management.js?v=20260816-2']
   });
 
   const lazyFeatureStyles = Object.freeze({
-    globalMap: [['/style/agent-global-map.css?v=20260816-1', 'data-rrn-agent-global-map']],
+    globalMap: [['/style/agent-global-map.css?v=20261109-1', 'data-rrn-agent-global-map']],
     agents: [['/style/agent-management.css?v=20261109-1', 'data-rrn-agent-management']]
   });
 
