@@ -30,3 +30,20 @@ body.quick-body{margin:0;background:var(--qc-bg);color:var(--qc-ink);font-family
 .quick-chat-alert{margin:0 12px 8px}
 .quick-ticket-row .quick-status{max-width:115px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:650px){.quick-start,.quick-card{padding:22px 18px}.quick-brand{margin-bottom:34px}.quick-home-heading{align-items:flex-start;flex-direction:column}.quick-home-heading .quick-btn{width:100%}.quick-ticket-row{align-items:flex-start;flex-wrap:wrap}.quick-ticket-copy{min-width:calc(100% - 65px)}.quick-ticket-row .quick-status{margin-left:46px}.quick-ticket-summary{gap:6px}.quick-ticket-summary span{padding:9px}.quick-choice-note{font-size:.7rem}}
+
+/* Login integrado: mantém a autenticação dentro da central de atendimento */
+.quick-login{max-width:520px}
+.quick-login .quick-form{margin-top:20px}
+.quick-login .quick-form label{display:grid;gap:7px}
+.quick-login .quick-form label>span{font-size:.78rem;font-weight:750;color:var(--qc-ink)}
+.quick-login .quick-form input{width:100%;min-height:47px;padding:12px 13px;border:1px solid var(--qc-line);border-radius:11px;background:#fff;color:var(--qc-ink);font:inherit;font-size:.86rem;outline:none;transition:border-color .18s,box-shadow .18s}
+.quick-login .quick-form input:focus{border-color:var(--qc-teal);box-shadow:0 0 0 3px rgba(40,126,120,.12)}
+.quick-login .quick-form button{width:100%;margin-top:5px}
+.quick-forgot{display:block;margin:14px auto 0;border:0;background:transparent;color:var(--qc-teal);font:inherit;font-size:.78rem;font-weight:750;cursor:pointer}
+.quick-forgot:disabled{opacity:.55;cursor:wait}
+.quick-login-foot{display:flex;align-items:center;gap:9px;margin-top:22px;padding-top:16px;border-top:1px solid var(--qc-line);color:var(--qc-muted);font-size:.72rem;line-height:1.5}
+.quick-login .quick-alert{margin-top:15px}
+.quick-secondary-card{font:inherit;cursor:pointer}
+.quick-secondary-card:hover{border-color:#a9cbc5;background:#f8fbfa;transform:translateY(-1px)}
+.quick-secondary-card:focus-visible,.quick-primary-card:focus-visible,.quick-forgot:focus-visible{outline:3px solid rgba(40,126,120,.28);outline-offset:3px}
+@media(max-width:650px){.quick-login{padding:22px 18px}.quick-login .quick-form input{min-height:49px}}
