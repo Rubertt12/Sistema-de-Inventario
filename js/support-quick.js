@@ -6,7 +6,7 @@ if(!cfg.url||!cfg.anonKey||!window.supabase?.createClient) return;
 const client=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'rrn-guest-support-auth'}});
 const $=id=>document.getElementById(id);
 const views=['quickStart','quickIdentify','quickHome','quickOpenTicket','quickChat','quickFinished'];
-const state={user:null,customer:null,ticket:null,channels:[],busy:false};
+const state={user:null,customer:null,ticket:null,channels:[],busy:false,tickets:[],ticketFilter:'all',ticketSearch:''};
 const labels={new:'Novo',assigned:'Atribuído',in_progress:'Em atendimento',waiting_requester:'Aguardando você',resolved:'Resolvido',closed:'Encerrado',reopened:'Reaberto'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>s?new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'}).format(new Date(s)):'';
@@ -47,10 +47,23 @@ async function loadTickets(){
  const box=$('quickTicketList');box.innerHTML='<div class="quick-empty">Atualizando seus atendimentos...</div>';
  const {data,error}=await client.from('support_tickets').select('id,ticket_number,title,description,status,priority,opened_at,last_message_at,closed_at').eq('requester_id',state.customer.id).order('last_message_at',{ascending:false}).limit(30);
  if(error){box.innerHTML='<div class="quick-empty">Não foi possível carregar o histórico.</div>';alert('quickHomeAlert',friendly(error));return;}
- alert('quickHomeAlert');
- if(!data?.length){box.innerHTML='<div class="quick-empty quick-empty-card"><span>☏</span><b>Você ainda não tem chamados.</b><small>Quando abrir uma solicitação, ela aparecerá aqui.</small></div>';return;}
- box.innerHTML=data.map(t=>'<button class="quick-ticket-row" type="button" data-ticket="'+esc(t.id)+'"><span class="quick-ticket-symbol">#</span><span class="quick-ticket-copy"><b>Protocolo #'+esc(t.ticket_number)+'</b><small>'+esc(t.title||'Solicitação')+' · '+esc(date(t.last_message_at||t.opened_at))+'</small></span><span class="quick-status '+esc(t.status)+'">'+esc(labels[t.status]||t.status)+'</span><span class="quick-arrow">›</span></button>').join('');
- box.querySelectorAll('[data-ticket]').forEach(b=>b.addEventListener('click',()=>openTicket(b.dataset.ticket)));
+ state.tickets=data||[];alert('quickHomeAlert');renderTicketList();
+}
+function renderTicketList(){
+ const box=$('quickTicketList'),all=state.tickets||[];
+ const open=all.filter(t=>!['closed','resolved'].includes(t.status)).length;
+ const done=all.length-open;
+ const summary=$('quickTicketSummary');if(summary)summary.innerHTML='<span><b>'+all.length+'</b><small>Total</small></span><span><b>'+open+'</b><small>Em andamento</small></span><span><b>'+done+'</b><small>Finalizados</small></span>';
+ const q=state.ticketSearch.toLowerCase();
+ const filtered=all.filter(t=>{
+  const matchesFilter=state.ticketFilter==='all'||(state.ticketFilter==='open'?!['closed','resolved'].includes(t.status):['closed','resolved'].includes(t.status));
+  const matchesSearch=!q||String(t.ticket_number||'').toLowerCase().includes(q)||String(t.title||'').toLowerCase().includes(q)||String(t.description||'').toLowerCase().includes(q);
+  return matchesFilter&&matchesSearch;
+ });
+ if(!all.length){box.innerHTML='<div class="quick-empty quick-empty-card"><span>☏</span><b>Você ainda não tem chamados.</b><small>Abra seu primeiro chamado. O protocolo e todas as respostas ficarão organizados aqui.</small></div>';return;}
+ if(!filtered.length){box.innerHTML='<div class="quick-empty">Nenhum chamado encontrado com esse filtro.</div>';return;}
+ box.innerHTML=filtered.map(t=>'<button class="quick-ticket-row" type="button" data-ticket="'+esc(t.id)+'"><span class="quick-ticket-symbol">#</span><span class="quick-ticket-copy"><b>Protocolo #'+esc(t.ticket_number)+'</b><small>'+esc(t.title||'Solicitação')+' · '+esc(date(t.last_message_at||t.opened_at))+'</small></span><span class="quick-status '+esc(t.status)+'">'+esc(labels[t.status]||t.status)+'</span><span class="quick-arrow">›</span></button>').join('');
+ box.querySelectorAll('[data-ticket]').forEach(b=>b.addEventListener('click',()=>openTicket(b.dataset.ticket).catch(err=>alert('quickHomeAlert',friendly(err)))));
 }
 async function createTicket(e){
  e.preventDefault();if(state.busy)return;alert('quickTicketAlert');
@@ -64,6 +77,7 @@ async function createTicket(e){
  finally{state.busy=false;busyButton(btn,false);}
 }
 async function openTicket(id){
+ alert('quickChatAlert');
  const {data,error}=await client.from('support_tickets').select('*').eq('id',id).eq('requester_id',state.customer.id).single();
  if(error)throw error;state.ticket=data;view('quickChat');renderTicket();await loadMessages();subscribe();
 }
@@ -87,7 +101,7 @@ async function sendMessage(e){
  e.preventDefault();const input=$('quickMessageInput'),message=input.value.trim();if(!message||!state.ticket||state.ticket.status==='closed'||state.busy)return;
  const btn=$('quickSendButton');state.busy=true;btn.disabled=true;
  try{const {error}=await client.from('support_ticket_messages').insert({ticket_id:state.ticket.id,message});if(error)throw error;input.value='';await loadMessages();}
- catch(err){console.error('[RRN chat] send',err);alert('quickHomeAlert',friendly(err));}
+ catch(err){console.error('[RRN chat] send',err);alert('quickChatAlert',friendly(err));}
  finally{state.busy=false;btn.disabled=false;input.focus();}
 }
 function subscribe(){
@@ -97,7 +111,7 @@ function subscribe(){
  const ticket=client.channel('rrn-chat-ticket-'+state.ticket.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'support_tickets',filter:'id=eq.'+state.ticket.id},p=>{state.ticket=p.new;renderTicket();}).subscribe();
  state.channels=[msg,ticket];
 }
-async function changeIdentity(){if(!confirm('Deseja sair desta sessão de atendimento neste dispositivo?'))return;state.channels.forEach(c=>client.removeChannel(c));state.channels=[];await client.auth.signOut();state.user=state.customer=state.ticket=null;$('quickIdentifyForm').reset();view('quickStart');}
+async function changeIdentity(){if(!confirm('Deseja sair desta sessão de atendimento neste dispositivo?'))return;state.channels.forEach(c=>client.removeChannel(c));state.channels=[];await client.auth.signOut();state.user=state.customer=state.ticket=null;state.tickets=[];state.ticketFilter='all';state.ticketSearch='';$('quickIdentifyForm').reset();view('quickStart');}
 async function endTicket(){
  if(!state.ticket||state.ticket.status==='closed')return;if(!confirm('Deseja encerrar este atendimento?'))return;
  try{const {data,error}=await client.rpc('support_guest_close_ticket',{p_ticket_id:state.ticket.id});if(error)throw error;state.ticket=Array.isArray(data)?data[0]:data;renderTicket();await showHome();}
@@ -111,6 +125,8 @@ function bind(){
  document.querySelectorAll('[data-quick-back]').forEach(b=>b.addEventListener('click',()=>view('quickStart')));
  document.querySelectorAll('[data-quick-home]').forEach(b=>b.addEventListener('click',showHome));
  $('quickNewAttendance')?.addEventListener('click',showHome);
+ $('quickTicketSearch')?.addEventListener('input',e=>{state.ticketSearch=e.target.value||'';renderTicketList();});
+ document.querySelectorAll('[data-ticket-filter]').forEach(b=>b.addEventListener('click',()=>{state.ticketFilter=b.dataset.ticketFilter;document.querySelectorAll('[data-ticket-filter]').forEach(x=>x.classList.toggle('active',x===b));renderTicketList();}));
  $('quickChatMenu')?.addEventListener('click',()=>{if(state.ticket?.status==='closed')return;const choice=confirm('Deseja encerrar este atendimento?\n\nOK = Encerrar · Cancelar = Continuar conversando');if(choice)endTicket();});
  $('quickMessageInput')?.addEventListener('input',e=>{e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,110)+'px';});
  const org=new URLSearchParams(location.search).get('org');if(org&&$('quickOrg'))$('quickOrg').value=org;
