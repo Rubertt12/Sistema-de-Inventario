@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style/rrn-theme-v2.css">
-<link rel="stylesheet" href="/style/support-quick.css?v=20261109-5">
+<link rel="stylesheet" href="/style/support-quick.css?v=20261109-6">
 <link rel="icon" href="/img/icon-png.png" type="image/png">
 </head>
 <body class="quick-body">
@@ -17,10 +17,25 @@
  <div class="quick-welcome"><span class="quick-eyebrow">Estamos aqui para ajudar</span><h1>Como podemos resolver isso?</h1><p>Abra uma solicitação, acompanhe as respostas e mantenha todo o histórico em um só lugar.</p></div>
  <div class="quick-start-actions">
   <button class="quick-primary-card" id="quickGuestBtn" type="button"><span class="quick-card-icon">＋</span><span><b>Preciso de atendimento</b><small>Abra um chamado agora, sem senha ou cadastro prévio.</small><em>Continuar como visitante</em></span><span class="quick-arrow">→</span></button>
-  <a class="quick-secondary-card" href="/portal.html?from=chat"><span class="quick-card-icon">↗</span><span><b>Já tenho uma conta</b><small>Entre com seu e-mail e senha para ver seus chamados, conversar com o suporte e acompanhar atualizações.</small><em>Entrar na minha conta</em></span><span class="quick-arrow">→</span></a>
+  <button class="quick-secondary-card" id="quickAccountBtn" type="button"><span class="quick-card-icon">↗</span><span><b>Já tenho uma conta</b><small>Entre com seu e-mail e senha para consultar seus chamados e continuar as conversas.</small><em>Entrar sem sair desta tela</em></span><span class="quick-arrow">→</span></button>
  </div>
  <div class="quick-choice-note"><span>✓</span><span><b>Já se cadastrou?</b> Use a opção “Já tenho uma conta”. Seus chamados ficam vinculados ao seu acesso.</span></div>
  <div class="quick-trust"><span>●</span> Atendimento protegido e vinculado ao seu protocolo.</div>
+</section>
+
+<section class="quick-card quick-login" id="quickLogin" hidden>
+ <button class="quick-back" type="button" data-quick-start>← Voltar ao início</button>
+ <span class="quick-step">ACESSO DO CLIENTE</span>
+ <h2>Entre na sua conta.</h2>
+ <p class="quick-subtitle">Acesse seus chamados, acompanhe as respostas e continue suas conversas com a equipe.</p>
+ <form id="quickLoginForm" class="quick-form">
+  <label><span>E-mail cadastrado</span><input id="quickLoginEmail" type="email" required maxlength="180" autocomplete="username" placeholder="voce@empresa.com"></label>
+  <label><span>Senha</span><input id="quickLoginPassword" type="password" required autocomplete="current-password" placeholder="Sua senha"></label>
+  <button class="quick-btn primary" type="submit">Entrar na central <span>→</span></button>
+ </form>
+ <button class="quick-forgot" id="quickForgotPassword" type="button">Esqueci minha senha</button>
+ <div class="quick-alert" id="quickLoginAlert" role="alert" hidden></div>
+ <div class="quick-login-foot"><span>🔒</span> Seus dados e chamados permanecem vinculados à sua conta.</div>
 </section>
 
 <section class="quick-card" id="quickIdentify" hidden>
@@ -68,5 +83,5 @@
 <section class="quick-card quick-finished" id="quickFinished" hidden><div class="quick-finish-icon">✓</div><span class="quick-eyebrow">Atendimento encerrado</span><h2>Solicitação finalizada.</h2><p class="quick-subtitle">Seu protocolo continua disponível no histórico.</p><div class="quick-protocol"><span>Protocolo</span><strong id="quickProtocolNumber">—</strong></div><button class="quick-btn primary" id="quickNewAttendance" type="button">Voltar aos atendimentos</button></section>
 </main>
 <script src="/js/supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/js/support-quick.js?v=20261109-4"></script>
+<script src="/js/support-quick.js?v=20261109-6"></script>
 </body></html>
