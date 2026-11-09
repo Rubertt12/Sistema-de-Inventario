@@ -12,6 +12,15 @@
   <link rel="stylesheet" href="/style/support-portal.css" />
   <link rel="icon" href="/img/icon-png.png" type="image/png" />
   <style>
+    .chat-login-only .support-auth-card{width:min(100%,460px);padding:30px;border:1px solid var(--rrn-border);border-radius:22px;background:var(--rrn-surface,#fff);box-shadow:0 24px 70px rgba(16,47,67,.12)}
+    .chat-login-only .support-chat-back{margin-bottom:24px;font-size:.82rem}
+    .chat-login-only .support-auth-card::before{content:"Acesso do cliente";display:block;margin-bottom:8px;color:var(--rrn-secondary);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+    .chat-login-only .support-auth-card .support-tabs{margin-bottom:22px}
+    .chat-login-only .support-form{gap:16px}
+    .chat-login-only .support-form>button{min-height:48px;font-size:.92rem}
+    .chat-login-only .support-field input{min-height:46px}
+    .chat-login-only .support-auth-card::after{content:"Seus chamados, mensagens e atualizações ficam reunidos em um só lugar.";display:block;margin-top:20px;padding-top:16px;border-top:1px solid var(--rrn-border);color:var(--rrn-muted);font-size:.76rem;line-height:1.55}
+    @media(max-width:560px){.chat-login-only .support-auth-card{padding:22px 18px;border-radius:16px}}
     .support-chat-back { display:inline-flex; align-items:center; gap:.45rem; margin-bottom:1rem; color:var(--rrn-primary,#295991); font-weight:700; text-decoration:none; }
     .support-chat-back:hover { text-decoration:underline; }
     body.chat-login-only .support-topbar,
