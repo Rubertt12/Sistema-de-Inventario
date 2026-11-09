@@ -1,270 +1,121 @@
 (() => {
-  'use strict';
-  const cfg = window.RRN_SUPABASE || {};
-  if (!cfg.url || !cfg.anonKey || !window.supabase?.createClient) return;
-
-  const client = window.supabase.createClient(cfg.url, cfg.anonKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: false,
-      storageKey: 'rrn-guest-support-auth'
-    }
-  });
-
-  const $ = id => document.getElementById(id);
-  const state = { user: null, customer: null, ticket: null, messageChannel: null, ticketChannel: null };
-  const statusLabels = { new:'Novo', assigned:'Atribuído', in_progress:'Em atendimento', waiting_requester:'Aguardando você', resolved:'Resolvido', closed:'Encerrado', reopened:'Reaberto' };
-
-  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const formatDate = value => value ? new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'}).format(new Date(value)) : '';
-  const normalizeSlug = value => String(value || '').trim().toLowerCase().replace(/\s+/g,'-');
-
-  function showOnly(id) {
-    ['quickStart','quickIdentify','quickOpenTicket','quickBot','quickChat','quickFinished'].forEach(view => {
-      const el = $(view);
-      if (el) el.hidden = view !== id;
-    });
-    window.dispatchEvent(new CustomEvent('rrn:support-view',{detail:{id}}));
-  }
-
-  window.RRNSupportQuick = { showOnly };
-
-  function alertBox(id, message = '', success = false) {
-    const el = $(id);
-    if (!el) return;
-    if (!message) { el.hidden = true; el.textContent = ''; return; }
-    el.hidden = false;
-    el.textContent = message;
-    el.className = `quick-alert${success ? ' success' : ''}`;
-  }
-
-  function friendlyError(error, fallback) {
-    const raw = String(error?.message || '').trim();
-    const lower = raw.toLowerCase();
-    if (lower.includes('anonymous') && (lower.includes('disabled') || lower.includes('not enabled'))) {
-      return 'O atendimento sem senha ainda não está habilitado no servidor. Entre com sua conta por enquanto ou peça ao administrador para habilitar o acesso anônimo do portal.';
-    }
-    if (lower.includes('portal') || lower.includes('empresa')) return raw || 'Não foi possível identificar a empresa.';
-    if (lower.includes('rate limit')) return 'Muitas tentativas em pouco tempo. Aguarde um momento e tente novamente.';
-    return raw || fallback;
-  }
-
-  async function startGuest(event) {
-    event?.preventDefault();
-    showOnly('quickIdentify');
-    setTimeout(() => $('quickName')?.focus(), 0);
-  }
-
-  async function identify(event) {
-    event.preventDefault();
-    alertBox('quickIdentifyAlert');
-    const name = $('quickName').value.trim();
-    const org = normalizeSlug($('quickOrg').value);
-    const email = $('quickEmail').value.trim();
-    const phone = $('quickPhone').value.trim();
-    const employee = $('quickEmployee').value.trim();
-    if (!email && !phone) return alertBox('quickIdentifyAlert','Informe pelo menos um e-mail ou telefone.');
-
-    const submit = $('quickIdentifyForm').querySelector('button[type="submit"]');
-    submit.disabled = true;
-    submit.textContent = 'Identificando...';
-    try {
-      let { data: sessionData } = await client.auth.getSession();
-      let user = sessionData?.session?.user;
-      if (user && !user.is_anonymous) {
-        await client.auth.signOut();
-        user = null;
-      }
-      if (!user) {
-        const { data, error } = await client.auth.signInAnonymously({
-          options: { data: { name, rrn_support_portal: true, rrn_support_tenant_slug: org || null } }
-        });
-        if (error) throw error;
-        user = data.user;
-      }
-      if (!user?.is_anonymous) throw new Error('Não foi possível criar a sessão temporária de atendimento.');
-      state.user = user;
-
-      const { data: customer, error: bootstrapError } = await client.rpc('support_guest_bootstrap', {
-        p_portal_slug: org || '',
-        p_name: name,
-        p_email: email || null,
-        p_phone: phone || null,
-        p_employee_number: employee || null
-      });
-      if (bootstrapError) throw bootstrapError;
-      state.customer = Array.isArray(customer) ? customer[0] : customer;
-      if (!state.customer?.id) throw new Error('Não foi possível concluir sua identificação.');
-      $('quickUserName').textContent = state.customer.name || name;
-      $('quickCompany').textContent = org || 'Ambiente identificado';
-      showOnly('quickOpenTicket');
-      await restoreLatestTicket();
-    } catch (error) {
-      console.error('RRN suporte rápido - identificação:', error);
-      alertBox('quickIdentifyAlert', friendlyError(error,'Não foi possível iniciar o atendimento sem login.'));
-    } finally {
-      submit.disabled = false;
-      submit.textContent = 'Continuar';
-    }
-  }
-
-  async function restoreLatestTicket() {
-    if (!state.customer?.id) return;
-    const { data, error } = await client.from('support_tickets').select('*')
-      .eq('requester_id', state.customer.id)
-      .not('status','eq','closed')
-      .order('opened_at',{ascending:false}).limit(1);
-    if (error) {
-      console.error('RRN suporte rápido - restaurar chamado:', error);
-      return;
-    }
-    if (data?.[0]) {
-      state.ticket = data[0];
-      openChat();
-    }
-  }
-
-  async function createTicket(event) {
-    event.preventDefault();
-    alertBox('quickTicketAlert');
-    if (!state.customer?.id) return alertBox('quickTicketAlert','Identificação expirada. Volte e informe seus dados novamente.');
-    const machine = $('quickMachine').value.trim();
-    const problem = $('quickProblem').value.trim();
-    if (!problem) return;
-    const title = problem.length > 72 ? `${problem.slice(0,69)}...` : problem;
-    const submit = $('quickTicketForm').querySelector('button[type="submit"]');
-    submit.disabled = true;
-    submit.textContent = 'Abrindo...';
-    try {
-      const { data, error } = await client.from('support_tickets').insert({
-        requester_id: state.customer.id,
-        machine_query: machine || null,
-        title,
-        description: problem,
-        priority: 'medium'
-      }).select('*').single();
-      if (error) throw error;
-      state.ticket = data;
-      openChat();
-    } catch (error) {
-      console.error('RRN suporte rápido - abrir chamado:', error);
-      alertBox('quickTicketAlert', friendlyError(error,'Não foi possível abrir o chamado.'));
-    } finally {
-      submit.disabled = false;
-      submit.textContent = 'Abrir chamado';
-    }
-  }
-
-  function openChat() {
-    if (!state.ticket) return;
-    showOnly('quickChat');
-    renderTicket();
-    subscribe();
-    Promise.resolve(loadMessages()).catch(error => console.error('RRN suporte rápido - carregar mensagens:', error));
-  }
-
-  function renderTicket() {
-    const t = state.ticket;
-    $('quickTicketNumber').textContent = `Chamado #${t.ticket_number}`;
-    $('quickTicketTitle').textContent = t.title || 'Atendimento';
-    $('quickTicketStatus').textContent = statusLabels[t.status] || t.status;
-    $('quickTicketMeta').textContent = [t.machine_query ? `Equipamento: ${t.machine_query}` : null, `Aberto em ${formatDate(t.opened_at)}`, 'Prioridade definida pelo suporte'].filter(Boolean).join(' · ');
-    const closed = t.status === 'closed';
-    $('quickMessageInput').disabled = closed;
-    $('quickMessageForm').querySelector('button').disabled = closed;
-    $('quickMessageInput').placeholder = closed ? 'Chamado encerrado.' : 'Digite sua mensagem...';
-  }
-
-  async function loadMessages() {
-    if (!state.ticket?.id) return;
-    const { data, error } = await client.from('support_ticket_messages')
-      .select('id,ticket_id,sender_id,sender_type,message,created_at')
-      .eq('ticket_id',state.ticket.id).order('created_at',{ascending:true});
-    if (error) {
-      console.error('RRN suporte rápido - mensagens:', error);
-      return;
-    }
-    const box = $('quickMessages');
-    if (!data?.length) {
-      box.innerHTML = '<div class="quick-info">Chamado aberto. A equipe de suporte verá sua solicitação e poderá responder por aqui.</div>';
-      return;
-    }
-    box.innerHTML = data.map(m => {
-      const own = m.sender_id === state.user?.id;
-      return `<article class="quick-message ${own ? 'own' : ''}"><strong>${m.sender_type === 'support' ? 'Suporte' : 'Você'}</strong><p>${escapeHtml(m.message)}</p><small>${escapeHtml(formatDate(m.created_at))}</small></article>`;
-    }).join('');
-    box.scrollTop = box.scrollHeight;
-  }
-
-  async function sendMessage(event) {
-    event.preventDefault();
-    if (!state.ticket) return;
-    const input = $('quickMessageInput');
-    const message = input.value.trim();
-    if (!message) return;
-    input.value = '';
-    const { error } = await client.from('support_ticket_messages').insert({ ticket_id: state.ticket.id, message });
-    if (error) {
-      console.error('RRN suporte rápido - enviar mensagem:', error);
-      input.value = message;
-      return;
-    }
-    await loadMessages();
-  }
-
-  function subscribe() {
-    if (!state.ticket?.id) return;
-    if (state.messageChannel) client.removeChannel(state.messageChannel);
-    if (state.ticketChannel) client.removeChannel(state.ticketChannel);
-    state.messageChannel = client.channel(`guest-msg-${state.ticket.id}`)
-      .on('postgres_changes',{event:'INSERT',schema:'public',table:'support_ticket_messages',filter:`ticket_id=eq.${state.ticket.id}`},loadMessages).subscribe();
-    state.ticketChannel = client.channel(`guest-ticket-${state.ticket.id}`)
-      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'support_tickets',filter:`id=eq.${state.ticket.id}`},payload => {
-        state.ticket = payload.new;
-        renderTicket();
-      }).subscribe();
-  }
-
-  async function changeIdentity() {
-    if (state.messageChannel) client.removeChannel(state.messageChannel);
-    if (state.ticketChannel) client.removeChannel(state.ticketChannel);
-    await client.auth.signOut();
-    state.user = state.customer = state.ticket = null;
-    $('quickIdentifyForm').reset();
-    const org = new URLSearchParams(location.search).get('org');
-    if (org) $('quickOrg').value = org;
-    showOnly('quickIdentify');
-  }
-
-  async function restoreSession() {
-    try {
-      const { data: { session } } = await client.auth.getSession();
-      if (!session?.user?.is_anonymous) return;
-      state.user = session.user;
-      const { data: customer, error } = await client.from('support_customers').select('*').eq('user_id',session.user.id).eq('status','active').maybeSingle();
-      if (error || !customer) return;
-      state.customer = customer;
-      $('quickUserName').textContent = customer.name || 'Usuário';
-      $('quickCompany').textContent = 'Suporte rápido';
-      showOnly('quickOpenTicket');
-      await restoreLatestTicket();
-    } catch (error) {
-      console.error('RRN suporte rápido - restaurar sessão:', error);
-    }
-  }
-
-  function bind() {
-    $('quickGuestBtn')?.addEventListener('click',startGuest);
-    document.querySelectorAll('[data-quick-back]').forEach(btn => btn.addEventListener('click',() => showOnly('quickStart')));
-    $('quickIdentifyForm')?.addEventListener('submit',identify);
-    $('quickTicketForm')?.addEventListener('submit',createTicket);
-    $('quickMessageForm')?.addEventListener('submit',sendMessage);
-    $('quickChangeIdentity')?.addEventListener('click',changeIdentity);
-    const org = new URLSearchParams(location.search).get('org');
-    if (org) $('quickOrg').value = org;
-  }
-
-  async function boot() { bind(); await restoreSession(); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
+'use strict';
+if (window.__RRN_SUPPORT_V4__) return; window.__RRN_SUPPORT_V4__=true;
+const cfg=window.RRN_SUPABASE||{};
+if(!cfg.url||!cfg.anonKey||!window.supabase?.createClient) return;
+const client=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'rrn-guest-support-auth'}});
+const $=id=>document.getElementById(id);
+const views=['quickStart','quickIdentify','quickHome','quickOpenTicket','quickChat','quickFinished'];
+const state={user:null,customer:null,ticket:null,channels:[],busy:false};
+const labels={new:'Novo',assigned:'Atribuído',in_progress:'Em atendimento',waiting_requester:'Aguardando você',resolved:'Resolvido',closed:'Encerrado',reopened:'Reaberto'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const date=s=>s?new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'}).format(new Date(s)):'';
+function view(id){views.forEach(k=>{if($(k))$(k).hidden=k!==id;});window.dispatchEvent(new CustomEvent('rrn:support-view',{detail:{id}}));}
+function alert(id,msg=''){const el=$(id);if(!el)return;el.hidden=!msg;el.textContent=msg;}
+function slug(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,'-');}
+function friendly(e){const m=String(e?.message||'');if(/anonymous.*(disabled|not enabled)/i.test(m))return 'O acesso sem senha está temporariamente indisponível. Tente entrar com sua conta ou avise a equipe.';if(/rate limit/i.test(m))return 'Muitas tentativas em pouco tempo. Aguarde um minuto e tente novamente.';if(/empresa|portal/i.test(m))return 'Não conseguimos identificar a empresa. Confira o nome/código do portal ou contate o suporte.';return m||'Não foi possível concluir. Tente novamente.';}
+function busyButton(btn,on,label){if(!btn)return;btn.disabled=on;if(on){btn.dataset.old=btn.textContent;btn.textContent=label||'Aguarde...';}else{btn.textContent=btn.dataset.old||btn.textContent;delete btn.dataset.old;}}
+async function sessionUser(){const {data,error}=await client.auth.getSession();if(error)throw error;return data.session?.user||null;}
+async function identify(e){
+ e.preventDefault();if(state.busy)return;alert('quickIdentifyAlert');
+ const name=$('quickName').value.trim(),email=$('quickEmail').value.trim(),phone=$('quickPhone').value.trim(),org=slug($('quickOrg').value),employee=$('quickEmployee').value.trim();
+ if(!name)return alert('quickIdentifyAlert','Informe seu nome completo.');
+ if(!email&&!phone)return alert('quickIdentifyAlert','Informe seu e-mail ou telefone para podermos retornar.');
+ const btn=$('quickIdentifyForm').querySelector('[type=submit]');state.busy=true;busyButton(btn,true,'Identificando...');
+ try{
+  let user=await sessionUser();if(user&&!user.is_anonymous){await client.auth.signOut();user=null;}
+  if(!user){const {data,error}=await client.auth.signInAnonymously({options:{data:{name,rrn_support_portal:true,rrn_support_tenant_slug:org||null}}});if(error)throw error;user=data.user;}
+  if(!user?.is_anonymous)throw new Error('A sessão temporária não foi criada.');
+  state.user=user;
+  const {data,error}=await client.rpc('support_guest_bootstrap',{p_portal_slug:org||'',p_name:name,p_email:email||null,p_phone:phone||null,p_employee_number:employee||null});
+  if(error)throw error;state.customer=Array.isArray(data)?data[0]:data;
+  if(!state.customer?.id)throw new Error('Não foi possível concluir sua identificação.');
+  await showHome();
+ }catch(err){console.error('[RRN chat] identify',err);alert('quickIdentifyAlert',friendly(err));}
+ finally{state.busy=false;busyButton(btn,false);}
+}
+async function restore(){
+ const user=await sessionUser();if(!user?.is_anonymous)return false;state.user=user;
+ const {data,error}=await client.from('support_customers').select('*').eq('user_id',user.id).eq('status','active').maybeSingle();
+ if(error)throw error;if(!data)return false;state.customer=data;return true;
+}
+async function showHome(){
+ if(!state.customer)return; $('quickUserName').textContent=state.customer.name||'Usuário';$('quickAvatar').textContent=(state.customer.name||'U').trim().charAt(0).toUpperCase();
+ view('quickHome');await loadTickets();
+}
+async function loadTickets(){
+ const box=$('quickTicketList');box.innerHTML='<div class="quick-empty">Atualizando seus atendimentos...</div>';
+ const {data,error}=await client.from('support_tickets').select('id,ticket_number,title,description,status,priority,opened_at,last_message_at,closed_at').eq('requester_id',state.customer.id).order('last_message_at',{ascending:false}).limit(30);
+ if(error){box.innerHTML='<div class="quick-empty">Não foi possível carregar o histórico.</div>';alert('quickHomeAlert',friendly(error));return;}
+ alert('quickHomeAlert');
+ if(!data?.length){box.innerHTML='<div class="quick-empty quick-empty-card"><span>☏</span><b>Você ainda não tem chamados.</b><small>Quando abrir uma solicitação, ela aparecerá aqui.</small></div>';return;}
+ box.innerHTML=data.map(t=>'<button class="quick-ticket-row" type="button" data-ticket="'+esc(t.id)+'"><span class="quick-ticket-symbol">#</span><span class="quick-ticket-copy"><b>Protocolo #'+esc(t.ticket_number)+'</b><small>'+esc(t.title||'Solicitação')+' · '+esc(date(t.last_message_at||t.opened_at))+'</small></span><span class="quick-status '+esc(t.status)+'">'+esc(labels[t.status]||t.status)+'</span><span class="quick-arrow">›</span></button>').join('');
+ box.querySelectorAll('[data-ticket]').forEach(b=>b.addEventListener('click',()=>openTicket(b.dataset.ticket)));
+}
+async function createTicket(e){
+ e.preventDefault();if(state.busy)return;alert('quickTicketAlert');
+ const problem=$('quickProblem').value.trim(),machine=$('quickMachine').value.trim();if(problem.length<8)return alert('quickTicketAlert','Descreva o problema com pelo menos 8 caracteres.');
+ const btn=$('quickTicketForm').querySelector('[type=submit]');state.busy=true;busyButton(btn,true,'Abrindo chamado...');
+ try{
+  const title=problem.length>80?problem.slice(0,77)+'...':problem;
+  const {data,error}=await client.from('support_tickets').insert({requester_id:state.customer.id,machine_query:machine||null,title,description:problem,priority:'medium'}).select('*').single();
+  if(error)throw error;state.ticket=data;$('quickTicketForm').reset();await openTicket(data.id);
+ }catch(err){console.error('[RRN chat] create ticket',err);alert('quickTicketAlert',friendly(err));}
+ finally{state.busy=false;busyButton(btn,false);}
+}
+async function openTicket(id){
+ const {data,error}=await client.from('support_tickets').select('*').eq('id',id).eq('requester_id',state.customer.id).single();
+ if(error)throw error;state.ticket=data;view('quickChat');renderTicket();await loadMessages();subscribe();
+}
+function renderTicket(){
+ const t=state.ticket;if(!t)return;
+ $('quickTicketNumber').textContent='PROTOCOLO #'+t.ticket_number;$('quickTicketTitle').textContent=t.title||'Atendimento';
+ $('quickTicketStatus').textContent=labels[t.status]||t.status;$('quickTicketStatus').className='quick-status '+t.status;
+ $('quickContextStatus').textContent=t.status==='closed'?'Atendimento encerrado':t.assigned_to?'Atendimento com a equipe':'Solicitação registrada';
+ $('quickTicketMeta').textContent='Aberto em '+date(t.opened_at)+(t.machine_query?' · '+t.machine_query:'');
+ const closed=t.status==='closed';$('quickMessageInput').disabled=closed;$('quickSendButton').disabled=closed;$('quickClosedNote').hidden=!closed;$('quickMessageInput').placeholder=closed?'Este chamado foi encerrado.':'Escreva sua mensagem...';
+}
+async function loadMessages(){
+ if(!state.ticket)return;const box=$('quickMessages');
+ const {data,error}=await client.from('support_ticket_messages').select('id,sender_id,sender_type,message,created_at').eq('ticket_id',state.ticket.id).order('created_at',{ascending:true});
+ if(error){console.error('[RRN chat] messages',error);box.innerHTML='<div class="quick-empty">Não foi possível carregar as mensagens. Tente atualizar.</div>';return;}
+ if(!data?.length){box.innerHTML='<div class="quick-first-message"><span>✦</span><b>Conversa iniciada</b><p>Sua solicitação foi registrada. Nossa equipe poderá responder por aqui. Você pode enviar novas informações a qualquer momento.</p></div>';return;}
+ box.innerHTML=data.map(m=>{const own=m.sender_id===state.user?.id;const sender=m.sender_type==='support'?'Equipe de suporte':own?'Você':'Atendimento';return '<article class="quick-message '+(own?'own':'')+'"><strong>'+esc(sender)+'</strong><p>'+esc(m.message)+'</p><small>'+esc(date(m.created_at))+'</small></article>';}).join('');
+ box.scrollTop=box.scrollHeight;
+}
+async function sendMessage(e){
+ e.preventDefault();const input=$('quickMessageInput'),message=input.value.trim();if(!message||!state.ticket||state.ticket.status==='closed'||state.busy)return;
+ const btn=$('quickSendButton');state.busy=true;btn.disabled=true;
+ try{const {error}=await client.from('support_ticket_messages').insert({ticket_id:state.ticket.id,message});if(error)throw error;input.value='';await loadMessages();}
+ catch(err){console.error('[RRN chat] send',err);alert('quickHomeAlert',friendly(err));}
+ finally{state.busy=false;btn.disabled=false;input.focus();}
+}
+function subscribe(){
+ state.channels.forEach(c=>client.removeChannel(c));state.channels=[];
+ if(!state.ticket)return;
+ const msg=client.channel('rrn-chat-msg-'+state.ticket.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'support_ticket_messages',filter:'ticket_id=eq.'+state.ticket.id},()=>loadMessages()).subscribe();
+ const ticket=client.channel('rrn-chat-ticket-'+state.ticket.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'support_tickets',filter:'id=eq.'+state.ticket.id},p=>{state.ticket=p.new;renderTicket();}).subscribe();
+ state.channels=[msg,ticket];
+}
+async function changeIdentity(){if(!confirm('Deseja sair desta sessão de atendimento neste dispositivo?'))return;state.channels.forEach(c=>client.removeChannel(c));state.channels=[];await client.auth.signOut();state.user=state.customer=state.ticket=null;$('quickIdentifyForm').reset();view('quickStart');}
+async function endTicket(){
+ if(!state.ticket||state.ticket.status==='closed')return;if(!confirm('Deseja encerrar este atendimento?'))return;
+ try{const {data,error}=await client.rpc('support_guest_close_ticket',{p_ticket_id:state.ticket.id});if(error)throw error;state.ticket=Array.isArray(data)?data[0]:data;renderTicket();await showHome();}
+ catch(err){alert('quickHomeAlert',friendly(err));}
+}
+function bind(){
+ $('quickGuestBtn')?.addEventListener('click',()=>{view('quickIdentify');$('quickName')?.focus();});
+ $('quickIdentifyForm')?.addEventListener('submit',identify);$('quickTicketForm')?.addEventListener('submit',createTicket);$('quickMessageForm')?.addEventListener('submit',sendMessage);
+ $('quickNewTicket')?.addEventListener('click',()=>{alert('quickTicketAlert');$('quickTicketForm').reset();view('quickOpenTicket');});
+ $('quickChangeIdentity')?.addEventListener('click',changeIdentity);
+ document.querySelectorAll('[data-quick-back]').forEach(b=>b.addEventListener('click',()=>view('quickStart')));
+ document.querySelectorAll('[data-quick-home]').forEach(b=>b.addEventListener('click',showHome));
+ $('quickNewAttendance')?.addEventListener('click',showHome);
+ $('quickChatMenu')?.addEventListener('click',()=>{if(state.ticket?.status==='closed')return;const choice=confirm('Deseja encerrar este atendimento?\n\nOK = Encerrar · Cancelar = Continuar conversando');if(choice)endTicket();});
+ $('quickMessageInput')?.addEventListener('input',e=>{e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,110)+'px';});
+ const org=new URLSearchParams(location.search).get('org');if(org&&$('quickOrg'))$('quickOrg').value=org;
+}
+async function boot(){bind();try{if(await restore())await showHome();}catch(e){console.error('[RRN chat] restore',e);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+window.RRNSupportQuick={showOnly:view,refresh:showHome};
 })();
