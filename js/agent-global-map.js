@@ -61,29 +61,69 @@
   }
 
   function ensureLeaflet() {
+    if (window.L) return Promise.resolve(window.L);
+    if (state.leafletPromise) return state.leafletPromise;
+
+    const cssUrls = [
+      'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+      'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'
+    ];
     if (!document.querySelector('link[data-rrn-leaflet]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = LEAFLET_CSS;
+      link.href = cssUrls[0];
       link.dataset.rrnLeaflet = '1';
+      link.onerror = () => {
+        if (link.dataset.rrnCssFallback !== '1') {
+          link.dataset.rrnCssFallback = '1';
+          link.href = cssUrls[1];
+        }
+      };
       document.head.appendChild(link);
     }
-    if (window.L) return Promise.resolve(window.L);
-    if (state.leafletPromise) return state.leafletPromise;
-    state.leafletPromise = new Promise((resolve, reject) => {
-      const existing = document.querySelector('script[data-rrn-leaflet]');
+
+    const loadFrom = (url) => new Promise((resolve, reject) => {
+      if (window.L) return resolve(window.L);
+      const existing = [...document.scripts].find(script =>
+        script.src === url || script.dataset.rrnLeaflet === '1'
+      );
       if (existing) {
-        existing.addEventListener('load', () => resolve(window.L), { once:true });
-        existing.addEventListener('error', reject, { once:true });
+        if (window.L || existing.dataset.rrnLoaded === '1') return resolve(window.L);
+        const onLoad = () => {
+          cleanup();
+          window.L ? resolve(window.L) : reject(new Error('Leaflet não inicializou.'));
+        };
+        const onError = () => { cleanup(); reject(new Error('Falha ao carregar Leaflet.')); };
+        const cleanup = () => {
+          existing.removeEventListener('load', onLoad);
+          existing.removeEventListener('error', onError);
+        };
+        existing.addEventListener('load', onLoad, { once:true });
+        existing.addEventListener('error', onError, { once:true });
         return;
       }
       const script = document.createElement('script');
-      script.src = LEAFLET_JS;
+      script.src = url;
       script.async = true;
       script.dataset.rrnLeaflet = '1';
-      script.onload = () => resolve(window.L);
-      script.onerror = reject;
+      script.onload = () => {
+        script.dataset.rrnLoaded = '1';
+        window.L ? resolve(window.L) : reject(new Error('Leaflet não inicializou.'));
+      };
+      script.onerror = () => reject(new Error('CDN do Leaflet indisponível.'));
       document.head.appendChild(script);
+    });
+
+    state.leafletPromise = (async () => {
+      try {
+        return await loadFrom('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+      } catch (firstError) {
+        console.warn('RRN mapa: CDN principal do Leaflet falhou; tentando alternativa.', firstError);
+        return await loadFrom('https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js');
+      }
+    })().catch(error => {
+      state.leafletPromise = null;
+      throw error;
     });
     return state.leafletPromise;
   }
