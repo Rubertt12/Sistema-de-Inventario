@@ -35,7 +35,7 @@
     '/js/responsible-autocomplete.js',
     '/js/dashboard-tabs.js',
     '/js/nav-label-fix.js?v=20260814-1',
-    '/js/navbar-v5.js?v=20261109-2',
+    '/js/navbar-v5.js?v=20261109-3',
     '/js/search-center-v2.js',
     '/js/dashboard-quality-fixes.js',
     '/js/service-desk-inventory-bridge.js',
