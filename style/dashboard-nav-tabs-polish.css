@@ -1,0 +1,173 @@
+/* RRN Manager — unified application navigation tabs, dark + light */
+body:has(#setoresContainer) .navbar .rrn-app-tabs {
+  flex:0 1 auto!important;
+  width:max-content!important;
+  max-width:min(100%,680px)!important;
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  padding:5px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scrollbar-width:none!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:15px!important;
+  background:rgba(5,22,30,.23)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 14px rgba(0,0,0,.08)!important;
+  isolation:isolate!important;
+}
+body:has(#setoresContainer) .navbar .rrn-app-tabs::-webkit-scrollbar {display:none!important}
+body:has(#setoresContainer) .navbar .rrn-app-tab {
+  position:relative!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  min-height:40px!important;
+  height:40px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  padding:0 13px!important;
+  border:1px solid transparent!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:rgba(239,247,249,.76)!important;
+  -webkit-text-fill-color:currentColor!important;
+  font:700 .69rem/1.15 Inter,system-ui,sans-serif!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  text-decoration:none!important;
+  box-shadow:none!important;
+  transform:none!important;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+}
+body:has(#setoresContainer) .navbar .rrn-app-tab .rrn-icon {
+  display:inline-flex!important;
+  flex:0 0 17px!important;
+  width:17px!important;
+  height:17px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  opacity:.82!important;
+  color:currentColor!important;
+  stroke:currentColor!important;
+}
+body:has(#setoresContainer) .navbar .rrn-app-tab:hover {
+  background:rgba(255,255,255,.095)!important;
+  border-color:rgba(255,255,255,.08)!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+}
+body:has(#setoresContainer) .navbar .rrn-app-tab.is-active,
+body:has(#setoresContainer) .navbar .rrn-app-tab[aria-selected="true"] {
+  background:linear-gradient(135deg,#267D77,#21665F)!important;
+  border-color:rgba(255,255,255,.18)!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.17)!important;
+}
+body:has(#setoresContainer) .navbar .rrn-app-tab.is-active .rrn-icon,
+body:has(#setoresContainer) .navbar .rrn-app-tab[aria-selected="true"] .rrn-icon {
+  opacity:1!important;
+}
+body:has(#setoresContainer) .navbar .rrn-app-tab:focus-visible {
+  outline:2px solid #80C9C0!important;
+  outline-offset:2px!important;
+}
+
+/* Light theme: clean navigation tray with clear selected state */
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .rrn-app-tabs {
+  background:#EDF3F4!important;
+  border:1px solid #D7E2E5!important;
+  box-shadow:inset 0 1px 2px rgba(25,62,73,.035)!important;
+}
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .rrn-app-tab {
+  color:#526A73!important;
+  -webkit-text-fill-color:#526A73!important;
+  background:transparent!important;
+  border-color:transparent!important;
+}
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .rrn-app-tab:hover {
+  background:#DFE9EA!important;
+  border-color:#D3E0E2!important;
+  color:#174F61!important;
+  -webkit-text-fill-color:#174F61!important;
+}
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .rrn-app-tab.is-active,
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .rrn-app-tab[aria-selected="true"] {
+  background:linear-gradient(135deg,#287F78,#216D66)!important;
+  border-color:#287F78!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+  box-shadow:0 4px 11px rgba(40,127,120,.2)!important;
+}
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .rrn-app-tab.is-active .rrn-icon,
+:root[data-theme="light"] body:has(#setoresContainer) .navbar .rrn-app-tab[aria-selected="true"] .rrn-icon {
+  color:#FFFFFF!important;
+  stroke:#FFFFFF!important;
+}
+
+/* Mid-size screens: keep the tab group tidy and scrollable rather than squeezing labels */
+@media(max-width:1180px) and (min-width:781px) {
+  body:has(#setoresContainer) .navbar .rrn-app-tabs {
+    max-width:clamp(300px,39vw,470px)!important;
+    gap:3px!important;
+    padding:4px!important;
+  }
+  body:has(#setoresContainer) .navbar .rrn-app-tab {
+    min-height:37px!important;
+    height:37px!important;
+    padding-inline:10px!important;
+    gap:6px!important;
+    font-size:.64rem!important;
+  }
+  body:has(#setoresContainer) .navbar .rrn-app-tab .rrn-icon {
+    width:15px!important;
+    height:15px!important;
+    flex-basis:15px!important;
+  }
+}
+
+/* Mobile menu: real two-column grid, consistent tap targets and full labels */
+@media(max-width:780px) {
+  body:has(#setoresContainer) .navbar .nav-links.active .rrn-app-tabs {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    gap:7px!important;
+    padding:8px!important;
+    overflow:visible!important;
+    border-radius:13px!important;
+  }
+  body:has(#setoresContainer) .navbar .nav-links.active .rrn-app-tab {
+    width:100%!important;
+    min-width:0!important;
+    min-height:45px!important;
+    height:auto!important;
+    justify-content:flex-start!important;
+    padding:0 11px!important;
+    gap:8px!important;
+    border-radius:10px!important;
+    white-space:normal!important;
+    text-align:left!important;
+    font-size:.68rem!important;
+  }
+  body:has(#setoresContainer) .navbar .nav-links.active .rrn-app-tab .rrn-icon {
+    flex:0 0 17px!important;
+    width:17px!important;
+    height:17px!important;
+  }
+}
+@media(max-width:380px) {
+  body:has(#setoresContainer) .navbar .nav-links.active .rrn-app-tabs {
+    grid-template-columns:1fr!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  body:has(#setoresContainer) .navbar .rrn-app-tab {transition:none!important}
+}
