@@ -1,0 +1,91 @@
+/* RRN Manager — global semantic icon colors for every page and theme */
+:root {
+  --rrn-icon: #B8C9CD;
+  --rrn-icon-muted: #8FA2A8;
+  --rrn-icon-accent: var(--rrn-secondary);
+  --rrn-icon-hover: var(--rrn-primary-hover);
+  --rrn-icon-danger: var(--rrn-danger);
+  --rrn-icon-success: var(--rrn-success);
+  --rrn-icon-warning: var(--rrn-warning);
+}
+:root[data-theme="light"] {
+  --rrn-icon: #405A64;
+  --rrn-icon-muted: #71858D;
+  --rrn-icon-accent: #23877F;
+  --rrn-icon-hover: #14566B;
+  --rrn-icon-danger: #B74740;
+  --rrn-icon-success: #247A5D;
+  --rrn-icon-warning: #A85F30;
+}
+
+/* Icons should inherit the foreground color of their own control/container. */
+:where(
+  .fa,.fas,.far,.fab,.fal,.fad,.fa-solid,.fa-regular,.fa-brands,
+  .bi,.lucide,[data-lucide],.material-icons,.material-icons-outlined,
+  .material-symbols-outlined,.icon,.rrn-icon,.navbar-icon,
+  .btn-icon,.button-icon,.action-icon,.menu-icon,.tab-icon
+) {
+  color: var(--rrn-icon) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+:where(button,a,[role="button"],.nav-link,.rrn-app-tab,.tab-button,.dashboard-tab) :where(
+  svg,.fa,.fas,.far,.fab,.fa-solid,.fa-regular,.bi,.lucide,[data-lucide],
+  .material-icons,.material-icons-outlined,.material-symbols-outlined,
+  .icon,.rrn-icon,.btn-icon,.button-icon,.action-icon,.menu-icon,.tab-icon
+) {
+  color: currentColor !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+:where(button,a,[role="button"],.nav-link,.rrn-app-tab,.tab-button,.dashboard-tab) svg {
+  stroke: currentColor;
+}
+:where(button,a,[role="button"],.nav-link,.rrn-app-tab,.tab-button,.dashboard-tab):hover :where(
+  svg,.fa,.fas,.far,.fab,.fa-solid,.fa-regular,.bi,.lucide,[data-lucide],
+  .material-icons,.material-icons-outlined,.material-symbols-outlined,
+  .icon,.rrn-icon,.btn-icon,.button-icon,.action-icon,.menu-icon,.tab-icon
+) {
+  color: currentColor !important;
+}
+:where(button,a,[role="button"],.nav-link,.rrn-app-tab,.tab-button,.dashboard-tab):disabled :where(
+  svg,.fa,.fas,.far,.fab,.bi,.lucide,[data-lucide],.icon,.rrn-icon
+),
+:where(button,a,[role="button"],[aria-disabled="true"]) :where(
+  svg,.fa,.fas,.far,.fab,.bi,.lucide,[data-lucide],.icon,.rrn-icon
+) {
+  opacity: .55;
+}
+
+/* Icon-only controls: predictable contrast without forcing a background color. */
+:where(
+  .rrn-icon-btn,.icon-btn,.btn-icon-only,.action-icon-btn,.theme-toggle,
+  .close-btn,.modal-close,.settings-icon-btn
+) {
+  color: var(--rrn-icon) !important;
+}
+:where(
+  .rrn-icon-btn,.icon-btn,.btn-icon-only,.action-icon-btn,.theme-toggle,
+  .close-btn,.modal-close,.settings-icon-btn
+) :where(svg,i,.fa,.fas,.far,.bi,.lucide,[data-lucide],.icon) {
+  color: currentColor !important;
+  stroke: currentColor;
+}
+:where(
+  .rrn-icon-btn,.icon-btn,.btn-icon-only,.action-icon-btn,.theme-toggle,
+  .close-btn,.modal-close,.settings-icon-btn
+):hover {
+  color: var(--rrn-icon-hover) !important;
+}
+
+/* Status glyphs follow semantic status colors in both themes. */
+:where(.status-ok,.badge-success,.status-active,.status-online,.text-success,.success) :where(
+  svg,i,.fa,.fas,.far,.bi,.lucide,[data-lucide],.icon
+) { color: var(--rrn-icon-success) !important; }
+:where(.status-warning,.badge-warning,.status-maintenance,.text-warning,.warning) :where(
+  svg,i,.fa,.fas,.far,.bi,.lucide,[data-lucide],.icon
+) { color: var(--rrn-icon-warning) !important; }
+:where(.status-danger,.badge-danger,.status-inactive,.text-danger,.danger,.error) :where(
+  svg,i,.fa,.fas,.far,.bi,.lucide,[data-lucide],.icon
+) { color: var(--rrn-icon-danger) !important; }
+
+/* Keep decorative imagery and brand marks untouched. */
+:where(img,picture,video) { color: inherit; }
