@@ -16,6 +16,10 @@
     markerLayer: null,
     markerByKey: new Map(),
     leafletPromise: null,
+    leafletCssPromise: null,
+    tileLayer: null,
+    tileProviderIndex: 0,
+    tileErrors: 0,
     initialized: false
   };
 
@@ -60,35 +64,50 @@
     return [row.city, row.region, row.country].filter(Boolean).join(' · ') || (rowHasCoordinates(row) ? 'Localização aproximada' : 'Localização indisponível');
   }
 
+  function ensureLeafletStyles() {
+    if (state.leafletCssPromise) return state.leafletCssPromise;
+    state.leafletCssPromise = (async () => {
+      const urls = [
+        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+        'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'
+      ];
+      for (const url of urls) {
+        let link = document.querySelector('link[data-rrn-leaflet]');
+        if (link && link.href === url && link.dataset.rrnCssLoaded === '1') return;
+        if (link) link.remove();
+        link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = url;
+        link.dataset.rrnLeaflet = '1';
+        const loaded = await new Promise(resolve => {
+          let done = false;
+          const finish = value => { if (done) return; done = true; clearTimeout(timer); resolve(value); };
+          const timer = setTimeout(() => finish(false), 6500);
+          link.onload = () => { link.dataset.rrnCssLoaded = '1'; finish(true); };
+          link.onerror = () => finish(false);
+          document.head.appendChild(link);
+        });
+        if (loaded) return;
+        link.remove();
+      }
+      throw new Error('Não foi possível carregar o estilo do mapa.');
+    })().catch(error => {
+      state.leafletCssPromise = null;
+      throw error;
+    });
+    return state.leafletCssPromise;
+  }
+
   function ensureLeaflet() {
-    if (window.L) return Promise.resolve(window.L);
+    if (window.L) return ensureLeafletStyles().then(() => window.L);
     if (state.leafletPromise) return state.leafletPromise;
-
-    const cssUrls = [
-      'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-      'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'
-    ];
-    if (!document.querySelector('link[data-rrn-leaflet]')) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = cssUrls[0];
-      link.dataset.rrnLeaflet = '1';
-      link.onerror = () => {
-        if (link.dataset.rrnCssFallback !== '1') {
-          link.dataset.rrnCssFallback = '1';
-          link.href = cssUrls[1];
-        }
-      };
-      document.head.appendChild(link);
-    }
-
     const loadFrom = (url) => new Promise((resolve, reject) => {
       if (window.L) return resolve(window.L);
       const existing = [...document.scripts].find(script => script.src === url);
       if (existing) {
         if (window.L || existing.dataset.rrnLoaded === '1') return resolve(window.L);
         let settled = false;
-        const finish = (ok) => {
+        const finish = ok => {
           if (settled) return;
           settled = true;
           clearTimeout(timeout);
@@ -98,7 +117,7 @@
         };
         const onLoad = () => finish(true);
         const onError = () => finish(false);
-        const timeout = setTimeout(() => finish(Boolean(window.L)), 5000);
+        const timeout = setTimeout(() => finish(Boolean(window.L)), 6500);
         existing.addEventListener('load', onLoad, { once:true });
         existing.addEventListener('error', onError, { once:true });
         return;
@@ -114,8 +133,8 @@
       script.onerror = () => reject(new Error('CDN do Leaflet indisponível.'));
       document.head.appendChild(script);
     });
-
     state.leafletPromise = (async () => {
+      await ensureLeafletStyles();
       try {
         return await loadFrom('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
       } catch (firstError) {
@@ -127,6 +146,29 @@
       throw error;
     });
     return state.leafletPromise;
+  }
+
+  function addTileProvider(L, map, index) {
+    const providers = [
+      { url:'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options:{ subdomains:'abc', maxZoom:19, attribution:'&copy; OpenStreetMap contributors' } },
+      { url:'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', options:{ subdomains:'abcd', maxZoom:19, attribution:'&copy; OpenStreetMap &copy; CARTO' } },
+      { url:'https://tile.openstreetmap.de/{z}/{x}/{y}.png', options:{ maxZoom:19, attribution:'&copy; OpenStreetMap contributors' } }
+    ];
+    const provider = providers[index];
+    if (!provider) return;
+    state.tileProviderIndex = index;
+    state.tileErrors = 0;
+    if (state.tileLayer) map.removeLayer(state.tileLayer);
+    const layer = L.tileLayer(provider.url, provider.options);
+    state.tileLayer = layer;
+    layer.on('tileerror', () => {
+      state.tileErrors += 1;
+      if (state.tileErrors >= 4 && state.tileProviderIndex < providers.length - 1) {
+        console.warn('RRN mapa: provedor de tiles indisponível; alternando para contingência.');
+        addTileProvider(L, map, state.tileProviderIndex + 1);
+      }
+    });
+    layer.addTo(map);
   }
 
   function ensureView() {
@@ -428,10 +470,7 @@
     if (!element) return null;
     if (!state.map) {
       state.map = L.map(element, { zoomControl:true, worldCopyJump:true, minZoom:2 }).setView([18, 0], 2);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom:18,
-        attribution:'&copy; OpenStreetMap contributors'
-      }).addTo(state.map);
+      addTileProvider(L, state.map, 0);
       state.markerLayer = L.layerGroup().addTo(state.map);
     }
     return L;
@@ -467,7 +506,7 @@
       if (bounds.length === 1) state.map.setView(bounds[0], state.platformAdmin ? 5 : 9);
       else if (bounds.length > 1) state.map.fitBounds(bounds, { padding:[35,35], maxZoom:state.platformAdmin ? 6 : 10 });
       else state.map.setView([18, 0], 2);
-      setTimeout(() => state.map?.invalidateSize(), 60);
+      setTimeout(() => state.map?.invalidateSize({ pan:false }), 120);
     } catch (error) {
       console.warn('RRN mapa de instalações:', error);
       if (empty) {
