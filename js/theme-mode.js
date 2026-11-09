@@ -60,6 +60,7 @@
   }
 
   function ensureThemeFixes() {
+    addStylesheet('/style/theme-icon-colors-global.css?v=20261109-1', 'data-rrn-theme-icon-colors-global');
     addStylesheet('/style/theme-tokens-v3.css?v=20260929-2', 'data-rrn-theme-tokens-v3');
     addStylesheet('/style/dark-mode-v5.css?v=20260929-1', 'data-rrn-dark-mode-v5');
     addStylesheet('/style/theme-consistency-v1.css?v=20260929-2', 'data-rrn-theme-consistency-v1');
