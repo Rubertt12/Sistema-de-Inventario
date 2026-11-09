@@ -150,16 +150,52 @@
   }
 
   function safeBrandAssetUrl(value) {
-    try { const url = new URL(String(value || ''), location.origin); if (url.protocol === 'https:' || url.origin === location.origin) return url.href; } catch {}
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    try {
+      const url = new URL(raw, location.origin);
+      if ((url.protocol === 'https:' || url.origin === location.origin) && url.pathname !== '/') return url.href;
+    } catch {}
     return '';
   }
+
+  function setLogoSource(img, value) {
+    if (!img) return;
+    const fallback = new URL(DEFAULT_LOGO, location.origin).href;
+    const candidate = safeBrandAssetUrl(value) || fallback;
+    img.onerror = () => {
+      if (img.dataset.rrnLogoFallbackApplied === '1') {
+        img.style.visibility = 'hidden';
+        return;
+      }
+      img.dataset.rrnLogoFallbackApplied = '1';
+      img.src = fallback;
+    };
+    img.dataset.rrnLogoFallbackApplied = '0';
+    if (img.src !== candidate) img.src = candidate;
+  }
+
+  // Algumas telas criam a marca dinamicamente; qualquer logo inválida volta
+  // para o asset oficial, sem deixar o ícone quebrado na interface.
+  document.addEventListener('error', event => {
+    const img = event.target;
+    if (!(img instanceof HTMLImageElement)) return;
+    if (!img.matches('.brand-mark img,.mobile-brand img,.navbar-icon,.brand img,.settings-brand img,.rrn-tenant-portal-logo,.rrn-navbar-brand-mark img,.landing-brand img,.support-brand img,.quick-brand img,.store-brand img,.desk-brand img,.bill-brand img,.rrn-tree-brand img,.rrn-footer-simple-brand img')) return;
+    const fallback = new URL(DEFAULT_LOGO, location.origin).href;
+    if (img.dataset.rrnLogoFallbackApplied === '1' || img.src === fallback) {
+      img.style.visibility = 'hidden';
+      return;
+    }
+    img.dataset.rrnLogoFallbackApplied = '1';
+    img.src = fallback;
+  }, true);
 
   function applyBrand(rawBrand = {}) {
     const brand = { ...DEFAULT_BRAND, ...rawBrand };
     applyThemeTokens(brand);
 
-    document.querySelectorAll('.brand-mark img,.mobile-brand img,.navbar-icon,.brand img,.settings-brand img')
-      .forEach(img => { img.src = safeBrandAssetUrl(brand.logo_url) || DEFAULT_LOGO; });
+    document.querySelectorAll('.brand-mark img,.mobile-brand img,.navbar-icon,.brand img,.settings-brand img,.rrn-tenant-portal-logo,.rrn-navbar-brand-mark img,.landing-brand img,.support-brand img,.quick-brand img,.store-brand img,.desk-brand img,.bill-brand img,.rrn-tree-brand img,.rrn-footer-simple-brand img')
+      .forEach(img => setLogoSource(img, brand.logo_url));
 
     const title = document.getElementById('brandTitle');
     const subtitle = document.getElementById('brandSubtitle');
