@@ -3,133 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101827">
-  <title>RRN Manager | Central de Chamados</title>
-  <meta name="description" content="Workspace de atendimento e gestão de chamados do RRN Manager.">
+  <meta name="theme-color" content="#111820">
+  <title>RRN | Service Operations</title>
+  <meta name="description" content="Console operacional de suporte RRN Manager.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style/rrn-theme-v2.css">
-  <link rel="stylesheet" href="/style/support-desk.css?v=20261109-rebuild1">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style/support-desk.css?v=20261109-command1">
   <link rel="icon" href="/img/icon-png.png" type="image/png">
 </head>
 <body class="desk-body">
-  <header class="desk-topbar">
-    <a class="desk-brand" href="/dashboard.html" aria-label="Voltar ao RRN Manager">
-      <img src="/img/icon-png.png" alt="">
-      <span><strong>RRN Manager</strong><small>WORKSPACE DE SUPORTE</small></span>
+  <aside class="ops-rail">
+    <a class="ops-brand" href="/dashboard.html" aria-label="RRN Manager">
+      <img src="/img/icon-png.png" alt=""><span>RRN</span>
     </a>
-    <div class="desk-top-actions">
-      <span class="desk-live"><i></i> Central operacional</span>
-      <button class="desk-icon-btn" type="button" id="deskRefreshBtn" aria-label="Atualizar chamados" title="Atualizar">↻</button>
-      <button class="desk-theme-btn" type="button" data-rrn-theme-toggle>Alternar tema</button>
-      <a class="desk-back-link" href="/dashboard.html">← Painel</a>
+    <div class="ops-rail-label">WORKSPACE</div>
+    <nav class="ops-nav" aria-label="Navegação principal">
+      <a href="/dashboard.html" title="Visão geral"><span class="ops-nav-icon">◫</span><span>Visão geral</span></a>
+      <a class="active" href="/chamados.html" aria-current="page" title="Central de chamados"><span class="ops-nav-icon">▤</span><span>Atendimentos</span></a>
+      <a href="/portal.html" target="_blank" rel="noopener" title="Portal do solicitante"><span class="ops-nav-icon">↗</span><span>Portal</span></a>
+    </nav>
+    <div class="ops-rail-bottom">
+      <span class="ops-rail-status"><i></i> SISTEMA ONLINE</span>
+      <a href="/dashboard.html" title="Voltar ao painel">↩</a>
     </div>
-  </header>
+  </aside>
 
-  <main class="desk-main">
-    <section class="desk-hero">
-      <div>
-        <div class="desk-eyebrow"><span></span> OPERAÇÃO / SERVICE DESK</div>
-        <h1>Central de chamados</h1>
-        <p id="deskWorkspaceLabel">Carregando ambiente e fila de atendimento...</p>
+  <main class="ops-main">
+    <header class="ops-topbar">
+      <div class="ops-breadcrumb"><span>RRN MANAGER</span><b>/</b><strong>SERVICE OPERATIONS</strong></div>
+      <div class="ops-top-actions">
+        <span class="ops-operator"><i></i><span id="deskWorkspaceLabel">Carregando sessão...</span></span>
+        <button type="button" class="ops-theme" data-rrn-theme-toggle aria-label="Alternar tema">◐</button>
+        <button type="button" class="ops-refresh" id="deskRefreshBtn"><span>↻</span> Atualizar</button>
       </div>
-      <a class="desk-portal-link" href="/portal.html" target="_blank" rel="noopener">Abrir portal do colaborador <span>↗</span></a>
+    </header>
+
+    <section class="ops-heading">
+      <div>
+        <div class="ops-overline">SERVICE DESK <span>•</span> LIVE QUEUE</div>
+        <h1>Atendimentos</h1>
+        <p>Gerencie solicitações, acompanhe conversas e mantenha a operação em movimento.</p>
+      </div>
+      <div class="ops-heading-state"><i></i> Operação ativa</div>
     </section>
 
-    <section class="desk-metrics" aria-label="Indicadores de atendimento">
-      <article class="desk-metric"><div class="desk-metric-label"><span class="metric-dot new"></span>Novos chamados</div><strong id="deskKpiNew">0</strong><small>Aguardando atendimento</small></article>
-      <article class="desk-metric"><div class="desk-metric-label"><span class="metric-dot progress"></span>Em atendimento</div><strong id="deskKpiProgress">0</strong><small>Com responsável definido</small></article>
-      <article class="desk-metric"><div class="desk-metric-label"><span class="metric-dot waiting"></span>Aguardando usuário</div><strong id="deskKpiWaiting">0</strong><small>Dependem de retorno</small></article>
-      <article class="desk-metric"><div class="desk-metric-label"><span class="metric-dot resolved"></span>Resolvidos hoje</div><strong id="deskKpiResolved">0</strong><small>Concluídos neste dia</small></article>
+    <section class="ops-stats" aria-label="Indicadores da operação">
+      <div class="ops-stat"><span>NA FILA</span><strong id="deskKpiNew">0</strong><small>Novos / reabertos</small></div>
+      <div class="ops-stat"><span>EM TRATAMENTO</span><strong id="deskKpiProgress">0</strong><small>Com responsável</small></div>
+      <div class="ops-stat"><span>AGUARDANDO</span><strong id="deskKpiWaiting">0</strong><small>Retorno do solicitante</small></div>
+      <div class="ops-stat"><span>RESOLVIDOS HOJE</span><strong id="deskKpiResolved">0</strong><small>Finalizados no dia</small></div>
     </section>
 
-    <section class="desk-workspace">
-      <aside class="desk-queue">
-        <div class="desk-queue-head">
-          <div><span class="desk-section-kicker">INBOX</span><h2 id="deskListTitle">Fila de atendimento</h2></div>
-          <span class="desk-count" id="deskListCount">0 chamados</span>
+    <section class="ops-console">
+      <aside class="ops-inbox">
+        <div class="ops-inbox-head">
+          <div><span class="ops-overline">INBOX / TICKETS</span><h2>Fila de trabalho</h2></div>
+          <span class="ops-total" id="deskListCount">0</span>
         </div>
-        <nav class="desk-filters desk-toolbar" aria-label="Filtros de chamados">
-          <button class="desk-filter active" type="button" data-desk-filter="new">Novos</button>
-          <button class="desk-filter" type="button" data-desk-filter="all">Ativos</button>
-          <button class="desk-filter" type="button" data-desk-filter="mine">Meus</button>
-          <button class="desk-filter" type="button" data-desk-filter="sla">SLA</button>
-          <button class="desk-filter" type="button" data-desk-filter="critical">Críticos</button>
-          <button class="desk-filter" type="button" data-desk-filter="closed">Finalizados</button>
-        </nav>
-        <div class="desk-ticket-list" id="deskTicketList" aria-live="polite"></div>
+        <div class="ops-filters" role="group" aria-label="Filtrar chamados">
+          <button class="active" type="button" data-desk-filter="new">Novos</button>
+          <button type="button" data-desk-filter="all">Ativos</button>
+          <button type="button" data-desk-filter="mine">Meus</button>
+          <button type="button" data-desk-filter="sla">SLA</button>
+          <button type="button" data-desk-filter="critical">Críticos</button>
+          <button type="button" data-desk-filter="closed">Histórico</button>
+        </div>
+        <div class="ops-tools desk-toolbar">
+          <label class="ops-search"><span>⌕</span><input id="deskQuickSearch" type="search" placeholder="Buscar chamado..." autocomplete="off"></label>
+          <div class="ops-selects">
+            <select id="deskPriorityFilter" aria-label="Filtrar prioridade"><option value="all">Prioridade: todas</option><option value="critical">Crítica</option><option value="high">Alta</option><option value="medium">Média</option><option value="low">Baixa</option></select>
+            <select id="deskSortOrder" aria-label="Ordenar chamados"><option value="newest">Mais recentes</option><option value="oldest">Mais antigos</option><option value="priority">Prioridade</option></select>
+          </div>
+        </div>
+        <div class="ops-ticket-list" id="deskTicketList" aria-live="polite"></div>
+        <div class="ops-inbox-foot"><span>ATUALIZAÇÃO AUTOMÁTICA</span><span class="ops-live-dot"></span></div>
       </aside>
 
-      <section class="desk-detail-panel">
-        <div class="desk-empty" id="deskEmpty">
-          <div class="desk-empty-mark">⌁</div>
-          <span class="desk-section-kicker">ÁREA DE ATENDIMENTO</span>
-          <h2>Escolha um chamado</h2>
-          <p>Selecione um item da fila para abrir o atendimento, consultar o SLA e conversar com o solicitante.</p>
+      <section class="ops-detail">
+        <div class="ops-empty" id="deskEmpty">
+          <div class="ops-empty-glyph">⌁</div>
+          <span class="ops-overline">CENTRO DE ATENDIMENTO</span>
+          <h2>Pronto para operar.</h2>
+          <p>Selecione um chamado na fila para abrir a conversa e consultar os dados do atendimento.</p>
         </div>
 
-        <article class="desk-ticket-view" id="deskTicketView" hidden>
-          <header class="desk-detail-head">
-            <div class="desk-detail-top">
-              <div><span class="desk-section-kicker" id="deskTicketNumber">CHAMADO</span><h2 id="deskTicketTitle">—</h2></div>
-              <div class="desk-detail-badges"><span class="desk-badge" id="deskTicketStatus">Novo</span><span class="desk-priority" id="deskTicketPriority">Média</span></div>
-            </div>
-            <div class="desk-context-grid">
-              <div class="desk-context-card"><span>Solicitante</span><strong id="deskRequesterName">—</strong><small id="deskRequesterMeta">—</small></div>
-              <div class="desk-context-card"><span>Equipamento / setor</span><strong id="deskAssetName">—</strong><small id="deskAssetMeta">—</small></div>
-            </div>
-            <div class="desk-sla-grid">
-              <div><span>Primeira resposta</span><strong id="deskFirstResponseSla">—</strong></div>
-              <div><span>Prazo de resolução</span><strong id="deskResolutionSla">—</strong></div>
-              <div><span>Tempo em atendimento</span><strong id="deskHandlingTime">—</strong></div>
-            </div>
-            <div class="desk-action-row" id="deskActionRow">
-              <button class="desk-btn primary" type="button" id="deskClaimBtn">Assumir chamado</button>
-              <button class="desk-btn" type="button" id="deskWaitingBtn">Aguardar usuário</button>
-              <button class="desk-btn success" type="button" id="deskResolveBtn">Resolver</button>
-              <button class="desk-btn danger" type="button" id="deskCloseBtn">Encerrar</button>
-            </div>
-          </header>
-          <section class="desk-chat">
-            <div class="desk-chat-heading"><div><span class="desk-section-kicker">CONVERSA</span><h3>Histórico do atendimento</h3></div><span class="desk-chat-secure">● Atualização em tempo real</span></div>
-            <div class="desk-messages" id="deskMessages"></div>
-            <form class="desk-compose" id="deskMessageForm">
-              <input type="text" id="deskMessageInput" placeholder="Escreva uma resposta ao solicitante..." autocomplete="off" aria-label="Mensagem">
-              <button class="desk-btn primary" type="submit">Enviar mensagem <span>➤</span></button>
+        <article class="desk-ticket-view ops-ticket-view" id="deskTicketView" hidden>
+          <section class="ops-conversation desk-chat">
+            <header class="ops-conversation-head">
+              <div><span class="ops-overline">TICKET / CONVERSATION</span><div class="ops-conversation-title"><span id="deskTicketNumber">#—</span><h2 id="deskTicketTitle">—</h2></div></div>
+              <div class="ops-conversation-status"><span class="desk-badge" id="deskTicketStatus">Novo</span><span class="desk-priority" id="deskTicketPriority">Média</span></div>
+            </header>
+            <div class="ops-message-stream desk-messages" id="deskMessages"></div>
+            <form class="ops-composer desk-compose" id="deskMessageForm">
+              <div class="ops-composer-field"><span>↳</span><input type="text" id="deskMessageInput" placeholder="Escreva uma mensagem..." autocomplete="off" aria-label="Mensagem"></div>
+              <button type="submit" class="ops-send">Enviar <span>↗</span></button>
+              <small>ENTER PARA ENVIAR · CTRL + ENTER</small>
             </form>
           </section>
+
+          <aside class="ops-inspector desk-detail-head">
+            <div class="ops-inspector-head"><span class="ops-overline">TICKET DETAILS</span><span class="ops-inspector-mark">•••</span></div>
+            <div class="ops-inspector-block"><span class="ops-field-label">SOLICITANTE</span><strong id="deskRequesterName">—</strong><small id="deskRequesterMeta">—</small></div>
+            <div class="ops-inspector-block"><span class="ops-field-label">EQUIPAMENTO / SETOR</span><strong id="deskAssetName">—</strong><small id="deskAssetMeta">—</small></div>
+            <div class="ops-inspector-block ops-sla-block">
+              <span class="ops-field-label">ACORDO DE NÍVEL DE SERVIÇO</span>
+              <div><small>Primeira resposta</small><strong id="deskFirstResponseSla">—</strong></div>
+              <div><small>Resolução</small><strong id="deskResolutionSla">—</strong></div>
+              <div><small>Tempo em atendimento</small><strong id="deskHandlingTime">—</strong></div>
+            </div>
+            <div class="ops-actions desk-action-row" id="deskActionRow">
+              <button class="ops-action-main" type="button" id="deskClaimBtn">Assumir chamado</button>
+              <button class="ops-action-secondary" type="button" id="deskWaitingBtn">Aguardar usuário</button>
+              <button class="ops-action-secondary" type="button" id="deskResolveBtn">Resolver chamado</button>
+              <button class="ops-action-danger" type="button" id="deskCloseBtn">Encerrar chamado</button>
+            </div>
+          </aside>
         </article>
       </section>
     </section>
   </main>
 
-  <div class="desk-modal" id="deskResolveModal" hidden role="dialog" aria-modal="true" aria-labelledby="deskResolveTitle">
-    <div class="desk-modal-card">
-      <span class="desk-section-kicker">FINALIZAÇÃO</span><h2 id="deskResolveTitle">Resolver chamado</h2>
-      <p>Descreva o que foi feito. O solicitante poderá confirmar a solução ou reabrir o chamado.</p>
-      <form class="desk-resolution-form" id="deskResolveForm">
-        <label>Solução aplicada<textarea id="deskResolutionInput" required placeholder="Descreva a solução aplicada..."></textarea></label>
-        <label>Causa identificada<textarea id="deskCauseInput" placeholder="Se identificada, descreva a causa..."></textarea></label>
-        <div class="desk-modal-actions"><button class="desk-btn" type="button" id="deskResolveCancel">Voltar</button><button class="desk-btn success" type="submit">Confirmar resolução</button></div>
+  <div class="ops-modal desk-modal" id="deskResolveModal" hidden role="dialog" aria-modal="true" aria-labelledby="deskResolveTitle">
+    <div class="ops-modal-card"><span class="ops-overline">FINALIZAÇÃO DO ATENDIMENTO</span><h2 id="deskResolveTitle">Registrar resolução</h2><p>Informe o que foi realizado para concluir o chamado.</p>
+      <form id="deskResolveForm" class="ops-resolution-form">
+        <label>Solução aplicada<textarea id="deskResolutionInput" required placeholder="Descreva a solução..."></textarea></label>
+        <label>Causa identificada<textarea id="deskCauseInput" placeholder="Causa (opcional)..."></textarea></label>
+        <div><button class="ops-action-secondary" type="button" id="deskResolveCancel">Cancelar</button><button class="ops-action-main" type="submit">Confirmar resolução</button></div>
       </form>
     </div>
   </div>
-  <div class="desk-toast" id="deskToast" hidden role="status"></div>
+  <div class="ops-toast desk-toast" id="deskToast" hidden role="status"></div>
 
   <script src="/js/supabase-config.js?v=20260814-3"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/theme-mode.js?v=20260814-3"></script>
-  <script src="/js/support-presence.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-desk.js?v=20261109-rebuild1"></script>
+  <script src="/js/support-presence.js?v=20261109-command1"></script>
+  <script src="/js/support-desk.js?v=20261109-command1"></script>
   <script src="/js/support-desk-defaults-v2.js?v=20260814-1"></script>
-  <script src="/js/support-desk-access-v2.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-ticket-assignment-v2.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-ticket-participation.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-desk-priority.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-desk-ui-fixes.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-desk-close-v2.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-desk-hide-finalized-from-all.js?v=20261109-rebuild1"></script>
-  <script src="/js/support-desk-queue-toggle.js?v=20261109-rebuild1"></script>
+  <script src="/js/support-desk-access-v2.js?v=20261109-command1"></script>
+  <script src="/js/support-ticket-assignment-v2.js?v=20261109-command1"></script>
+  <script src="/js/support-ticket-participation.js?v=20261109-command1"></script>
+  <script src="/js/support-desk-priority.js?v=20261109-command1"></script>
+  <script src="/js/support-desk-close-v2.js?v=20261109-command1"></script>
 </body>
 </html>
