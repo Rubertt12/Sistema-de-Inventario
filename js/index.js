@@ -67,7 +67,7 @@
 
   const lazyFeatureStyles = Object.freeze({
     globalMap: [['/style/agent-global-map.css?v=20260816-1', 'data-rrn-agent-global-map']],
-    agents: [['/style/agent-management.css?v=20260816-2', 'data-rrn-agent-management']]
+    agents: [['/style/agent-management.css?v=20261109-1', 'data-rrn-agent-management']]
   });
 
   const lazyFeaturePromises = new Map();
