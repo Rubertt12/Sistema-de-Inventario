@@ -21,6 +21,11 @@
     ensureStylesheet('/style/navbar-flat-tabs.css?v=20260929-2', 'data-rrn-navbar-flat-tabs');
     ensureStylesheet('/style/dashboard-white-navbar-polish.css?v=20261109-2', 'data-rrn-dashboard-white-navbar-polish');
     ensureStylesheet('/style/dashboard-nav-tabs-polish.css?v=20261109-1', 'data-rrn-dashboard-nav-tabs-polish');
+    ensureStylesheet('/style/agent-management.css?v=rrn-v3', 'data-rrn-agent-management-v3');
+    ensureStylesheet('/style/agent-global-map.css?v=rrn-v3', 'data-rrn-agent-map-v3');
+    ensureStylesheet('/style/rrn-v3-foundation.css?v=4', 'data-rrn-v3-foundation');
+    ensureStylesheet('/style/rrn-v3-pages.css?v=4', 'data-rrn-v3-pages');
+    ensureStylesheet('/style/rrn-v3-dashboard.css?v=4', 'data-rrn-v3-dashboard');
   }
 
   function sessionInfo() {
